@@ -5,18 +5,16 @@ namespace Sports\Tests\Round\Number;
 use \Exception;
 use League\Period\Period;
 use Sports\Game;
-use Sports\Planning\Input;
-use Sports\Planning\Resource\Service;
 use Sports\Poule;
+use SportsPlanning\Input as PlanningInput;
 use Sports\TestHelper\CompetitionCreator;
 use Sports\TestHelper\GamesCreator;
-use Sports\TestHelper\PlanningCreator;
 use Sports\Round\Number\GamesValidator;
 use Sports\Structure\Service as StructureService;
 
 class GamesValidatorTest extends \PHPUnit\Framework\TestCase
 {
-    use CompetitionCreator, PlanningCreator, GamesCreator;
+    use CompetitionCreator, GamesCreator;
 
     public function testHasEnoughTotalNrOfGames()
     {
@@ -208,7 +206,7 @@ class GamesValidatorTest extends \PHPUnit\Framework\TestCase
         $structure = $structureService->create($competition, 5);
 
         $firstRoundNumber = $structure->getFirstRoundNumber();
-        $firstRoundNumber->getPlanningConfig()->setSelfReferee(Input::SELFREFEREE_SAMEPOULE);
+        $firstRoundNumber->getPlanningConfig()->setSelfReferee(PlanningInput::SELFREFEREE_SAMEPOULE);
 
         $this->createGames($structure);
 
@@ -239,7 +237,7 @@ class GamesValidatorTest extends \PHPUnit\Framework\TestCase
         $structure = $structureService->create($competition, 9, 2);
 
         $firstRoundNumber = $structure->getFirstRoundNumber();
-        $firstRoundNumber->getPlanningConfig()->setSelfReferee(Input::SELFREFEREE_OTHERPOULES);
+        $firstRoundNumber->getPlanningConfig()->setSelfReferee(PlanningInput::SELFREFEREE_OTHERPOULES);
 
         $this->createGames($structure);
 
@@ -262,7 +260,7 @@ class GamesValidatorTest extends \PHPUnit\Framework\TestCase
         $structure = $structureService->create($competition, 9, 2);
 
         $firstRoundNumber = $structure->getFirstRoundNumber();
-        $firstRoundNumber->getPlanningConfig()->setSelfReferee(Input::SELFREFEREE_OTHERPOULES);
+        $firstRoundNumber->getPlanningConfig()->setSelfReferee(PlanningInput::SELFREFEREE_OTHERPOULES);
 
         // 2 pak vervolgend een wedstrijd en laatr deze in de pauze zijn
         // 3 en laat de validator de boel opsporen!

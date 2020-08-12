@@ -3,8 +3,6 @@
 namespace Sports\Tests\Structure;
 
 use Exception;
-use Sports\Association;
-use Sports\Competitor;
 use Sports\Place;
 use Sports\Qualify\Group as QualifyGroup;
 use Sports\Round;
@@ -54,27 +52,6 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
         $structure = $structureService->create($competition, 4);
 
         $structure->getFirstRoundNumber()->getSportScoreConfigs()->clear();
-
-        $structureValidator = new StructureValidator();
-        self::expectException(Exception::class);
-        $structureValidator->checkValidity($competition, $structure);
-    }
-
-    public function testRoundNumberCompetitorFromOtherAssociation()
-    {
-        $competition = $this->createCompetition();
-
-        $structureService = new StructureService([]);
-
-        $structure = $structureService->create($competition, 4);
-
-        $firstRoundNumber = $structure->getFirstRoundNumber();
-        $rootRound = $structure->getRootRound();
-
-        $place = $rootRound->getPoule(1)->getPlace(1);
-
-        $wrongCompetitor = new Competitor(new Association('different association'), 'different competitor');
-        $place->setCompetitor($wrongCompetitor);
 
         $structureValidator = new StructureValidator();
         self::expectException(Exception::class);

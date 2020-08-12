@@ -85,10 +85,10 @@ class ServiceTest extends \PHPUnit\Framework\TestCase
 
         $pouleOne = $rootRound->getPoule(1);
 
-        for ($nr = 1; $nr <= $pouleOne->getPlaces()->count(); $nr++) {
-            $competitor = new Competitor($competition->getLeague()->getAssociation(), '0' . $nr);
-            $pouleOne->getPlace($nr)->setCompetitor($competitor);
-        }
+//        for ($nr = 1; $nr <= $pouleOne->getPlaces()->count(); $nr++) {
+//            $competitor = new Competitor($competition->getLeague()->getAssociation(), '0' . $nr);
+//            $pouleOne->getPlace($nr)->setCompetitor($competitor);
+//        }
 
         $this->setScoreSingle($pouleOne, 1, 2, 2, 1);
         $this->setScoreSingle($pouleOne, 1, 3, 3, 1);
@@ -195,30 +195,6 @@ class ServiceTest extends \PHPUnit\Framework\TestCase
         $placeLocations = $rankingService->getPlaceLocationsForHorizontalPoule($firstHorizontalPoule);
 
         self::assertSame(count($placeLocations), 0);
-    }
-
-    public function testGetCompetitor()
-    {
-        $competition = $this->createCompetition();
-
-        $structureService = new StructureService([]);
-        $structure = $structureService->create($competition, 3);
-        $rootRound = $structure->getRootRound();
-
-        $structureService->addQualifier($rootRound, QualifyGroup::WINNERS);
-
-        $this->createGames($structure);
-
-        $pouleOne = $rootRound->getPoule(1);
-        $placeOne = $pouleOne->getPlace(1);
-        $competitor = new Competitor($competition->getLeague()->getAssociation(), 'test');
-        $placeOne->setCompetitor($competitor);
-        $placeTwo = $pouleOne->getPlace(2);
-
-        $rankingService = new RankingService($rootRound, RankingService::RULESSET_WC);
-
-        self::assertSame($rankingService->getCompetitor($placeOne->getLocation()), $competitor);
-        self::assertSame($rankingService->getCompetitor($placeTwo->getLocation()), null);
     }
 
     public function testSingleRankedECWC()

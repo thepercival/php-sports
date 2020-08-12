@@ -19,13 +19,13 @@ use Sports\Sport\Config as SportConfig;
 use SportsHelpers\SportConfig as SportConfigHelper;
 use Sports\Planning\Config as PlanningConfig;
 
-class Service
+class PlanningInputCreator
 {
     public function __construct()
     {
     }
 
-    public function get(RoundNumber $roundNumber, int $nrOfReferees): PlanningInput
+    public function create(RoundNumber $roundNumber, int $nrOfReferees): PlanningInput
     {
         $config = $roundNumber->getValidPlanningConfig();
         $planningConfigService = new PlanningConfigService();
@@ -102,7 +102,7 @@ class Service
         return $planningConfig->getSelfReferee();
     }
 
-    public function getStructureConfig(RoundNumber $roundNumber): array
+    protected function getStructureConfig(RoundNumber $roundNumber): array
     {
         $nrOfPlacesPerPoule = [];
         foreach ($roundNumber->getPoules() as $poule) {

@@ -8,19 +8,19 @@
 
 namespace Sports\TestHelper;
 
-use Sports\Planning;
-use Sports\Planning\Resource\RefereePlace\Service as RefereePlaceService;
-use Sports\Planning\Service as PlanningService;
+use SportsPlanning\Planning;
+use SportsPlanning\Resource\RefereePlace\Service as RefereePlaceService;
+use SportsPlanning\Service as PlanningService;
 use Sports\Planning\Input as PlanningInput;
-use Sports\Planning\Input\Service as PlanningInputService;
+use Sports\Planning\Input\PlanningInputCreator;
 use Sports\Round\Number as RoundNumber;
 
 trait PlanningCreator {
     protected function createPlanning( RoundNumber $roundNumber, array $options ): Planning
     {
-        $planningInputService = new PlanningInputService();
+        $planningInputCreator = new PlanningInputCreator();
         $nrOfReferees = $roundNumber->getCompetition()->getReferees()->count();
-        $planningInput = $planningInputService->get($roundNumber, $nrOfReferees);
+        $planningInput = $planningInputCreator->create($roundNumber, $nrOfReferees);
         $planningService = new PlanningService();
         $planning = $planningService->createNextMinIsMaxPlanning($planningInput);
         if (Planning::STATE_SUCCESS !== $planningService->createGames($planning)) {

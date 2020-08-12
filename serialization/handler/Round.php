@@ -58,15 +58,17 @@ class Round implements SubscribingHandlerInterface
                 $place = new Place($poule, $arrPlace["number"]);
                 $place->setPenaltyPoints($arrPlace["penaltyPoints"]);
 
-                if (!array_key_exists("competitor", $arrPlace)) {
+                if (!isset($arrPlace["qualifiedPlace"])) {
                     continue;
                 }
-                $competitor = new Competitor($association, "dummy");
-                $competitor->setName($arrPlace["competitor"]["name"]);
-                if (array_key_exists("registered", $arrPlace["competitor"])) {
-                    $competitor->setRegistered($arrPlace["competitor"]["registered"]);
-                }
-                $place->setCompetitor($competitor);
+                // @TODO DEPRECATED
+//                $round->getParentQualifyGroup()->getRound()->getPoule()
+//                $competitor = new Competitor($association, "dummy");
+//                $competitor->setName($arrPlace["competitor"]["name"]);
+//                if (array_key_exists("registered", $arrPlace["competitor"])) {
+//                    $competitor->setRegistered($arrPlace["competitor"]["registered"]);
+//                }
+//                $place->setQualifiedPlace($qualifiedPlace);
             }
         }
 

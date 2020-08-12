@@ -36,11 +36,6 @@ class ServiceTest extends \PHPUnit\Framework\TestCase
 
         $pouleOne = $rootRound->getPoule(1);
 
-        for ($nr = 1; $nr <= $pouleOne->getPlaces()->count(); $nr++) {
-            $competitor = new Competitor($competition->getLeague()->getAssociation(), '0' . $nr);
-            $pouleOne->getPlace($nr)->setCompetitor($competitor);
-        }
-
         $this->setScoreSingle($pouleOne, 1, 2, 2, 1);
         $this->setScoreSingle($pouleOne, 1, 3, 3, 1);
         $this->setScoreSingle($pouleOne, 1, 4, 4, 1);
@@ -57,18 +52,18 @@ class ServiceTest extends \PHPUnit\Framework\TestCase
 
         $winnersPoule = $rootRound->getChild(QualifyGroup::WINNERS, 1)->getPoule(1);
 
-        self::assertNotSame($winnersPoule->getPlace(1)->getCompetitor(), null);
-        self::assertSame($winnersPoule->getPlace(1)->getCompetitor()->getName(), '01');
-        self::assertNotSame($winnersPoule->getPlace(2)->getCompetitor(), null);
-        self::assertSame($winnersPoule->getPlace(2)->getCompetitor()->getName(), '02');
+        self::assertNotNull($winnersPoule->getPlace(1)->getQualifiedPlace());
+        self::assertSame($pouleOne->getPlace(1), $winnersPoule->getPlace(1)->getQualifiedPlace() );
+        self::assertNotNull($winnersPoule->getPlace(2)->getQualifiedPlace());
+        self::assertSame($pouleOne->getPlace(2), $winnersPoule->getPlace(2)->getQualifiedPlace() );
 
 
         $loserssPoule = $rootRound->getChild(QualifyGroup::LOSERS, 1)->getPoule(1);
 
-        self::assertNotSame($loserssPoule->getPlace(1)->getCompetitor(), null);
-        self::assertSame($loserssPoule->getPlace(1)->getCompetitor()->getName(), '04');
-        self::assertNotSame($loserssPoule->getPlace(2)->getCompetitor(), null);
-        self::assertSame($loserssPoule->getPlace(2)->getCompetitor()->getName(), '05');
+        self::assertNotNull($loserssPoule->getPlace(1)->getQualifiedPlace());
+        self::assertSame($pouleOne->getPlace(4), $loserssPoule->getPlace(1)->getQualifiedPlace());
+        self::assertNotNull($loserssPoule->getPlace(2)->getQualifiedPlace());
+        self::assertSame($pouleOne->getPlace(5), $loserssPoule->getPlace(2)->getQualifiedPlace());
     }
 
     public function test2RoundNumbers5PouleFilter()
@@ -82,18 +77,8 @@ class ServiceTest extends \PHPUnit\Framework\TestCase
         $this->createGames($structure);
 
         $pouleOne = $rootRound->getPoule(1);
-
-        for ($nr = 1; $nr <= $pouleOne->getPlaces()->count(); $nr++) {
-            $competitor = new Competitor($competition->getLeague()->getAssociation(), '0' . $nr);
-            $pouleOne->getPlace($nr)->setCompetitor($competitor);
-        }
-
         $pouleTwo = $rootRound->getPoule(2);
-        for ($nr = 1; $nr <= $pouleTwo->getPlaces()->count(); $nr++) {
-            $name = $pouleOne->getPlaces()->count() + $nr;
-            $competitor = new Competitor($competition->getLeague()->getAssociation(), '0' . $name);
-            $pouleTwo->getPlace($nr)->setCompetitor($competitor);
-        }
+
 
         $structureService->addQualifiers($rootRound, QualifyGroup::WINNERS, 2);
         $structureService->addQualifiers($rootRound, QualifyGroup::LOSERS, 2);
@@ -111,14 +96,14 @@ class ServiceTest extends \PHPUnit\Framework\TestCase
 
         $winnersPoule = $rootRound->getChild(QualifyGroup::WINNERS, 1)->getPoule(1);
 
-        self::assertNotSame($winnersPoule->getPlace(1)->getCompetitor(), null);
-        self::assertSame($winnersPoule->getPlace(1)->getCompetitor()->getName(), '01');
-        self::assertSame($winnersPoule->getPlace(2)->getCompetitor(), null);
+        self::assertNotSame($winnersPoule->getPlace(1)->getQualifiedPlace(), null);
+        self::assertSame($pouleOne->getPlace(1), $winnersPoule->getPlace(1)->getQualifiedPlace() );
+        self::assertSame($winnersPoule->getPlace(2)->getQualifiedPlace(), null);
 
         $loserssPoule = $rootRound->getChild(QualifyGroup::LOSERS, 1)->getPoule(1);
 
-        self::assertSame($loserssPoule->getPlace(2)->getCompetitor(), null);
-        self::assertNotSame($loserssPoule->getPlace(1)->getCompetitor(), null);
+        self::assertSame($loserssPoule->getPlace(2)->getQualifiedPlace(), null);
+        self::assertNotSame($loserssPoule->getPlace(1)->getQualifiedPlace(), null);
     }
 
     public function test2RoundNumbers9Multiple()
@@ -138,26 +123,8 @@ class ServiceTest extends \PHPUnit\Framework\TestCase
         $this->createGames($structure);
 
         $pouleOne = $rootRound->getPoule(1);
-
-        for ($nr = 1; $nr <= $pouleOne->getPlaces()->count(); $nr++) {
-            $competitor = new Competitor($competition->getLeague()->getAssociation(), '0' . $nr);
-            $pouleOne->getPlace($nr)->setCompetitor($competitor);
-        }
-
         $pouleTwo = $rootRound->getPoule(2);
-        for ($nr = 1; $nr <= $pouleTwo->getPlaces()->count(); $nr++) {
-            $name = $pouleOne->getPlaces()->count() + $nr;
-            $competitor = new Competitor($competition->getLeague()->getAssociation(), '0' . $name);
-            $pouleTwo->getPlace($nr)->setCompetitor($competitor);
-        }
-
-
         $pouleThree = $rootRound->getPoule(3);
-        for ($nr = 1; $nr <= $pouleThree->getPlaces()->count(); $nr++) {
-            $name = $pouleOne->getPlaces()->count() + $pouleTwo->getPlaces()->count() + $nr;
-            $competitor = new Competitor($competition->getLeague()->getAssociation(), '0' . $name);
-            $pouleThree->getPlace($nr)->setCompetitor($competitor);
-        }
 
         $this->setScoreSingle($pouleOne, 1, 2, 1, 2);
         $this->setScoreSingle($pouleOne, 1, 3, 1, 3);
@@ -176,24 +143,24 @@ class ServiceTest extends \PHPUnit\Framework\TestCase
         $winnersPoule = $rootRound->getChild(QualifyGroup::WINNERS, 1)->getPoule(1);
 
         self::assertSame($winnersPoule->getPlace(1)->getFromQualifyRule()->isSingle(), true);
-        self::assertNotSame($winnersPoule->getPlace(1)->getCompetitor(), null);
+        self::assertNotNull($winnersPoule->getPlace(1)->getQualifiedPlace());
         self::assertSame($winnersPoule->getPlace(2)->getFromQualifyRule()->isSingle(), true);
-        self::assertNotSame($winnersPoule->getPlace(2)->getCompetitor(), null);
+        self::assertNotNull($winnersPoule->getPlace(2)->getQualifiedPlace());
         self::assertSame($winnersPoule->getPlace(3)->getFromQualifyRule()->isSingle(), true);
-        self::assertNotSame($winnersPoule->getPlace(3)->getCompetitor(), null);
+        self::assertNotNull($winnersPoule->getPlace(3)->getQualifiedPlace());
         self::assertSame($winnersPoule->getPlace(4)->getFromQualifyRule()->isMultiple(), true);
-        self::assertSame($winnersPoule->getPlace(4)->getCompetitor()->getName(), '08');
+        self::assertSame($pouleThree->getPlace(2), $winnersPoule->getPlace(4)->getQualifiedPlace());
 
         $losersPoule = $rootRound->getChild(QualifyGroup::LOSERS, 1)->getPoule(1);
 
         self::assertSame($losersPoule->getPlace(1)->getFromQualifyRule()->isMultiple(), true);
-        self::assertNotSame($losersPoule->getPlace(1)->getCompetitor()->getName(), null);
+        self::assertNotNull($losersPoule->getPlace(1)->getQualifiedPlace());
         self::assertSame($losersPoule->getPlace(2)->getFromQualifyRule()->isSingle(), true);
-        self::assertNotSame($losersPoule->getPlace(2)->getCompetitor(), null);
+        self::assertNotNull($losersPoule->getPlace(2)->getQualifiedPlace());
         self::assertTrue($losersPoule->getPlace(3)->getFromQualifyRule()->isSingle());
-        self::assertNotSame($losersPoule->getPlace(3)->getCompetitor(), null);
+        self::assertNotNull($losersPoule->getPlace(3)->getQualifiedPlace());
         self::assertTrue($losersPoule->getPlace(4)->getFromQualifyRule()->isSingle());
-        self::assertNotSame($losersPoule->getPlace(4)->getCompetitor(), null);
+        self::assertNotNull($losersPoule->getPlace(4)->getQualifiedPlace());
     }
 
     public function test2RoundNumbers9MultipleNotFinished()
@@ -210,26 +177,8 @@ class ServiceTest extends \PHPUnit\Framework\TestCase
         $this->createGames($structure);
 
         $pouleOne = $rootRound->getPoule(1);
-
-        for ($nr = 1; $nr <= $pouleOne->getPlaces()->count(); $nr++) {
-            $competitor = new Competitor($competition->getLeague()->getAssociation(), '0' . $nr);
-            $pouleOne->getPlace($nr)->setCompetitor($competitor);
-        }
-
         $pouleTwo = $rootRound->getPoule(2);
-        for ($nr = 1; $nr <= $pouleTwo->getPlaces()->count(); $nr++) {
-            $name = $pouleOne->getPlaces()->count() + $nr;
-            $competitor = new Competitor($competition->getLeague()->getAssociation(), '0' . $name);
-            $pouleTwo->getPlace($nr)->setCompetitor($competitor);
-        }
-
-
         $pouleThree = $rootRound->getPoule(3);
-        for ($nr = 1; $nr <= $pouleThree->getPlaces()->count(); $nr++) {
-            $name = $pouleOne->getPlaces()->count() + $pouleTwo->getPlaces()->count() + $nr;
-            $competitor = new Competitor($competition->getLeague()->getAssociation(), '0' . $name);
-            $pouleThree->getPlace($nr)->setCompetitor($competitor);
-        }
 
         $this->setScoreSingle($pouleOne, 1, 2, 1, 2);
         $this->setScoreSingle($pouleOne, 1, 3, 1, 3);
@@ -246,7 +195,7 @@ class ServiceTest extends \PHPUnit\Framework\TestCase
 
         $winnersPoule = $rootRound->getChild(QualifyGroup::WINNERS, 1)->getPoule(1);
 
-        self::assertSame($winnersPoule->getPlace(4)->getCompetitor(), null);
+        self::assertNull($winnersPoule->getPlace(4)->getQualifiedPlace() );
     }
 
     /**
@@ -266,16 +215,7 @@ class ServiceTest extends \PHPUnit\Framework\TestCase
         $this->createGames($structure);
 
         $pouleOne = $rootRound->getPoule(1);
-
-        for ($nr = 1; $nr <= $pouleOne->getPlaces()->count(); $nr++) {
-            $competitor = new Competitor($competition->getLeague()->getAssociation(), $pouleOne->getNumber() . '.' . $nr);
-            $pouleOne->getPlace($nr)->setCompetitor($competitor);
-        }
         $pouleTwo = $rootRound->getPoule(2);
-        for ($nr = 1; $nr <= $pouleTwo->getPlaces()->count(); $nr++) {
-            $competitor = new Competitor($competition->getLeague()->getAssociation(), $pouleTwo->getNumber() . '.' . $nr);
-            $pouleTwo->getPlace($nr)->setCompetitor($competitor);
-        }
 
         $this->setScoreSingle($pouleOne, 1, 2, 1, 0);
         $this->setScoreSingle($pouleOne, 3, 1, 0, 1);
@@ -289,12 +229,12 @@ class ServiceTest extends \PHPUnit\Framework\TestCase
 
         $winnersPoule = $rootRound->getChild(QualifyGroup::WINNERS, 1)->getPoule(1);
 
-        self::assertNotSame($winnersPoule->getPlace(3)->getCompetitor(), null);
-        self::assertSame('1.2', $winnersPoule->getPlace(3)->getCompetitor()->getName());
+        self::assertNotNull($winnersPoule->getPlace(3)->getQualifiedPlace());
+        self::assertSame($pouleOne->getPlace(2), $winnersPoule->getPlace(3)->getQualifiedPlace());
 
         $loserssPoule = $rootRound->getChild(QualifyGroup::LOSERS, 1)->getPoule(1);
-        self::assertNotSame($loserssPoule->getPlace(1)->getCompetitor(), null);
-        self::assertSame('2.2', $loserssPoule->getPlace(1)->getCompetitor()->getName());
+        self::assertNotNull($loserssPoule->getPlace(1)->getQualifiedPlace() );
+        self::assertSame($pouleTwo->getPlace(2), $loserssPoule->getPlace(1)->getQualifiedPlace());
     }
 
 }

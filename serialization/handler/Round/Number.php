@@ -15,7 +15,6 @@ use JMS\Serializer\Metadata\StaticPropertyMetadata;
 use JMS\Serializer\JsonDeserializationVisitor;
 use JMS\Serializer\Context;
 use Sports\Round\Number as RoundNumber;
-use Sports\Sport\PlanningConfig as SportPlanningConfig;
 use Sports\Sport\ScoreConfig as SportScoreConfig;
 use Sports\Sport;
 
@@ -49,7 +48,7 @@ class Number implements SubscribingHandlerInterface
      * lijkt me wel makkelijker
      *
      * @param JsonDeserializationVisitor $visitor
-     * @param $arrRoundNumber
+     * @param array $arrRoundNumber
      * @param array $type
      * @param Context $context
      * @return RoundNumber

@@ -8,12 +8,12 @@
 
 namespace Sports\TestHelper;
 
-use Sports\Planning\Batch;
-use Sports\Planning\Place as PlanningPlace;
-use Sports\Planning\Game as PlanningGame;
-use Sports\Planning\Field as PlanningField;
-use Sports\Planning\Referee as PlanningReferee;
-use Sports\Planning\Resource\RefereePlace\Replacer as RefereePlaceReplacer;
+use SportsPlanning\Batch;
+use SportsPlanning\Place as PlanningPlace;
+use SportsPlanning\Game as PlanningGame;
+use SportsPlanning\Field as PlanningField;
+use SportsPlanning\Referee as PlanningReferee;
+use SportsPlanning\Resource\RefereePlace\Replacer as RefereePlaceReplacer;
 
 trait PlanningReplacer
 {

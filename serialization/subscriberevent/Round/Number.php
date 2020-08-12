@@ -1,21 +1,11 @@
 <?php
 
-
 namespace Sports\SerializationSubscriberEvent\Round;
 
-use JMS\Serializer\Handler\SubscribingHandlerInterface;
-use JMS\Serializer\GraphNavigatorInterface;
-use JMS\Serializer\Metadata\StaticPropertyMetadata;
-use JMS\Serializer\JsonDeserializationVisitor;
-use JMS\Serializer\Context;
+use JMS\Serializer\EventDispatcher\EventSubscriberInterface;
+use JMS\Serializer\EventDispatcher\PreSerializeEvent;
 
-use Sports\Round as RoundBase;
-use Sports\Poule;
-use Sports\Place;
-use Sports\Competitor;
-use Sports\Qualify\Group as QualifyGroup;
-
-class Number implements JMS\Serializer\EventDispatcher\EventSubscriberInterface
+class Number implements EventSubscriberInterface
 {
     public static function getSubscribedEvents()
     {
@@ -30,7 +20,7 @@ class Number implements JMS\Serializer\EventDispatcher\EventSubscriberInterface
         );
     }
 
-    public function onPreSerialize(JMS\Serializer\EventDispatcher\PreSerializeEvent $event)
+    public function onPreSerialize(PreSerializeEvent $event)
     {
         // do something
         $x = $event;

@@ -9,12 +9,14 @@
 namespace Sports\TestHelper;
 
 use League\Period\Period;
-use Sports\Planning\Resource\RefereePlace\Service as RefereePlaceService;
+use Sports\Round\Number\PlanningAssigner;
+use Sports\Round\Number\PlanningScheduler;
+use SportsPlanning\Resource\RefereePlace\Service as RefereePlaceService;
 use Sports\Structure;
-use Sports\Planning;
+use SportsPlanning\Planning;
 use Sports\Round\Number as RoundNumber;
-use Sports\Planning\Input\Service as PlanningInputService;
-use Sports\Planning\Service as PlanningService;
+use Sports\Planning\Input\PlanningInputCreator;
+use SportsPlanning\Service as PlanningService;
 
 trait GamesCreator {
 
@@ -27,9 +29,9 @@ trait GamesCreator {
     private function createGamesHelper(RoundNumber $roundNumber, Period $blockedPeriod = null)
     {
         // make trait to do job below!!
-        $planningInputService = new PlanningInputService();
+        $planningInputCreator = new PlanningInputCreator();
         $nrOfReferees = $roundNumber->getCompetition()->getReferees()->count();
-        $planningInput = $planningInputService->get($roundNumber, $nrOfReferees);
+        $planningInput = $planningInputCreator->create($roundNumber, $nrOfReferees);
         $planningService = new PlanningService();
         $minIsMaxPlanning = $planningService->createNextMinIsMaxPlanning($planningInput);
         $state = $planningService->createGames($minIsMaxPlanning);
@@ -42,7 +44,7 @@ trait GamesCreator {
             $refereePlaceService->assign($minIsMaxPlanning->createFirstBatch());
         }
 
-        $convertService = new Planning\PlanningAssigner(new Planning\PlanningScheduler($blockedPeriod));
+        $convertService = new PlanningAssigner(new PlanningScheduler($blockedPeriod));
         $convertService->createGames($roundNumber, $minIsMaxPlanning);
 
         if ($roundNumber->hasNext()) {

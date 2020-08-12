@@ -2640,16 +2640,16 @@
         },
         {
             "name": "thepercival/php-sports-helpers",
-            "version": "v1.0.3",
+            "version": "v1.0.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/thepercival/php-sports-helpers.git",
-                "reference": "cf83ad6830ca4470e968c4464a4889e178170998"
+                "reference": "caae02f0064104afde7b63c303c6c978553ea32d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/thepercival/php-sports-helpers/zipball/cf83ad6830ca4470e968c4464a4889e178170998",
-                "reference": "cf83ad6830ca4470e968c4464a4889e178170998",
+                "url": "https://api.github.com/repos/thepercival/php-sports-helpers/zipball/caae02f0064104afde7b63c303c6c978553ea32d",
+                "reference": "caae02f0064104afde7b63c303c6c978553ea32d",
                 "shasum": ""
             },
             "require": {
@@ -2695,20 +2695,20 @@
                 "helpers",
                 "sport"
             ],
-            "time": "2020-08-11T10:58:08+00:00"
+            "time": "2020-08-12T09:45:16+00:00"
         },
         {
             "name": "thepercival/php-sports-planning",
-            "version": "v1.0.1",
+            "version": "v1.0.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/thepercival/php-sports-planning.git",
-                "reference": "7abf8b348afa69031826e2b5d0b9e6565837cc4f"
+                "reference": "f8860bdd28dd9335e2c10c996926cf0480c28659"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/thepercival/php-sports-planning/zipball/7abf8b348afa69031826e2b5d0b9e6565837cc4f",
-                "reference": "7abf8b348afa69031826e2b5d0b9e6565837cc4f",
+                "url": "https://api.github.com/repos/thepercival/php-sports-planning/zipball/f8860bdd28dd9335e2c10c996926cf0480c28659",
+                "reference": "f8860bdd28dd9335e2c10c996926cf0480c28659",
                 "shasum": ""
             },
             "require": {
@@ -2756,7 +2756,7 @@
                 "planning",
                 "sport"
             ],
-            "time": "2020-08-11T12:07:51+00:00"
+            "time": "2020-08-12T09:46:25+00:00"
         },
         {
             "name": "vlucas/phpdotenv",

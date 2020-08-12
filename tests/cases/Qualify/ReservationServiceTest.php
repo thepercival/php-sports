@@ -36,11 +36,6 @@ class ReservationServiceTest extends \PHPUnit\Framework\TestCase
 
         $pouleOne = $rootRound->getPoule(1);
 
-        for ($nr = 1; $nr <= $pouleOne->getPlaces()->count() ; $nr++) {
-            $competitor = new Competitor($competition->getLeague()->getAssociation(), '0' . $nr);
-            $pouleOne->getPlace($nr)->setCompetitor($competitor);
-        }
-
         $this->setScoreSingle($pouleOne, 1, 2, 2, 1);
         $this->setScoreSingle($pouleOne, 1, 3, 3, 1);
         $this->setScoreSingle($pouleOne, 1, 4, 4, 1);
@@ -79,31 +74,9 @@ class ReservationServiceTest extends \PHPUnit\Framework\TestCase
         $this->createGames( $structure );
 
         $pouleOne = $rootRound->getPoule(1);
-        for ($nr = 1; $nr <= $pouleOne->getPlaces()->count() ; $nr++) {
-            $competitor = new Competitor($competition->getLeague()->getAssociation(), '0' . $nr);
-            $pouleOne->getPlace($nr)->setCompetitor($competitor);
-        }
-
         $pouleTwo = $rootRound->getPoule(2);
-        for ($nr = 1; $nr <= $pouleTwo->getPlaces()->count() ; $nr++) {
-            $name = $pouleOne->getPlaces()->count() + $nr;
-            $competitor = new Competitor($competition->getLeague()->getAssociation(), '0' . $name);
-            $pouleTwo->getPlace($nr)->setCompetitor($competitor);
-        }
-
         $pouleThree = $rootRound->getPoule(3);
-        for ($nr = 1; $nr <= $pouleThree->getPlaces()->count() ; $nr++) {
-            $name = $pouleOne->getPlaces()->count() + $pouleTwo->getPlaces()->count() + $nr;
-            $competitor = new Competitor($competition->getLeague()->getAssociation(), '0' . $name);
-            $pouleThree->getPlace($nr)->setCompetitor($competitor);
-        }
-
         $pouleFour = $rootRound->getPoule(4);
-        for ($nr = 1; $nr <= $pouleFour->getPlaces()->count() ; $nr++) {
-            $name = $pouleOne->getPlaces()->count() + $pouleTwo->getPlaces()->count() + $pouleThree->getPlaces()->count() + $nr;
-            $competitor = new Competitor($competition->getLeague()->getAssociation(), '0' . $name);
-            $pouleFour->getPlace($nr)->setCompetitor($competitor);
-        }
 
         $this->setScoreSingle($pouleOne, 1, 2, 1, 2);
         $this->setScoreSingle($pouleOne, 1, 3, 1, 3);
@@ -167,24 +140,8 @@ class ReservationServiceTest extends \PHPUnit\Framework\TestCase
         $this->createGames( $structure );
 
         $pouleOne = $rootRound->getPoule(1);
-        for ($nr = 1; $nr <= $pouleOne->getPlaces()->count() ; $nr++) {
-            $competitor = new Competitor($competition->getLeague()->getAssociation(), '0' . $nr);
-            $pouleOne->getPlace($nr)->setCompetitor($competitor);
-        }
-
         $pouleTwo = $rootRound->getPoule(2);
-        for ($nr = 1; $nr <= $pouleTwo->getPlaces()->count() ; $nr++) {
-            $name = $pouleOne->getPlaces()->count() + $nr;
-            $competitor = new Competitor($competition->getLeague()->getAssociation(), '0' . $name);
-            $pouleTwo->getPlace($nr)->setCompetitor($competitor);
-        }
-
         $pouleThree = $rootRound->getPoule(3);
-        for ($nr = 1; $nr <= $pouleThree->getPlaces()->count() ; $nr++) {
-            $name = $pouleOne->getPlaces()->count() + $pouleTwo->getPlaces()->count() + $nr;
-            $competitor = new Competitor($competition->getLeague()->getAssociation(), '0' . $name);
-            $pouleThree->getPlace($nr)->setCompetitor($competitor);
-        }
 
         $this->setScoreSingle($pouleOne, 1, 2, 1, 2);
         $this->setScoreSingle($pouleOne, 1, 3, 1, 3);
@@ -201,6 +158,6 @@ class ReservationServiceTest extends \PHPUnit\Framework\TestCase
 
         $winnersPoule = $rootRound->getChild(QualifyGroup::WINNERS, 1)->getPoule(1);
 
-        self::assertSame($winnersPoule->getPlace(4)->getCompetitor(), null);
+        self::assertNull($winnersPoule->getPlace(4)->getQualifiedPlace() );
     }
 }

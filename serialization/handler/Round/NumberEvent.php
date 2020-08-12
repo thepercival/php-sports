@@ -3,16 +3,12 @@
 
 namespace Sports\SerializationHandler\Round;
 
-use JMS\Serializer\Handler\SubscribingHandlerInterface;
-use JMS\Serializer\GraphNavigatorInterface;
-use JMS\Serializer\Metadata\StaticPropertyMetadata;
-use JMS\Serializer\JsonDeserializationVisitor;
-use JMS\Serializer\Context;
-
+use JMS\Serializer\EventDispatcher\EventSubscriberInterface;
+use JMS\Serializer\EventDispatcher\PreSerializeEvent;
 use Sports\Round\Number as RoundNumber;
 use Sports\Sport\ScoreConfig as SportScoreConfig;
 
-class NumberEvent implements \JMS\Serializer\EventDispatcher\EventSubscriberInterface
+class NumberEvent implements EventSubscriberInterface
 {
     public static function getSubscribedEvents()
     {
@@ -27,13 +23,13 @@ class NumberEvent implements \JMS\Serializer\EventDispatcher\EventSubscriberInte
         );
     }
 
-    public function onPreSerialize(\JMS\Serializer\EventDispatcher\PreSerializeEvent $event)
+    public function onPreSerialize( PreSerializeEvent $event)
     {
         /** @var RoundNumber $roundNumber */
         $roundNumber = $event->getObject();
 
         $roundNumber->setSportScoreConfigs(
-            $roundNumber->getSportScoreConfigs()->filter(function (SportScoreConfig $config) {
+            $roundNumber->getSportScoreConfigs()->filter(function (SportScoreConfig $config): bool {
                 return $config->isFirst();
             })
         );

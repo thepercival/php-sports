@@ -35,11 +35,6 @@ class ServiceTest extends \PHPUnit\Framework\TestCase
 
         $pouleOne = $rootRound->getPoule(1);
 
-        for ($nr = 1; $nr <= $pouleOne->getPlaces()->count(); $nr++) {
-            $competitor = new Competitor($competition->getLeague()->getAssociation(), '0' . $nr);
-            $pouleOne->getPlace($nr)->setCompetitor($competitor);
-        }
-
         $this->setScoreSingle($pouleOne, 1, 2, 2, 1);
         $this->setScoreSingle($pouleOne, 1, 3, 3, 1);
         $this->setScoreSingle($pouleOne, 2, 3, 3, 2);
@@ -48,36 +43,9 @@ class ServiceTest extends \PHPUnit\Framework\TestCase
         $items = $endRankingService->getItems();
 
         for ($rank = 1; $rank <= count($items); $rank++) {
-            self::assertSame($items[$rank - 1]->getName(), '0' . $rank);
+            self::assertSame($items[$rank - 1]->getPlaceLocation()->getPlaceNr(), $rank);
             self::assertSame($items[$rank - 1]->getUniqueRank(), $rank);
         }
-    }
-
-    public function testOnePouleOfThreePlacesWithNoCompetitor()
-    {
-        $competition = $this->createCompetition();
-
-        $structureService = new StructureService([]);
-        $structure = $structureService->create($competition, 3);
-        $rootRound = $structure->getRootRound();
-
-        $this->createGames($structure);
-
-        $pouleOne = $rootRound->getPoule(1);
-
-        $competitor1 = new Competitor($competition->getLeague()->getAssociation(), '01');
-        $competitor2 = new Competitor($competition->getLeague()->getAssociation(), '02');
-        $pouleOne->getPlace(1)->setCompetitor($competitor1);
-        $pouleOne->getPlace(2)->setCompetitor($competitor2);
-
-        $this->setScoreSingle($pouleOne, 1, 2, 2, 1);
-        $this->setScoreSingle($pouleOne, 1, 3, 3, 1);
-        $this->setScoreSingle($pouleOne, 2, 3, 3, 2);
-
-        $endRankingService = new EndRankingService($structure, RankingService::RULESSET_WC);
-        $items = $endRankingService->getItems();
-
-        self::assertSame($items[2]->getName(), 'onbekend');
     }
 
     public function testOnePouleOfThreePlacesNotPlayed()
@@ -92,10 +60,6 @@ class ServiceTest extends \PHPUnit\Framework\TestCase
 
         $pouleOne = $rootRound->getPoule(1);
 
-        for ($nr = 1; $nr <= $pouleOne->getPlaces()->count(); $nr++) {
-            $competitor = new Competitor($competition->getLeague()->getAssociation(), '0' . $nr);
-            $pouleOne->getPlace($nr)->setCompetitor($competitor);
-        }
         $this->setScoreSingle($pouleOne, 1, 2, 2, 1);
         $this->setScoreSingle($pouleOne, 1, 3, 3, 1);
         // $this->setScoreSingle($pouleOne, 2, 3, 3, 2);
@@ -104,7 +68,7 @@ class ServiceTest extends \PHPUnit\Framework\TestCase
         $items = $endRankingService->getItems();
 
         for ($rank = 1; $rank <= count($items); $rank++) {
-            self::assertSame($items[$rank - 1]->getName(), 'nog onbekend');
+            self::assertNull($items[$rank - 1]->getPlaceLocation() );
         }
     }
 
@@ -122,11 +86,6 @@ class ServiceTest extends \PHPUnit\Framework\TestCase
         $this->createGames($structure);
 
         $pouleOne = $rootRound->getPoule(1);
-
-        for ($nr = 1; $nr <= $pouleOne->getPlaces()->count(); $nr++) {
-            $competitor = new Competitor($competition->getLeague()->getAssociation(), '0' . $nr);
-            $pouleOne->getPlace($nr)->setCompetitor($competitor);
-        }
 
         $this->setScoreSingle($pouleOne, 1, 2, 2, 1);
         $this->setScoreSingle($pouleOne, 1, 3, 3, 1);
@@ -151,7 +110,7 @@ class ServiceTest extends \PHPUnit\Framework\TestCase
         $items = $endRankingService->getItems();
 
         for ($rank = 1; $rank <= count($items); $rank++) {
-            self::assertSame($items[$rank - 1]->getName(), '0' . $rank);
+            self::assertSame($items[$rank - 1]->getPlaceLocation()->getPlaceNr(), $rank);
         }
     }
 }

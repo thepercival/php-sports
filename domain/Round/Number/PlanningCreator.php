@@ -3,7 +3,7 @@
 namespace Sports\Round\Number;
 
 use Sports\Round\Number\PlanningAssigner;
-use Sports\Planning\Input\Service as PlanningInputService;
+use Sports\Planning\Input\PlanningInputCreator as PlanningInputService;
 use SportsPlanning\Service as PlanningService;
 use SportsPlanning\Repository as PlanningRepository;
 use SportsPlanning\Input\Repository as PlanningInputRepository;
@@ -87,7 +87,7 @@ class PlanningCreator
         } else {
             $inputService = new PlanningInputService();
             $nrOfReferees = $roundNumber->getCompetition()->getReferees()->count();
-            $defaultPlanningInput = $inputService->get($roundNumber, $nrOfReferees);
+            $defaultPlanningInput = $inputService->create($roundNumber, $nrOfReferees);
             $planningInput = $this->inputRepos->getFromInput($defaultPlanningInput);
             if ($planningInput === null) {
                 $this->inputRepos->save($defaultPlanningInput);
