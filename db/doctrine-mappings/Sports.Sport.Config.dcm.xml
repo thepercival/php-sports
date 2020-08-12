@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+  <entity name="Sports\Sport\Config" table="sportconfigs" repository-class="Sports\Sport\Config\Repository">
+    <id name="id" type="integer" column="id">
+      <generator strategy="AUTO"/>
+    </id>
+    <field name="winPoints" column="winPoints" type="decimal" precision="3" scale="1" nullable="false" unique="false"/>
+    <field name="drawPoints" column="drawPoints" type="decimal" precision="3" scale="1" nullable="false" unique="false"/>
+    <field name="winPointsExt" column="winPointsExt" type="decimal" precision="3" scale="1" nullable="false" unique="false"/>
+    <field name="drawPointsExt" column="drawPointsExt" type="decimal" precision="3" scale="1" nullable="false" unique="false"/>
+    <field name="losePointsExt" column="losePointsExt" type="decimal" precision="3" scale="1" nullable="false" unique="false"/>
+    <field name="pointsCalculation" column="pointsCalculation" type="smallint" nullable="false" unique="false"/>
+    <field name="nrOfGamePlaces" column="nrOfGamePlaces" type="smallint" nullable="false" unique="false"/>
+      <many-to-one field="competition" target-entity="Sports\Competition" inversed-by="sportConfigs">
+          <join-columns>
+              <join-column name="competitionid" referenced-column-name="id" nullable="true" on-delete="CASCADE"/>
+          </join-columns>
+      </many-to-one>
+      <many-to-one field="sport" target-entity="Sports\Sport">
+          <join-columns>
+              <join-column name="sportid" referenced-column-name="id" nullable="true" on-delete="CASCADE"/>
+          </join-columns>
+      </many-to-one>
+      <one-to-many field="fields" target-entity="Sports\Field" mapped-by="sportConfig" fetch="EXTRA_LAZY">
+          <cascade>
+              <cascade-remove/>
+          </cascade>
+          <order-by>
+              <order-by-field name="priority" direction="ASC"/>
+          </order-by>
+      </one-to-many>
+  </entity>
+</doctrine-mapping>

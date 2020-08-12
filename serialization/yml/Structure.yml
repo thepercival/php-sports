@@ -1,0 +1,10 @@
+Sports\Structure:
+  exclusion_policy: ALL
+  exclude: false
+  access_type: property
+
+  properties:
+    rootRound:
+      type: Sports\Round
+    firstRoundNumber:
+      type: Sports\Round\Number

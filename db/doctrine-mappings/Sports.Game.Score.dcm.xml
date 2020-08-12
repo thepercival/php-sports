@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+  <entity name="Sports\Game\Score" table="gamescores" repository-class="Sports\Game\Score\Repository">
+    <id name="id" type="integer" column="id">
+      <generator strategy="AUTO"/>
+    </id>
+    <field name="home" column="home" type="smallint" nullable="false" unique="false"/>
+    <field name="away" column="away" type="smallint" nullable="false" unique="false"/>
+    <field name="phase" column="phase" type="smallint" nullable="true" unique="false"/>
+    <field name="number" column="number" type="smallint" nullable="false" unique="false"/>
+    <many-to-one field="game" target-entity="Sports\Game" inversed-by="scores">
+      <join-columns>
+        <join-column name="gameid" referenced-column-name="id" nullable="false" on-delete="CASCADE"/>
+      </join-columns>
+    </many-to-one>
+    <unique-constraints>
+      <unique-constraint columns="gameid,number" name="number_v_idx" />
+    </unique-constraints>
+  </entity>
+</doctrine-mapping>

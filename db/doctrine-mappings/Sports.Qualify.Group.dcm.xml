@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+  <entity name="Sports\Qualify\Group" table="qualifygroups" repository-class="Sports\Qualify\Group\Repository">
+    <id name="id" type="integer" column="id">
+      <generator strategy="AUTO"/>
+    </id>
+    <field name="winnersOrLosers" column="winnersOrLosers" type="smallint" nullable="false" unique="false"/>
+    <field name="number" column="number" type="smallint" nullable="false" unique="false"/>
+    <one-to-one field="childRound" target-entity="Sports\Round" mapped-by="parentQualifyGroup">
+      <cascade>
+        <cascade-persist/>
+        <cascade-remove/>
+      </cascade>
+      <join-columns>
+        <join-column name="childRoundId" referenced-column-name="id" nullable="true" on-delete="CASCADE"/>
+      </join-columns>
+    </one-to-one>
+    <many-to-one field="round" target-entity="Sports\Round" inversed-by="qualifyGroups">
+      <join-columns>
+        <join-column name="roundId" referenced-column-name="id" nullable="false" on-delete="CASCADE"/>
+      </join-columns>
+    </many-to-one>
+    <unique-constraints>
+      <unique-constraint columns="roundId,winnersOrLosers,number" name="number_u_idx" />
+    </unique-constraints>
+  </entity>
+</doctrine-mapping>

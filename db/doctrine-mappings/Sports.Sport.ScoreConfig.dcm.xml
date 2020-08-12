@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+  <entity name="Sports\Sport\ScoreConfig" table="sportscoreconfigs" repository-class="Sports\Sport\ScoreConfig\Repository">
+    <id name="id" type="integer" column="id">
+      <generator strategy="AUTO"/>
+    </id>
+    <field name="direction" column="direction" type="smallint" nullable="false" unique="false"/>
+    <field name="maximum" column="maximum" type="smallint" nullable="false" unique="false"/>
+    <field name="enabled" column="enabled" type="boolean" nullable="true" unique="false"/>
+    <one-to-one field="previous" target-entity="Sports\Sport\ScoreConfig" inversed-by="next">
+      <join-columns>
+        <join-column name="parentid" referenced-column-name="id" nullable="true" on-delete="CASCADE"/>
+      </join-columns>
+    </one-to-one>
+    <one-to-one field="next" target-entity="Sports\Sport\ScoreConfig" mapped-by="previous">
+      <cascade>
+        <cascade-persist/>
+        <cascade-remove/>
+      </cascade>
+    </one-to-one>
+    <many-to-one field="roundNumber" target-entity="Sports\Round\Number" inversed-by="sportScoreConfigs">
+      <join-columns>
+        <join-column name="roundnumberid" referenced-column-name="id" nullable="true" on-delete="CASCADE"/>
+      </join-columns>
+    </many-to-one>
+    <many-to-one field="sport" target-entity="Sports\Sport">
+      <join-columns>
+        <join-column name="sportid" referenced-column-name="id" nullable="true" on-delete="CASCADE"/>
+      </join-columns>
+    </many-to-one>
+    <unique-constraints>
+      <unique-constraint columns="roundnumberid,sportid,parentid" name="number_u1_idx" />
+    </unique-constraints>
+  </entity>
+</doctrine-mapping>

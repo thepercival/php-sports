@@ -1,0 +1,25 @@
+Sports\Planning\Config:
+  exclusion_policy: ALL
+  exclude: false
+  access_type: public_method
+  properties:
+    id:
+      type: integer
+    extension:
+      type: boolean
+    enableTime:
+      type: boolean
+    minutesPerGame:
+      type: integer
+    minutesPerGameExt:
+      type: integer
+    minutesAfter:
+      type: integer
+    minutesBetweenGames:
+      type: integer
+    teamup:
+      type: boolean
+    selfReferee:
+      type: integer
+    nrOfHeadtohead:
+      type: integer

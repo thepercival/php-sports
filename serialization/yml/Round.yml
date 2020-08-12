@@ -1,0 +1,13 @@
+Sports\Round:
+  exclusion_policy: ALL
+  exclude: false
+  access_type: public_method
+
+  properties:
+    id:
+      type: integer
+    poules:
+      type: ArrayCollection<Sports\Poule>
+    qualifyGroups:
+      access_type: property
+      type: ArrayCollection<Sports\Qualify\Group>

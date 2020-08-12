@@ -1,0 +1,73 @@
+{
+  "name": "thepercival/php-sports",
+  "description": "library  for sports competitions and more",
+  "keywords": ["voetbal","football"],
+  "homepage": "https://github.com/thepercival/php-sports",
+  "license": "GPL-2.0-or-later",
+  "authors": [
+    {
+      "name": "Coen Dunnink",
+      "email": "coendunnink@gmail.com"
+    }
+  ],
+  "support": {
+	"email": "coendunnink@gmail.com"
+  },
+  "require": {
+    "php": ">=7.4",
+    "vlucas/phpdotenv": "^4.1",
+    "league/period": "^4.9",
+    "doctrine/orm": "^2.7",
+    "jms/serializer": "^3.4",
+    "symfony/yaml": "^5.0",
+    "monolog/monolog": "^2.0",
+    "guzzlehttp/guzzle": "^6.5",
+    "thepercival/php-sports-helpers": "^1.0",
+    "thepercival/php-sports-planning": "^1.0"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^8.2",
+    "phpstan/phpstan": "^0.12",
+    "phpstan/phpstan-doctrine": "^0.12",
+    "phpstan/extension-installer": "^1.0",
+    "phpstan/phpstan-phpunit": "^0.12.8",
+    "friendsofphp/php-cs-fixer": "^2.16",
+    "phpstan/phpstan-strict-rules": "^0.12.2"
+  },
+  "autoload": {
+    "psr-4": {
+      "Sports\\": "domain/",
+      "Sports\\SerializationHandler\\": "serialization/handler",
+      "Sports\\SerializationSubscriberEvent\\": "serialization/subscriberevent"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Sports\\Tests\\": "tests/cases",
+      "Sports\\TestHelper\\": "tests/helpers"
+    },
+    "psr-0": {
+      "": "tests/"
+    }
+  },
+  "scripts": {
+    "start": "php -S localhost:2990 -t public/",
+    "test": [
+      "vendor/bin/phpunit --configuration tests/phpunit.xml tests/cases/"
+    ],
+    "stan": "vendor/bin/phpstan analyse --level=5 domain tests/cases/ tests/helpers/",
+    "cs-fix": "php-cs-fixer fix .",
+    "copy-fct": [
+      "rm -rf ../fctoernooi-api/vendor/thepercival/php-sports",
+      "mkdir ../fctoernooi-api/vendor/thepercival/php-sports",
+      "cp . ../fctoernooi-api/vendor/thepercival/php-sports -R"
+    ]
+  },
+  "extra": {
+    "phpstan": {
+      "includes": [
+        "extension.neon"
+      ]
+    }
+  }
+}

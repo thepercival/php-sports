@@ -1,0 +1,13 @@
+Sports\Association:
+  exclusion_policy: ALL
+  exclude: false
+  access_type: public_method
+  properties:
+    id:
+      read_only: true
+    name:
+      type: string
+    description:
+      type: string
+    parent:
+      type: Sports\Association

@@ -1,0 +1,25 @@
+Sports\Game:
+  exclusion_policy: ALL
+  exclude: false
+  access_type: public_method
+
+  properties:
+    id:
+      type: integer
+    fieldPriority:
+      type: integer
+    refereePriority:
+      type: integer
+    refereePlaceLocId:
+      type: string
+    batchNr:
+      type: integer
+      access_type: property # ??
+    state:
+      type: integer
+    startDateTime:
+      type: DateTimeImmutable<'Y-m-d\TH:i:s.u\Z'>
+    places:
+      type: ArrayCollection<Sports\Game\Place>
+    scores:
+      type: ArrayCollection<Sports\Game\Score>

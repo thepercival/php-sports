@@ -1,0 +1,18 @@
+Sports\Competitor:
+  exclusion_policy: ALL
+  exclude: false
+  access_type: public_method
+
+  properties:
+    id:
+      read_only: true
+    name:
+      type: string
+    abbreviation:
+      type: string
+    registered:
+      type: boolean
+    info:
+      type: string
+    imageUrl:
+      type: string

@@ -1,0 +1,52 @@
+{
+  "league": {
+    "name": "my league",
+    "association": {
+      "name": "knvb"
+    }
+  },
+  "season": {
+    "name": "123",
+    "startDateTime": "2018-12-17T11:33:15.710Z",
+    "endDateTime": "2018-12-17T11:33:15.710Z"
+  },
+  "sportConfigs": [
+    {
+      "winPoints": 3.0,
+      "drawPoints": 1.0,
+      "winPointsExt": 2.0,
+      "drawPointsExt": 1.0,
+      "losePointsExt": 0.0,
+      "nrOfGamePlaces": 2,
+      "pointsCalculation": 0,
+      "sport": {
+        "name": "voetbal",
+        "team": true,
+        "customId": 11
+      },
+      "fields": [
+        {
+          "priority": 1,
+          "name": "1"
+        },
+        {
+          "priority": 2,
+          "name": "2"
+        }
+      ]
+    }
+  ],
+  "referees": [
+    {
+      "priority": 1,
+      "initials": "111"
+    },
+    {
+      "priority": 2,
+      "initials": "222"
+    }
+  ],
+  "startDateTime": "2030-01-01T12:00:00.000Z",
+  "state": 1,
+  "ruleSet": 1
+}

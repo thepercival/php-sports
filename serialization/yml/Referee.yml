@@ -1,0 +1,22 @@
+Sports\Referee:
+  exclusion_policy: ALL
+  exclude: false
+  access_type: public_method
+
+  properties:
+    id:
+      type: integer
+    priority:
+      type: integer
+    initials:
+      type: string
+    name:
+      type: string
+    emailaddress:
+      type: string
+      groups: [privacy]
+    userId:
+      type: number
+    info:
+      type: string
+

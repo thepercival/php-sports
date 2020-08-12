@@ -1,0 +1,17 @@
+Sports\Game\Score:
+  exclusion_policy: ALL
+  exclude: false
+  access_type: public_method
+
+  properties:
+    id:
+      type: integer
+
+    home:
+      type: integer
+    away:
+      type: integer
+    phase:
+      type: integer
+    number:
+      type: integer

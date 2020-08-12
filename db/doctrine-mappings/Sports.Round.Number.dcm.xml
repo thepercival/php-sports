@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+  <entity name="Sports\Round\Number" table="roundnumbers" repository-class="Sports\Round\Number\Repository">
+    <id name="id" type="integer" column="id">
+      <generator strategy="AUTO"/>
+    </id>
+    <field name="number" column="number" type="smallint" nullable="false" unique="false"/>
+    <field name="hasPlanning" column="hasPlanning" type="boolean" nullable="false" unique="false"/>
+    <one-to-one field="previous" target-entity="Sports\Round\Number">
+      <cascade>
+        <cascade-remove/>
+      </cascade>
+      <join-columns>
+        <join-column name="previousId" referenced-column-name="id" nullable="true" on-delete="CASCADE"/>
+      </join-columns>
+    </one-to-one>
+    <one-to-one field="planningConfig" target-entity="Sports\Planning\Config" fetch="EAGER">
+      <cascade>
+        <cascade-persist/>
+        <cascade-remove/>
+      </cascade>
+      <join-columns>
+        <join-column name="planningConfigId" referenced-column-name="id" nullable="true" on-delete="CASCADE"/>
+      </join-columns>
+    </one-to-one>
+    <many-to-one field="competition" target-entity="Sports\Competition" inversed-by="roundNumbers">
+      <join-columns>
+        <join-column name="competitionId" referenced-column-name="id" nullable="false" on-delete="CASCADE"/>
+      </join-columns>
+    </many-to-one>
+    <one-to-many field="rounds" target-entity="Sports\Round" mapped-by="number">
+      <cascade>
+        <cascade-persist/>
+        <cascade-remove/>
+      </cascade>
+    </one-to-many>
+    <one-to-many field="sportScoreConfigs" target-entity="Sports\Sport\ScoreConfig" mapped-by="roundNumber">
+      <cascade>
+        <cascade-persist/>
+        <cascade-remove/>
+      </cascade>
+    </one-to-many>
+  </entity>
+</doctrine-mapping>

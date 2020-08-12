@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+  <entity name="Sports\Competitor\Team" table="teamcompetitors" repository-class="Sports\Competitor\Team\Repository">
+      <id name="id" type="integer" column="id">
+          <generator strategy="AUTO"/>
+      </id>
+      <field name="placeNr" column="placeNr" type="smallint" nullable="false" unique="false"/>
+      <field name="pouleNr" column="pouleNr" type="smallint" nullable="false" unique="false"/>
+      <field name="registered" column="registered" type="boolean" nullable="false" unique="false"/>
+      <field name="info" column="info" type="string" length="200" nullable="true" unique="false"/>
+      <one-to-one field="team" target-entity="Sports\Team">
+        <cascade>
+          <cascade-persist/>
+          <cascade-remove/>
+        </cascade>
+        <join-columns>
+          <join-column name="teamId" referenced-column-name="id" nullable="false" on-delete="RESTRICT"/>
+        </join-columns>
+      </one-to-one>
+      <many-to-one field="competition" target-entity="Sports\Competition">
+        <cascade>
+          <cascade-persist/>
+        </cascade>
+        <join-columns>
+          <join-column name="competitionId" referenced-column-name="id" nullable="false" on-delete="CASCADE"/>
+        </join-columns>
+      </many-to-one>
+  </entity>
+</doctrine-mapping>

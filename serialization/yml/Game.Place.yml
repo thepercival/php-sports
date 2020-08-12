@@ -1,0 +1,14 @@
+Sports\Game\Place:
+  exclusion_policy: ALL
+  exclude: false
+  access_type: public_method
+
+  properties:
+    id:
+      type: integer
+    homeaway:
+      type: boolean
+  virtual_properties:
+    getPlaceNr:
+      type: integer
+      serialized_name: placeNr

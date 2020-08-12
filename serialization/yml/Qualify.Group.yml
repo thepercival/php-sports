@@ -1,0 +1,14 @@
+Sports\Qualify\Group:
+  exclusion_policy: ALL
+  exclude: false
+  access_type: public_method
+
+  properties:
+    id:
+      type: integer
+    winnersOrLosers:
+      type: integer
+    number:
+      type: integer
+    childRound:
+      type: Sports\Round

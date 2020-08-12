@@ -1,0 +1,30 @@
+Sports\Round\Number:
+  exclusion_policy: ALL
+  exclude: false
+  access_type: public_method
+
+  properties:
+    id:
+      type: integer
+    number:
+      access_type: property
+      type: integer
+    next:
+      # when serializing first call all next because of
+      access_type: property
+      type: Sports\Round\Number
+    planningConfig:
+      type: Sports\Planning\Config
+#    sportScoreConfigs:
+#      type: ArrayCollection<Sports\Sport\ScoreConfig>
+#      read_only: true #temperarily
+#    sportPlanningConfigs:
+#      type: ArrayCollection<Sports\Sport\PlanningConfig>
+#      read_only: true #temperarily
+    hasPlanning:
+      type: boolean
+      read_only: true
+  virtual_properties:
+    getFirstSportScoreConfigs:
+      type: ArrayCollection<Sports\Sport\ScoreConfig>
+      serialized_name: sportScoreConfigs

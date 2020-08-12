@@ -1,0 +1,23 @@
+Sports\Competition:
+  exclusion_policy: ALL
+  exclude: false
+  access_type: public_method
+  custom_accessor_order: [sportConfigs,fields]
+
+  properties:
+    id:
+      read_only: true
+    ruleSet:
+      type: integer
+    state:
+      type: integer
+    league:
+      type: Sports\League
+    season:
+      type: Sports\Season
+    startDateTime:
+      type: DateTimeImmutable<'Y-m-d\TH:i:s.u\Z'>
+    sportConfigs:
+      type: ArrayCollection<Sports\Sport\Config>
+    referees:
+      type: ArrayCollection<Sports\Referee>
