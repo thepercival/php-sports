@@ -1,7 +1,7 @@
 {
   "name": "thepercival/php-sports",
   "description": "library  for sports competitions and more",
-  "keywords": ["voetbal","football"],
+  "keywords": ["sports","football"],
   "homepage": "https://github.com/thepercival/php-sports",
   "license": "GPL-2.0-or-later",
   "authors": [

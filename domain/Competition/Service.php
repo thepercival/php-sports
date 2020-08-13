@@ -2,8 +2,6 @@
 
 namespace Sports\Competition;
 
-use Voetbal;
-use Sports\Competition\Repository as CompetitionRepository;
 use Sports\Competition;
 use Sports\League;
 use Sports\Season;

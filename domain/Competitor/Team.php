@@ -6,8 +6,9 @@ use Sports\Competition;
 use Sports\Competitor as CompetitorInterface;
 use Sports\Place\Location as PlaceLocation;
 use Sports\Team as TeamBase;
+use SportsHelpers\Identifiable;
 
-class Team implements PlaceLocation, CompetitorInterface
+class Team implements PlaceLocation, CompetitorInterface, Identifiable
 {
     /**
      * @var int|string
@@ -35,6 +36,11 @@ class Team implements PlaceLocation, CompetitorInterface
     public function getName(): string
     {
         return $this->team->getName();
+    }
+
+    public function getTeam(): TeamBase
+    {
+        return $this->team;
     }
 
     public function setTeam(TeamBase $team)

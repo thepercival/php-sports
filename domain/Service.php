@@ -3,7 +3,6 @@
 namespace Sports;
 
 use Doctrine\ORM\EntityManager;
-use Sports\Repository as VoetbalRepository;
 
 class Service
 {
