@@ -11,8 +11,7 @@ namespace Sports\TestHelper;
 use SportsPlanning\Planning;
 use SportsPlanning\Resource\RefereePlace\Service as RefereePlaceService;
 use SportsPlanning\Service as PlanningService;
-use Sports\Planning\Input as PlanningInput;
-use Sports\Planning\Input\PlanningInputCreator;
+use Sports\Round\Number\PlanningInputCreator;
 use Sports\Round\Number as RoundNumber;
 
 trait PlanningCreator {

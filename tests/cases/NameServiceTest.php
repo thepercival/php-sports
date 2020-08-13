@@ -8,9 +8,11 @@
 
 namespace Sports\Tests;
 
+use Sports\Place\Location\Map as PlaceLocationMap;
+use Sports\Team;
 use Sports\TestHelper\CompetitionCreator;
 use Sports\NameService;
-use Sports\Competitor;
+use Sports\Competitor\Team as TeamCompetitor;
 use Sports\Referee;
 use Sports\Structure\Service as StructureService;
 use Sports\Planning\Service as PlanningService;
@@ -153,7 +155,6 @@ class NameServiceTest extends \PHPUnit\Framework\TestCase
 
     public function testPlaceName()
     {
-        $nameService = new NameService();
         $competition = $this->createCompetition();
 
         // basics
@@ -163,8 +164,15 @@ class NameServiceTest extends \PHPUnit\Framework\TestCase
             $rootRound = $structure->getRootRound();
 
             $firstPlace = $rootRound->getFirstPlace(QualifyGroup::WINNERS);
-            $competitor = new Competitor($competition->getLeague()->getAssociation(), 'competitor 1');
-            $firstPlace->setCompetitor($competitor);
+            $competitor = new TeamCompetitor(
+                $competition,
+                $firstPlace->getPouleNr(),
+                $firstPlace->getPlaceNr(),
+                new Team( $competition->getLeague()->getAssociation(), 'competitor 1')
+            );
+
+            $placeLocationMap = new PlaceLocationMap( [$competitor] );
+            $nameService = new NameService( $placeLocationMap );
 
             self::assertSame($nameService->getPlaceName($firstPlace, false, false), 'A1');
             self::assertSame($nameService->getPlaceName($firstPlace, true, false), 'competitor 1');
@@ -182,7 +190,6 @@ class NameServiceTest extends \PHPUnit\Framework\TestCase
 
     public function testPlaceFromName()
     {
-        $nameService = new NameService();
         $competition = $this->createCompetition();
 
         // basics
@@ -192,8 +199,15 @@ class NameServiceTest extends \PHPUnit\Framework\TestCase
             $rootRound = $structure->getRootRound();
 
             $firstPlace = $rootRound->getFirstPlace(QualifyGroup::WINNERS);
-            $competitor = new Competitor($competition->getLeague()->getAssociation(), 'competitor 1');
-            $firstPlace->setCompetitor($competitor);
+            $competitor = new TeamCompetitor(
+                $competition,
+                $firstPlace->getPouleNr(),
+                $firstPlace->getPlaceNr(),
+                new Team( $competition->getLeague()->getAssociation(), 'competitor 1')
+            );
+
+            $placeLocationMap = new PlaceLocationMap( [$competitor] );
+            $nameService = new NameService( $placeLocationMap );
 
             $structureService->addQualifiers($rootRound, QualifyGroup::WINNERS, 4);
 
@@ -251,8 +265,15 @@ class NameServiceTest extends \PHPUnit\Framework\TestCase
             $rootRound = $structure->getRootRound();
 
             $firstPlace = $rootRound->getFirstPlace(QualifyGroup::WINNERS);
-            $competitor = new Competitor($competition->getLeague()->getAssociation(), 'competitor 1');
-            $firstPlace->setCompetitor($competitor);
+            $competitor = new TeamCompetitor(
+                $competition,
+                $firstPlace->getPouleNr(),
+                $firstPlace->getPlaceNr(),
+                new Team( $competition->getLeague()->getAssociation(), 'competitor 1')
+            );
+
+            $placeLocationMap = new PlaceLocationMap( [$competitor] );
+            $nameService = new NameService( $placeLocationMap );
 
             $this->createGames($structure);
 
@@ -328,8 +349,15 @@ class NameServiceTest extends \PHPUnit\Framework\TestCase
             $rootRound = $structure->getRootRound();
 
             $firstPlace = $rootRound->getFirstPlace(QualifyGroup::WINNERS);
-            $competitor = new Competitor($competition->getLeague()->getAssociation(), 'competitor 1');
-            $firstPlace->setCompetitor($competitor);
+            $competitor = new TeamCompetitor(
+                $competition,
+                $firstPlace->getPouleNr(),
+                $firstPlace->getPlaceNr(),
+                new Team( $competition->getLeague()->getAssociation(), 'competitor 1')
+            );
+
+            $placeLocationMap = new PlaceLocationMap( [$competitor] );
+            $nameService = new NameService( $placeLocationMap );
 
             $this->createGames($structure);
 

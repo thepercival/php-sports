@@ -30,10 +30,12 @@ class Team implements PlaceLocation, CompetitorInterface
 
     use Base;
 
-    public function __construct(Competition $competition, TeamBase $team)
+    public function __construct(Competition $competition, int $pouleNr, int $placeNr, TeamBase $team)
     {
         $this->setTeam($team);
         $this->setCompetition($competition);
+        $this->setPouleNr( $pouleNr );
+        $this->setPlaceNr( $placeNr );
     }
 
     public function getName(): string

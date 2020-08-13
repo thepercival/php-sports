@@ -6,10 +6,7 @@ trait Base
 {
     protected $max_length_info = 200;
 
-    /**
-     * @var bool
-     */
-    protected $registered;
+    protected bool $registered = false;
     /**
      * @var string|null
      */

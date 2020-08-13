@@ -15,7 +15,7 @@ use SportsPlanning\Resource\RefereePlace\Service as RefereePlaceService;
 use Sports\Structure;
 use SportsPlanning\Planning;
 use Sports\Round\Number as RoundNumber;
-use Sports\Planning\Input\PlanningInputCreator;
+use Sports\Round\Number\PlanningInputCreator;
 use SportsPlanning\Service as PlanningService;
 
 trait GamesCreator {

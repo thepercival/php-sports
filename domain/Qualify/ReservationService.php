@@ -46,6 +46,12 @@ class ReservationService
         return array_shift($filtered);
     }
 
+    /**
+     * @param int $toPouleNumber
+     * @param Round $fromRound
+     * @param array|PlaceLocation[] $fromPlaceLocations
+     * @return PlaceLocation
+     */
     public function getFreeAndLeastAvailabe(int $toPouleNumber, Round $fromRound, array $fromPlaceLocations): PlaceLocation
     {
         $retPlaceLocation = null;

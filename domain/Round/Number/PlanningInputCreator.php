@@ -1,12 +1,6 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: coen
- * Date: 24-10-17
- * Time: 9:44
- */
 
-namespace Sports\Planning\Input;
+namespace Sports\Round\Number;
 
 use SportsPlanning\HelperTmp;
 use SportsPlanning\Input as PlanningInput;
@@ -14,9 +8,8 @@ use Sports\Round\Number as RoundNumber;
 use Sports\Planning\Config\Service as PlanningConfigService;
 use SportsPlanning\Sport\NrFields as SportNrFields;
 use Sports\Sport\Service as SportService;
-use Sports\Sport\Config\Service as SportConfigService;
-use Sports\Sport\Config as SportConfig;
 use SportsHelpers\SportConfig as SportConfigHelper;
+use Sports\Sport\Config as SportConfig;
 use Sports\Planning\Config as PlanningConfig;
 
 class PlanningInputCreator
@@ -55,7 +48,7 @@ class PlanningInputCreator
         */
         $nrOfHeadtohead = $config->getNrOfHeadtohead();
         $structureConfig = $this->getStructureConfig($roundNumber);
-        $sportConfig = $this->getSportConfig($roundNumber, $nrOfHeadtohead, $teamup);
+        $sportConfigHelpers = $this->getSportConfigHelpers($roundNumber, $nrOfHeadtohead, $teamup);
 
         // $multipleSports = count($sportConfig) > 1;
 //        if ($multipleSports) {
@@ -63,7 +56,7 @@ class PlanningInputCreator
 //        }
         return new PlanningInput(
             $structureConfig,
-            $sportConfig,
+            $sportConfigHelpers,
             $nrOfReferees,
             $teamup,
             $selfReferee,
@@ -102,6 +95,10 @@ class PlanningInputCreator
         return $planningConfig->getSelfReferee();
     }
 
+    /**
+     * @param RoundNumber $roundNumber
+     * @return array|int[]
+     */
     protected function getStructureConfig(RoundNumber $roundNumber): array
     {
         $nrOfPlacesPerPoule = [];
@@ -121,31 +118,28 @@ class PlanningInputCreator
      * @param RoundNumber $roundNumber
      * @param int $nrOfHeadtohead
      * @param bool $teamup
-     * @return array
+     * @return array|SportConfigHelper[]
      */
-    protected function getSportConfig(RoundNumber $roundNumber, int $nrOfHeadtohead, bool $teamup): array
+    protected function getSportConfigHelpers(RoundNumber $roundNumber, int $nrOfHeadtohead, bool $teamup): array
     {
         $maxNrOfFields = $this->getMaxNrOfFields($roundNumber, $nrOfHeadtohead, $teamup);
 
-        $sportConfigRet = [];
+        $sportConfigHelpers = [];
         /** @var SportConfig $sportConfig */
         foreach ($roundNumber->getSportConfigs() as $sportConfig) {
             $nrOfFields = $sportConfig->getFields()->count();
             if ($nrOfFields > $maxNrOfFields) {
                 $nrOfFields = $maxNrOfFields;
             }
-            $sportConfigRet[] = [
-                "nrOfFields" => $nrOfFields,
-                "nrOfGamePlaces" => $sportConfig->getNrOfGamePlaces()
-            ];
+            $sportConfigHelpers[] = new SportConfigHelper( $nrOfFields, $sportConfig->getNrOfGamePlaces());
         }
         uasort(
-            $sportConfigRet,
-            function (array $sportA, array $sportB) {
-                return $sportA["nrOfFields"] > $sportB["nrOfFields"] ? -1 : 1;
+            $sportConfigHelpers,
+            function (SportConfigHelper $sportConfigHelperA, SportConfigHelper $sportConfigHelperB): int {
+                return $sportConfigHelperA->getNrOfFields() > $sportConfigHelperB->getNrOfFields() ? -1 : 1;
             }
         );
-        return array_values($sportConfigRet);
+        return array_values($sportConfigHelpers);
     }
 
     protected function getMaxNrOfFields(RoundNumber $roundNumber, int $nrOfHeadtohead, bool $teamup): int

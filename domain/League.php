@@ -1,11 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: cdunnink
- * Date: 8-2-2016
- * Time: 11:40
- */
-
 namespace Sports;
 
 use \Doctrine\Common\Collections\ArrayCollection;

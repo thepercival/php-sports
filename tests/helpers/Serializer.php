@@ -45,7 +45,7 @@ class Serializer {
                     ->setVersion($apiVersion);
             }
         );
-        $serializerBuilder->addMetadataDir(__DIR__.'/../../serialization/yml', 'Voetbal');
+        $serializerBuilder->addMetadataDir(__DIR__.'/../../serialization/yml', 'Sports');
 
         $serializerBuilder->configureHandlers(
             function (HandlerRegistry $registry): void {

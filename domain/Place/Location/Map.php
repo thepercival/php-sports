@@ -8,7 +8,6 @@
 
 namespace Sports\Place\Location;
 
-use Traversable;
 use Sports\Place\Location as PlaceLocation;
 use Sports\Competitor;
 
@@ -17,9 +16,9 @@ class Map
     private array $map;
 
     /**
-     * @param Traversable|Competitor[] $competitors
+     * @param array|Competitor[] $competitors
      */
-    public function __construct(Traversable $competitors)
+    public function __construct(array $competitors)
     {
         $this->map = [];
         foreach( $competitors as $competitor ) {

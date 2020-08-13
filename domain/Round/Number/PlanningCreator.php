@@ -2,8 +2,7 @@
 
 namespace Sports\Round\Number;
 
-use Sports\Round\Number\PlanningAssigner;
-use Sports\Planning\Input\PlanningInputCreator as PlanningInputService;
+use Sports\Round\Number\PlanningInputCreator as PlanningInputService;
 use SportsPlanning\Service as PlanningService;
 use SportsPlanning\Repository as PlanningRepository;
 use SportsPlanning\Input\Repository as PlanningInputRepository;
