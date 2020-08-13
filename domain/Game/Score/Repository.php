@@ -1,18 +1,9 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: coen
- * Date: 15-12-17
- * Time: 12:12
- */
 
 namespace Sports\Game\Score;
 
 use Sports\Game;
 
-/**
- * Game
- */
 class Repository extends \Sports\Repository
 {
     /**

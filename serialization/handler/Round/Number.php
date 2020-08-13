@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: coen
- * Date: 5-6-19
- * Time: 21:17
- */
 
 namespace Sports\SerializationHandler\Round;
 

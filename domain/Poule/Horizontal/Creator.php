@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: coen
- * Date: 4-6-19
- * Time: 19:18
- */
 
 namespace Sports\Poule\Horizontal;
 

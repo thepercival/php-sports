@@ -4,14 +4,15 @@ namespace Sports\Availability;
 
 use Exception;
 use Sports\Competition;
+use Sports\Competitor;
 use Sports\Field;
 use Sports\Priority\Prioritizable;
 use Sports\Referee;
 use Sports\Sport\Config as SportConfig;
+use Sports\Place\Location as PlaceLocation;
 
 class Checker
 {
-
     public function checkRefereeInitials(Competition $competition, string $initials, Referee $refereeToCheck = null)
     {
         $nonUniqueReferees = $competition->getReferees()->filter(
@@ -103,6 +104,52 @@ class Checker
         if (count($nonUniqueObjects) > 0) {
             throw new Exception(
                 "de prioriteit " . $priority . " bestaat al",
+                E_ERROR
+            );
+        }
+    }
+
+    /**
+     * @param array|Competitor[] $competitors
+     * @param string $name
+     * @param Competitor|null $competitorToCheck
+     * @throws Exception
+     */
+    public function checkCompetitorName(array $competitors, string $name, Competitor $competitorToCheck = null)
+    {
+        $nonUniqueFields = array_filter(
+            $competitors,
+            function (Competitor $competitorIt) use ($name, $competitorToCheck): bool {
+                return $competitorIt->getName() === $name && $competitorToCheck !== $competitorIt;
+            }
+        );
+        if (count($nonUniqueFields) > 0) {
+            throw new Exception(
+                "de deelnemer met de naam " . $name . " bestaat al",
+                E_ERROR
+            );
+        }
+    }
+
+    /**
+     * @param array|Competitor[] $competitors
+     * @param PlaceLocation $placeLocation
+     * @param Competitor|null $competitorToCheck
+     * @throws Exception
+     */
+    public function checkCompetitorPlaceLocation(array $competitors, PlaceLocation $placeLocation, Competitor $competitorToCheck = null)
+    {
+        $nonUniqueFields = array_filter(
+            $competitors,
+            function (Competitor $competitorIt) use ($placeLocation, $competitorToCheck): bool {
+                return $competitorIt->getPouleNr() === $placeLocation->getPouleNr()
+                    && $competitorIt->getPlaceNr() === $placeLocation->getPlaceNr()
+                    && $competitorToCheck !== $competitorIt;
+            }
+        );
+        if (count($nonUniqueFields) > 0) {
+            throw new Exception(
+                "er bestaat al een deelnemer op deze plek",
                 E_ERROR
             );
         }

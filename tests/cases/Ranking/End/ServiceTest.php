@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: cdunnink
- * Date: 13-6-2019
- * Time: 09:25
- */
 
 namespace Sports\Tests\Ranking\End;
 

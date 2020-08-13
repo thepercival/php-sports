@@ -1,4 +1,4 @@
-Sports\Competitor:
+Sports\Competitor\Team:
   exclusion_policy: ALL
   exclude: false
   access_type: public_method
@@ -6,8 +6,8 @@ Sports\Competitor:
   properties:
     id:
       read_only: true
-    name:
-      type: string
+    team:
+      type: Sports\Team
     abbreviation:
       type: string
     registered:

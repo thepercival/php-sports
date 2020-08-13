@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: cdunnink
- * Date: 20-6-2019
- * Time: 12:23
- */
 
 namespace Sports\Planning\Config;
 

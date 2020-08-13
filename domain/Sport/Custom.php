@@ -1,10 +1,5 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: coen
- * Date: 23-6-19
- * Time: 20:16
- */
+
 namespace Sports\Sport;
 
 abstract class Custom

@@ -61,6 +61,11 @@
       "rm -rf ../fctoernooi-api/vendor/thepercival/php-sports",
       "mkdir ../fctoernooi-api/vendor/thepercival/php-sports",
       "cp . ../fctoernooi-api/vendor/thepercival/php-sports -R"
+    ],
+    "copy-sports-import": [
+      "rm -rf ../php-sports-import/vendor/thepercival/php-sports",
+      "mkdir ../php-sports-import/vendor/thepercival/php-sports",
+      "cp . ../php-sports-import/vendor/thepercival/php-sports -R"
     ]
   },
   "extra": {

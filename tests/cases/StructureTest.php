@@ -1,10 +1,5 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: cdunnink
- * Date: 12-6-2019
- * Time: 09:49
- */
+
 namespace Sports\Tests;
 
 use Sports\Structure\Service as StructureService;

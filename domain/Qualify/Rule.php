@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: coen
- * Date: 20-4-18
- * Time: 10:40
- */
 
 namespace Sports\Qualify;
 

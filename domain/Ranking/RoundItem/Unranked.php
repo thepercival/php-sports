@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: coen
- * Date: 6-6-19
- * Time: 7:56
- */
 
 namespace Sports\Ranking\RoundItem;
 

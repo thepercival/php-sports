@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: coen
- * Date: 6-3-17
- * Time: 20:28
- */
 
 namespace Sports\Sport\Config;
 
@@ -18,10 +12,6 @@ use Sports\Field;
 use Sports\Field\Repository as FieldRepository;
 use Sports\Round\Number as RoundNumber;
 
-/**
- * Class Repository
- * @package Sports\Config\Score
- */
 class Repository extends \Sports\Repository
 {
     public function customAdd(SportConfig $sportConfig, RoundNumber $roundNumber)

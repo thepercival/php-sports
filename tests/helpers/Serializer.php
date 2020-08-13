@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: coen
- * Date: 1-1-19
- * Time: 11:58
- */
 
 namespace Sports\TestHelper;
 

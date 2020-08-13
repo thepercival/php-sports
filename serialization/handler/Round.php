@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: coen
- * Date: 9-6-19
- * Time: 13:12
- */
 
 namespace Sports\SerializationHandler;
 

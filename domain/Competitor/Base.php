@@ -57,7 +57,7 @@ trait Base
         return $this->info;
     }
 
-    public function setInfo(string $info)
+    public function setInfo(string $info = null)
     {
         if (strlen($info) === 0) {
             $info = null;

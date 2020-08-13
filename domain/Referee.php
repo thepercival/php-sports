@@ -1,19 +1,9 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: coen
- * Date: 26-10-17
- * Time: 15:42
- */
 
 namespace Sports;
 
 use Sports\Priority\Prioritizable;
 
-/**
- * Class Referee
- * @package Voetbal
- */
 class Referee implements Prioritizable
 {
     const MIN_LENGTH_INITIALS = 1;

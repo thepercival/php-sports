@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: cdunnink
- * Date: 5-6-2019
- * Time: 09:10
- */
 
 namespace Sports\Qualify\Group;
 

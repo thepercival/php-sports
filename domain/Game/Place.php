@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: coen
- * Date: 23-1-19
- * Time: 11:32
- */
 
 namespace Sports\Game;
 

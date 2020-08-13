@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: coen
- * Date: 23-4-18
- * Time: 15:02
- */
 
 namespace Sports\Ranking;
 

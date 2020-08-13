@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: coen
- * Date: 17-1-19
- * Time: 14:35
- */
 
 namespace Sports\Structure;
 
