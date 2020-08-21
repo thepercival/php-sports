@@ -8,6 +8,7 @@ use \Doctrine\ORM\PersistentCollection;
 use Sports\Ranking\Service as RankingService;
 use Sports\Sport\Config as SportConfig;
 use SportsHelpers\Identifiable;
+use Sports\Competitor\Team as TeamCompetitor;
 
 class Competition implements Identifiable
 {
@@ -47,9 +48,13 @@ class Competition implements Identifiable
     private $roundNumbers;
 
     /**
-     * @var ArrayCollection
+     * @var ArrayCollection|Referee[]
      */
     private $referees;
+    /**
+     * @var ArrayCollection|TeamCompetitor[]
+     */
+    private $teamCompetitors;
 
     /**
      * @var ArrayCollection
@@ -67,6 +72,7 @@ class Competition implements Identifiable
         $this->state = State::Created;
         $this->roundNumbers = new ArrayCollection();
         $this->referees = new ArrayCollection();
+        $this->teamCompetitors = new ArrayCollection();
         $this->sportConfigs = new ArrayCollection();
     }
 
@@ -211,6 +217,22 @@ class Competition implements Identifiable
             }
         );
         return array_shift($referees);
+    }
+
+    /**
+     * @return ArrayCollection | TeamCompetitor[]
+     */
+    public function getTeamCompetitors()
+    {
+        return $this->teamCompetitors;
+    }
+
+    /**
+     * @param ArrayCollection | TeamCompetitor[] $teamCompetitors
+     */
+    public function setTeamCompetitors($teamCompetitors)
+    {
+        $this->teamCompetitors = $teamCompetitors;
     }
 
     public function getField(int $priority): ?Field

@@ -17,7 +17,7 @@
           <join-column name="teamId" referenced-column-name="id" nullable="false" on-delete="RESTRICT"/>
         </join-columns>
       </one-to-one>
-      <many-to-one field="competition" target-entity="Sports\Competition">
+      <many-to-one field="competition" target-entity="Sports\Competition" inversed-by="teamCompetitors">
         <cascade>
           <cascade-persist/>
         </cascade>

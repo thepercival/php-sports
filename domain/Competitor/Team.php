@@ -55,6 +55,9 @@ class Team implements PlaceLocation, CompetitorInterface, Identifiable
 
     public function setCompetition(Competition $competition)
     {
+        if ($this->competition === null and !$competition->getTeamCompetitors()->contains($this)) {
+            $competition->getTeamCompetitors()->add($this) ;
+        }
         $this->competition = $competition;
     }
 }

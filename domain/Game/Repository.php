@@ -26,9 +26,33 @@ class Repository extends \Sports\Repository
         return count($games) === 1;
     }
 
+    public function getNrOfCompetitionGamePlaces(Competition $competition, $gameStates = null, int $batchNr = null): int {
+        $gamePlaces = $this->getCompetitionGamePlacessQuery(
+            $competition,
+            $gameStates,
+            $batchNr
+        )->getQuery()->getResult();
+        return count($gamePlaces);
+    }
+
     protected function getCompetitionGamesQuery(Competition $competition, $gameStates = null, int $batchNr = null): QueryBuilder
     {
         $query = $this->createQueryBuilder('g')
+            ->join("g.poule", "p")
+            ->join("p.round", "r")
+            ->join("r.number", "rn")
+            ->where('rn.competition = :competition')
+            ->setParameter('competition', $competition);
+        ;
+        return $this->applyExtraFilters($query, $gameStates, $batchNr);
+    }
+
+    protected function getCompetitionGamePlacessQuery(Competition $competition, $gameStates = null, int $batchNr = null): QueryBuilder
+    {
+        $query = $this->getEM()->createQueryBuilder()
+            ->select('gp')
+            ->from('Sports\Game\Place', 'gp')
+            ->join("gp.game", "g")
             ->join("g.poule", "p")
             ->join("p.round", "r")
             ->join("r.number", "rn")
@@ -52,6 +76,8 @@ class Repository extends \Sports\Repository
         )->setMaxResults(1)->getQuery()->getResult();
         return count($games) === 1;
     }
+
+
 
     protected function getRoundNumberGamesQuery(RoundNumber $roundNumber, $gameStates = null, int $batchNr = null): QueryBuilder
     {

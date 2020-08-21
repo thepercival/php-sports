@@ -33,7 +33,7 @@ class Repository extends \Sports\Repository
         $this->_em->persist($competition);
     }
 
-    public function findExt(League $league, Season $season)
+    public function findExt(League $league, Season $season): ?Competition
     {
         $query = $this->createQueryBuilder('c')
             ->where('c.season = :season')

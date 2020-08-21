@@ -249,11 +249,13 @@ class Number
                 $games,
                 function (Game $g1, Game $g2): int {
                     if ($g1->getBatchNr() === $g2->getBatchNr()) {
-                    $retVal = $g1->getField()->getPriority() - $g2->getField()->getPriority();
-                    return $this->isFirst() ? $retVal : -$retVal;
-                }
-                return $g1->getBatchNr() - $g2->getBatchNr();
-            });
+                        if( $g1->getField() !== null && $g2->getField() !== null ) {
+                            $retVal = $g1->getField()->getPriority() - $g2->getField()->getPriority();
+                            return $this->isFirst() ? $retVal : -$retVal;
+                        }
+                    }
+                    return $g1->getBatchNr() - $g2->getBatchNr();
+                });
         }
         return $games;
     }
