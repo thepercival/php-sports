@@ -2,6 +2,8 @@
 
 namespace Sports;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Sports\Team\Role\Player;
 use SportsHelpers\Identifiable;
 
 class Team implements Identifiable
@@ -26,6 +28,10 @@ class Team implements Identifiable
      * @var Association
      */
     protected $association;
+    /**
+     * @var ArrayCollection|Player[]
+     */
+    protected $players;
 
     const MIN_LENGTH_NAME = 2;
     const MAX_LENGTH_NAME = 30;
@@ -117,5 +123,13 @@ class Team implements Identifiable
             $association->getTeams()->add($this) ;
         }
         $this->association = $association;
+    }
+
+    /**
+     * @return Player[] | ArrayCollection
+     */
+    public function getPlayers()
+    {
+        return $this->players;
     }
 }
