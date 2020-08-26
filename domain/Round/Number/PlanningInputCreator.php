@@ -2,6 +2,7 @@
 
 namespace Sports\Round\Number;
 
+use Sports\Poule;
 use SportsPlanning\HelperTmp;
 use SportsPlanning\Input as PlanningInput;
 use Sports\Round\Number as RoundNumber;
@@ -9,6 +10,7 @@ use Sports\Planning\Config\Service as PlanningConfigService;
 use SportsPlanning\Sport\NrFields as SportNrFields;
 use Sports\Sport\Service as SportService;
 use SportsHelpers\SportConfig as SportConfigHelper;
+use SportsHelpers\PouleStructure;
 use Sports\Sport\Config as SportConfig;
 use Sports\Planning\Config as PlanningConfig;
 
@@ -30,11 +32,11 @@ class PlanningInputCreator
             },
             $roundNumber->getSportConfigs()
         );
+        $PouleStructure = $this->createPouleStructure($roundNumber);
         $selfReferee = $this->getSelfReferee(
             $config,
             $sportConfigBases,
-            $roundNumber->getNrOfPlaces(),
-            count($roundNumber->getPoules())
+            $PouleStructure
         );
         $nrOfReferees = $selfReferee === PlanningInput::SELFREFEREE_DISABLED ? $nrOfReferees : 0;
         /*
@@ -47,7 +49,6 @@ class PlanningInputCreator
 
         */
         $nrOfHeadtohead = $config->getNrOfHeadtohead();
-        $structureConfig = $this->getStructureConfig($roundNumber);
         $sportConfigHelpers = $this->getSportConfigHelpers($roundNumber, $nrOfHeadtohead, $teamup);
 
         // $multipleSports = count($sportConfig) > 1;
@@ -55,7 +56,7 @@ class PlanningInputCreator
 //            $nrOfHeadtohead = $this->getSufficientNrOfHeadtoheadByRoundNumber($roundNumber, $sportConfig);
 //        }
         return new PlanningInput(
-            $structureConfig,
+            $PouleStructure,
             $sportConfigHelpers,
             $nrOfReferees,
             $teamup,
@@ -67,22 +68,17 @@ class PlanningInputCreator
     /**
      * @param PlanningConfig $planningConfig
      * @param array|SportConfigHelper[] $sportConfigHelpers
-     * @param int $nrOfPlaces
-     * @param int $nrOfPoules
+     * @param PouleStructure $PouleStructure
      * @return int
      */
-    protected function getSelfReferee(PlanningConfig $planningConfig, array $sportConfigHelpers, int $nrOfPlaces, int $nrOfPoules): int
+    protected function getSelfReferee(PlanningConfig $planningConfig, array $sportConfigHelpers, PouleStructure $PouleStructure): int
     {
         $maxNrOfGamePlaces = (new HelperTmp())->getMaxNrOfGamePlaces($sportConfigHelpers, $planningConfig->getTeamup(), false);
 
         $planningConfigService = new PlanningConfigService();
 
-        $otherPoulesAvailable = $planningConfigService->canSelfRefereeOtherPoulesBeAvailable($nrOfPoules);
-        $samePouleAvailable = $planningConfigService->canSelfRefereeSamePouleBeAvailable(
-            $nrOfPoules,
-            $nrOfPlaces,
-            $maxNrOfGamePlaces
-        );
+        $otherPoulesAvailable = $planningConfigService->canSelfRefereeOtherPoulesBeAvailable( $PouleStructure );
+        $samePouleAvailable = $planningConfigService->canSelfRefereeSamePouleBeAvailable( $PouleStructure, $maxNrOfGamePlaces );
         if (!$otherPoulesAvailable && !$samePouleAvailable) {
             return PlanningInput::SELFREFEREE_DISABLED;
         }
@@ -95,11 +91,7 @@ class PlanningInputCreator
         return $planningConfig->getSelfReferee();
     }
 
-    /**
-     * @param RoundNumber $roundNumber
-     * @return array|int[]
-     */
-    protected function getStructureConfig(RoundNumber $roundNumber): array
+    protected function createPouleStructure(RoundNumber $roundNumber): PouleStructure
     {
         $nrOfPlacesPerPoule = [];
         foreach ($roundNumber->getPoules() as $poule) {
@@ -111,7 +103,7 @@ class PlanningInputCreator
                 return $nrOfPlacesA > $nrOfPlacesB ? -1 : 1;
             }
         );
-        return array_values($nrOfPlacesPerPoule);
+        return new PouleStructure( array_values($nrOfPlacesPerPoule) );
     }
 
     /**

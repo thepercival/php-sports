@@ -5,6 +5,8 @@ namespace Sports\Planning\Config;
 use Sports\Planning\Config as PlanningConfig;
 use SportsPlanning\Input as PlanningInput;
 use Sports\Round\Number as RoundNumber;
+use SportsHelpers\PouleStructure;
+use SportsHelpers\SportConfig as SportConfigHelper;
 
 class Service
 {
@@ -82,32 +84,33 @@ class Service
         return true;
     }
 
-    public function canTeamupBeAvailable(array $structureConfig, array $sportConfig): bool
+    /**
+     * @param PouleStructure $pouleStructure
+     * @param array|SportConfigHelper[] $portConfigHelpers
+     * @return bool
+     */
+    public function canTeamupBeAvailable(PouleStructure $pouleStructure, array $portConfigHelpers): bool
     {
-        if (count($sportConfig) > 1) {
+        if (count($portConfigHelpers) > 1) {
             return false;
         }
-        foreach ($structureConfig as $nrOfPlacesPerPoule) {
-            if ($nrOfPlacesPerPoule < PlanningInput::TEAMUP_MIN || $nrOfPlacesPerPoule > PlanningInput::TEAMUP_MAX) {
-                return false;
-            }
-        }
-        return true;
+        return $pouleStructure->getBiggestPoule() <= PlanningInput::TEAMUP_MAX
+            && $pouleStructure->getSmallestPoule() <= PlanningInput::TEAMUP_MIN;
     }
 
-    public function canSelfRefereeBeAvailable(int $nrOfPoules, int $nrOfPlaces, int $nrOfGamePlaces): bool
+    public function canSelfRefereeBeAvailable(PouleStructure $pouleStructure, int $nrOfGamePlaces): bool
     {
-        return $this->canSelfRefereeSamePouleBeAvailable($nrOfPoules, $nrOfPlaces, $nrOfGamePlaces)
-            || $this->canSelfRefereeOtherPoulesBeAvailable($nrOfPoules);
+        return $this->canSelfRefereeSamePouleBeAvailable($pouleStructure, $nrOfGamePlaces)
+            || $this->canSelfRefereeOtherPoulesBeAvailable($pouleStructure);
     }
 
-    public function canSelfRefereeOtherPoulesBeAvailable(int $nrOfPoules): bool
+    public function canSelfRefereeOtherPoulesBeAvailable(PouleStructure $pouleStructure): bool
     {
-        return $nrOfPoules > 1;
+        return $pouleStructure->getNrOfPoules() > 1;
     }
 
-    public function canSelfRefereeSamePouleBeAvailable(int $nrOfPoules, int $nrOfPlaces, int $nrOfGamePlaces): bool
+    public function canSelfRefereeSamePouleBeAvailable(PouleStructure $pouleStructure, int $nrOfGamePlaces): bool
     {
-        return floor($nrOfPlaces / $nrOfPoules) >= ($nrOfGamePlaces + 1);
+        return $pouleStructure->getSmallestPoule() > $nrOfGamePlaces;
     }
 }

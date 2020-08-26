@@ -21,3 +21,5 @@ Sports\Competition:
       type: ArrayCollection<Sports\Sport\Config>
     referees:
       type: ArrayCollection<Sports\Referee>
+    teamCompetitors:
+      type: ArrayCollection<Sports\Competitor\Team>

@@ -18,6 +18,7 @@ use Sports\Qualify\Rule\Service as QualifyRuleService;
 use Sports\Qualify\Group as QualifyGroup;
 use Sports\Qualify\Group\Service as QualifyGroupService;
 use Sports\Sport\Config\Service as SportConfigService;
+use SportsHelpers\PouleStructure;
 
 class Service
 {
@@ -448,7 +449,8 @@ class Service
         }
         $round->getPoules()->clear();
 
-        foreach ($this->getStructureConfig($nrOfPlaces, $nrOfPoules) as $nrOfPlacesToAdd) {
+        $PouleStructure = $this->getPouleStructure($nrOfPlaces, $nrOfPoules);
+        foreach ( $PouleStructure->toArray() as $nrOfPlacesToAdd) {
             $poule = new Poule($round);
             for ($i = 0; $i < $nrOfPlacesToAdd; $i++) {
                 new Place($poule);
@@ -457,7 +459,7 @@ class Service
         return $round;
     }
 
-    public function getStructureConfig(int $nrOfPlaces, int $nrOfPoules): array
+    public function getPouleStructure(int $nrOfPlaces, int $nrOfPoules): PouleStructure
     {
         $structureConfig = [];
         while ($nrOfPlaces > 0) {
@@ -472,8 +474,7 @@ class Service
                 return $nrOfPlacesPouleA > $nrOfPlacesPouleB ? -1 : 1;
             }
         );
-        $structureConfig = array_values($structureConfig);
-        return $structureConfig;
+        return new PouleStructure(array_values($structureConfig));
     }
 
     protected function getRoot(Round $round): Round

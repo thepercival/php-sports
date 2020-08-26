@@ -2,10 +2,12 @@
 
 namespace Sports\Planning\Input;
 
+use SportsHelpers\SportConfig as SportConfigHelper;
 use SportsPlanning\HelperTmp;
 use SportsPlanning\Input as PlanningInput;
 use SportsPlanning\Resources;
 use SportsHelpers\Range;
+use SportsHelpers\PouleStructure;
 use Sports\Place\Range as PlaceRange;
 use Sports\Planning\Config\Service as PlanningConfigService;
 use Sports\Sport;
@@ -116,12 +118,17 @@ class Iterator
         $this->init();
     }
 
-    protected function getSportConfig(int $nrOfSports, int $nrOfFields): array
+    /**
+     * @param int $nrOfSports
+     * @param int $nrOfFields
+     * @return array|SportConfigHelper[]]
+     */
+    protected function createSportConfigHelpers(int $nrOfSports, int $nrOfFields): array
     {
         $sports = [];
         $nrOfFieldsPerSport = (int)ceil($nrOfFields / $nrOfSports);
         for ($sportNr = 1; $sportNr <= $nrOfSports; $sportNr++) {
-            $sports[] = ["nrOfFields" => $nrOfFieldsPerSport, "nrOfGamePlaces" => Sport::TEMPDEFAULT];
+            $sports[] = new SportConfigHelper( $nrOfFieldsPerSport, Sport::TEMPDEFAULT );
             $nrOfFields -= $nrOfFieldsPerSport;
             if (($nrOfFieldsPerSport * ($nrOfSports - $sportNr)) > $nrOfFields) {
                 $nrOfFieldsPerSport--;
@@ -239,11 +246,11 @@ class Iterator
 
     protected function createInput(): PlanningInput
     {
-        $structureConfig = $this->structureService->getStructureConfig($this->nrOfPlaces, $this->nrOfPoules);
-        $sportConfig = $this->getSportConfig($this->nrOfSports, $this->nrOfFields);
+        $pouleStructure = $this->structureService->getPouleStructure($this->nrOfPlaces, $this->nrOfPoules);
+        $sportConfigHelpers = $this->createSportConfigHelpers($this->nrOfSports, $this->nrOfFields);
         return new PlanningInput(
-            $structureConfig,
-            $sportConfig,
+            $pouleStructure,
+            $sportConfigHelpers,
             $this->nrOfReferees,
             $this->teamup,
             $this->selfReferee,
@@ -263,24 +270,20 @@ class Iterator
         }
 
         $nrOfGamePlaces = (new HelperTmp())->getNrOfGamePlaces($this->nrOfGamesPlaces, $this->teamup, false);
-        $selfRefereeIsAvailable = $this->planningConfigService->canSelfRefereeBeAvailable(
-            $this->nrOfPoules,
-            $this->nrOfPlaces,
-            $nrOfGamePlaces
-        );
+        $pouleStructure = $this->structureService->getPouleStructure($this->nrOfPlaces, $this->nrOfPoules);
+        $selfRefereeIsAvailable = $this->planningConfigService->canSelfRefereeBeAvailable( $pouleStructure, $nrOfGamePlaces );
         if ($selfRefereeIsAvailable === false) {
             return $this->incrementTeamup();
         }
         if ($this->selfReferee === PlanningInput::SELFREFEREE_DISABLED) {
-            if ($this->planningConfigService->canSelfRefereeOtherPoulesBeAvailable($this->nrOfPoules)) {
+            if ($this->planningConfigService->canSelfRefereeOtherPoulesBeAvailable($pouleStructure)) {
                 $this->selfReferee = PlanningInput::SELFREFEREE_OTHERPOULES;
             } else {
                 $this->selfReferee = PlanningInput::SELFREFEREE_SAMEPOULE;
             }
         } else {
             $selfRefereeSamePouleAvailable = $this->planningConfigService->canSelfRefereeSamePouleBeAvailable(
-                $this->nrOfPoules,
-                $this->nrOfPlaces,
+                $pouleStructure,
                 $nrOfGamePlaces
             );
             if (!$selfRefereeSamePouleAvailable) {
@@ -296,9 +299,9 @@ class Iterator
         if ($this->teamup === true) {
             return $this->incrementNrOfHeadtohead();
         }
-        $structureConfig = $this->structureService->getStructureConfig($this->nrOfPlaces, $this->nrOfPoules);
-        $sportConfig = $this->getSportConfig($this->nrOfSports, $this->nrOfFields);
-        $teamupAvailable = $this->planningConfigService->canTeamupBeAvailable($structureConfig, $sportConfig);
+        $pouleStructure = $this->structureService->getPouleStructure($this->nrOfPlaces, $this->nrOfPoules);
+        $sportConfigHelpers = $this->createSportConfigHelpers($this->nrOfSports, $this->nrOfFields);
+        $teamupAvailable = $this->planningConfigService->canTeamupBeAvailable($pouleStructure, $sportConfigHelpers);
         if ($teamupAvailable === false) {
             return $this->incrementNrOfHeadtohead();
         }

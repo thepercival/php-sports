@@ -20,6 +20,7 @@ trait CompetitionCreator {
             throw new \Exception("competition-json not read well from file", E_ERROR);
         }
         $serializer = (new Serializer())->getSerializer();
+        /** @var Competition $competition */
         $competition = $serializer->deserialize($jsonEncoded, 'Sports\Competition', 'json');
 
         foreach ($competition->getSportConfigs() as $sportConfig) {

@@ -4,6 +4,8 @@ namespace Sports\Team\Role;
 
 use DateTimeImmutable;
 use League\Period\Period;
+use Sports\Person;
+use Sports\Team;
 use Sports\Team\Role;
 
 class Player extends Role
@@ -14,9 +16,9 @@ class Player extends Role
     protected $shirtNumber;
     protected int $line;
 
-    public function __construct(DateTimeImmutable $startDateTime, DateTimeImmutable $endDateTime, int $line)
+    public function __construct(Team $team, Person $person, DateTimeImmutable $startDateTime, DateTimeImmutable $endDateTime, int $line)
     {
-        parent::__construct($startDateTime,$endDateTime);
+        parent::__construct($team, $person, $startDateTime,$endDateTime);
         $this->setLine($line);
     }
 

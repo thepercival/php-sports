@@ -49,22 +49,22 @@ abstract class Role implements Identifiable
         $this->id = $id;
     }
 
-    public function getTeam(): DateTimeImmutable
+    public function getTeam(): Team
     {
         return $this->team;
     }
 
-    public function setTeam(DateTimeImmutable $team)
+    public function setTeam(Team $team)
     {
         $this->team = $team;
     }
 
-    public function getPerson(): DateTimeImmutable
+    public function getPerson(): Person
     {
         return $this->person;
     }
 
-    public function setPerson(DateTimeImmutable $person)
+    public function setPerson(Person $person)
     {
         $this->person = $person;
     }
