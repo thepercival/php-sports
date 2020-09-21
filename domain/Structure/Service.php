@@ -6,6 +6,7 @@ use \Doctrine\Common\Collections\ArrayCollection;
 use Sports\Round;
 use Sports\Round\Number as RoundNumber;
 use Sports\Structure as StructureBase;
+use SportsHelpers\PouleStructure\Balanced as BalancedPouleStructure;
 use Sports\Competition;
 use Sports\Place;
 use SportsHelpers\Place\Range as PlaceRange;
@@ -449,7 +450,7 @@ class Service
         }
         $round->getPoules()->clear();
 
-        $pouleStructure = new PouleStructure\Balanced($nrOfPlaces, $nrOfPoules);
+        $pouleStructure = new BalancedPouleStructure($nrOfPlaces, $nrOfPoules);
         foreach ( $pouleStructure->toArray() as $nrOfPlacesToAdd) {
             $poule = new Poule($round);
             for ($i = 0; $i < $nrOfPlacesToAdd; $i++) {
@@ -480,7 +481,7 @@ class Service
                 if ($nrOfPoules === null) {
                     return;
                 }
-                $pouleStructure = new PouleStructure\Balanced($nrOfPlaces, $nrOfPoules);
+                $pouleStructure = new BalancedPouleStructure($nrOfPlaces, $nrOfPoules);
                 $flooredNrOfPlacesPerPoule = $pouleStructure->getNrOfPlacesPerPoule(true);
                 if ($flooredNrOfPlacesPerPoule < $placeRange->getPlacesPerPouleRange()->min) {
                     throw new \Exception(
