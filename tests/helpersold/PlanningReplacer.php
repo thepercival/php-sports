@@ -13,7 +13,7 @@ trait PlanningReplacer
 {
     protected function replaceRefereePlace(
         bool $samePoule,
-        Batch $firstBatch,
+        SelfRefereeBatch $firstBatch,
         PlanningPlace $replaced,
         PlanningPlace $replacement
     ) {

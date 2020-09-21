@@ -3,8 +3,13 @@
 namespace Sports\TestHelper;
 
 use League\Period\Period;
+use Monolog\Handler\StreamHandler;
+use Monolog\Logger;
+use Monolog\Processor\UidProcessor;
+use Psr\Log\LoggerInterface;
 use Sports\Round\Number\PlanningAssigner;
 use Sports\Round\Number\PlanningScheduler;
+use SportsHelpers\Range;
 use SportsPlanning\Resource\RefereePlace\Service as RefereePlaceService;
 use Sports\Structure;
 use SportsPlanning\Planning;
@@ -12,26 +17,38 @@ use Sports\Round\Number as RoundNumber;
 use Sports\Round\Number\PlanningInputCreator;
 use SportsPlanning\Service as PlanningService;
 
-trait GamesCreator {
+class GamesCreator {
 
-    protected function createGames(Structure $structure, Period $blockedPeriod = null)
-    {
-        $this->removeGamesHelper($structure->getFirstRoundNumber());
-        $this->createGamesHelper($structure->getFirstRoundNumber(), $blockedPeriod);
+    protected function getLogger(): LoggerInterface {
+        $logger = new Logger("test-logger");
+        $processor = new UidProcessor();
+        $logger->pushProcessor($processor);
+
+        $handler = new StreamHandler('php://stdout', LOG_INFO);
+        $logger->pushHandler($handler);
+        return $logger;
     }
 
-    private function createGamesHelper(RoundNumber $roundNumber, Period $blockedPeriod = null)
+    public function createStructureGames(Structure $structure, Period $blockedPeriod = null, Range $range = null)
+    {
+        $this->removeGamesHelper($structure->getFirstRoundNumber());
+        $this->createGamesHelper($structure->getFirstRoundNumber(), $blockedPeriod, $range);
+    }
+
+    public function createGames(RoundNumber $roundNumber, Period $blockedPeriod = null, Range $range = null)
+    {
+        $this->removeGamesHelper( $roundNumber);
+        $this->createGamesHelper($roundNumber, $blockedPeriod, $range);
+    }
+
+    private function createGamesHelper(RoundNumber $roundNumber, Period $blockedPeriod = null, Range $range = null)
     {
         // make trait to do job below!!
         $planningInputCreator = new PlanningInputCreator();
         $nrOfReferees = $roundNumber->getCompetition()->getReferees()->count();
         $planningInput = $planningInputCreator->create($roundNumber, $nrOfReferees);
-        $planningService = new PlanningService();
-        $minIsMaxPlanning = $planningService->createNextMinIsMaxPlanning($planningInput);
-        $state = $planningService->createGames($minIsMaxPlanning);
-        if ($state !== Planning::STATE_SUCCESS) {
-            //throw assertuib
-        }
+        $planningCreator = new PlanningCreator();
+        $minIsMaxPlanning = $planningCreator->createPlanning($planningInput, $range);
 
         if ($roundNumber->getValidPlanningConfig()->selfRefereeEnabled()) {
             $refereePlaceService = new RefereePlaceService($minIsMaxPlanning);

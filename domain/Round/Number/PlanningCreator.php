@@ -3,8 +3,8 @@
 namespace Sports\Round\Number;
 
 use Sports\Round\Number\PlanningInputCreator as PlanningInputService;
-use SportsPlanning\Service as PlanningService;
-use SportsPlanning\Repository as PlanningRepository;
+use SportsPlanning\Planning;
+use SportsPlanning\Planning\Repository as PlanningRepository;
 use SportsPlanning\Input\Repository as PlanningInputRepository;
 use Sports\Round\Number\PlanningScheduler;
 use Sports\Round\Number as RoundNumber;
@@ -90,6 +90,7 @@ class PlanningCreator
             $planningInput = $this->inputRepos->getFromInput($defaultPlanningInput);
             if ($planningInput === null) {
                 $this->inputRepos->save($defaultPlanningInput);
+                $this->inputRepos->createBatchGamesPlannings($defaultPlanningInput);
                 if ($this->logger !== null) {
                     $this->logger->info("DEBUG: send message for roundnumber " . $roundNumber->getNumber());
                 }
@@ -100,8 +101,12 @@ class PlanningCreator
                 );
                 return;
             }
-            $planningService = new PlanningService();
-            $planning = $planningService->getBestPlanning($planningInput);
+            if( $planningInput->getPlannings()->filter( function ( Planning $planning ): bool {
+                    return $planning->getState() === Planning::STATE_TOBEPROCESSED;
+                } )->count() > 0 /* has plannings to be processed,  */) {
+                return;
+            }
+            $planning = $planningInput->getBestPlanning();
             if ($planning === null) {
                 if ($this->logger !== null) {
                     $this->logger->info("DEBUG: no best planning found");

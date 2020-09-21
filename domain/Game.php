@@ -253,11 +253,9 @@ class Game implements Identifiable
         if ($homeaway === null) {
             return $this->places;
         }
-        return new ArrayCollection(
-            $this->places->filter(function ($gamePlace) use ($homeaway): bool {
+        return $this->places->filter(function ($gamePlace) use ($homeaway): bool {
                 return $gamePlace->getHomeaway() === $homeaway;
-            })->toArray()
-        );
+            });
     }
 
     /**

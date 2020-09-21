@@ -4,6 +4,7 @@ namespace Sports\Round\Number;
 
 use Sports\Game;
 use SportsPlanning\Batch;
+use SportsPlanning\Batch\SelfReferee as SelfRefereeBatch;
 use Sports\Planning\Config as PlanningConfig;
 use Sports\Round\Number as RoundNumber;
 use SportsPlanning\Planning;
@@ -54,7 +55,12 @@ class PlanningAssigner
         $this->createBatchGames($firstBatch, $planningConfig, $gameStartDateTime);
     }
 
-    protected function createBatchGames(Batch $batch, PlanningConfig $planningConfig, \DateTimeImmutable $gameStartDateTime)
+    /**
+     * @param Batch|SelfRefereeBatch $batch
+     * @param PlanningConfig $planningConfig
+     * @param \DateTimeImmutable $gameStartDateTime
+     */
+    protected function createBatchGames($batch, PlanningConfig $planningConfig, \DateTimeImmutable $gameStartDateTime)
     {
         /** @var PlanningGame $planningGame */
         foreach ($batch->getGames() as $planningGame) {

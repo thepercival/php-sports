@@ -15,7 +15,7 @@ use Sports\Competitor;
 
 class ServiceTest extends \PHPUnit\Framework\TestCase
 {
-    use CompetitionCreator, GamesCreator, SetScores;
+    use CompetitionCreator, SetScores;
 
     public function testOnePouleOfThreePlaces()
     {
@@ -25,7 +25,7 @@ class ServiceTest extends \PHPUnit\Framework\TestCase
         $structure = $structureService->create($competition, 3);
         $rootRound = $structure->getRootRound();
 
-        $this->createGames($structure);
+        (new GamesCreator())->createStructureGames( $structure );
 
         $pouleOne = $rootRound->getPoule(1);
 
@@ -50,7 +50,7 @@ class ServiceTest extends \PHPUnit\Framework\TestCase
         $structure = $structureService->create($competition, 3);
         $rootRound = $structure->getRootRound();
 
-        $this->createGames($structure);
+        (new GamesCreator())->createStructureGames( $structure );
 
         $pouleOne = $rootRound->getPoule(1);
 
@@ -77,7 +77,7 @@ class ServiceTest extends \PHPUnit\Framework\TestCase
         $structureService->addQualifier($rootRound, QualifyGroup::WINNERS);
         $structureService->addQualifier($rootRound, QualifyGroup::LOSERS);
 
-        $this->createGames($structure);
+        (new GamesCreator())->createStructureGames( $structure );
 
         $pouleOne = $rootRound->getPoule(1);
 

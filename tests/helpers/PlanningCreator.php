@@ -2,26 +2,36 @@
 
 namespace Sports\TestHelper;
 
+use Monolog\Handler\StreamHandler;
+use Monolog\Logger;
+use Monolog\Processor\UidProcessor;
+use Psr\Log\LoggerInterface;
+use SportsHelpers\Range;
+use SportsPlanning\Input;
 use SportsPlanning\Planning;
-use SportsPlanning\Resource\RefereePlace\Service as RefereePlaceService;
-use SportsPlanning\Service as PlanningService;
-use Sports\Round\Number\PlanningInputCreator;
-use Sports\Round\Number as RoundNumber;
+use SportsPlanning\Planning\GameCreator;
 
-trait PlanningCreator {
-    protected function createPlanning( RoundNumber $roundNumber, array $options ): Planning
+class PlanningCreator {
+
+    protected function getLogger(): LoggerInterface {
+        $logger = new Logger("test-logger");
+        $processor = new UidProcessor();
+        $logger->pushProcessor($processor);
+
+        $handler = new StreamHandler('php://stdout', LOG_INFO);
+        $logger->pushHandler($handler);
+        return $logger;
+    }
+
+    public function createPlanning( Input $input, Range $range = null ): Planning
     {
-        $planningInputCreator = new PlanningInputCreator();
-        $nrOfReferees = $roundNumber->getCompetition()->getReferees()->count();
-        $planningInput = $planningInputCreator->create($roundNumber, $nrOfReferees);
-        $planningService = new PlanningService();
-        $planning = $planningService->createNextMinIsMaxPlanning($planningInput);
-        if (Planning::STATE_SUCCESS !== $planningService->createGames($planning)) {
-            throw new \Exception("planning could not be created", E_ERROR);
+        if( $range === null ) {
+            $range = new Range( 1, 1 );
         }
-        if ($roundNumber->getValidPlanningConfig()->selfRefereeEnabled()) {
-            $refereePlaceService = new RefereePlaceService($planning);
-            $refereePlaceService->assign($planning->createFirstBatch());
+        $planning = new Planning( $input, $range, 0 );
+        $gameCreator = new GameCreator( $this->getLogger() );
+        if (Planning::STATE_SUCCEEDED !== $gameCreator->createGames($planning) ) {
+            throw new \Exception("planning could not be created", E_ERROR);
         }
         return $planning;
     }

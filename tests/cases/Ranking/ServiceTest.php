@@ -14,7 +14,7 @@ use Sports\Competitor;
 
 class ServiceTest extends \PHPUnit\Framework\TestCase
 {
-    use CompetitionCreator, GamesCreator, SetScores;
+    use CompetitionCreator, SetScores;
 
     public function testRuleDescriptions()
     {
@@ -46,7 +46,7 @@ class ServiceTest extends \PHPUnit\Framework\TestCase
         $structure = $structureService->create($competition, 3);
         $rootRound = $structure->getRootRound();
 
-        $this->createGames($structure);
+        (new GamesCreator())->createStructureGames( $structure );
 
         $pouleOne = $rootRound->getPoule(1);
 
@@ -75,7 +75,7 @@ class ServiceTest extends \PHPUnit\Framework\TestCase
         $structure = $structureService->create($competition, 3);
         $rootRound = $structure->getRootRound();
 
-        $this->createGames($structure);
+        (new GamesCreator())->createStructureGames( $structure );
 
         $pouleOne = $rootRound->getPoule(1);
 
@@ -104,7 +104,7 @@ class ServiceTest extends \PHPUnit\Framework\TestCase
         $structure = $structureService->create($competition, 3);
         $rootRound = $structure->getRootRound();
 
-        $this->createGames($structure);
+        (new GamesCreator())->createStructureGames( $structure );
 
         $pouleOne = $rootRound->getPoule(1);
 
@@ -134,7 +134,7 @@ class ServiceTest extends \PHPUnit\Framework\TestCase
         $structure = $structureService->create($competition, 6);
         $rootRound = $structure->getRootRound();
 
-        $this->createGames($structure);
+        (new GamesCreator())->createStructureGames( $structure );
 
         $pouleOne = $rootRound->getPoule(1);
         $pouleTwo = $rootRound->getPoule(2);
@@ -171,7 +171,7 @@ class ServiceTest extends \PHPUnit\Framework\TestCase
 
         $structureService->addQualifier($rootRound, QualifyGroup::WINNERS);
 
-        $this->createGames($structure);
+        (new GamesCreator())->createStructureGames( $structure );
 
         $pouleOne = $rootRound->getPoule(1);
         $pouleTwo = $rootRound->getPoule(2);
@@ -199,7 +199,7 @@ class ServiceTest extends \PHPUnit\Framework\TestCase
         $structure = $structureService->create($competition, 4);
         $rootRound = $structure->getRootRound();
 
-        $this->createGames($structure);
+        (new GamesCreator())->createStructureGames( $structure );
 
         $pouleOne = $rootRound->getPoule(1);
 
@@ -231,7 +231,7 @@ class ServiceTest extends \PHPUnit\Framework\TestCase
         $structure = $structureService->create($competition, 3);
         $rootRound = $structure->getRootRound();
 
-        $this->createGames($structure);
+        (new GamesCreator())->createStructureGames( $structure );
 
         $pouleOne = $rootRound->getPoule(1);
 
@@ -255,7 +255,7 @@ class ServiceTest extends \PHPUnit\Framework\TestCase
         $structure = $structureService->create($competition, 4);
         $rootRound = $structure->getRootRound();
 
-        $this->createGames($structure);
+        (new GamesCreator())->createStructureGames( $structure );
 
         $pouleOne = $rootRound->getPoule(1);
 
@@ -282,7 +282,7 @@ class ServiceTest extends \PHPUnit\Framework\TestCase
         $structure = $structureService->create($competition, 4);
         $rootRound = $structure->getRootRound();
 
-        $this->createGames($structure);
+        (new GamesCreator())->createStructureGames( $structure );
 
         $pouleOne = $rootRound->getPoule(1);
 
@@ -309,7 +309,7 @@ class ServiceTest extends \PHPUnit\Framework\TestCase
         $structure = $structureService->create($competition, 3);
         $rootRound = $structure->getRootRound();
 
-        $this->createGames($structure);
+        (new GamesCreator())->createStructureGames( $structure );
 
         $pouleOne = $rootRound->getPoule(1);
 
@@ -333,7 +333,7 @@ class ServiceTest extends \PHPUnit\Framework\TestCase
         $structure = $structureService->create($competition, 4);
         $rootRound = $structure->getRootRound();
 
-        $this->createGames($structure);
+        (new GamesCreator())->createStructureGames( $structure );
 
         $pouleOne = $rootRound->getPoule(1);
 
@@ -359,7 +359,7 @@ class ServiceTest extends \PHPUnit\Framework\TestCase
         $structure = $structureService->create($competition, 4);
         $rootRound = $structure->getRootRound();
 
-        $this->createGames($structure);
+        (new GamesCreator())->createStructureGames( $structure );
 
         $pouleOne = $rootRound->getPoule(1);
 

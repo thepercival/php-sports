@@ -14,7 +14,7 @@ use Sports\Competitor;
 
 class ReservationServiceTest extends \PHPUnit\Framework\TestCase
 {
-    use CompetitionCreator, GamesCreator, SetScores;
+    use CompetitionCreator, SetScores;
 
     public function testFreeAndReserve()
     {
@@ -26,7 +26,7 @@ class ReservationServiceTest extends \PHPUnit\Framework\TestCase
         $structureService->addQualifier($rootRound, QualifyGroup::WINNERS);
         $structureService->addQualifier($rootRound, QualifyGroup::LOSERS);
 
-        $this->createGames( $structure );
+        (new GamesCreator())->createStructureGames( $structure );
 
         $pouleOne = $rootRound->getPoule(1);
 
@@ -65,7 +65,7 @@ class ReservationServiceTest extends \PHPUnit\Framework\TestCase
 
         $structureService->addPoule($rootRound->getChild(QualifyGroup::WINNERS, 1));
 
-        $this->createGames( $structure );
+        (new GamesCreator())->createStructureGames( $structure );
 
         $pouleOne = $rootRound->getPoule(1);
         $pouleTwo = $rootRound->getPoule(2);
@@ -128,7 +128,7 @@ class ReservationServiceTest extends \PHPUnit\Framework\TestCase
 
         $structureService->removePoule($rootRound->getChild(QualifyGroup::WINNERS, 1));
 
-        $this->createGames( $structure );
+        (new GamesCreator())->createStructureGames( $structure );
 
         $pouleOne = $rootRound->getPoule(1);
         $pouleTwo = $rootRound->getPoule(2);

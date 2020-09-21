@@ -9,12 +9,14 @@ use SportsPlanning\Input;
 use SportsPlanning\Resource\RefereePlace\Service as RefereePlaceService;
 use Sports\Qualify\Group as QualifyGroup;
 use Sports\Round\Number\GamesValidator;
+use Sports\Round\Number as RoundNumber;
 use Sports\TestHelper\CompetitionCreator;
+use Sports\TestHelper\GamesCreator;
 use Sports\Structure\Service as StructureService;
 
 class PlanningAssignerTest extends \PHPUnit\Framework\TestCase
 {
-    use CompetitionCreator, PlanningCreator;
+    use CompetitionCreator;
 
     public function testValid()
     {
@@ -25,11 +27,8 @@ class PlanningAssignerTest extends \PHPUnit\Framework\TestCase
 
         $firstRoundNumber = $structure->getFirstRoundNumber();
 
-        $options = [];
-        $planning = $this->createPlanning($firstRoundNumber, $options);
+        (new GamesCreator())->createGames($firstRoundNumber);
 
-        $planningAssigner = new PlanningAssigner(new PlanningScheduler());
-        $planningAssigner->createGames($firstRoundNumber, $planning);
 
         $gamesValidator = new GamesValidator();
         $nrOfReferees = $competition->getReferees()->count();
@@ -46,14 +45,7 @@ class PlanningAssignerTest extends \PHPUnit\Framework\TestCase
 
         $firstRoundNumber = $structure->getFirstRoundNumber();
 
-        $firstRoundNumber->getPlanningConfig()->setSelfReferee(Input::SELFREFEREE_SAMEPOULE);
-        $options = [];
-        $planning = $this->createPlanning($firstRoundNumber, $options);
-        $refereePlaceService = new RefereePlaceService($planning);
-        $refereePlaceService->assign($planning->createFirstBatch());
-
-        $planningAssigner = new PlanningAssigner(new PlanningScheduler());
-        $planningAssigner->createGames($firstRoundNumber, $planning);
+        (new GamesCreator())->createGames($firstRoundNumber);
 
         $gamesValidator = new GamesValidator();
         $nrOfReferees = $competition->getReferees()->count();
@@ -74,18 +66,7 @@ class PlanningAssignerTest extends \PHPUnit\Framework\TestCase
         $firstRoundNumber->getPlanningConfig()->setSelfReferee(Input::SELFREFEREE_SAMEPOULE);
         $secondRoundNumber = $firstRoundNumber->getNext();
 
-        $options = [];
-        $firstRoundPlanning = $this->createPlanning($firstRoundNumber, $options);
-        $refereePlaceService = new RefereePlaceService($firstRoundPlanning);
-        $refereePlaceService->assign($firstRoundPlanning->createFirstBatch());
-
-        $secondRoundPlanning = $this->createPlanning($secondRoundNumber, $options);
-        $refereePlaceService = new RefereePlaceService($secondRoundPlanning);
-        $refereePlaceService->assign($secondRoundPlanning->createFirstBatch());
-
-        $planningAssigner = new PlanningAssigner(new PlanningScheduler());
-        $planningAssigner->createGames($firstRoundNumber, $firstRoundPlanning);
-        $planningAssigner->createGames($secondRoundNumber, $secondRoundPlanning);
+        (new GamesCreator())->createStructureGames($structure);
 
         $gamesValidator = new GamesValidator();
         $nrOfReferees = $competition->getReferees()->count();

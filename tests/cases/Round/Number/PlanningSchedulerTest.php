@@ -3,20 +3,22 @@
 namespace Sports\Tests\Round\Number;
 
 use League\Period\Period;
+use Sports\Game as GameBase;
 use Sports\Qualify\Group as QualifyGroup;
+use Sports\Round\Number as RoundNumber;
 use Sports\Round\Number\PlanningAssigner;
 use Sports\Round\Number\PlanningScheduler;
 use Sports\TestHelper\CompetitionCreator;
-use Sports\TestHelper\PlanningCreator as PlanningCreatorHelper;
+use Sports\TestHelper\GamesCreator;
 use Sports\Planning\Config\Service as PlanningConfigService;
 use Sports\Structure\Service as StructureService;
-use Sports\TestHelper\PlanningReplacer;
 use Sports\Game;
 use \Exception;
+use SportsHelpers\Range;
 
 class PlanningSchedulerTest extends \PHPUnit\Framework\TestCase
 {
-    use CompetitionCreator, PlanningCreatorHelper, PlanningReplacer;
+    use CompetitionCreator;
 
     public function testValidDateTimes()
     {
@@ -29,26 +31,18 @@ class PlanningSchedulerTest extends \PHPUnit\Framework\TestCase
         $firstRoundNumber = $structure->getFirstRoundNumber();
         $secondRoundNumber = $firstRoundNumber->getNext();
 
-        $options = [];
-        $firstRoundNumberPlanning = $this->createPlanning($firstRoundNumber, $options);
-        $secondRoundNumberPlanning = $this->createPlanning($secondRoundNumber, $options);
-
-        $planningAssigner = new PlanningAssigner(new PlanningScheduler());
-        $planningAssigner->createGames($firstRoundNumber, $firstRoundNumberPlanning);
-        $planningAssigner->createGames($secondRoundNumber, $secondRoundNumberPlanning);
-
-//        foreach( $firstRoundNumber->getGames( Game::ORDER_BY_BATCH ) as $game ) {
-//            (new \SportsPlanning\Output\Game())->output($game);
-//        }
+        (new GamesCreator())->createStructureGames($structure, null, new Range(2,2) );
 
         $competitionStartDateTime = $competition->getStartDateTime();
 
         $planningScheduler = new PlanningScheduler();
         $planningScheduler->rescheduleGames($firstRoundNumber);
 
-        self::assertEquals($competitionStartDateTime, $firstRoundNumber->getGames()[0]->getStartDateTime());
+        $firstRoundNumberGames = $firstRoundNumber->getGames(GameBase::ORDER_BY_BATCH );
+        self::assertEquals($competitionStartDateTime, reset($firstRoundNumberGames)->getStartDateTime());
         $secondRoundNumberStartDateTime = $this->getStartSecond($competitionStartDateTime);
-        self::assertEquals($secondRoundNumberStartDateTime, $secondRoundNumber->getGames()[0]->getStartDateTime());
+        $secondRoundNumberGames = $secondRoundNumber->getGames(GameBase::ORDER_BY_BATCH );
+        self::assertEquals($secondRoundNumberStartDateTime, reset($secondRoundNumberGames)->getStartDateTime());
     }
 
     public function testBlockedPeriodBeforeFirstGame()
@@ -62,17 +56,7 @@ class PlanningSchedulerTest extends \PHPUnit\Framework\TestCase
         $firstRoundNumber = $structure->getFirstRoundNumber();
         $secondRoundNumber = $firstRoundNumber->getNext();
 
-        $options = [];
-        $firstRoundNumberPlanning = $this->createPlanning($firstRoundNumber, $options);
-        $secondRoundNumberPlanning = $this->createPlanning($secondRoundNumber, $options);
-
-        $planningAssigner = new PlanningAssigner(new PlanningScheduler());
-        $planningAssigner->createGames($firstRoundNumber, $firstRoundNumberPlanning);
-        $planningAssigner->createGames($secondRoundNumber, $secondRoundNumberPlanning);
-
-//        foreach( $firstRoundNumber->getGames( Game::ORDER_BY_BATCH ) as $game ) {
-//            (new \SportsPlanning\Output\Game())->output($game);
-//        }
+        (new GamesCreator())->createStructureGames($structure, null, new Range(2,2) );
 
         $competitionStartDateTime = $competition->getStartDateTime();
 
@@ -98,13 +82,7 @@ class PlanningSchedulerTest extends \PHPUnit\Framework\TestCase
         $firstRoundNumber = $structure->getFirstRoundNumber();
         $secondRoundNumber = $firstRoundNumber->getNext();
 
-        $options = [];
-        $firstRoundNumberPlanning = $this->createPlanning($firstRoundNumber, $options);
-        $secondRoundNumberPlanning = $this->createPlanning($secondRoundNumber, $options);
-
-        $planningAssigner = new PlanningAssigner(new PlanningScheduler());
-        $planningAssigner->createGames($firstRoundNumber, $firstRoundNumberPlanning);
-        $planningAssigner->createGames($secondRoundNumber, $secondRoundNumberPlanning);
+        (new GamesCreator())->createStructureGames($structure, null, new Range(2,2) );
 
 //        foreach( $firstRoundNumber->getGames( Game::ORDER_BY_BATCH ) as $game ) {
 //            (new \SportsPlanning\Output\Game())->output($game);
@@ -136,13 +114,7 @@ class PlanningSchedulerTest extends \PHPUnit\Framework\TestCase
         $firstRoundNumber = $structure->getFirstRoundNumber();
         $secondRoundNumber = $firstRoundNumber->getNext();
 
-        $options = [];
-        $firstRoundNumberPlanning = $this->createPlanning($firstRoundNumber, $options);
-        $secondRoundNumberPlanning = $this->createPlanning($secondRoundNumber, $options);
-
-        $planningAssigner = new PlanningAssigner(new PlanningScheduler());
-        $planningAssigner->createGames($firstRoundNumber, $firstRoundNumberPlanning);
-        $planningAssigner->createGames($secondRoundNumber, $secondRoundNumberPlanning);
+        (new GamesCreator())->createStructureGames($structure, null, new Range(2,2) );
 
 //        foreach( $firstRoundNumber->getGames( Game::ORDER_BY_BATCH ) as $game ) {
 //            (new \SportsPlanning\Output\Game())->output($game);
@@ -174,13 +146,7 @@ class PlanningSchedulerTest extends \PHPUnit\Framework\TestCase
         $firstRoundNumber = $structure->getFirstRoundNumber();
         $secondRoundNumber = $firstRoundNumber->getNext();
 
-        $options = [];
-        $firstRoundNumberPlanning = $this->createPlanning($firstRoundNumber, $options);
-        $secondRoundNumberPlanning = $this->createPlanning($secondRoundNumber, $options);
-
-        $planningAssigner = new PlanningAssigner(new PlanningScheduler());
-        $planningAssigner->createGames($firstRoundNumber, $firstRoundNumberPlanning);
-        $planningAssigner->createGames($secondRoundNumber, $secondRoundNumberPlanning);
+        (new GamesCreator())->createStructureGames($structure, null, new Range(2,2) );
 
 //        foreach( $firstRoundNumber->getGames( Game::ORDER_BY_BATCH ) as $game ) {
 //            (new \SportsPlanning\Output\Game())->output($game);
@@ -212,13 +178,7 @@ class PlanningSchedulerTest extends \PHPUnit\Framework\TestCase
         $firstRoundNumber = $structure->getFirstRoundNumber();
         $secondRoundNumber = $firstRoundNumber->getNext();
 
-        $options = [];
-        $firstRoundNumberPlanning = $this->createPlanning($firstRoundNumber, $options);
-        $secondRoundNumberPlanning = $this->createPlanning($secondRoundNumber, $options);
-
-        $planningAssigner = new PlanningAssigner(new PlanningScheduler());
-        $planningAssigner->createGames($firstRoundNumber, $firstRoundNumberPlanning);
-        $planningAssigner->createGames($secondRoundNumber, $secondRoundNumberPlanning);
+        (new GamesCreator())->createStructureGames($structure, null, new Range(2,2) );
 
 //        foreach( $firstRoundNumber->getGames( Game::ORDER_BY_BATCH ) as $game ) {
 //            (new \SportsPlanning\Output\Game())->output($game);
@@ -250,13 +210,7 @@ class PlanningSchedulerTest extends \PHPUnit\Framework\TestCase
         $firstRoundNumber = $structure->getFirstRoundNumber();
         $secondRoundNumber = $firstRoundNumber->getNext();
 
-        $options = [];
-        $firstRoundNumberPlanning = $this->createPlanning($firstRoundNumber, $options);
-        $secondRoundNumberPlanning = $this->createPlanning($secondRoundNumber, $options);
-
-        $planningAssigner = new PlanningAssigner(new PlanningScheduler());
-        $planningAssigner->createGames($firstRoundNumber, $firstRoundNumberPlanning);
-        $planningAssigner->createGames($secondRoundNumber, $secondRoundNumberPlanning);
+        (new GamesCreator())->createStructureGames($structure);
 
         $secondRoundNumber->getPoules()[0]->getGames()->clear();
 //        foreach( $firstRoundNumber->getGames( Game::ORDER_BY_BATCH ) as $game ) {

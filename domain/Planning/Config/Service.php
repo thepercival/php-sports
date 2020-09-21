@@ -83,34 +83,4 @@ class Service
         }
         return true;
     }
-
-    /**
-     * @param PouleStructure $pouleStructure
-     * @param array|SportConfigHelper[] $portConfigHelpers
-     * @return bool
-     */
-    public function canTeamupBeAvailable(PouleStructure $pouleStructure, array $portConfigHelpers): bool
-    {
-        if (count($portConfigHelpers) > 1) {
-            return false;
-        }
-        return $pouleStructure->getBiggestPoule() <= PlanningInput::TEAMUP_MAX
-            && $pouleStructure->getSmallestPoule() <= PlanningInput::TEAMUP_MIN;
-    }
-
-    public function canSelfRefereeBeAvailable(PouleStructure $pouleStructure, int $nrOfGamePlaces): bool
-    {
-        return $this->canSelfRefereeSamePouleBeAvailable($pouleStructure, $nrOfGamePlaces)
-            || $this->canSelfRefereeOtherPoulesBeAvailable($pouleStructure);
-    }
-
-    public function canSelfRefereeOtherPoulesBeAvailable(PouleStructure $pouleStructure): bool
-    {
-        return $pouleStructure->getNrOfPoules() > 1;
-    }
-
-    public function canSelfRefereeSamePouleBeAvailable(PouleStructure $pouleStructure, int $nrOfGamePlaces): bool
-    {
-        return $pouleStructure->getSmallestPoule() > $nrOfGamePlaces;
-    }
 }

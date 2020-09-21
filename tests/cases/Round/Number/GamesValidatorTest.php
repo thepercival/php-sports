@@ -14,24 +14,7 @@ use Sports\Structure\Service as StructureService;
 
 class GamesValidatorTest extends \PHPUnit\Framework\TestCase
 {
-    use CompetitionCreator, GamesCreator;
-
-    public function testHasEnoughTotalNrOfGames()
-    {
-        $competition = $this->createCompetition();
-
-        $structureService = new StructureService([]);
-        $structure = $structureService->create($competition, 5);
-
-        // $this->createGames( $structure );
-
-        $firstRoundNumber = $structure->getFirstRoundNumber();
-
-        $gamesValidator = new GamesValidator();
-        self::expectException(Exception::class);
-        $nrOfReferees = $competition->getReferees()->count();
-        $gamesValidator->validate($firstRoundNumber, $nrOfReferees);
-    }
+    use CompetitionCreator;
 
     public function testGameWithoutField()
     {
@@ -40,7 +23,7 @@ class GamesValidatorTest extends \PHPUnit\Framework\TestCase
         $structureService = new StructureService([]);
         $structure = $structureService->create($competition, 5);
 
-        $this->createGames($structure);
+        (new GamesCreator())->createStructureGames( $structure );
 
         $firstRoundNumber = $structure->getFirstRoundNumber();
 
@@ -61,7 +44,7 @@ class GamesValidatorTest extends \PHPUnit\Framework\TestCase
         $structureService = new StructureService([]);
         $structure = $structureService->create($competition, 5);
 
-        $this->createGames($structure);
+        (new GamesCreator())->createStructureGames( $structure );
 
         $firstRoundNumber = $structure->getFirstRoundNumber();
 
@@ -82,7 +65,7 @@ class GamesValidatorTest extends \PHPUnit\Framework\TestCase
         $structureService = new StructureService([]);
         $structure = $structureService->create($competition, 5);
 
-        $this->createGames($structure);
+        (new GamesCreator())->createStructureGames( $structure );
 
         $firstRoundNumber = $structure->getFirstRoundNumber();
 
@@ -104,7 +87,7 @@ class GamesValidatorTest extends \PHPUnit\Framework\TestCase
         $structureService = new StructureService([]);
         $structure = $structureService->create($competition, 5);
 
-        $this->createGames($structure);
+        (new GamesCreator())->createStructureGames( $structure );
 
         $firstRoundNumber = $structure->getFirstRoundNumber();
 
@@ -126,7 +109,7 @@ class GamesValidatorTest extends \PHPUnit\Framework\TestCase
         $structureService = new StructureService([]);
         $structure = $structureService->create($competition, 5);
 
-        $this->createGames($structure);
+        (new GamesCreator())->createStructureGames( $structure );
 
         $firstRoundNumber = $structure->getFirstRoundNumber();
 
@@ -149,7 +132,7 @@ class GamesValidatorTest extends \PHPUnit\Framework\TestCase
         $structureService = new StructureService([]);
         $structure = $structureService->create($competition, 5);
 
-        $this->createGames($structure);
+        (new GamesCreator())->createStructureGames( $structure );
 
         $firstRoundNumber = $structure->getFirstRoundNumber();
 
@@ -179,7 +162,7 @@ class GamesValidatorTest extends \PHPUnit\Framework\TestCase
         $structureService = new StructureService([]);
         $structure = $structureService->create($competition, 5);
 
-        $this->createGames($structure);
+        (new GamesCreator())->createStructureGames( $structure );
 
         $firstRoundNumber = $structure->getFirstRoundNumber();
 
@@ -208,7 +191,7 @@ class GamesValidatorTest extends \PHPUnit\Framework\TestCase
         $firstRoundNumber = $structure->getFirstRoundNumber();
         $firstRoundNumber->getPlanningConfig()->setSelfReferee(PlanningInput::SELFREFEREE_SAMEPOULE);
 
-        $this->createGames($structure);
+        (new GamesCreator())->createStructureGames( $structure );
 
 //        $outputGame = new \Sports\Output\Game();
 //        $games = $firstRoundNumber->getGames(Game::ORDER_BY_BATCH);
@@ -239,7 +222,7 @@ class GamesValidatorTest extends \PHPUnit\Framework\TestCase
         $firstRoundNumber = $structure->getFirstRoundNumber();
         $firstRoundNumber->getPlanningConfig()->setSelfReferee(PlanningInput::SELFREFEREE_OTHERPOULES);
 
-        $this->createGames($structure);
+        (new GamesCreator())->createStructureGames( $structure );
 
 //        $outputGame = new \Sports\Output\Game();
 //        $games = $firstRoundNumber->getGames(Game::ORDER_BY_BATCH);
@@ -266,7 +249,7 @@ class GamesValidatorTest extends \PHPUnit\Framework\TestCase
         // 3 en laat de validator de boel opsporen!
         $start = $competition->getStartDateTime()->modify("+30 minutes");
         $blockedPeriod = new Period($start, $start->modify("+30 minutes"));
-        $this->createGames($structure, $blockedPeriod);
+        (new GamesCreator())->createStructureGames( $structure );
 
         /** @var Game[] $games */
         $games = $firstRoundNumber->getGames(Game::ORDER_BY_BATCH);
@@ -292,7 +275,7 @@ class GamesValidatorTest extends \PHPUnit\Framework\TestCase
         $structureService = new StructureService([]);
         $structure = $structureService->create($competition, 5);
 
-        $this->createGames($structure);
+        (new GamesCreator())->createStructureGames( $structure );
 
         $gamesValidator = new GamesValidator();
         $nrOfReferees = $competition->getReferees()->count();

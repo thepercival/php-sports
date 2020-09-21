@@ -15,7 +15,7 @@ use Sports\TestHelper\GamesCreator;
 
 class ValidatorTest extends \PHPUnit\Framework\TestCase
 {
-    use CompetitionCreator, GamesCreator;
+    use CompetitionCreator;
 
     public function testNoStructure()
     {
@@ -102,7 +102,7 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
 
         $structure = $structureService->create($competition, 6, 2);
 
-        $this->createGames($structure);
+        (new GamesCreator())->createStructureGames($structure);
 
         $firstRoundNumber = $structure->getFirstRoundNumber();
         $rootRound = $structure->getRootRound();
@@ -127,7 +127,7 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
         $rootRound = $structure->getRootRound();
         $structureService->addQualifiers($rootRound, QualifyGroup::WINNERS, 2);
 
-        $this->createGames($structure);
+        (new GamesCreator())->createStructureGames($structure);
 
         $rootRound->getQualifyGroup(QualifyGroup::WINNERS, 1)->setNumber(0);
 
@@ -146,7 +146,7 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
 
         $rootRound = $structure->getRootRound();
 
-        $this->createGames($structure);
+        (new GamesCreator())->createStructureGames($structure);
 
         $rootRound->getPoules()->first()->setNumber(0);
 
@@ -165,7 +165,7 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
 
         $rootRound = $structure->getRootRound();
 
-        $this->createGames($structure);
+        (new GamesCreator())->createStructureGames($structure);
 
         $rootRound->getPoule(1)->getPlaces()->first()->setNumber(0);
 
@@ -190,7 +190,7 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
         $qualifyGroup = new QualifyGroup($rootRound, QualifyGroup::WINNERS);
         $secondRound = new Round($anotherRoundNumber, $qualifyGroup);
 
-        $this->createGames($structure);
+        (new GamesCreator())->createStructureGames($structure);
 
         $structureValidator = new StructureValidator();
         self::expectException(Exception::class);
@@ -210,7 +210,7 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
 
         $structureService->addQualifiers($rootRound, QualifyGroup::WINNERS, 2);
 
-        $this->createGames($structure);
+        (new GamesCreator())->createStructureGames($structure);
 
         $structureValidator = new StructureValidator();
         self::assertNull($structureValidator->checkValidity($competition, $structure));

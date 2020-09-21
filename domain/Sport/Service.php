@@ -2,7 +2,6 @@
 
 namespace Sports\Sport;
 
-use SportsPlanning\HelperTmp;
 use SportsPlanning\Sport\NrFieldsGames as SportNrFieldsGames;
 use SportsPlanning\Sport\NrFields as SportNrFields;
 use SportsHelpers\Math as Math;
@@ -143,11 +142,6 @@ class Service
             }
         }
         return $commonDivisors;
-    }
-
-    public function getNrOfPouleGames(int $nrOfPlaces, bool $teamup, int $nrOfHeadtohead): int
-    {
-        return (new HelperTmp())->getNrOfCombinations($nrOfPlaces, $teamup) * $nrOfHeadtohead;
     }
 
 //    public function getMinNrOfGamesMap(Poule $poule, array $sportPlanningConfigs): array {

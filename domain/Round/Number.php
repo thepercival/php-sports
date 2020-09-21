@@ -8,6 +8,7 @@ use Doctrine\ORM\PersistentCollection;
 use Sports\Competition;
 use Sports\Competitor;
 use Sports\Game as GameBase;
+use Sports\Poule;
 use Sports\Sport\ScoreConfig as SportScoreConfig;
 use Sports\Planning\Config as PlanningConfig;
 use Sports\Round;
@@ -224,6 +225,9 @@ class Number
         return $this->getCompetition()->getSportConfig($sport);
     }
 
+    /**
+     * @return array | Poule[]
+     */
     public function getPoules(): array
     {
         $poules = [];

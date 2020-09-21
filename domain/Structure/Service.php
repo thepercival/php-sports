@@ -8,7 +8,7 @@ use Sports\Round\Number as RoundNumber;
 use Sports\Structure as StructureBase;
 use Sports\Competition;
 use Sports\Place;
-use Sports\Place\Range as PlaceRange;
+use SportsHelpers\Place\Range as PlaceRange;
 use Sports\Poule;
 use Sports\Poule\Horizontal as HorizontalPoule;
 use Sports\Poule\Horizontal\Creator as HorizontolPouleCreator;
@@ -449,8 +449,8 @@ class Service
         }
         $round->getPoules()->clear();
 
-        $PouleStructure = $this->getPouleStructure($nrOfPlaces, $nrOfPoules);
-        foreach ( $PouleStructure->toArray() as $nrOfPlacesToAdd) {
+        $pouleStructure = new PouleStructure\Balanced($nrOfPlaces, $nrOfPoules);
+        foreach ( $pouleStructure->toArray() as $nrOfPlacesToAdd) {
             $poule = new Poule($round);
             for ($i = 0; $i < $nrOfPlacesToAdd; $i++) {
                 new Place($poule);
@@ -459,23 +459,7 @@ class Service
         return $round;
     }
 
-    public function getPouleStructure(int $nrOfPlaces, int $nrOfPoules): PouleStructure
-    {
-        $structureConfig = [];
-        while ($nrOfPlaces > 0) {
-            $nrOfPlacesToAdd = $this->getNrOfPlacesPerPoule($nrOfPlaces, $nrOfPoules, false);
-            $structureConfig[] = $nrOfPlacesToAdd;
-            $nrOfPlaces -= $nrOfPlacesToAdd;
-            $nrOfPoules--;
-        }
-        uasort(
-            $structureConfig,
-            function (int $nrOfPlacesPouleA, int $nrOfPlacesPouleB) {
-                return $nrOfPlacesPouleA > $nrOfPlacesPouleB ? -1 : 1;
-            }
-        );
-        return new PouleStructure(array_values($structureConfig));
-    }
+
 
     protected function getRoot(Round $round): Round
     {
@@ -483,18 +467,6 @@ class Service
             return $this->getRoot($round->getParent());
         }
         return $round;
-    }
-
-    public function getNrOfPlacesPerPoule(int $nrOfPlaces, int $nrOfPoules, bool $floor): int
-    {
-        $nrOfPlaceLeft = ($nrOfPlaces % $nrOfPoules);
-        if ($nrOfPlaceLeft === 0) {
-            return $nrOfPlaces / $nrOfPoules;
-        }
-        if ($floor) {
-            return (int)floor((($nrOfPlaces - $nrOfPlaceLeft) / $nrOfPoules));
-        }
-        return (int)ceil((($nrOfPlaces + ($nrOfPoules - $nrOfPlaceLeft)) / $nrOfPoules));
     }
 
     protected function checkRanges(int $nrOfPlaces, int $nrOfPoules = null)
@@ -508,7 +480,8 @@ class Service
                 if ($nrOfPoules === null) {
                     return;
                 }
-                $flooredNrOfPlacesPerPoule = $this->getNrOfPlacesPerPoule($nrOfPlaces, $nrOfPoules, true);
+                $pouleStructure = new PouleStructure\Balanced($nrOfPlaces, $nrOfPoules);
+                $flooredNrOfPlacesPerPoule = $pouleStructure->getNrOfPlacesPerPoule(true);
                 if ($flooredNrOfPlacesPerPoule < $placeRange->getPlacesPerPouleRange()->min) {
                     throw new \Exception(
                         'er moeten minimaal ' . $placeRange->getPlacesPerPouleRange(
@@ -516,7 +489,7 @@ class Service
                         E_ERROR
                     );
                 }
-                $ceiledNrOfPlacesPerPoule = $this->getNrOfPlacesPerPoule($nrOfPlaces, $nrOfPoules, false);
+                $ceiledNrOfPlacesPerPoule = $pouleStructure->getNrOfPlacesPerPoule(false);
                 if ($ceiledNrOfPlacesPerPoule > $placeRange->getPlacesPerPouleRange()->max) {
                     throw new \Exception(
                         'er mogen maximaal ' . $placeRange->getPlacesPerPouleRange(

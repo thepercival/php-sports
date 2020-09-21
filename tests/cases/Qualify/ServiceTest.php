@@ -13,7 +13,7 @@ use Sports\Competitor;
 
 class ServiceTest extends \PHPUnit\Framework\TestCase
 {
-    use CompetitionCreator, GamesCreator, SetScores;
+    use CompetitionCreator, SetScores;
 
     public function test2RoundNumbers5()
     {
@@ -26,7 +26,7 @@ class ServiceTest extends \PHPUnit\Framework\TestCase
         $structureService->addQualifiers($rootRound, QualifyGroup::WINNERS, 2);
         $structureService->addQualifiers($rootRound, QualifyGroup::LOSERS, 2);
 
-        $this->createGames($structure);
+        (new GamesCreator())->createStructureGames( $structure );
 
         $pouleOne = $rootRound->getPoule(1);
 
@@ -68,7 +68,7 @@ class ServiceTest extends \PHPUnit\Framework\TestCase
         $structure = $structureService->create($competition, 6);
         $rootRound = $structure->getRootRound();
 
-        $this->createGames($structure);
+        (new GamesCreator())->createStructureGames( $structure );
 
         $pouleOne = $rootRound->getPoule(1);
         $pouleTwo = $rootRound->getPoule(2);
@@ -114,7 +114,7 @@ class ServiceTest extends \PHPUnit\Framework\TestCase
         $structureService->removePoule($rootRound->getChild(QualifyGroup::WINNERS, 1));
         $structureService->removePoule($rootRound->getChild(QualifyGroup::LOSERS, 1));
 
-        $this->createGames($structure);
+        (new GamesCreator())->createStructureGames( $structure );
 
         $pouleOne = $rootRound->getPoule(1);
         $pouleTwo = $rootRound->getPoule(2);
@@ -168,7 +168,7 @@ class ServiceTest extends \PHPUnit\Framework\TestCase
         $structureService->addQualifiers($rootRound, QualifyGroup::WINNERS, 4);
         $structureService->removePoule($rootRound->getChild(QualifyGroup::WINNERS, 1));
 
-        $this->createGames($structure);
+        (new GamesCreator())->createStructureGames( $structure );
 
         $pouleOne = $rootRound->getPoule(1);
         $pouleTwo = $rootRound->getPoule(2);
@@ -206,7 +206,7 @@ class ServiceTest extends \PHPUnit\Framework\TestCase
         $structureService->addQualifiers($rootRound, QualifyGroup::WINNERS, 3);
         $structureService->addQualifiers($rootRound, QualifyGroup::LOSERS, 3);
 
-        $this->createGames($structure);
+        (new GamesCreator())->createStructureGames( $structure );
 
         $pouleOne = $rootRound->getPoule(1);
         $pouleTwo = $rootRound->getPoule(2);

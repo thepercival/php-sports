@@ -11,12 +11,11 @@ use Sports\Referee;
 use Sports\Structure\Service as StructureService;
 use Sports\Planning\Service as PlanningService;
 use Sports\Qualify\Group as QualifyGroup;
-use Sports\TestHelper\DefaultStructureOptions;
 use Sports\TestHelper\GamesCreator;
 
 class NameServiceTest extends \PHPUnit\Framework\TestCase
 {
-    use CompetitionCreator, GamesCreator;
+    use CompetitionCreator;
 
     public function testWinnersOrLosersDescription()
     {
@@ -269,7 +268,7 @@ class NameServiceTest extends \PHPUnit\Framework\TestCase
             $placeLocationMap = new PlaceLocationMap( [$competitor] );
             $nameService = new NameService( $placeLocationMap );
 
-            $this->createGames($structure);
+            (new GamesCreator())->createStructureGames( $structure );
 
             $game = $rootRound->getGames()[0];
             $gamePlaces = $game->getPlaces();
@@ -353,7 +352,7 @@ class NameServiceTest extends \PHPUnit\Framework\TestCase
             $placeLocationMap = new PlaceLocationMap( [$competitor] );
             $nameService = new NameService( $placeLocationMap );
 
-            $this->createGames($structure);
+            (new GamesCreator())->createStructureGames( $structure );
 
             $game = $firstPlace->getPoule()->getGames()->first();
             self::assertSame($nameService->getRefereeName($game), '111');
