@@ -109,6 +109,23 @@ class Person implements Identifiable
         $this->lastName = $lastName;
     }
 
+    public function getName(): string {
+        $name = $this->getFirstName();
+        if( strlen( $this->getNameInsertion() ) > 0 ) {
+            if( strlen( $name ) > 0 ) {
+                $name .= " ";
+            }
+            $name .= $this->getNameInsertion();
+        }
+        if( strlen( $this->getLastName() ) > 0 ) {
+            if( strlen( $name ) > 0 ) {
+                $name .= " ";
+            }
+            $name .= $this->getLastName();
+        }
+        return $name;
+    }
+
     public function getDateOfBirth(): ?\DateTimeImmutable
     {
         return $this->dateOfBirth;

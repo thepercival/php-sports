@@ -361,11 +361,6 @@ class Number
         return $this->sportScoreConfigs->count() > 1;
     }
 
-    public function getFirstSportScoreConfig(): SportScoreConfig
-    {
-        return $this->sportScoreConfigs[0];
-    }
-
     /**
      * @return ArrayCollection | SportScoreConfig[]
      */

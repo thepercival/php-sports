@@ -8,6 +8,7 @@ use Sports\Game;
 use Sports\NameService;
 use Sports\Place\Location\Map as PlaceLocationMap;
 use Sports\Competitor\Team as TeamCompetitor;
+use Sports\State;
 
 class Games
 {
@@ -18,7 +19,7 @@ class Games
      */
     public function display( Competition $competition, array $games, array $teamCompetitors ) {
         $table = new ConsoleTable();
-        $table->setHeaders(array('league', 'season', 'batchNr', 'datetime', 'home', 'score', 'away' ) );
+        $table->setHeaders(array('league', 'season', 'batchNr', 'id', 'datetime', 'state', 'home', 'score', 'away' ) );
 
         $nameService = new NameService( new PlaceLocationMap( $teamCompetitors ) );
 
@@ -27,7 +28,9 @@ class Games
                 $competition->getLeague()->getName(),
                 $competition->getSeason()->getName(),
                 $game->getBatchNr(),
+                $game->getId(),
                 $game->getStartDateTime()->format(\DateTime::ATOM),
+                (new State($game->getState()))->getDescription(),
                 $nameService->getPlacesFromName($game->getPlaces(Game::HOME), true, true),
                 $this->getScore($game),
                 $nameService->getPlacesFromName($game->getPlaces(Game::AWAY), true, true),

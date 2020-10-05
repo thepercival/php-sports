@@ -6,9 +6,13 @@ use DateTimeImmutable;
 use \Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 
+use Sports\Competitor\Team as TeamCompetitor;
+use Sports\Game\Participation;
 use Sports\Game\Score;
 use Sports\Game\Place as GamePlace;
+use Sports\Place\Location\Map;
 use Sports\Sport\Config as SportConfig;
+use Sports\Sport\ScoreConfig as SportScoreConfig;
 use SportsHelpers\Identifiable;
 
 class Game implements Identifiable
@@ -56,6 +60,10 @@ class Game implements Identifiable
      * @var GamePlace[] | Collection
      */
     protected $places;
+    /**
+     * @var Participation[] | Collection
+     */
+    protected $participations;
 
     public const RESULT_HOME = 1;
     public const RESULT_DRAW = 2;
@@ -78,6 +86,7 @@ class Game implements Identifiable
         $this->startDateTime = $startDateTime;
         $this->setState(State::Created);
         $this->places = new ArrayCollection();
+        $this->participations = new ArrayCollection();
         $this->scores = new ArrayCollection();
     }
 
@@ -300,6 +309,27 @@ class Game implements Identifiable
         return null;
     }
 
+    /**
+     * @param Map $placeLocationMap
+     * @param bool|null $homeAway
+     * @return Collection|Competitor[]
+     */
+    public function getCompetitors( Map $placeLocationMap, bool $homeAway = null ): Collection {
+        return $this->getPlaces( $homeAway )->map( function ( GamePlace $gamePlace ) use ($placeLocationMap) : Competitor {
+            return $placeLocationMap->getCompetitor( $gamePlace->getPlace() );
+        });
+    }
+
+    public function getParticipations(TeamCompetitor $teamCompetitor = null): Collection
+    {
+        if ($teamCompetitor === null) {
+            return $this->participations;
+        }
+        return $this->participations->filter(function (Participation $participation) use ($teamCompetitor): bool {
+            return $participation->getPlayer()->getTeam() === $teamCompetitor->getTeam();
+        });
+    }
+
     public function getFinalPhase(): int
     {
         if ($this->getScores()->count()  === 0) {
@@ -317,8 +347,14 @@ class Game implements Identifiable
         return $this->getRound()->getNumber()->getCompetition()->getSportConfig($field->getSport());
     }
 
-    public function getSportScoreConfig()
+    public function getSportScoreConfig(): SportScoreConfig
     {
+        $field = $this->getField();
+        if ($field === null) {
+            $sportScoreConfigs = $this->getRound()->getNumber()->getValidSportScoreConfigs();
+            return reset($sportScoreConfigs);
+        }
+        // return $this->getRound()->getNumber()->getCompetition()->getSportConfig($field->getSport());
         return $this->getRound()->getNumber()->getValidSportScoreConfig($this->getField()->getSport());
     }
 }
