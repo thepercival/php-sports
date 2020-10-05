@@ -2,6 +2,9 @@
 
 namespace Sports\Game;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+use Sports\Competitor\Team as TeamCompetitor;
 use Sports\Game;
 use Sports\Place as PlaceBase;
 use Sports\Team\Role\Player;
@@ -28,6 +31,18 @@ class Participation
      * @var int
      */
     private $endMinute;
+    /**
+     * @var Collection
+     */
+    private $cards;
+    /**
+     * @var Collection
+     */
+    private $goals;
+    /**
+     * @var Collection
+     */
+    private $assists;
 
     public function __construct(Game $game, Player $player, int $beginMinute, int $endMinute )
     {
@@ -35,6 +50,9 @@ class Participation
         $this->player = $player;
         $this->beginMinute = $beginMinute;
         $this->endMinute = $endMinute;
+        $this->cards = new ArrayCollection();
+        $this->goals = new ArrayCollection();
+        $this->assists = new ArrayCollection();
     }
 
     /**
@@ -93,5 +111,20 @@ class Participation
     public function isBeginning(): bool
     {
         return $this->beginMinute === 0;
+    }
+
+    public function getCards(): Collection
+    {
+        return $this->cards;
+    }
+
+    public function getGoals(): Collection
+    {
+        return $this->goals;
+    }
+
+    public function getAssists(): Collection
+    {
+        return $this->assists;
     }
 }

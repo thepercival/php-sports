@@ -5,7 +5,8 @@
       <generator strategy="AUTO"/>
     </id>
     <field name="minute" column="minute" type="smallint" nullable="false" unique="false"/>
-    <many-to-one field="gameParticipation" target-entity="Sports\GameParticipation" inversed-by="cards">
+    <field name="color" column="color" type="smallint" nullable="false" unique="false"/>
+    <many-to-one field="gameParticipation" target-entity="Sports\Game\Participation" inversed-by="cards">
       <join-columns>
         <join-column name="gameParticipationId" referenced-column-name="id" nullable="false" on-delete="CASCADE"/>
       </join-columns>
