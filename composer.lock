@@ -2739,16 +2739,16 @@
         },
         {
             "name": "thepercival/php-sports-planning",
-            "version": "v1.0.5",
+            "version": "v1.0.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/thepercival/php-sports-planning.git",
-                "reference": "c2409e5cc1b7b4b258a5410c5977b42fc815565f"
+                "reference": "8d6b4b1b6a63d25835aa88b23650986490954463"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/thepercival/php-sports-planning/zipball/c2409e5cc1b7b4b258a5410c5977b42fc815565f",
-                "reference": "c2409e5cc1b7b4b258a5410c5977b42fc815565f",
+                "url": "https://api.github.com/repos/thepercival/php-sports-planning/zipball/8d6b4b1b6a63d25835aa88b23650986490954463",
+                "reference": "8d6b4b1b6a63d25835aa88b23650986490954463",
                 "shasum": ""
             },
             "require": {
@@ -2797,7 +2797,7 @@
                 "planning",
                 "sport"
             ],
-            "time": "2020-09-21T13:05:35+00:00"
+            "time": "2020-10-05T13:51:59+00:00"
         },
         {
             "name": "vlucas/phpdotenv",
