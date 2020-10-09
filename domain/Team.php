@@ -38,6 +38,11 @@ class Team implements Identifiable
     const MAX_LENGTH_ABBREVIATION = 3;
     const MAX_LENGTH_IMAGEURL = 150;
 
+    CONST LINE_KEEPER = 1;
+    CONST LINE_DEFENSE = 2;
+    CONST LINE_MIDFIELD = 4;
+    CONST LINE_FORWARD = 8;
+
     public function __construct(Association $association, string $name)
     {
         $this->setAssociation($association);

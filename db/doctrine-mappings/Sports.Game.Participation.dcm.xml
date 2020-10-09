@@ -16,19 +16,13 @@
         <join-column name="playerId" referenced-column-name="id" nullable="false" on-delete="RESTRICT"/>
       </join-columns>
     </many-to-one>
-    <one-to-many field="cards" target-entity="Sports\Game\Participation\Card" mapped-by="gameParticipation" orphan-removal="true">
+    <one-to-many field="cards" target-entity="Sports\Game\Event\Card" mapped-by="gameParticipation" orphan-removal="true">
       <cascade>
         <cascade-persist/>
         <cascade-remove/>
       </cascade>
     </one-to-many>
-    <one-to-many field="goals" target-entity="Sports\Game\Participation\Goal" mapped-by="gameParticipation" orphan-removal="true">
-      <cascade>
-        <cascade-persist/>
-        <cascade-remove/>
-      </cascade>
-    </one-to-many>
-    <one-to-many field="assists" target-entity="Sports\Game\Participation\Goal" mapped-by="assistGameParticipation" orphan-removal="true">
+    <one-to-many field="goalsAndAssists" target-entity="Sports\Game\Event\Goal" mapped-by="gameParticipation" orphan-removal="true">
       <cascade>
         <cascade-persist/>
         <cascade-remove/>

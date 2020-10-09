@@ -36,6 +36,8 @@ class Game
 
         $this->displayLineups( $table );
 
+        $this->displayEvents( $table );
+
         $table->display();
     }
 
@@ -43,6 +45,7 @@ class Game
         $homeParticipations = $this->getParticipations( GameBase::HOME );
         $awayParticipations = $this->getParticipations( GameBase::AWAY );
         while( count($homeParticipations) > 0 || count($awayParticipations) > 0 ) {
+            // voeg hier nog wissels aan toe!!
             $homeParticipationName = "";
             $homeParticipation = array_pop( $homeParticipations );
             if( $homeParticipation !== null ) {
@@ -55,7 +58,28 @@ class Game
             }
             $table->addRow( [  $homeParticipationName, "", $awayParticipationName ] );
         }
+    }
 
+    protected function displayEvents( ConsoleTable $table ) {
+        foreach( $this->game->getEvents() as $event ) {
+            // ga hier per column kijken wat de waarde moet zijn
+
+            // thuis of uit
+            // score ja nee
+            // minute
+
+//            $homeParticipationName = "";
+//            $homeParticipation = array_pop( $homeParticipations );
+//            if( $homeParticipation !== null ) {
+//                $homeParticipationName = $homeParticipation->getPlayer()->getPerson()->getName();
+//            }
+//            $awayParticipationName = "";
+//            $awayParticipation = array_pop( $awayParticipations );
+//            if( $awayParticipation !== null ) {
+//                $awayParticipationName = $awayParticipation->getPlayer()->getPerson()->getName();
+//            }
+            $table->addRow( [  $event->getMinute(), "", $event->getMinute() ] );
+        }
     }
 
     /**

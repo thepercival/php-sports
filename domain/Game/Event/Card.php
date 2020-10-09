@@ -1,6 +1,6 @@
 <?php
 
-namespace Sports\Game\Participation;
+namespace Sports\Game\Event;
 
 use Sports\Game\Participation as GameParticipation;
 
@@ -11,23 +11,23 @@ class Card
      */
     protected $id;
     /**
+     * @var int
+     */
+    private $minute;
+    /**
      * @var GameParticipation
      */
     private $gameParticipation;
     /**
      * @var int
      */
-    private $minute;
-    /**
-     * @var int
-     */
-    private $color;
+    private $type;
 
-    public function __construct(GameParticipation $gameParticipation, int $minute, int $color )
+    public function __construct(int $minute, GameParticipation $gameParticipation, int $type )
     {
         $this->setGameParticipation($gameParticipation);
         $this->minute = $minute;
-        $this->color = $color;
+        $this->type = $type;
     }
 
     /**
@@ -46,6 +46,11 @@ class Card
         $this->id = $id;
     }
 
+    public function getMinute(): int
+    {
+        return $this->minute;
+    }
+
     public function getGameParticipation(): GameParticipation
     {
         return $this->gameParticipation;
@@ -59,13 +64,10 @@ class Card
         $this->gameParticipation = $gameParticipation;
     }
 
-    public function getMinute(): int
-    {
-        return $this->minute;
-    }
 
-    public function getColor(): int
+
+    public function getType(): int
     {
-        return $this->color;
+        return $this->type;
     }
 }

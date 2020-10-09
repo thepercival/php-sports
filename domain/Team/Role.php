@@ -24,12 +24,12 @@ abstract class Role implements Identifiable
     const MAX_LENGTH_ABBREVIATION = 3;
     const MAX_LENGTH_IMAGEURL = 150;
 
-    public function __construct(Team $team, Person $person, DateTimeImmutable $startDateTime, DateTimeImmutable $endDateTime)
+    public function __construct(Team $team, Person $person, Period $period)
     {
         $this->setTeam($team);
         $this->setPerson($person);
-        $this->setStartDateTime($startDateTime);
-        $this->setEndDateTime($endDateTime);
+        $this->setStartDateTime($period->getStartDate());
+        $this->setEndDateTime($period->getEndDate());
     }
 
     /**

@@ -11,6 +11,9 @@ class Sport implements Identifiable
     const MIN_LENGTH_UNITNAME = 2;
     const MAX_LENGTH_UNITNAME = 20;
 
+    const WARNING = 1;
+    const SENDOFF = 2;
+
     /**
      * @var int|string
      */

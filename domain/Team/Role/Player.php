@@ -16,9 +16,9 @@ class Player extends Role
     protected $shirtNumber;
     protected int $line;
 
-    public function __construct(Team $team, Person $person, DateTimeImmutable $startDateTime, DateTimeImmutable $endDateTime, int $line)
+    public function __construct(Team $team, Person $person, Period $period, int $line)
     {
-        parent::__construct($team, $person, $startDateTime,$endDateTime);
+        parent::__construct($team, $person, $period);
         $this->setLine($line);
     }
 

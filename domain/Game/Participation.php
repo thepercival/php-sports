@@ -6,7 +6,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Sports\Competitor\Team as TeamCompetitor;
 use Sports\Game;
-use Sports\Place as PlaceBase;
+use Sports\Game\Event\Goal as GoalEvent;
 use Sports\Team\Role\Player;
 
 class Participation
@@ -38,11 +38,7 @@ class Participation
     /**
      * @var Collection
      */
-    private $goals;
-    /**
-     * @var Collection
-     */
-    private $assists;
+    private $goalsAndAssists;
 
     public function __construct(Game $game, Player $player, int $beginMinute, int $endMinute )
     {
@@ -51,8 +47,7 @@ class Participation
         $this->beginMinute = $beginMinute;
         $this->endMinute = $endMinute;
         $this->cards = new ArrayCollection();
-        $this->goals = new ArrayCollection();
-        $this->assists = new ArrayCollection();
+        $this->goalsAndAssists = new ArrayCollection();
     }
 
     /**
@@ -103,9 +98,19 @@ class Participation
         return $this->beginMinute;
     }
 
+    public function setBeginMinute( int $minute )
+    {
+        $this->beginMinute = $minute;
+    }
+
     public function getEndMinute(): int
     {
         return $this->endMinute;
+    }
+
+    public function setEndMinute( int $minute )
+    {
+        $this->endMinute = $minute;
     }
 
     public function isBeginning(): bool
@@ -118,13 +123,22 @@ class Participation
         return $this->cards;
     }
 
+    public function getGoalsAndAssists(): Collection
+    {
+        return $this->goalsAndAssists;
+    }
+
     public function getGoals(): Collection
     {
-        return $this->goals;
+        return $this->goalsAndAssists->filter( function( GoalEvent $goalEvent ): bool {
+            return $goalEvent->getGameParticipation() === $this;
+        });
     }
 
     public function getAssists(): Collection
     {
-        return $this->assists;
+        return $this->goalsAndAssists->filter( function( GoalEvent $goalEvent ): bool {
+            return $goalEvent->getAssistGameParticipation() === $this;
+        });
     }
 }

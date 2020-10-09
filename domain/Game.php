@@ -6,10 +6,14 @@ use DateTimeImmutable;
 use \Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 
+use League\Period\Period;
 use Sports\Competitor\Team as TeamCompetitor;
-use Sports\Game\Participation;
+use Sports\Game\Event\Card as CardEvent;
+use Sports\Game\Event\Goal as GoalEvent;
 use Sports\Game\Score;
+use Sports\Game\Participation;
 use Sports\Game\Place as GamePlace;
+use Sports\Planning\Config as PlanningConfig;
 use Sports\Place\Location\Map;
 use Sports\Sport\Config as SportConfig;
 use Sports\Sport\ScoreConfig as SportScoreConfig;
@@ -147,6 +151,12 @@ class Game implements Identifiable
     public function setStartDateTime(\DateTimeImmutable $startDateTime)
     {
         $this->startDateTime = $startDateTime;
+    }
+
+    public function getEndDateTime(): DateTimeImmutable
+    {
+        $minutes = $this->getPlanningConfig()->getMaxNrOfMinutesPerGame();
+        return $this->getStartDateTime()->modify("+ " . $minutes . "minutes");
     }
 
     public function getState(): int
@@ -320,6 +330,10 @@ class Game implements Identifiable
         });
     }
 
+    /**
+     * @param TeamCompetitor|null $teamCompetitor
+     * @return Collection|Participation[]
+     */
     public function getParticipations(TeamCompetitor $teamCompetitor = null): Collection
     {
         if ($teamCompetitor === null) {
@@ -330,12 +344,67 @@ class Game implements Identifiable
         });
     }
 
+    public function getParticipation(Person $person ): ?Participation
+    {
+        return $this->participations->filter(function (Participation $participation) use ($person): bool {
+            return $participation->getPlayer()->getPerson() === $person;
+        })->first();
+    }
+
+    /**
+     * @param TeamCompetitor|null $teamCompetitor
+     * @return array|GoalEvent[]
+     */
+    public function getGoalEvents(TeamCompetitor $teamCompetitor = null): array
+    {
+        $goalEvents = [];
+        foreach( $this->getParticipations($teamCompetitor) as $participation ) {
+            $goalEvents = array_merge( $goalEvents, $participation->getGoalsAndAssists()->toArray() );
+        }
+        return $goalEvents;
+    }
+
+    /**
+     * @param TeamCompetitor|null $teamCompetitor
+     * @return array|CardEvent[]
+     */
+    public function getCardEvents(TeamCompetitor $teamCompetitor = null): array
+    {
+        $cardEvents = [];
+        foreach( $this->getParticipations($teamCompetitor) as $participation ) {
+            $cardEvents = array_merge( $cardEvents, $participation->getCards()->toArray() );
+        }
+        return $cardEvents;
+    }
+
+    /**
+     * @param TeamCompetitor|null $teamCompetitor
+     * @return array|GoalEvent[]|CardEvent[]
+     */
+    public function getEvents(TeamCompetitor $teamCompetitor = null): array
+    {
+        $events = array_merge(
+            $this->getGoalEvents($teamCompetitor),
+            $this->getCardEvents($teamCompetitor)
+        );
+        /** @var GoalEvent|CardEvent $eventA */
+        uasort( $events, function ( $eventA, $eventB ): int {
+            return $eventA->getMinute() < $eventB->getMinute() ? -1 : 1;
+        });
+        return $events;
+    }
+
     public function getFinalPhase(): int
     {
         if ($this->getScores()->count()  === 0) {
             return 0;
         }
         return $this->getScores()->last()->getPhase();
+    }
+
+    public function getPlanningConfig(): PlanningConfig
+    {
+        return $this->getRound()->getNumber()->getValidPlanningConfig();
     }
 
     public function getSportConfig(): SportConfig
@@ -356,5 +425,10 @@ class Game implements Identifiable
         }
         // return $this->getRound()->getNumber()->getCompetition()->getSportConfig($field->getSport());
         return $this->getRound()->getNumber()->getValidSportScoreConfig($this->getField()->getSport());
+    }
+
+    public function getPeriod(): Period
+    {
+        return new Period( $this->getStartDateTime(), $this->getEndDateTime() );
     }
 }
