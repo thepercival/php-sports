@@ -49,6 +49,20 @@ class Player extends Role
         $this->line = $line;
     }
 
+    public function getLineLetter(): string {
+        $line = $this->getLine();
+        if( $line === Team::LINE_KEEPER ) {
+            return "K";
+        } elseif( $line === Team::LINE_DEFENSE ) {
+            return "V";
+        } elseif( $line === Team::LINE_MIDFIELD ) {
+            return "M";
+        } elseif( $line === Team::LINE_FORWARD ) {
+            return "A";
+        }
+        return "?";
+    }
+
     public function getShirtNumber(): ?int
     {
         return $this->shirtNumber;

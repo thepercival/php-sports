@@ -103,6 +103,11 @@ class Participation
         $this->beginMinute = $minute;
     }
 
+    public function isBeginning(): bool
+    {
+        return $this->beginMinute === 0;
+    }
+
     public function getEndMinute(): int
     {
         return $this->endMinute;
@@ -113,9 +118,9 @@ class Participation
         $this->endMinute = $minute;
     }
 
-    public function isBeginning(): bool
+    public function isSubstituted(): bool
     {
-        return $this->beginMinute === 0;
+        return $this->endMinute > 0;
     }
 
     public function getCards(): Collection

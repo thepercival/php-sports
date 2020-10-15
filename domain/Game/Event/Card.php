@@ -4,7 +4,10 @@ namespace Sports\Game\Event;
 
 use Sports\Game\Participation as GameParticipation;
 
-class Card
+use Sports\Game\Event as GameEvent;
+use Sports\Team;
+
+class Card implements GameEvent
 {
     /**
      * @var int|string
@@ -64,10 +67,12 @@ class Card
         $this->gameParticipation = $gameParticipation;
     }
 
-
-
     public function getType(): int
     {
         return $this->type;
+    }
+
+    public function getTeam(): Team {
+        return $this->getGameParticipation()->getPlayer()->getTeam();
     }
 }

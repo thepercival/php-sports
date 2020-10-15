@@ -5,6 +5,9 @@ namespace Sports\Output\ConsoleTable;
 use LucidFrame\Console\ConsoleTable;
 use Sports\Competition;
 use Sports\Game as GameBase;
+use Sports\Game\Event\Goal as GoalEvent;
+use Sports\Game\Event\Card as CardEvent;
+use Sports\Game\Event\Substitution as SubstitutionEvent;
 use Sports\NameService;
 use Sports\Place\Location\Map as PlaceLocationMap;
 use Sports\Competitor\Team as TeamCompetitor;
@@ -35,6 +38,7 @@ class Game
         $table->addRow( ["", "", ""] );
 
         $this->displayLineups( $table );
+        $table->addRow( ["", "", ""] );
 
         $this->displayEvents( $table );
 
@@ -42,19 +46,21 @@ class Game
     }
 
     protected function displayLineups( ConsoleTable $table ) {
-        $homeParticipations = $this->getParticipations( GameBase::HOME );
-        $awayParticipations = $this->getParticipations( GameBase::AWAY );
+        $homeParticipations = $this->getLineup( GameBase::HOME );
+        $awayParticipations = $this->getLineup( GameBase::AWAY );
         while( count($homeParticipations) > 0 || count($awayParticipations) > 0 ) {
-            // voeg hier nog wissels aan toe!!
             $homeParticipationName = "";
             $homeParticipation = array_pop( $homeParticipations );
             if( $homeParticipation !== null ) {
-                $homeParticipationName = $homeParticipation->getPlayer()->getPerson()->getName();
+                $homeParticipationName = $homeParticipation->getPlayer()->getLineLetter() . " ";
+                $homeParticipationName .= $homeParticipation->getPlayer()->getPerson()->getName();
             }
             $awayParticipationName = "";
             $awayParticipation = array_pop( $awayParticipations );
             if( $awayParticipation !== null ) {
-                $awayParticipationName = $awayParticipation->getPlayer()->getPerson()->getName();
+                $awayParticipationName = $awayParticipation->getPlayer()->getLineLetter() . " ";
+                $awayParticipationName .= $awayParticipation->getPlayer()->getPerson()->getName();
+                // $awayParticipationName .= " : " . $awayParticipation->getBeginMinute() . " => " . $awayParticipation->getEndMinute();
             }
             $table->addRow( [  $homeParticipationName, "", $awayParticipationName ] );
         }
@@ -62,31 +68,114 @@ class Game
 
     protected function displayEvents( ConsoleTable $table ) {
         foreach( $this->game->getEvents() as $event ) {
-            // ga hier per column kijken wat de waarde moet zijn
-
-            // thuis of uit
-            // score ja nee
-            // minute
-
-//            $homeParticipationName = "";
-//            $homeParticipation = array_pop( $homeParticipations );
-//            if( $homeParticipation !== null ) {
-//                $homeParticipationName = $homeParticipation->getPlayer()->getPerson()->getName();
-//            }
-//            $awayParticipationName = "";
-//            $awayParticipation = array_pop( $awayParticipations );
-//            if( $awayParticipation !== null ) {
-//                $awayParticipationName = $awayParticipation->getPlayer()->getPerson()->getName();
-//            }
-            $table->addRow( [  $event->getMinute(), "", $event->getMinute() ] );
+            foreach ($this->getEventRows($event) as $eventRow) {
+                $table->addRow($eventRow);
+            }
         }
+    }
+
+    /**
+     * @param GoalEvent|CardEvent|SubstitutionEvent $event
+     * @return array
+     */
+    protected function getEventRows( $event ): array {
+        $rows = [];
+        foreach( [GameBase::HOME,GameBase::AWAY] as $homeaway ) {
+            foreach ($this->game->getCompetitors($this->placeLocationMap, $homeaway) as $competitor) {
+                if( !($competitor instanceof TeamCompetitor) || $competitor->getTeam() !== $event->getTeam() ) {
+                    continue;
+                }
+                $rows = array_merge( $rows, $this->getEventRowsHelper( $event, $homeaway ) );
+            }
+        }
+        return $rows;
+    }
+
+    /**
+     * @param GoalEvent|CardEvent|SubstitutionEvent $event
+     * @param bool $homeaway
+     * @return array
+     */
+    protected function getEventRowsHelper( $event, bool $homeaway ): array {
+        if( $event instanceof GoalEvent ) {
+            return $this->getGoalEventRows($event, $homeaway);
+        } elseif( $event instanceof CardEvent ) {
+            return $this->getCardEventRows($event, $homeaway);
+        } // else if( $event instanceof SubstitutionEvent ) {
+        return $this->getSubstituteEventRows($event, $homeaway);
+        // }
+        // return [];
+    }
+
+    protected function getGoalEventRows( GoalEvent $event, bool $homeaway ): array {
+        $valueHome = ""; $valueAway = "";
+        $rows = [];
+        if ($homeaway === GameBase::HOME) {
+            $valueHome .= "GL  ";
+            $valueHome .= $event->getMinute() . "' ";
+            $valueHome .= $event->getGameParticipation()->getPlayer()->getPerson()->getName();
+        } else {
+            $valueAway .= $event->getGameParticipation()->getPlayer()->getPerson()->getName();
+            $valueAway .= " " . $event->getMinute() . "'";
+            $valueAway .= "  GL";
+        }
+        $rows[] = [  $valueHome, "", $valueAway ];
+        return $rows;
+    }
+
+    protected function getCardEventRows( CardEvent $event, bool $homeaway ): array {
+        $valueHome = ""; $valueAway = "";
+        $rows = [];
+        if ($homeaway === GameBase::HOME) {
+            if( $event->getType() === Sport::WARNING ) {
+                $valueHome .= "YC  ";
+            } else {
+                $valueHome .= "RC  ";
+            }
+            $valueHome .= $event->getMinute() . "' ";
+            $valueHome .= $event->getGameParticipation()->getPlayer()->getPerson()->getName();
+        } else {
+            $valueAway .= $event->getGameParticipation()->getPlayer()->getPerson()->getName();
+            $valueAway .= " " . $event->getMinute() . "'";
+            if( $event->getType() === Sport::WARNING ) {
+                $valueAway .= "  YC";
+            } else {
+                $valueAway .= "  RC  ";
+            }
+        }
+        $rows[] = [  $valueHome, "", $valueAway ];
+        return $rows;
+    }
+
+    protected function getSubstituteEventRows( SubstitutionEvent $event, bool $homeaway ): array {
+        $valueHomeOut = ""; $valueAwayOut = "";
+        $valueHomeIn = ""; $valueAwayIn = "";
+        $rows = [];
+        if ($homeaway === GameBase::HOME) {
+            $valueHomeOut .= "OUT ";
+            $valueHomeOut .= $event->getMinute() . "' ";
+            $valueHomeOut .= $event->getOut()->getPlayer()->getPerson()->getName();
+            $valueHomeIn .= "IN  ";
+            $valueHomeIn .= $event->getMinute() . "' ";
+            $valueHomeIn .= $event->getIn()->getPlayer()->getPerson()->getName();
+        } else {
+            $valueAwayOut .= $event->getOut()->getPlayer()->getPerson()->getName();
+            $valueAwayOut .= " " . $event->getMinute() . "'";
+            $valueAwayOut .= " OUT";
+            $valueAwayIn .= $event->getIn()->getPlayer()->getPerson()->getName();
+            $valueAwayIn .= " " . $event->getMinute() . "'";
+            $valueAwayIn .= "  IN";
+        }
+        $rows[] = [  $valueHomeIn, "", $valueAwayIn ];
+        $rows[] = [  $valueHomeOut, "", $valueAwayOut ];
+        return $rows;
     }
 
     /**
      * @param bool $homeAway
      * @return array|GameBase\Participation[]
      */
-    protected function getParticipations( bool $homeAway ): array {
+    protected function getLineup( bool $homeAway ): array {
         $participations = [];
         $homeCompetitors = $this->game->getCompetitors( $this->placeLocationMap, $homeAway );
         foreach( $homeCompetitors as $homeTeamCompetitor ) {
@@ -95,7 +184,7 @@ class Game
             }
             $participations = array_merge(
                 $participations,
-                $this->game->getParticipations( $homeTeamCompetitor )->toArray()
+                $this->game->getLineup( $homeTeamCompetitor )
             );
         }
         return $participations;

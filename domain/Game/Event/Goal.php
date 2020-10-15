@@ -3,8 +3,10 @@
 namespace Sports\Game\Event;
 
 use Sports\Game\Participation as GameParticipation;
+use Sports\Team;
+use Sports\Game\Event as GameEvent;
 
-class Goal
+class Goal implements GameEvent
 {
     /**
      * @var int|string
@@ -104,5 +106,9 @@ class Goal
             $assistGameParticipation->getGoalsAndAssists()->add($this) ;
         }
         $this->assistGameParticipation = $assistGameParticipation;
+    }
+
+    public function getTeam(): Team {
+        return $this->getGameParticipation()->getPlayer()->getTeam();
     }
 }

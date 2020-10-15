@@ -3,8 +3,10 @@
 namespace Sports\Game\Event;
 
 use Sports\Game\Participation as GameParticipation;
+use Sports\Team;
+use Sports\Game\Event as GameEvent;
 
-class Substitution
+class Substitution implements GameEvent
 {
     /**
      * @var int|string
@@ -26,8 +28,10 @@ class Substitution
     public function __construct( int $minute, GameParticipation $out, GameParticipation $in )
     {
         $this->minute = $minute;
-        $out->setEndMinute( $minute );
-        $in->setBeginMinute( $minute );
+        $this->out = $out;
+        $this->out->setEndMinute( $minute );
+        $this->in = $in;
+        $this->in->setBeginMinute( $minute );
     }
 
     /**
@@ -59,5 +63,9 @@ class Substitution
     public function getIn(): GameParticipation
     {
         return $this->in;
+    }
+
+    public function getTeam(): Team {
+        return $this->getOut()->getPlayer()->getTeam();
     }
 }
