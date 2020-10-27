@@ -8,7 +8,7 @@
     <field name="nameInsertion" column="nameInsertion" type="string" length="10" nullable="true" unique="false"/>
     <field name="lastName" column="lastName" type="string" length="50" nullable="false" unique="false"/>
     <field name="dateOfBirth" column="dateOfBirth" type="datetime_immutable" nullable="true" unique="false"/>
-    <one-to-many field="players" target-entity="Sports\Team\Role\Player" mapped-by="person">
+    <one-to-many field="players" target-entity="Sports\Team\Player" mapped-by="person">
       <cascade>
         <cascade-persist/>
         <cascade-remove/>

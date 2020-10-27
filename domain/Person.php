@@ -3,8 +3,10 @@
 namespace Sports;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+use League\Period\Period;
 use SportsHelpers\Identifiable;
-use Sports\Team\Role\Player;
+use Sports\Team\Player;
 
 class Person implements Identifiable
 {
@@ -39,6 +41,7 @@ class Person implements Identifiable
         $this->setFirstName($firstName);
         $this->setNameInsertion($nameInsertion);
         $this->setLastName($lastName);
+        $this->players = new ArrayCollection();
     }
 
     /**
@@ -137,10 +140,59 @@ class Person implements Identifiable
     }
 
     /**
-     * @return Player[] | ArrayCollection
+     * @return Player[] | Collection
      */
-    public function getPlayers()
+    public function getPlayers( Team $team = null, Period $period = null, int $line = null ): Collection
     {
-        return $this->players;
+        $filters = [];
+        if( $team !== null ) {
+            $filters[] = function ( Player $player ) use ($team): bool {
+               return $player->getTeam() === $team;
+            };
+        }
+        if( $period !== null ) {
+            $filters[] = function ( Player $player ) use ($period): bool {
+                return $player->getPeriod()->overlaps( $period );
+            };
+        }
+        if( $line !== null ) {
+            $filters[] = function ( Player $player ) use ($line): bool {
+                return $player->getLine() === $line;
+            };
+        }
+        if( count($filters) === 0 ) {
+            return $this->players;
+        }
+        return $this->players->filter( function ( Player $player ) use ($filters): bool {
+            foreach( $filters as $filter ) {
+                if( !$filter( $player ) ) {
+                    return false;
+                }
+            }
+            return true;
+        } );
+    }
+
+    public function getPlayer( Team $team, \DateTimeImmutable $dateTime ): ?Player
+    {
+        $filters = [];
+
+        $filters[] = function ( Player $player ) use ($team): bool {
+            return $player->getTeam() === $team;
+        };
+
+        $filters[] = function ( Player $player ) use ($dateTime): bool {
+            return $player->getPeriod()->contains( $dateTime );
+        };
+
+        $filteredPlayers = $this->players->filter( function ( Player $player ) use ($filters): bool {
+            foreach( $filters as $filter ) {
+                if( !$filter( $player ) ) {
+                    return false;
+                }
+            }
+            return true;
+        } );
+        return $filteredPlayers->first();
     }
 }

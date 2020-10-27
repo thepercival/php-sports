@@ -17,7 +17,10 @@ abstract class Role implements Identifiable
     private DateTimeImmutable $startDateTime;
     private DateTimeImmutable $endDateTime;
     private Team $team;
-    private Person $person;
+    /**
+     * @var Person|null
+     */
+    private $person;
 
     const MIN_LENGTH_NAME = 2;
     const MAX_LENGTH_NAME = 30;
@@ -66,6 +69,13 @@ abstract class Role implements Identifiable
 
     public function setPerson(Person $person)
     {
+        if ($this->person !== null
+            && $this->person->getPlayers()->contains($this)) {
+            $this->person->getPlayers()->removeElement($this) ;
+        }
+        if (!$person->getPlayers()->contains($this)) {
+            $person->getPlayers()->add($this) ;
+        }
         $this->person = $person;
     }
     
@@ -91,5 +101,11 @@ abstract class Role implements Identifiable
 
     public function getPeriod(): Period {
         return new Period( $this->getStartDateTime(), $this->getEndDateTime() );
+    }
+
+    public function setPeriod(Period $period)
+    {
+        $this->setStartDateTime( $period->getStartDate() );
+        $this->setEndDateTime( $period->getEndDate() );
     }
 }

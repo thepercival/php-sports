@@ -1,12 +1,11 @@
 <?php
 
-namespace Sports\Team\Role;
+namespace Sports\Team;
 
 use DateTimeImmutable;
 use League\Period\Period;
 use Sports\Person;
 use Sports\Team;
-use Sports\Team\Role;
 
 class Player extends Role
 {

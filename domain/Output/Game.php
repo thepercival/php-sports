@@ -50,7 +50,7 @@ class Game extends OutputBase
             . $this->getPlacesAsString($game, GameBase::AWAY)
             . ' , ' . $this->getRefereeAsString($game)
             . ', ' . $this->getFieldAsString($field)
-            . ', ' . $field->getSport()->getName()
+            . ', ' . $game->getSportConfig()->getSport()->getName()
             . ' ' . $this->getPointsAsString($game) . ' '
         );
     }
@@ -61,7 +61,10 @@ class Game extends OutputBase
         return $this->outputColor($batchColor, $retVal);
     }
 
-    protected function getFieldAsString( Field $field ): string {
+    protected function getFieldAsString( Field $field = null ): string {
+        if( $field === null ) {
+            return '';
+        }
         $priority = $field->getPriority();
         $fieldColor = $this->useColors() ? ($priority % 10) : -1;
         $retVal = 'field ' . ($priority < 10 ? ' ' : '') . $priority;

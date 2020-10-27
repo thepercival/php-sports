@@ -95,7 +95,7 @@ class Goal implements GameEvent
         $this->penalty = $penalty;
     }
 
-    public function getAssistGameParticipation(): GameParticipation
+    public function getAssistGameParticipation(): ?GameParticipation
     {
         return $this->assistGameParticipation;
     }

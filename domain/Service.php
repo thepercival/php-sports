@@ -40,8 +40,6 @@ class Service
             return new Association\Service();
         } elseif ($classname === Competition::class) {
             return new Competition\Service();
-        } elseif ($classname === Game::class) {
-            return new Game\Service();
         } elseif ($classname === Sport\Config::class) {
             return new Sport\Config\Service();
         }

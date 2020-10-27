@@ -7,7 +7,7 @@ use Doctrine\Common\Collections\Collection;
 use Sports\Competitor\Team as TeamCompetitor;
 use Sports\Game;
 use Sports\Game\Event\Goal as GoalEvent;
-use Sports\Team\Role\Player;
+use Sports\Team\Player;
 
 class Participation
 {

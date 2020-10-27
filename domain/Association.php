@@ -20,6 +20,10 @@ class Association implements Identifiable
      */
     protected $description;
     /**
+     * @var string
+     */
+    protected $countryCode;
+    /**
      * @var Association|null
      */
     protected $parent;
@@ -105,6 +109,23 @@ class Association implements Identifiable
             );
         }
         $this->description = $description;
+    }
+
+    public function getCountryCode(): string
+    {
+        return $this->countryCode;
+    }
+
+    public function setCountryCode(string $countryCode)
+    {
+        if (strlen($countryCode) !== 2) {
+            throw new \InvalidArgumentException(
+                "country-code niet volgens ISO-3166-1",
+                E_ERROR
+            );
+        }
+
+        $this->countryCode = $countryCode;
     }
 
     public function getParent(): ?Association

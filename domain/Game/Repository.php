@@ -3,6 +3,7 @@
 namespace Sports\Game;
 
 use Doctrine\ORM\QueryBuilder;
+use Sports\Game;
 use Sports\Round\Number as RoundNumber;
 use Sports\Competitor;
 use Sports\Competition;
@@ -11,31 +12,56 @@ use League\Period\Period;
 
 class Repository extends \Sports\Repository
 {
-    public function getCompetitionGames(Competition $competition, $gameStates = null, int $batchNr = null)
+    /**
+     * @param Competition $competition
+     * @param null $gameStates
+     * @param int|null $batchNr
+     * @param Period|null $period
+     * @return int|mixed|string|Game[]
+     */
+    public function getCompetitionGames(
+        Competition $competition,
+        $gameStates = null,
+        int $batchNr = null,
+        Period $period = null)
     {
-        return $this->getCompetitionGamesQuery($competition, $gameStates, $batchNr)->getQuery()->getResult();
+        return $this->getCompetitionGamesQuery($competition, $gameStates, $batchNr, $period)->getQuery()->getResult();
     }
 
-    public function hasCompetitionGames(Competition $competition, $gameStates = null, int $batchNr = null)
+    public function hasCompetitionGames(
+        Competition $competition,
+        $gameStates = null,
+        int $batchNr = null,
+        Period $period = null)
     {
         $games = $this->getCompetitionGamesQuery(
             $competition,
             $gameStates,
-            $batchNr
+            $batchNr,
+            $period
         )->setMaxResults(1)->getQuery()->getResult();
         return count($games) === 1;
     }
 
-    public function getNrOfCompetitionGamePlaces(Competition $competition, $gameStates = null, int $batchNr = null): int {
+    public function getNrOfCompetitionGamePlaces(
+        Competition $competition,
+        $gameStates = null,
+        int $batchNr = null,
+        Period $period = null): int {
         $gamePlaces = $this->getCompetitionGamePlacessQuery(
             $competition,
             $gameStates,
-            $batchNr
+            $batchNr,
+            $period
         )->getQuery()->getResult();
         return count($gamePlaces);
     }
 
-    protected function getCompetitionGamesQuery(Competition $competition, $gameStates = null, int $batchNr = null): QueryBuilder
+    protected function getCompetitionGamesQuery(
+        Competition $competition,
+        $gameStates = null,
+        int $batchNr = null,
+        Period $period = null): QueryBuilder
     {
         $query = $this->createQueryBuilder('g')
             ->join("g.poule", "p")
@@ -44,10 +70,14 @@ class Repository extends \Sports\Repository
             ->where('rn.competition = :competition')
             ->setParameter('competition', $competition);
         ;
-        return $this->applyExtraFilters($query, $gameStates, $batchNr);
+        return $this->applyExtraFilters($query, $gameStates, $batchNr, $period);
     }
 
-    protected function getCompetitionGamePlacessQuery(Competition $competition, $gameStates = null, int $batchNr = null): QueryBuilder
+    protected function getCompetitionGamePlacessQuery(
+        Competition $competition,
+        $gameStates = null,
+        int $batchNr = null,
+        Period $period = null ): QueryBuilder
     {
         $query = $this->getEM()->createQueryBuilder()
             ->select('gp')
@@ -59,15 +89,21 @@ class Repository extends \Sports\Repository
             ->where('rn.competition = :competition')
             ->setParameter('competition', $competition);
         ;
-        return $this->applyExtraFilters($query, $gameStates, $batchNr);
+        return $this->applyExtraFilters($query, $gameStates, $batchNr, $period);
     }
 
+    /**
+     * @param RoundNumber $roundNumber
+     * @param null $gameStates
+     * @param int|null $batchNr
+     * @return int|mixed|string|Game[]
+     */
     public function getRoundNumberGames(RoundNumber $roundNumber, $gameStates = null, int $batchNr = null)
     {
         return $this->getRoundNumberGamesQuery($roundNumber, $gameStates, $batchNr)->getQuery()->getResult();
     }
 
-    public function hasRoundNumberGames(RoundNumber $roundNumber, $gameStates = null, int $batchNr = null)
+    public function hasRoundNumberGames(RoundNumber $roundNumber, $gameStates = null, int $batchNr = null): bool
     {
         $games = $this->getRoundNumberGamesQuery(
             $roundNumber,
@@ -76,8 +112,6 @@ class Repository extends \Sports\Repository
         )->setMaxResults(1)->getQuery()->getResult();
         return count($games) === 1;
     }
-
-
 
     protected function getRoundNumberGamesQuery(RoundNumber $roundNumber, $gameStates = null, int $batchNr = null): QueryBuilder
     {
@@ -91,7 +125,7 @@ class Repository extends \Sports\Repository
         return $this->applyExtraFilters($query, $gameStates, $batchNr);
     }
 
-    protected function applyExtraFilters(QueryBuilder $query, int $gameStates = null, int $batchNr = null): QueryBuilder
+    protected function applyExtraFilters(QueryBuilder $query, int $gameStates = null, int $batchNr = null, Period $period = null): QueryBuilder
     {
         if ($gameStates !== null) {
             // $query = $query->andWhere('g.state & :gamestates = g.state');
@@ -103,6 +137,13 @@ class Repository extends \Sports\Repository
             $query = $query
                 ->andWhere('g.batchNr = :batchNr')
                 ->setParameter('batchNr', $batchNr);
+        }
+        if ($period !== null) {
+            $query = $query
+                ->andWhere('g.startDateTime <= :end')
+                ->andWhere('g.startDateTime = :start')
+                ->setParameter('end', $period->getEndDate())
+                ->setParameter('start', $period->getStartDate());
         }
         return  $query;
     }
@@ -138,14 +179,12 @@ class Repository extends \Sports\Repository
                         ->andWhere('ppaway.competitor = :awaycompetitor')
                         ->getDQL()
                 )
-            )
-        ;
-        $query = $query->setParameter('start', $period->getStartDate());
-        $query = $query->setParameter('end', $period->getEndDate());
+            );
         $query = $query->setParameter('home', GameBase::HOME);
         $query = $query->setParameter('homecompetitor', $homeCompetitor);
         $query = $query->setParameter('away', GameBase::AWAY);
         $query = $query->setParameter('awaycompetitor', $awayCompetitor);
+        $query = $this->applyExtraFilters( $query, null, null, $period );
         $games = $query->getQuery()->getResult();
         if (count($games) === 0) {
             return null;

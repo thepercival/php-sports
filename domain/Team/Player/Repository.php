@@ -1,8 +1,8 @@
 <?php
 
-namespace Sports\Team\Role\Player;
+namespace Sports\Team\Player;
 
-use Sports\Team\Role\Player;
+use Sports\Team\Player;
 
 class Repository extends \Sports\Repository
 {

@@ -6,6 +6,7 @@
     </id>
     <field name="name" column="name" type="string" length="30" nullable="false" unique="false"/>
     <field name="description" column="description" type="string" length="50" nullable="true" unique="false"/>
+    <field name="countryCode" column="countryCode" type="string" length="2" nullable="true" unique="false"/>
     <many-to-one field="parent" target-entity="Sports\Association" inversed-by="children">
       <join-columns>
         <join-column name="parentid" referenced-column-name="id" nullable="true" on-delete="CASCADE"/>

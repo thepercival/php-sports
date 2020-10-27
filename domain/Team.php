@@ -3,7 +3,7 @@
 namespace Sports;
 
 use Doctrine\Common\Collections\ArrayCollection;
-use Sports\Team\Role\Player;
+use Sports\Team\Player;
 use SportsHelpers\Identifiable;
 
 class Team implements Identifiable
@@ -29,6 +29,10 @@ class Team implements Identifiable
      */
     protected $association;
     /**
+     * @var string
+     */
+    protected $countryCode;
+    /**
      * @var ArrayCollection|Player[]
      */
     protected $players;
@@ -42,6 +46,11 @@ class Team implements Identifiable
     CONST LINE_DEFENSE = 2;
     CONST LINE_MIDFIELD = 4;
     CONST LINE_FORWARD = 8;
+
+    // Every team should must have a club, a association or a country
+    CONST TYPE_ASSOCIATION = 1;
+    CONST TYPE_COUNTRY = 2;
+    CONST TYPE_CLUB = 4;
 
     public function __construct(Association $association, string $name)
     {
@@ -128,6 +137,23 @@ class Team implements Identifiable
             $association->getTeams()->add($this) ;
         }
         $this->association = $association;
+    }
+
+    public function getCountryCode(): string
+    {
+        return $this->countryCode;
+    }
+
+    public function setCountryCode(string $countryCode)
+    {
+        if (strlen($countryCode) !== 2) {
+            throw new \InvalidArgumentException(
+                "country-code niet volgens ISO-3166-1",
+                E_ERROR
+            );
+        }
+
+        $this->countryCode = $countryCode;
     }
 
     /**
