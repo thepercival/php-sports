@@ -114,14 +114,25 @@ class League implements Identifiable
      */
     public function setAssociation(Association $association)
     {
+        if (!$association->getLeagues()->contains($this)) {
+            $association->getLeagues()->add($this) ;
+        }
         $this->association = $association;
     }
 
     /**
-     * @return ArrayCollection
+     * @return ArrayCollection|Competition[]
      */
     public function getCompetitions()
     {
         return $this->competitions;
+    }
+
+    public function getCompetition( Season $season ): ?Competition
+    {
+        $filtered =  $this->getCompetitions()->filter( function( Competition $competition) use ($season): bool {
+            return $competition->getSeason() === $season;
+        });
+        return $filtered->count() === 0 ? null : $filtered->first();
     }
 }

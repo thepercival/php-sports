@@ -66,8 +66,8 @@ class Competition implements Identifiable
 
     public function __construct(League $league, Season $season)
     {
-        $this->league = $league;
-        $this->season = $season;
+        $this->setLeague($league);
+        $this->setSeason($season);
         $this->ruleSet = RankingService::RULESSET_WC;
         $this->state = State::Created;
         $this->roundNumbers = new ArrayCollection();
@@ -106,6 +106,9 @@ class Competition implements Identifiable
      */
     public function setLeague(League $league)
     {
+        if (!$league->getCompetitions()->contains($this)) {
+            $league->getCompetitions()->add($this) ;
+        }
         $this->league = $league;
     }
 
