@@ -47,6 +47,7 @@
     </one-to-many>
     <one-to-many field="sportConfigs" target-entity="Sports\Sport\Config" mapped-by="competition" fetch="EXTRA_LAZY" >
       <cascade>
+        <cascade-persist/>
         <cascade-remove/>
       </cascade>
     </one-to-many>

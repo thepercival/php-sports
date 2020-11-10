@@ -106,8 +106,9 @@ class Competition implements Identifiable
      */
     public function setLeague(League $league)
     {
-        if (!$league->getCompetitions()->contains($this)) {
-            $league->getCompetitions()->add($this) ;
+        $competitions = $league->getCompetitions();
+        if (!$competitions->contains($this)) {
+            $competitions->add($this) ;
         }
         $this->league = $league;
     }

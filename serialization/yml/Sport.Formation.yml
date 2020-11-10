@@ -1,0 +1,9 @@
+Sports\Sport\Formation:
+  exclusion_policy: ALL
+  exclude: false
+  access_type: public_property
+  properties:
+    name:
+      type: string
+    lines:
+      type: ArrayCollection<Sports\Sport\Formation\Line>

@@ -53,20 +53,23 @@ class Repository extends \Sports\Repository
             ->andWhere('s.endDateTime >= :date')
             ->andWhere('c.league = :league');
 
-//        if ( $studentnummer !== null ){
-//            $query = $query->andWhere('s.studentnummer = :studentnummer');
-//        }
-
         $query = $query->setParameter('date', $date);
         $query = $query->setParameter('league', $league);
 
-
-//        if ( $studentnummer !== null ){
-//            $query = $query->setParameter('studentnummer', $studentnummer);
-//        }
         $results = $query->getQuery()->getResult();
         $result = reset($results);
         return $result;
+    }
+
+    public function findByDate(\DateTimeImmutable $date)
+    {
+        $query = $this->createQueryBuilder('c')
+            ->join("c.season", "s")
+            ->where('s.startDateTime <= :date')
+            ->andWhere('s.endDateTime >= :date');
+
+        $query = $query->setParameter('date', $date);
+        return $query->getQuery()->getResult();
     }
 
     public function findNrWithoutPlanning()

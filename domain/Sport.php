@@ -2,6 +2,8 @@
 
 namespace Sports;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Sports\Sport\Formation;
 use SportsHelpers\Identifiable;
 
 class Sport implements Identifiable
@@ -18,10 +20,7 @@ class Sport implements Identifiable
      * @var int|string
      */
     private $id;
-    /**
-     * @var string
-     */
-    private $name;
+    private string $name;
     /**
      * @var string
      */
@@ -35,13 +34,18 @@ class Sport implements Identifiable
      */
     private $team;
     /**
-     * @var int
+     * @var int|null
      */
     private $customId;
+    /**
+     * @var ArrayCollection | Formation[]
+     */
+    protected $formations;
 
     public function __construct(string $name)
     {
         $this->setName($name);
+        $this->formations = new ArrayCollection();
     }
 
     /**
@@ -106,8 +110,15 @@ class Sport implements Identifiable
         return $this->customId;
     }
 
-    public function setCustomId(int $id): void
+    public function setCustomId(int $id = null): void
     {
         $this->customId = $id;
+    }
+
+    /**
+     * @return ArrayCollection|Formation[]
+     */
+    public function getFormations() {
+        return $this->formations;
     }
 }

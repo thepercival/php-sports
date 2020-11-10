@@ -114,8 +114,9 @@ class League implements Identifiable
      */
     public function setAssociation(Association $association)
     {
-        if (!$association->getLeagues()->contains($this)) {
-            $association->getLeagues()->add($this) ;
+        $leagues = $association->getLeagues();
+        if ( !$leagues->contains($this)) {
+            $leagues->add($this) ;
         }
         $this->association = $association;
     }
@@ -123,7 +124,7 @@ class League implements Identifiable
     /**
      * @return ArrayCollection|Competition[]
      */
-    public function getCompetitions()
+    public function getCompetitions(): ArrayCollection
     {
         return $this->competitions;
     }

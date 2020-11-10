@@ -164,7 +164,7 @@ class Association implements Identifiable
     /**
      * @return League[] | ArrayCollection
      */
-    public function getLeagues()
+    public function getLeagues(): ArrayCollection
     {
         return $this->leagues;
     }

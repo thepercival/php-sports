@@ -2,44 +2,66 @@
 
 namespace Sports\TestHelper;
 
+use DateTimeImmutable;
+use League\Period\Period;
+use Sports\Association;
 use Sports\Competition;
+use Sports\Field;
+use Sports\League;
+use Sports\Referee;
+use Sports\Season;
+use Sports\Sport;
+use Sports\Sport\Custom as SportCustom;
+use Sports\Sport\Config\Service as SportConfigService;
 
 trait CompetitionCreator {
+    /**
+     * @var Competition|null
+     */
+    protected $competition;
+    /**
+     * @var Sport|null
+     */
+    protected $sport;
+
     protected function createCompetition(): Competition
     {
-        $json_raw = file_get_contents(__DIR__ . "/../data/competition.json");
-        if ($json_raw === false) {
-            throw new \Exception("competition-json not read well from file", E_ERROR);
-        }
-        $json = json_decode($json_raw, true);
-        if ($json === false) {
-            throw new \Exception("competition-json not read well from file", E_ERROR);
-        }
-        $jsonEncoded = json_encode($json);
-        if ($jsonEncoded === false) {
-            throw new \Exception("competition-json not read well from file", E_ERROR);
-        }
-        $serializer = (new Serializer())->getSerializer();
-        /** @var Competition $competition */
-        $competition = $serializer->deserialize($jsonEncoded, 'Sports\Competition', 'json');
-
-        foreach ($competition->getSportConfigs() as $sportConfig) {
-            $refCl = new \ReflectionClass($sportConfig);
-            $refClPropSport = $refCl->getProperty("competition");
-            $refClPropSport->setAccessible(true);
-            $refClPropSport->setValue($sportConfig, $competition);
-            $refClPropSport->setAccessible(false);
-
-            foreach ($sportConfig->getFields() as $field) {
-                $refCl = new \ReflectionClass($field);
-                $refClPropSport = $refCl->getProperty("sportConfig");
-                $refClPropSport->setAccessible(true);
-                $refClPropSport->setValue($field, $sportConfig);
-                $refClPropSport->setAccessible(false);
-            }
+        if( $this->competition !== null ) {
+            return $this->competition;
         }
 
-        return $competition;
+        $league = new League( new Association("knvb"), "my league" );
+        $season = new Season("2018/2019", new Period(
+            new DateTimeImmutable("2018-08-01"),
+            new DateTimeImmutable("2019-07-01"),
+        ));
+        $this->competition = new Competition( $league, $season );
+        $this->competition->setStartDateTime( new DateTimeImmutable("2030-01-01T12:00:00.000Z") );
+        $referee1 = new Referee( $this->competition );
+        $referee1->setInitials("111");
+        $referee2 = new Referee( $this->competition );
+        $referee2->setInitials("222");
+
+        $sportConfigService = new SportConfigService();
+        $sportConfig = $sportConfigService->createDefault( $this->createSport(), $this->competition);
+        $field1 = new Field($sportConfig);
+        $field1->setName("1");
+        $field2 = new Field($sportConfig);
+        $field2->setName("2");
+
+        return $this->competition;
+    }
+
+    protected function createSport(): Sport
+    {
+        if( $this->sport !== null ) {
+            return $this->sport;
+        }
+
+        $this->sport = new Sport("voetbal");
+        $this->sport->setTeam( true );
+        $this->sport->setCustomId( SportCustom::Football );
+        return $this->sport;
     }
 }
 

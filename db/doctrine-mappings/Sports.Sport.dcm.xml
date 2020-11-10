@@ -7,6 +7,7 @@
     <field name="name" column="name" type="string" length="30" nullable="false" unique="false"/>
     <field name="team" column="team" type="boolean" nullable="false" unique="false"/>
     <field name="customId" column="customId" type="smallint" nullable="true" unique="false"/>
+    <one-to-many field="formations" target-entity="Sports\Sport\Formation" mapped-by="sport"/>
     <unique-constraints>
       <unique-constraint columns="name" name="name_idx" />
     </unique-constraints>

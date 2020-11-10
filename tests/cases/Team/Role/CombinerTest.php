@@ -8,6 +8,7 @@ use Sports\Team;
 use Sports\Team\Player;
 use Sports\TestHelper\CompetitionCreator;
 use Sports\Team\Role\Combiner as RoleCombiner;
+use Sports\Sport\Formation\Line as FormationLine;
 
 class CombinerTest extends \PHPUnit\Framework\TestCase
 {
@@ -41,8 +42,8 @@ class CombinerTest extends \PHPUnit\Framework\TestCase
         $periodA = new Period( $fourMinutesBefore, $now);
         $periodX = new Period( $twoMinutesBefore, $twoMinutesAfter );
 
-        $playerA = new Player( $teamY, $person, $periodA, Team::LINE_DEFENSE );
-        $combiner->combineWithPast( $teamZ, $periodX, Team::LINE_DEFENSE );
+        $playerA = new Player( $teamY, $person, $periodA, FormationLine::DEFENSE );
+        $combiner->combineWithPast( $teamZ, $periodX, FormationLine::DEFENSE );
 
         self::assertCount( 2, $person->getPlayers()->toArray() );
 
@@ -78,8 +79,41 @@ class CombinerTest extends \PHPUnit\Framework\TestCase
         $periodA = new Period( $fourMinutesBefore, $now);
         $periodX = new Period( $twoMinutesBefore, $twoMinutesAfter );
 
-        $playerA = new Player( $teamY, $person, $periodA, Team::LINE_DEFENSE );
-        $combiner->combineWithPast( $teamZ, $periodX, Team::LINE_DEFENSE );
+        $playerA = new Player( $teamY, $person, $periodA, FormationLine::DEFENSE );
+        $combiner->combineWithPast( $teamZ, $periodX, FormationLine::DEFENSE );
+
+        self::assertCount( 2, $person->getPlayers()->toArray() );
+    }
+
+    /**
+     *  MODE_ONE_TEAM_OF_A_TYPE_AT_THE_SAME_TIME
+     *
+     *  { Team: Y, Line: Defense, Period: A }
+     *  { Team: Y, Line: Midfield, Period: X }
+     *
+     *     |   A   |
+     *         |       X       |
+     *
+     *  -----  MIGRATE --------
+     *
+     *     |   A   |
+     *         |       X       |
+     */
+    public function testNotMergableByLine()
+    {
+        $competition = $this->createCompetition();
+        $person = new Person( "Al", null, "Person");
+        $combiner = new RoleCombiner( $person );
+        $teamY = new Team( $competition->getLeague()->getAssociation(), "team Y");
+        $now = new \DateTimeImmutable();
+        $fourMinutesBefore = $now->modify("-4 minutes");
+        $twoMinutesBefore = $now->modify("-2 minutes");
+        $twoMinutesAfter = $now->modify("2 minutes");
+        $periodA = new Period( $fourMinutesBefore, $now);
+        $periodX = new Period( $twoMinutesBefore, $twoMinutesAfter );
+
+        $playerA = new Player( $teamY, $person, $periodA, FormationLine::DEFENSE );
+        $combiner->combineWithPast( $teamY, $periodX, FormationLine::MIDFIELD );
 
         self::assertCount( 2, $person->getPlayers()->toArray() );
     }
@@ -109,8 +143,8 @@ class CombinerTest extends \PHPUnit\Framework\TestCase
         $periodA = new Period( $fourMinutesBefore, $now);
         $periodX = new Period( $fourMinutesBefore, $now );
 
-        $playerA = new Player( $teamY, $person, $periodA, Team::LINE_DEFENSE );
-        $combiner->combineWithPast( $teamY, $periodX, Team::LINE_DEFENSE );
+        $playerA = new Player( $teamY, $person, $periodA, FormationLine::DEFENSE );
+        $combiner->combineWithPast( $teamY, $periodX, FormationLine::DEFENSE );
 
         self::assertCount( 1, $person->getPlayers()->toArray() );
         self::assertSame( $fourMinutesBefore, $playerA->getPeriod()->getStartDate() );
@@ -144,8 +178,8 @@ class CombinerTest extends \PHPUnit\Framework\TestCase
         $periodA = new Period( $tooMuchInPastStartDate, $tooMuchInPastEndDate );
         $periodX = new Period( $fourMinutesBefore, $now);
 
-        $playerA = new Player( $teamY, $person, $periodA, Team::LINE_DEFENSE );
-        $combiner->combineWithPast( $teamY, $periodX, Team::LINE_DEFENSE );
+        $playerA = new Player( $teamY, $person, $periodA, FormationLine::DEFENSE );
+        $combiner->combineWithPast( $teamY, $periodX, FormationLine::DEFENSE );
 
         self::assertCount( 2, $person->getPlayers()->toArray() );
         self::assertSame( $tooMuchInPastStartDate, $playerA->getPeriod()->getStartDate() );
@@ -180,8 +214,8 @@ class CombinerTest extends \PHPUnit\Framework\TestCase
         $periodA = new Period( $now, $twoMinutesAfter);
         $periodX = new Period( $fourMinutesBefore, $twoMinutesBefore );
 
-        $playerA = new Player( $teamY, $person, $periodA, Team::LINE_DEFENSE );
-        $combiner->combineWithPast( $teamY, $periodX, Team::LINE_DEFENSE );
+        $playerA = new Player( $teamY, $person, $periodA, FormationLine::DEFENSE );
+        $combiner->combineWithPast( $teamY, $periodX, FormationLine::DEFENSE );
 
         self::assertCount( 1, $person->getPlayers()->toArray() );
         self::assertSame( $now, $playerA->getPeriod()->getStartDate() );
@@ -217,8 +251,8 @@ class CombinerTest extends \PHPUnit\Framework\TestCase
         $periodA = new Period( $now, $twoMinutesAfter);
         $periodX = new Period( $fourMinutesBefore, $twoMinutesBefore );
 
-        $playerA = new Player( $teamZ, $person, $periodA, Team::LINE_DEFENSE );
-        $combiner->combineWithPast( $teamY, $periodX, Team::LINE_DEFENSE );
+        $playerA = new Player( $teamZ, $person, $periodA, FormationLine::DEFENSE );
+        $combiner->combineWithPast( $teamY, $periodX, FormationLine::DEFENSE );
 
         self::assertCount( 2, $person->getPlayers()->toArray() );
         self::assertSame( $now, $playerA->getPeriod()->getStartDate() );
@@ -253,8 +287,8 @@ class CombinerTest extends \PHPUnit\Framework\TestCase
         $periodA = new Period( $fourMinutesBefore, $now);
         $periodX = new Period( $twoMinutesBefore, $twoMinutesAfter );
 
-        $playerA = new Player( $teamY, $person, $periodA, Team::LINE_DEFENSE );
-        $combiner->combineWithPast( $teamY, $periodX, Team::LINE_DEFENSE );
+        $playerA = new Player( $teamY, $person, $periodA, FormationLine::DEFENSE );
+        $combiner->combineWithPast( $teamY, $periodX, FormationLine::DEFENSE );
 
         self::assertCount( 1, $person->getPlayers()->toArray() );
         self::assertSame( $fourMinutesBefore, $playerA->getPeriod()->getStartDate() );
@@ -290,8 +324,8 @@ class CombinerTest extends \PHPUnit\Framework\TestCase
         $periodA = new Period( $twoMinutesBefore, $twoMinutesAfter);
         $periodX = new Period( $fourMinutesBefore, $now );
 
-        $playerA = new Player( $teamY, $person, $periodA, Team::LINE_DEFENSE );
-        $combiner->combineWithPast( $teamY, $periodX, Team::LINE_DEFENSE );
+        $playerA = new Player( $teamY, $person, $periodA, FormationLine::DEFENSE );
+        $combiner->combineWithPast( $teamY, $periodX, FormationLine::DEFENSE );
 
         self::assertCount( 1, $person->getPlayers()->toArray() );
         self::assertSame( $twoMinutesBefore, $playerA->getPeriod()->getStartDate() );

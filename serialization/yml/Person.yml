@@ -1,0 +1,17 @@
+Sports\Person:
+  exclusion_policy: ALL
+  exclude: false
+  access_type: public_method
+  properties:
+    id:
+      type: int
+    firstName:
+      type: string
+    nameInsertion:
+      type: string
+    lastName:
+      type: string
+    players:
+      type: ArrayCollection<Sports\Team\Player>
+      groups: [players]
+      read_only: true

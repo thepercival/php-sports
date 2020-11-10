@@ -1,0 +1,9 @@
+Sports\Sport\Formation\Line:
+  exclusion_policy: ALL
+  exclude: false
+  access_type: public_property
+  properties:
+    number:
+      type: integer
+    nrOfPlayers:
+      type: integer

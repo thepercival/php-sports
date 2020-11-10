@@ -1,4 +1,4 @@
-Sports\Season:
+Sports\Team\Player:
   exclusion_policy: ALL
   exclude: false
   access_type: public_method
@@ -6,11 +6,9 @@ Sports\Season:
   properties:
     id:
       read_only: true
-    name:
-      type: string
     startDateTime:
       type: DateTimeImmutable<'Y-m-d\TH:i:s.u\Z'>
-      serialized_name: start
     endDateTime:
       type: DateTimeImmutable<'Y-m-d\TH:i:s.u\Z'>
-      serialized_name: end
+    line:
+      type: integer
