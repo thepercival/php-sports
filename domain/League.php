@@ -124,7 +124,7 @@ class League implements Identifiable
     /**
      * @return ArrayCollection|Competition[]
      */
-    public function getCompetitions(): ArrayCollection
+    public function getCompetitions()
     {
         return $this->competitions;
     }

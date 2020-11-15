@@ -2,9 +2,11 @@
 
 namespace Sports\Competition;
 
+use League\Period\Period;
 use Sports\Competition;
 use Sports\League;
 use Sports\Season;
+use Sports\Sport;
 
 /**
  * Class Repository
@@ -33,7 +35,7 @@ class Repository extends \Sports\Repository
         $this->_em->persist($competition);
     }
 
-    public function findExt(League $league, Season $season): ?Competition
+    public function findOneExt(League $league, Season $season): ?Competition
     {
         $query = $this->createQueryBuilder('c')
             ->where('c.season = :season')
@@ -70,6 +72,33 @@ class Repository extends \Sports\Repository
 
         $query = $query->setParameter('date', $date);
         return $query->getQuery()->getResult();
+    }
+
+    /**
+     * @param Sport $sport
+     * @param Period|null $period
+     * @return array|Competition[]
+     */
+    public function findExt(Sport $sport = null, Period $period = null)
+    {
+        $qb = $this->createQueryBuilder('c')
+            ->distinct()
+            ->join('Sports\Sport\Config', 'sc', 'WITH', 'c = sc.competition')
+            ->join('sc.sport', 's')
+            ->join('c.season', 'season')
+        ;
+
+        if( $sport !== null ) {
+            $qb = $qb->andWhere('sc.sport = :sport');
+            $qb = $qb->setParameter('sport', $sport );
+        }
+        if( $period !== null ) {
+            $qb = $qb->andWhere('season.startDateTime < :periodEnd' );
+            $qb = $qb->andWhere('season.endDateTime > :periodStart' );
+            $qb = $qb->setParameter('periodEnd', $period->getEndDate() );
+            $qb = $qb->setParameter('periodStart', $period->getStartDate() );
+        }
+        return $qb->getQuery()->getResult();
     }
 
     public function findNrWithoutPlanning()

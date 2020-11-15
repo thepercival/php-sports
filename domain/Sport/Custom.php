@@ -21,6 +21,12 @@ abstract class Custom
     const IceHockey = 14;
     const Max = 14;
 
+    CONST Football_Line_GoalKepeer = 1;
+    CONST Football_Line_Defense = 2;
+    CONST Football_Line_Midfield = 4;
+    CONST Football_Line_Forward = 8;
+    CONST Football_Line_All = 15;
+
     public static function get(): array
     {
         return [

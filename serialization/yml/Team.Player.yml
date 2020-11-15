@@ -6,9 +6,23 @@ Sports\Team\Player:
   properties:
     id:
       read_only: true
-    startDateTime:
-      type: DateTimeImmutable<'Y-m-d\TH:i:s.u\Z'>
-    endDateTime:
-      type: DateTimeImmutable<'Y-m-d\TH:i:s.u\Z'>
+# this not works, because startDateTime is not in Team\Player but Team\Role(parent)
+#    startDateTime:
+#      type: DateTimeImmutable<'Y-m-d\TH:i:s.u\Z'>
+#      serialized_name: start
+#    endDateTime:
+#      type: DateTimeImmutable<'Y-m-d\TH:i:s.u\Z'>
+#      serialized_name: end
     line:
       type: integer
+    person:
+      type: Sports\Person
+      groups: [ person ]
+      read_only: true
+  virtual_properties:
+    getStartDateTime:
+      type: DateTimeImmutable<'Y-m-d\TH:i:s.u\Z'>
+      serialized_name: start
+    getEndDateTime:
+      type: DateTimeImmutable<'Y-m-d\TH:i:s.u\Z'>
+      serialized_name: end

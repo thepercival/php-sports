@@ -2,10 +2,10 @@
 
 namespace Sports\Team;
 
-use Sports\Sport\Formation\Line as FormationLine;
 use League\Period\Period;
 use Sports\Person;
 use Sports\Team;
+use Sports\Sport\Custom as SportCustom;
 
 class Player extends Role
 {
@@ -50,13 +50,13 @@ class Player extends Role
 
     public function getLineLetter(): string {
         $line = $this->getLine();
-        if( $line === FormationLine::GOALKEEPER ) {
+        if( $line === SportCustom::Football_Line_GoalKepeer ) {
             return "K";
-        } elseif( $line === FormationLine::DEFENSE ) {
+        } elseif( $line === SportCustom::Football_Line_Defense ) {
             return "V";
-        } elseif( $line === FormationLine::MIDFIELD ) {
+        } elseif( $line === SportCustom::Football_Line_Midfield ) {
             return "M";
-        } elseif( $line === FormationLine::FORWARD ) {
+        } elseif( $line === SportCustom::Football_Line_Forward ) {
             return "A";
         }
         return "?";

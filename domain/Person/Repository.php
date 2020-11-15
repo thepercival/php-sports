@@ -25,7 +25,7 @@ class Repository extends \Sports\Repository
     {
         $qb = $this->createQueryBuilder('p')
             ->distinct()
-            ->join('Sports\Team\Player', 'pl')
+            ->join('Sports\Team\Player', 'pl', 'WITH', 'p = pl.person')
             ->where('pl.startDateTime <= :seasonEnd')
             ->andWhere('pl.endDateTime >= :seasonStart')
         ;
