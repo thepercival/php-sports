@@ -28,6 +28,10 @@ class Person implements Identifiable
      * @var ArrayCollection|Player[]
      */
     protected $players;
+    /**
+     * @var string|null
+     */
+    protected $imageUrl;
     
     const MIN_LENGTH_FIRSTNAME = 2;
     const MAX_LENGTH_FIRSTNAME = 50;
@@ -194,5 +198,22 @@ class Person implements Identifiable
             return true;
         } );
         return $filteredPlayers->first();
+    }
+
+    public function getImageUrl(): ?string
+    {
+        return $this->imageUrl;
+    }
+
+    public function setImageUrl(string $imageUrl = null)
+    {
+        if (strlen($imageUrl) === 0) {
+            $imageUrl = null;
+        }
+
+        if (strlen($imageUrl) > Team::MAX_LENGTH_IMAGEURL) {
+            throw new \InvalidArgumentException("de imageUrl mag maximaal ".Team::MAX_LENGTH_IMAGEURL." karakters bevatten", E_ERROR);
+        }
+        $this->imageUrl = $imageUrl;
     }
 }

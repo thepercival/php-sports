@@ -11,6 +11,8 @@ Sports\Person:
       type: string
     lastName:
       type: string
+    imageUrl:
+      type: string
     players:
       type: ArrayCollection<Sports\Team\Player>
       groups: [players]
