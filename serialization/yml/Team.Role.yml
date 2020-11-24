@@ -1,0 +1,21 @@
+Sports\Team\Role:
+  exclusion_policy: ALL
+  exclude: false
+  access_type: public_method
+
+  properties:
+    id:
+      type: integer
+    startDateTime:
+      type: DateTimeImmutable<'Y-m-d\TH:i:s.u\Z'>
+      serialized_name: start
+    endDateTime:
+      type: DateTimeImmutable<'Y-m-d\TH:i:s.u\Z'>
+      serialized_name: end
+    team:
+      type: Sports\Team
+      read_only: true
+    person:
+      type: Sports\Person
+      groups: [ person ]
+      read_only: true

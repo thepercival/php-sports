@@ -177,18 +177,19 @@ class Person implements Identifiable
         } );
     }
 
-    public function getPlayer( Team $team, \DateTimeImmutable $dateTime ): ?Player
+    public function getPlayer( Team $team, \DateTimeImmutable $dateTime = null ): ?Player
     {
-        $filters = [];
-
-        $filters[] = function ( Player $player ) use ($team): bool {
-            return $player->getTeam() === $team;
-        };
-
-        $filters[] = function ( Player $player ) use ($dateTime): bool {
-            return $player->getPeriod()->contains( $dateTime );
-        };
-
+        if( $dateTime === null) {
+            $dateTime = new \DateTimeImmutable();
+        }
+        $filters = [
+            function ( Player $player ) use ($team): bool {
+                return $player->getTeam() === $team;
+            },
+            function ( Player $player ) use ($dateTime): bool {
+                return $player->getPeriod()->contains( $dateTime );
+            }
+        ];
         $filteredPlayers = $this->players->filter( function ( Player $player ) use ($filters): bool {
             foreach( $filters as $filter ) {
                 if( !$filter( $player ) ) {
