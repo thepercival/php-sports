@@ -2,12 +2,18 @@
 
 namespace Sports\Game\Event;
 
+use Sports\Game\Event\Goal as GoalEvent;
 use Sports\Game\Participation as GameParticipation;
 use Sports\Team;
 use Sports\Game\Event as GameEvent;
+use SuperElf\PersonStats as PersonStatsBase;
 
 class Goal implements GameEvent
 {
+    public const FIELD = 1;
+    public const PENALTY = 2;
+    public const OWN = 4;
+
     /**
      * @var int|string
      */
@@ -73,6 +79,18 @@ class Goal implements GameEvent
             $gameParticipation->getGoalsAndAssists()->add($this) ;
         }
         $this->gameParticipation = $gameParticipation;
+    }
+
+    public function isType( int $type ): bool
+    {
+        if( $type == self::FIELD ) {
+            return !$this->getOwn() && !$this->getPenalty();
+        } elseif( $type == self::PENALTY ) {
+            return $this->getPenalty();
+        } elseif( $type == self::OWN ) {
+            return $this->getOwn();
+        }
+        return false;
     }
 
     public function getOwn(): bool

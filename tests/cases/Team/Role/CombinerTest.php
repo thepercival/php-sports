@@ -4,11 +4,11 @@ namespace Sports\Tests\Team\Role;
 
 use League\Period\Period;
 use Sports\Person;
+use Sports\Sport\Custom as SportCustom;
 use Sports\Team;
 use Sports\Team\Player;
 use Sports\TestHelper\CompetitionCreator;
 use Sports\Team\Role\Combiner as RoleCombiner;
-use Sports\Sport\Formation\Line as FormationLine;
 
 class CombinerTest extends \PHPUnit\Framework\TestCase
 {
@@ -42,8 +42,8 @@ class CombinerTest extends \PHPUnit\Framework\TestCase
         $periodA = new Period( $fourMinutesBefore, $now);
         $periodX = new Period( $twoMinutesBefore, $twoMinutesAfter );
 
-        $playerA = new Player( $teamY, $person, $periodA, FormationLine::DEFENSE );
-        $combiner->combineWithPast( $teamZ, $periodX, FormationLine::DEFENSE );
+        $playerA = new Player( $teamY, $person, $periodA, SportCustom::Football_Line_Defense );
+        $combiner->combineWithPast( $teamZ, $periodX, SportCustom::Football_Line_Defense );
 
         self::assertCount( 2, $person->getPlayers()->toArray() );
 
@@ -79,8 +79,8 @@ class CombinerTest extends \PHPUnit\Framework\TestCase
         $periodA = new Period( $fourMinutesBefore, $now);
         $periodX = new Period( $twoMinutesBefore, $twoMinutesAfter );
 
-        $playerA = new Player( $teamY, $person, $periodA, FormationLine::DEFENSE );
-        $combiner->combineWithPast( $teamZ, $periodX, FormationLine::DEFENSE );
+        $playerA = new Player( $teamY, $person, $periodA, SportCustom::Football_Line_Defense );
+        $combiner->combineWithPast( $teamZ, $periodX, SportCustom::Football_Line_Defense );
 
         self::assertCount( 2, $person->getPlayers()->toArray() );
     }
@@ -112,8 +112,8 @@ class CombinerTest extends \PHPUnit\Framework\TestCase
         $periodA = new Period( $fourMinutesBefore, $now);
         $periodX = new Period( $twoMinutesBefore, $twoMinutesAfter );
 
-        $playerA = new Player( $teamY, $person, $periodA, FormationLine::DEFENSE );
-        $combiner->combineWithPast( $teamY, $periodX, FormationLine::MIDFIELD );
+        $playerA = new Player( $teamY, $person, $periodA, SportCustom::Football_Line_Defense );
+        $combiner->combineWithPast( $teamY, $periodX, SportCustom::Football_Line_Midfield );
 
         self::assertCount( 2, $person->getPlayers()->toArray() );
     }
@@ -143,8 +143,8 @@ class CombinerTest extends \PHPUnit\Framework\TestCase
         $periodA = new Period( $fourMinutesBefore, $now);
         $periodX = new Period( $fourMinutesBefore, $now );
 
-        $playerA = new Player( $teamY, $person, $periodA, FormationLine::DEFENSE );
-        $combiner->combineWithPast( $teamY, $periodX, FormationLine::DEFENSE );
+        $playerA = new Player( $teamY, $person, $periodA, SportCustom::Football_Line_Defense );
+        $combiner->combineWithPast( $teamY, $periodX, SportCustom::Football_Line_Defense );
 
         self::assertCount( 1, $person->getPlayers()->toArray() );
         self::assertSame( $fourMinutesBefore, $playerA->getPeriod()->getStartDate() );
@@ -178,8 +178,8 @@ class CombinerTest extends \PHPUnit\Framework\TestCase
         $periodA = new Period( $tooMuchInPastStartDate, $tooMuchInPastEndDate );
         $periodX = new Period( $fourMinutesBefore, $now);
 
-        $playerA = new Player( $teamY, $person, $periodA, FormationLine::DEFENSE );
-        $combiner->combineWithPast( $teamY, $periodX, FormationLine::DEFENSE );
+        $playerA = new Player( $teamY, $person, $periodA, SportCustom::Football_Line_Defense );
+        $combiner->combineWithPast( $teamY, $periodX, SportCustom::Football_Line_Defense );
 
         self::assertCount( 2, $person->getPlayers()->toArray() );
         self::assertSame( $tooMuchInPastStartDate, $playerA->getPeriod()->getStartDate() );
@@ -214,8 +214,8 @@ class CombinerTest extends \PHPUnit\Framework\TestCase
         $periodA = new Period( $now, $twoMinutesAfter);
         $periodX = new Period( $fourMinutesBefore, $twoMinutesBefore );
 
-        $playerA = new Player( $teamY, $person, $periodA, FormationLine::DEFENSE );
-        $combiner->combineWithPast( $teamY, $periodX, FormationLine::DEFENSE );
+        $playerA = new Player( $teamY, $person, $periodA, SportCustom::Football_Line_Defense );
+        $combiner->combineWithPast( $teamY, $periodX, SportCustom::Football_Line_Defense );
 
         self::assertCount( 1, $person->getPlayers()->toArray() );
         self::assertSame( $now, $playerA->getPeriod()->getStartDate() );
@@ -251,8 +251,8 @@ class CombinerTest extends \PHPUnit\Framework\TestCase
         $periodA = new Period( $now, $twoMinutesAfter);
         $periodX = new Period( $fourMinutesBefore, $twoMinutesBefore );
 
-        $playerA = new Player( $teamZ, $person, $periodA, FormationLine::DEFENSE );
-        $combiner->combineWithPast( $teamY, $periodX, FormationLine::DEFENSE );
+        $playerA = new Player( $teamZ, $person, $periodA, SportCustom::Football_Line_Defense );
+        $combiner->combineWithPast( $teamY, $periodX, SportCustom::Football_Line_Defense );
 
         self::assertCount( 2, $person->getPlayers()->toArray() );
         self::assertSame( $now, $playerA->getPeriod()->getStartDate() );
@@ -287,8 +287,8 @@ class CombinerTest extends \PHPUnit\Framework\TestCase
         $periodA = new Period( $fourMinutesBefore, $now);
         $periodX = new Period( $twoMinutesBefore, $twoMinutesAfter );
 
-        $playerA = new Player( $teamY, $person, $periodA, FormationLine::DEFENSE );
-        $combiner->combineWithPast( $teamY, $periodX, FormationLine::DEFENSE );
+        $playerA = new Player( $teamY, $person, $periodA, SportCustom::Football_Line_Defense );
+        $combiner->combineWithPast( $teamY, $periodX, SportCustom::Football_Line_Defense );
 
         self::assertCount( 1, $person->getPlayers()->toArray() );
         self::assertSame( $fourMinutesBefore, $playerA->getPeriod()->getStartDate() );
@@ -324,8 +324,8 @@ class CombinerTest extends \PHPUnit\Framework\TestCase
         $periodA = new Period( $twoMinutesBefore, $twoMinutesAfter);
         $periodX = new Period( $fourMinutesBefore, $now );
 
-        $playerA = new Player( $teamY, $person, $periodA, FormationLine::DEFENSE );
-        $combiner->combineWithPast( $teamY, $periodX, FormationLine::DEFENSE );
+        $playerA = new Player( $teamY, $person, $periodA, SportCustom::Football_Line_Defense );
+        $combiner->combineWithPast( $teamY, $periodX, SportCustom::Football_Line_Defense );
 
         self::assertCount( 1, $person->getPlayers()->toArray() );
         self::assertSame( $twoMinutesBefore, $playerA->getPeriod()->getStartDate() );

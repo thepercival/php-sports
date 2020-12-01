@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\Collection;
 use Sports\Competitor\Team as TeamCompetitor;
 use Sports\Game;
 use Sports\Game\Event\Goal as GoalEvent;
+use Sports\Game\Event\Card as CardEvent;
 use Sports\Team\Player;
 
 class Participation
@@ -123,9 +124,14 @@ class Participation
         return $this->endMinute > 0;
     }
 
-    public function getCards(): Collection
+    public function getCards( int $type = null ): Collection
     {
-        return $this->cards;
+        if( $type === null ) {
+            return $this->cards;
+        }
+        return $this->cards->filter( function ( CardEvent $cardEvent ) use ($type) : bool {
+            return $cardEvent->getType() === $type;
+        });
     }
 
     public function getGoalsAndAssists(): Collection
@@ -133,10 +139,10 @@ class Participation
         return $this->goalsAndAssists;
     }
 
-    public function getGoals(): Collection
+    public function getGoals( int $type = null ): Collection
     {
-        return $this->goalsAndAssists->filter( function( GoalEvent $goalEvent ): bool {
-            return $goalEvent->getGameParticipation() === $this;
+        return $this->goalsAndAssists->filter( function( GoalEvent $goalEvent ) use ($type): bool {
+            return $goalEvent->getGameParticipation() === $this && ( $type === null || $goalEvent->isType($type) );
         });
     }
 

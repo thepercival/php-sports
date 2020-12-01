@@ -198,7 +198,7 @@ class Person implements Identifiable
             }
             return true;
         } );
-        return $filteredPlayers->first();
+        return $filteredPlayers->count() > 0 ? $filteredPlayers->first() : null;
     }
 
     public function getImageUrl(): ?string

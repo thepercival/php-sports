@@ -10,7 +10,7 @@ use Sports\Round\Number\PlanningScheduler;
 use Sports\Round\Number as RoundNumber;
 use Sports\Round\Number\Repository as RoundNumberRepository;
 use League\Period\Period;
-use Sports\Round\Number\PlanningCreator\Event as PlanningCreatorEvent;
+use Sports\Queue\PlanningInput\CreatePlanningsEvent;
 use Psr\Log\LoggerInterface;
 
 class PlanningCreator
@@ -53,7 +53,7 @@ class PlanningCreator
     }
 
     public function addFrom(
-        PlanningCreatorEvent $createPlanningEvent,
+        CreatePlanningsEvent $createPlanningEvent,
         RoundNumber $roundNumber,
         Period $blockedPeriod = null
     ) {
@@ -76,7 +76,7 @@ class PlanningCreator
     }
 
     protected function createFrom(
-        PlanningCreatorEvent $createPlanningEvent,
+        CreatePlanningsEvent $createPlanningEvent,
         RoundNumber $roundNumber,
         Period $blockedPeriod = null
     ) {

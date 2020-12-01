@@ -101,13 +101,13 @@ class ItemsGetter
         if ($finalScore === null) {
             return 0;
         }
-        if ($this->isWin($finalScore, $homeAway)) {
+        if ($finalScore->getResult( $homeAway ) === Game::RESULT_WIN ) {
             if ($game->getFinalPhase() === Game::PHASE_REGULARTIME) {
                 return $game->getSportConfig()->getWinPoints();
             } elseif ($game->getFinalPhase() === Game::PHASE_EXTRATIME) {
                 return $game->getSportConfig()->getWinPointsExt();
             }
-        } elseif ($this->isDraw($finalScore)) {
+        } elseif ($finalScore->getResult( $homeAway ) === Game::RESULT_DRAW ) {
             if ($game->getFinalPhase() === Game::PHASE_REGULARTIME) {
                 return $game->getSportConfig()->getDrawPoints();
             } elseif ($game->getFinalPhase() === Game::PHASE_EXTRATIME) {
@@ -117,17 +117,6 @@ class ItemsGetter
             return $game->getSportConfig()->getLosePointsExt();
         }
         return 0;
-    }
-
-    private function isWin(GameScoreHomeAway $finalScore, bool $homeAway): bool
-    {
-        return ($finalScore->getResult() === Game::RESULT_HOME && $homeAway === Game::HOME)
-            || ($finalScore->getResult() === Game::RESULT_AWAY && $homeAway === Game::AWAY);
-    }
-
-    private function isDraw(GameScoreHomeAway $finalScore): bool
-    {
-        return $finalScore->getResult() === Game::RESULT_DRAW;
     }
 
     private function getNrOfUnits(?GameScoreHomeAway $finalScore, bool $homeAway, int $scoredReceived): int

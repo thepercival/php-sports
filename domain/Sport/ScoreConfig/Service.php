@@ -8,6 +8,7 @@ use Sports\Sport;
 use Sports\Game;
 use Sports\Sport\Custom as SportCustom;
 use Sports\Round\Number as RoundNumber;
+use Sports\Sport\ScoreConfig\Service as SportScoreConfigService;
 
 class Service
 {

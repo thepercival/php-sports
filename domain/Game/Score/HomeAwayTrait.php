@@ -48,11 +48,18 @@ trait HomeAwayTrait
         $this->away = $away;
     }
 
-    public function getResult(): int
+    public function get( bool $homeAway): int {
+        return $homeAway === Game::HOME ? $this->getHome() : $this->getAway();
+    }
+
+    public function getResult( bool $homeAway ): int
     {
         if ($this->getHome() === $this->getAway()) {
             return Game::RESULT_DRAW;
         }
-        return ($this->getHome() > $this->getAway()) ? Game::RESULT_HOME : Game::RESULT_AWAY;
+        if( $homeAway === Game::HOME ) {
+            return ($this->getHome() > $this->getAway()) ? Game::RESULT_WIN : Game::RESULT_LOST;
+        }
+        return ($this->getAway() > $this->getHome()) ? Game::RESULT_WIN : Game::RESULT_LOST;
     }
 }

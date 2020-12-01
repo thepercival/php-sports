@@ -70,9 +70,9 @@ class Game implements Identifiable
      */
     protected $participations;
 
-    public const RESULT_HOME = 1;
+    public const RESULT_WIN = 1;
     public const RESULT_DRAW = 2;
-    public const RESULT_AWAY = 3;
+    public const RESULT_LOST = 3;
 
     public const HOME = true;
     public const AWAY = false;
