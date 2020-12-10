@@ -57,9 +57,6 @@ trait HomeAwayTrait
         if ($this->getHome() === $this->getAway()) {
             return Game::RESULT_DRAW;
         }
-        if( $homeAway === Game::HOME ) {
-            return ($this->getHome() > $this->getAway()) ? Game::RESULT_WIN : Game::RESULT_LOST;
-        }
-        return ($this->getAway() > $this->getHome()) ? Game::RESULT_WIN : Game::RESULT_LOST;
+        return $this->get($homeAway) > $this->get(!$homeAway) ? Game::RESULT_WIN : Game::RESULT_LOST;
     }
 }

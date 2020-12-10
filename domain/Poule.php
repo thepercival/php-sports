@@ -3,6 +3,7 @@
 namespace Sports;
 
 use \Doctrine\Common\Collections\ArrayCollection;
+use Sports\Sport\Config as SportConfig;
 
 class Poule
 {
@@ -190,13 +191,11 @@ class Poule
         return ($this->getPlaces()->count() > 2);
     }
 
-    public function getNrOfGamesPerRound()
+    public function getNrOfGamesPerRoundNumber( SportConfig $sportConfig ): int
     {
         $nrOfPlaces = $this->getPlaces()->count();
-        if (($nrOfPlaces % 2) !== 0) {
-            return (($nrOfPlaces - 1) / 2);
-        }
-        return ($nrOfPlaces / 2);
+        $rest = $nrOfPlaces % $sportConfig->getNrOfGamePlaces();
+        return (int)(($nrOfPlaces - $rest) / $sportConfig->getNrOfGamePlaces());
     }
 
     public function getState(): int

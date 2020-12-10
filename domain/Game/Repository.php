@@ -17,7 +17,7 @@ class Repository extends \Sports\Repository
      * @param null $gameStates
      * @param int|null $batchNr
      * @param Period|null $period
-     * @return int|mixed|string|Game[]
+     * @return array|Game[]
      */
     public function getCompetitionGames(
         Competition $competition,
@@ -25,14 +25,16 @@ class Repository extends \Sports\Repository
         int $batchNr = null,
         Period $period = null)
     {
-        return $this->getCompetitionGamesQuery($competition, $gameStates, $batchNr, $period)->getQuery()->getResult();
+        $qb = $this->getCompetitionGamesQuery($competition, $gameStates, $batchNr, $period);
+        $qb = $qb->orderBy('g.startDateTime', 'ASC');
+        return $qb->getQuery()->getResult();
     }
 
     public function hasCompetitionGames(
         Competition $competition,
         $gameStates = null,
         int $batchNr = null,
-        Period $period = null)
+        Period $period = null): bool
     {
         $games = $this->getCompetitionGamesQuery(
             $competition,
@@ -96,7 +98,7 @@ class Repository extends \Sports\Repository
      * @param RoundNumber $roundNumber
      * @param null $gameStates
      * @param int|null $batchNr
-     * @return int|mixed|string|Game[]
+     * @return array|Game[]
      */
     public function getRoundNumberGames(RoundNumber $roundNumber, $gameStates = null, int $batchNr = null)
     {
@@ -141,7 +143,7 @@ class Repository extends \Sports\Repository
         if ($period !== null) {
             $query = $query
                 ->andWhere('g.startDateTime <= :end')
-                ->andWhere('g.startDateTime = :start')
+                ->andWhere('g.startDateTime >= :start')
                 ->setParameter('end', $period->getEndDate())
                 ->setParameter('start', $period->getStartDate());
         }
@@ -197,9 +199,6 @@ class Repository extends \Sports\Repository
         return reset($games);
     }
 
-    /**
-     * @param GameBase $game
-     */
     public function customRemove(GameBase $game)
     {
         $game->getPoule()->getGames()->removeElement($game);

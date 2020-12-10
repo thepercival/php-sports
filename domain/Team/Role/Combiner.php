@@ -62,7 +62,9 @@ class Combiner
         }
         $playerOverlapses = $this->person->getPlayers( $team, $newPeriod );
         foreach( $playerOverlapses as $playerOverlaps ) {
-            if( $playerOverlaps->getPeriod()->contains( $newPeriod ) ) {
+            if( $playerOverlaps->getPeriod()->contains( $newPeriod )
+                && ( $this->mode === self::MODE_MULTIPLE_TEAMS_OF_A_TYPE_AT_THE_SAME_TIME
+                || $newTeam === $playerOverlaps->getTeam() ) ) {
                 continue;
             }
             if( $playerOverlaps->getPeriod()->getStartDate() > $newPeriod->getStartDate() ) { // future

@@ -333,9 +333,9 @@ class Game implements Identifiable
 
     /**
      * @param TeamCompetitor|null $teamCompetitor
-     * @return Collection|Participation[]
+     * @return ArrayCollection|Collection|Participation[]
      */
-    public function getParticipations(TeamCompetitor $teamCompetitor = null): Collection
+    public function getParticipations(TeamCompetitor $teamCompetitor = null)
     {
         if ($teamCompetitor === null) {
             return $this->participations;
@@ -398,16 +398,17 @@ class Game implements Identifiable
 
     public function getParticipation(Person $person ): ?Participation
     {
-        return $this->getFilteredParticipations(function (Participation $participation) use ($person): bool {
+        $filtered = $this->getFilteredParticipations(function (Participation $participation) use ($person): bool {
             return $participation->getPlayer()->getPerson() === $person;
-        })->first();
+        });
+        return $filtered->count() === 0 ? null : $filtered->first();
     }
 
     /**
      * @param callable $filter
-     * @return Collection|Participation[]
+     * @return ArrayCollection|Collection|Participation[]
      */
-    protected function getFilteredParticipations( callable $filter ): Collection
+    protected function getFilteredParticipations( callable $filter )
     {
         return $this->participations->filter( $filter );
     }
