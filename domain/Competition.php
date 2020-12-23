@@ -1,22 +1,22 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Sports;
 
 use \Doctrine\Common\Collections\ArrayCollection;
 use \Doctrine\Common\Collections\Collection;
 use \Doctrine\ORM\PersistentCollection;
 use Sports\Ranking\Service as RankingService;
-use Sports\Sport\Config as SportConfig;
+use Sports\Competition\Sport as CompetitionSport;
+use Sports\Competition\Field as CompetitionField;
+use Sports\Sport\ConfigDep as SportConfig;
 use SportsHelpers\Identifiable;
 use Sports\Competitor\Team as TeamCompetitor;
+use Sports\Competition\Referee;
 
-class Competition implements Identifiable
+class Competition extends Identifiable
 {
-    /**
-     * @var int|string
-     */
-    private $id;
-
     /**
      * @var League
      */
@@ -52,14 +52,13 @@ class Competition implements Identifiable
      */
     private $referees;
     /**
+     * @var ArrayCollection|CompetitionSport[]
+     */
+    private $sports;
+    /**
      * @var ArrayCollection|TeamCompetitor[]
      */
     private $teamCompetitors;
-
-    /**
-     * @var ArrayCollection
-     */
-    private $sportConfigs;
 
     const MIN_COMPETITORS = 3;
     const MAX_COMPETITORS = 40;
@@ -67,30 +66,13 @@ class Competition implements Identifiable
     public function __construct(League $league, Season $season)
     {
         $this->setLeague($league);
-        $this->setSeason($season);
+        $this->season = $season;
         $this->ruleSet = RankingService::RULESSET_WC;
         $this->state = State::Created;
         $this->roundNumbers = new ArrayCollection();
         $this->referees = new ArrayCollection();
+        $this->sports = new ArrayCollection();
         $this->teamCompetitors = new ArrayCollection();
-        $this->sportConfigs = new ArrayCollection();
-    }
-
-    /**
-     * @return int|string
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    /**
-     * @param int|string $id
-     * @return void
-     */
-    public function setId($id)
-    {
-        $this->id = $id;
     }
 
     /**
@@ -101,10 +83,7 @@ class Competition implements Identifiable
         return $this->league;
     }
 
-    /**
-     * @param League $league
-     */
-    public function setLeague(League $league)
+    protected function setLeague(League $league)
     {
         $competitions = $league->getCompetitions();
         if (!$competitions->contains($this)) {
@@ -121,18 +100,7 @@ class Competition implements Identifiable
         return $this->season;
     }
 
-    /**
-     * @param Season $season
-     */
-    public function setSeason(Season $season)
-    {
-        $this->season = $season;
-    }
-
-    /**
-     * @return string
-     */
-    public function getName()
+    public function getName(): string
     {
         return $this->getLeague()->getName() . ' ' . $this->getSeason()->getName();
     }
@@ -239,10 +207,10 @@ class Competition implements Identifiable
         $this->teamCompetitors = $teamCompetitors;
     }
 
-    public function getField(int $priority): ?Field
+    public function getField(int $priority): ?CompetitionField
     {
-        foreach ($this->getSportConfigs() as $sportConfig) {
-            $field = $sportConfig->getField($priority);
+        foreach ($this->getSports() as $competitionSport) {
+            $field = $competitionSport->getField($priority);
             if ($field !== null) {
                 return $field;
             }
@@ -250,72 +218,50 @@ class Competition implements Identifiable
         return null;
     }
 
-    public function setSportConfigs(ArrayCollection $sportConfigs)
-    {
-        $this->sportConfigs = $sportConfigs;
-    }
-
     /**
-     * @return ArrayCollection | PersistentCollection | SportConfig[]
+     * @return ArrayCollection | PersistentCollection | CompetitionSport[]
      */
-    public function getSportConfigs()
+    public function getSports()
     {
-        return $this->sportConfigs;
+        return $this->sports;
     }
 
-    public function getSportConfig(Sport $sport = null): ?SportConfig
+    public function getSport(Sport $sport): ?CompetitionSport
     {
-        $foundConfigs = $this->sportConfigs->filter(function ($sportConfig) use ($sport): bool {
-            return $sportConfig->getSport() === $sport;
+        $foundConfigs = $this->sports->filter(function (CompetitionSport $competitionSport) use ($sport): bool {
+            return $competitionSport->getSport() === $sport;
         });
         $foundConfig = $foundConfigs->first();
-        return $foundConfig !== false ? $foundConfig : null;
+        return $foundConfig ? $foundConfig : null;
     }
 
-    public function hasMultipleSportConfigs(): bool
+    public function hasMultipleSports(): bool
     {
-        return $this->sportConfigs->count() > 1;
+        return $this->sports->count() > 1;
     }
 
-    public function getFirstSportConfig(): SportConfig
-    {
-        return $this->sportConfigs[0];
-    }
+//    /**
+//     * @param int|string $sportId
+//     * @return Sport|null
+//     */
+//    public function getSportBySportId($sportId): ?Sport
+//    {
+//        foreach ($this->getSportConfigs() as $sportConfig) {
+//            if ($sportConfig->getSport()->getId() === $sportId) {
+//                return $sportConfig->getSport();
+//            }
+//        }
+//        return null;
+//    }
 
     /**
-     * @param int|string $sportId
-     * @return Sport|null
-     */
-    public function getSportBySportId($sportId): ?Sport
-    {
-        foreach ($this->getSportConfigs() as $sportConfig) {
-            if ($sportConfig->getSport()->getId() === $sportId) {
-                return $sportConfig->getSport();
-            }
-        }
-        return null;
-    }
-
-    /**
-     * @return Collection | Sport[]
-     */
-    public function getSports(): Collection
-    {
-        return $this->sportConfigs->map(
-            function ($sportConfig) {
-                return $sportConfig->getSport();
-            }
-        );
-    }
-
-    /**
-     * @return array|Field[]
+     * @return array | CompetitionField[]
      */
     public function getFields(): array
     {
         $fields = [];
-        foreach ($this->getSportConfigs() as $sportConfig) {
-            $fields = array_merge($fields, $sportConfig->getFields()->toArray());
+        foreach( $this->getSports() as $competitionSport ) {
+            $fields = array_merge($fields, $competitionSport->getFields()->toArray() );
         }
         return $fields;
     }

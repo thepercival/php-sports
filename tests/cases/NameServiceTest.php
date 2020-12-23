@@ -7,7 +7,7 @@ use Sports\Team;
 use Sports\TestHelper\CompetitionCreator;
 use Sports\NameService;
 use Sports\Competitor\Team as TeamCompetitor;
-use Sports\Referee;
+use Sports\Competition\Referee;
 use Sports\Structure\Service as StructureService;
 use Sports\Planning\Service as PlanningService;
 use Sports\Qualify\Group as QualifyGroup;

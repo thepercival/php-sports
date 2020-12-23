@@ -3,23 +3,24 @@
 namespace Sports\Sport\ScoreConfig;
 
 use Sports\Sport\ScoreConfig as SportScoreConfig;
-use Sports\Game\Score\HomeAway as GameScoreHomeAway;
+use Sports\Score\AgainstHelper as ScoreHomeAway;
 use Sports\Sport;
-use Sports\Game;
+use Sports\Game\Against as AgainstGame;
 use Sports\Sport\Custom as SportCustom;
 use Sports\Round\Number as RoundNumber;
-use Sports\Sport\ScoreConfig\Service as SportScoreConfigService;
+use Sports\Competition\Sport as CompetitionSport;
 
 class Service
 {
-    public function createDefault(Sport $sport, RoundNumber $roundNumber)
+    public function createDefault(CompetitionSport $competitionSport, RoundNumber $roundNumber)
     {
-        $sportScoreConfig = new SportScoreConfig($sport, $roundNumber);
+        $sportScoreConfig = new SportScoreConfig($competitionSport, $roundNumber);
         $sportScoreConfig->setDirection(SportScoreConfig::UPWARDS);
         $sportScoreConfig->setMaximum(0);
         $sportScoreConfig->setEnabled(true);
+        $sport = $competitionSport->getSport();
         if ($sport->getCustomId() !== null && $this->hasNext($sport->getCustomId())) {
-            $subScoreConfig = new SportScoreConfig($sport, $roundNumber, $sportScoreConfig);
+            $subScoreConfig = new SportScoreConfig($competitionSport, $roundNumber, $sportScoreConfig);
             $subScoreConfig->setDirection(SportScoreConfig::UPWARDS);
             $subScoreConfig->setMaximum(0);
             $subScoreConfig->setEnabled(false);
@@ -42,15 +43,15 @@ class Service
         return false;
     }
 
-    public function copy(Sport $sport, RoundNumber $roundNumber, SportScoreConfig $sourceConfig)
+    public function copy(CompetitionSport $competitionSport, RoundNumber $roundNumber, SportScoreConfig $sourceConfig)
     {
-        $newScoreConfig = new SportScoreConfig($sport, $roundNumber, null);
+        $newScoreConfig = new SportScoreConfig($competitionSport, $roundNumber, null);
         $newScoreConfig->setDirection($sourceConfig->getDirection());
         $newScoreConfig->setMaximum($sourceConfig->getMaximum());
         $newScoreConfig->setEnabled($sourceConfig->getEnabled());
         $previousSubScoreConfig = $sourceConfig->getNext();
         if ($previousSubScoreConfig !== null) {
-            $newSubScoreConfig = new SportScoreConfig($sport, $roundNumber, $newScoreConfig);
+            $newSubScoreConfig = new SportScoreConfig($competitionSport, $roundNumber, $newScoreConfig);
             $newSubScoreConfig->setDirection($previousSubScoreConfig->getDirection());
             $newSubScoreConfig->setMaximum($previousSubScoreConfig->getMaximum());
             $newSubScoreConfig->setEnabled($previousSubScoreConfig->getEnabled());
@@ -83,7 +84,7 @@ class Service
         return $sportScoreConfigA->getNext() === $sportScoreConfigB->getNext();
     }
 
-    public function getFinalScore(Game $game): ?GameScoreHomeAway
+    public function getFinalScore(AgainstGame $game): ?ScoreHomeAway
     {
         if ($game->getScores()->count() === 0) {
             return null;
@@ -98,14 +99,14 @@ class Service
                     $away++;
                 }
             }
-            return new GameScoreHomeAway($home, $away);
+            return new ScoreHomeAway($home, $away);
         }
         $home = $game->getScores()->first()->getHome();
         $away = $game->getScores()->first()->getAway();
-        return new GameScoreHomeAway($home, $away);
+        return new ScoreHomeAway($home, $away);
     }
 
-    public function getFinalSubScore(Game $game): GameScoreHomeAway
+    public function getFinalSubScore(AgainstGame $game): ScoreHomeAway
     {
         $home = 0;
         $away = 0;
@@ -113,6 +114,6 @@ class Service
             $home += $score->getHome();
             $away += $score->getAway();
         }
-        return new GameScoreHomeAway($home, $away);
+        return new ScoreHomeAway($home, $away);
     }
 }

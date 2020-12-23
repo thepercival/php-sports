@@ -1,6 +1,7 @@
 -- PRE PRE PRE doctrine-update =============================================================
 
 -- POST POST POST doctrine-update ===========================================================
+update games set gameRoundNumber = 0;
 
 -- php bin/console.php app:create-default-planning-input --placesRange=2-4 --sendCreatePlanningMessage=true
 

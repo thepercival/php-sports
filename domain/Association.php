@@ -5,12 +5,8 @@ namespace Sports;
 use \Doctrine\Common\Collections\ArrayCollection;
 use SportsHelpers\Identifiable;
 
-class Association implements Identifiable
+class Association extends Identifiable
 {
-    /**
-     * @var int|string
-     */
-    protected $id;
     /**
      * @var string
      */
@@ -50,23 +46,6 @@ class Association implements Identifiable
         $this->children = new ArrayCollection();
         $this->leagues = new ArrayCollection();
         $this->teams = new ArrayCollection();
-    }
-
-    /**
-     * @return int|string
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    /**
-     * @param int|string $id
-     * @return void
-     */
-    public function setId($id)
-    {
-        $this->id = $id;
     }
 
     public function getName(): string

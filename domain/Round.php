@@ -9,13 +9,10 @@ use Sports\Qualify\Group as QualifyGroup;
 use Sports\Poule\Horizontal as HorizontalPoule;
 use Sports\State;
 use Sports\Place\Location as PlaceLocation;
+use SportsHelpers\Identifiable;
 
-class Round
+class Round extends Identifiable
 {
-    /**
-     * @var int
-     */
-    protected $id;
     /**
      * @var string
      */
@@ -75,24 +72,6 @@ class Round
         $this->poules = new ArrayCollection();
         $this->setParentQualifyGroup($parentQualifyGroup);
         $this->qualifyGroups = new ArrayCollection();
-    }
-
-    /**
-     * Get id
-     *
-     * @return int
-     */
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
-
-    /**
-     * @param int $id
-     */
-    public function setId(int $id = null)
-    {
-        $this->id = $id;
     }
 
     /**

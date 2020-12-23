@@ -8,12 +8,8 @@ use Sports\Place\Location as PlaceLocation;
 use Sports\Team as TeamBase;
 use SportsHelpers\Identifiable;
 
-class Team implements PlaceLocation, CompetitorInterface, Identifiable
+class Team extends Identifiable implements PlaceLocation, CompetitorInterface
 {
-    /**
-     * @var int|string
-     */
-    protected $id;
     /**
      * @var TeamBase
      */

@@ -2,7 +2,6 @@
 
 namespace Sports\Qualify\Group;
 
-use \Doctrine\Common\Collections\ArrayCollection;
 use Sports\Structure\Service as StructureService;
 use Sports\Poule\Horizontal as HorizontalPoule;
 use Sports\Round;
@@ -10,10 +9,7 @@ use Sports\Qualify\Group as QualifyGroup;
 
 class Service
 {
-    /**
-     * @var StructureService
-     */
-    private $structureService;
+    private StructureService $structureService;
 
     public function __construct(StructureService $structureService)
     {

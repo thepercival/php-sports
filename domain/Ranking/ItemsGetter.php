@@ -1,10 +1,11 @@
 <?php
+declare(strict_types=1);
 
 namespace Sports\Ranking;
 
 use Sports\Game;
-use Sports\Game\Score as GameScore;
-use Sports\Game\Score\HomeAway as GameScoreHomeAway;
+use Sports\Score\Against as AgainstScore;
+use Sports\Score\AgainstHelper;
 use Sports\Sport\ScoreConfig\Service as SportScoreConfigService;
 use Sports\Place;
 use Sports\Round;
@@ -65,13 +66,13 @@ class ItemsGetter
             // $finalScore = $this->sportScoreConfigService->getFinal($game);
             foreach ([Game::HOME, Game::AWAY] as $homeAway) {
                 $points = $this->getNrOfPoints($finalScore, $homeAway, $game);
-                $scored = $this->getNrOfUnits($finalScore, $homeAway, GameScore::SCORED);
-                $received = $this->getNrOfUnits($finalScore, $homeAway, GameScore::RECEIVED);
+                $scored = $this->getNrOfUnits($finalScore, $homeAway, AgainstScore::SCORED);
+                $received = $this->getNrOfUnits($finalScore, $homeAway, AgainstScore::RECEIVED);
                 $subScored = 0;
                 $subReceived = 0;
                 if ($useSubScore) {
-                    $subScored = $this->getNrOfUnits($finalSubScore, $homeAway, GameScore::SCORED);
-                    $subReceived = $this->getNrOfUnits($finalSubScore, $homeAway, GameScore::RECEIVED);
+                    $subScored = $this->getNrOfUnits($finalSubScore, $homeAway, AgainstScore::SCORED);
+                    $subReceived = $this->getNrOfUnits($finalSubScore, $homeAway, AgainstScore::RECEIVED);
                 }
 
                 foreach ($game->getPlaces($homeAway) as $gamePlace) {
@@ -96,39 +97,39 @@ class ItemsGetter
         return $items;
     }
 
-    public function getNrOfPoints(?GameScoreHomeAway $finalScore, bool $homeAway, Game $game): float
+    public function getNrOfPoints(?AgainstHelper $finalScore, bool $homeAway, Game $game): float
     {
         if ($finalScore === null) {
             return 0;
         }
         if ($finalScore->getResult( $homeAway ) === Game::RESULT_WIN ) {
             if ($game->getFinalPhase() === Game::PHASE_REGULARTIME) {
-                return $game->getSportConfig()->getWinPoints();
+                return $game->getQualifyConfig()->getWinPoints();
             } elseif ($game->getFinalPhase() === Game::PHASE_EXTRATIME) {
-                return $game->getSportConfig()->getWinPointsExt();
+                return $game->getQualifyConfig()->getWinPointsExt();
             }
         } elseif ($finalScore->getResult( $homeAway ) === Game::RESULT_DRAW ) {
             if ($game->getFinalPhase() === Game::PHASE_REGULARTIME) {
-                return $game->getSportConfig()->getDrawPoints();
+                return $game->getQualifyConfig()->getDrawPoints();
             } elseif ($game->getFinalPhase() === Game::PHASE_EXTRATIME) {
-                return $game->getSportConfig()->getDrawPointsExt();
+                return $game->getQualifyConfig()->getDrawPointsExt();
             }
         } elseif ($game->getFinalPhase() === Game::PHASE_EXTRATIME) {
-            return $game->getSportConfig()->getLosePointsExt();
+            return $game->getQualifyConfig()->getLosePointsExt();
         }
         return 0;
     }
 
-    private function getNrOfUnits(?GameScoreHomeAway $finalScore, bool $homeAway, int $scoredReceived): int
+    private function getNrOfUnits(?AgainstHelper $finalScore, bool $homeAway, int $scoredReceived): int
     {
         if ($finalScore === null) {
             return 0;
         }
-        return $this->getGameScorePart($finalScore, $scoredReceived === GameScore::SCORED ? $homeAway : !$homeAway);
+        return $this->getGameScorePart($finalScore, $scoredReceived === AgainstScore::SCORED ? $homeAway : !$homeAway);
     }
 
-    private function getGameScorePart(GameScoreHomeAway $gameScoreHomeAway, bool $homeAway): int
+    private function getGameScorePart(AgainstHelper $gameScoreHomeAway, bool $homeAway): int
     {
-        return $homeAway === Game::HOME ? $gameScoreHomeAway->getHome() : $gameScoreHomeAway->getAway();
+        return $homeAway === Game::HOME ? $gameScoreHomeAway->getHomeScore() : $gameScoreHomeAway->getAwayScore();
     }
 }

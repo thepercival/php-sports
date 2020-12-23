@@ -4,12 +4,8 @@ namespace Sports;
 use \Doctrine\Common\Collections\ArrayCollection;
 use SportsHelpers\Identifiable;
 
-class League implements Identifiable
+class League extends Identifiable
 {
-    /**
-     * @var int|string
-     */
-    protected $id;
     /**
      * @var string
      */
@@ -40,32 +36,12 @@ class League implements Identifiable
         $this->competitions = new ArrayCollection();
     }
 
-    /**
-     * @return int|string
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    /**
-     * @param int|string $id
-     * @return void
-     */
-    public function setId($id)
-    {
-        $this->id = $id;
-    }
-
-    public function getName()
+    public function getName(): ?string
     {
         return $this->name;
     }
 
-    /**
-     * @param string $name
-     */
-    public function setName($name)
+    public function setName(string $name = null)
     {
         if (strlen($name) === 0) {
             throw new \InvalidArgumentException("de naam moet gezet zijn", E_ERROR);
@@ -78,18 +54,12 @@ class League implements Identifiable
         $this->name = $name;
     }
 
-    /**
-     * @return string
-     */
-    public function getAbbreviation()
+    public function getAbbreviation(): ?string
     {
         return $this->abbreviation;
     }
 
-    /**
-     * @param string $abbreviation
-     */
-    public function setAbbreviation($abbreviation)
+    public function setAbbreviation(string $abbreviation = null)
     {
         if (strlen($abbreviation) === 0) {
             $abbreviation = null;
@@ -101,18 +71,12 @@ class League implements Identifiable
         $this->abbreviation = $abbreviation;
     }
 
-    /**
-     * @return Association
-     */
-    public function getAssociation()
+    public function getAssociation(): Association
     {
         return $this->association;
     }
 
-    /**
-     * @param Association $association
-     */
-    public function setAssociation(Association $association)
+    protected function setAssociation(Association $association)
     {
         $leagues = $association->getLeagues();
         if ( !$leagues->contains($this)) {

@@ -1,15 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
   <entity name="Sports\Sport" table="sports" repository-class="Sports\Sport\Repository">
-    <id name="id" type="integer" column="id">
-      <generator strategy="AUTO"/>
-    </id>
     <field name="name" column="name" type="string" length="30" nullable="false" unique="false"/>
     <field name="team" column="team" type="boolean" nullable="false" unique="false"/>
     <field name="customId" column="customId" type="smallint" nullable="true" unique="false"/>
+    <field name="againstEachOther" column="againstEachOther" type="boolean"  nullable="false" unique="false"/>
     <unique-constraints>
       <unique-constraint columns="name" name="name_idx" />
-        <unique-constraint columns="customId" name="customId_idx" />
     </unique-constraints>
   </entity>
 </doctrine-mapping>

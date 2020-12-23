@@ -8,10 +8,6 @@ use Sports\League;
 use Sports\Season;
 use Sports\Sport;
 
-/**
- * Class Repository
- * @package Sports\Competition
- */
 class Repository extends \Sports\Repository
 {
     public function find($id, $lockMode = null, $lockVersion = null): ?Competition
@@ -25,9 +21,9 @@ class Repository extends \Sports\Repository
             $this->_em->persist($referee);
         }
 
-        foreach ($competition->getSportConfigs() as $sportConfig) {
-            $this->_em->persist($sportConfig);
-            foreach ($sportConfig->getFields() as $field) {
+        foreach ($competition->getSports() as $competitionSport) {
+            $this->_em->persist($competitionSport);
+            foreach ($competitionSport->getFields() as $field) {
                 $this->_em->persist($field);
             }
         }

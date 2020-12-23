@@ -8,12 +8,8 @@ use Sports\Person;
 use Sports\Team;
 use SportsHelpers\Identifiable;
 
-abstract class Role implements Identifiable
+abstract class Role extends Identifiable
 {
-    /**
-     * @var int|string
-     */
-    protected $id;
     private DateTimeImmutable $startDateTime;
     private DateTimeImmutable $endDateTime;
     private Team $team;
@@ -33,23 +29,6 @@ abstract class Role implements Identifiable
         $this->setPerson($person);
         $this->setStartDateTime($period->getStartDate());
         $this->setEndDateTime($period->getEndDate());
-    }
-
-    /**
-     * @return int|string
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    /**
-     * @param int|string $id
-     * @return void
-     */
-    public function setId($id)
-    {
-        $this->id = $id;
     }
 
     public function getTeam(): Team

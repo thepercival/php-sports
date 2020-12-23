@@ -5,8 +5,6 @@ namespace Sports\Planning\Config;
 use Sports\Planning\Config as PlanningConfig;
 use SportsPlanning\Input as PlanningInput;
 use Sports\Round\Number as RoundNumber;
-use SportsHelpers\PouleStructure;
-use SportsHelpers\SportConfig as SportConfigHelper;
 
 class Service
 {
@@ -24,7 +22,7 @@ class Service
         $config->setMinutesAfter($this->getDefaultMinutesAfter());
         $config->setTeamup(false);
         $config->setSelfReferee(PlanningInput::SELFREFEREE_DISABLED);
-        $config->setNrOfHeadtohead(PlanningConfig::DEFAULTNROFHEADTOHEAD);
+        $config->setNrOfHeadtohead(PlanningConfig::DEFAULTGAMEAMOUNT);
         return $config;
     }
 
@@ -67,17 +65,16 @@ class Service
         return 5;
     }
 
-    public function isTeamupAvailable(RoundNumber $roundNumber): bool
+    public function isAgainstEachOtherAvailable(RoundNumber $roundNumber): bool
     {
-        $sportConfigs = $roundNumber->getSportConfigs();
+        $sportConfigs = $roundNumber->getCompetitionSports();
         foreach ($sportConfigs as $sportConfig) {
             if ($sportConfig->getSport()->getTeam()) {
                 return false;
             }
         }
         foreach ($roundNumber->getPoules() as $poule) {
-            if ($poule->getPlaces()->count() < PlanningInput::TEAMUP_MIN || $poule->getPlaces()->count(
-                ) > PlanningInput::TEAMUP_MAX) {
+            if ($poule->getPlaces()->count() > PlanningInput::AGAINSTEACHOTHER_MAXNROFGAMEPLACES) {
                 return false;
             }
         }

@@ -5,10 +5,10 @@ namespace Sports\Availability;
 use Exception;
 use Sports\Competition;
 use Sports\Competitor;
-use Sports\Field;
+use Sports\Competition\Field;
 use Sports\Priority\Prioritizable;
-use Sports\Referee;
-use Sports\Sport\Config as SportConfig;
+use Sports\Competition\Referee;
+use Sports\Competition\Sport as CompetitionSport;
 use Sports\Place\Location as PlaceLocation;
 
 class Checker
@@ -77,14 +77,14 @@ class Checker
     }
 
     /**
-     * @param SportConfig $sportConfig
+     * @param CompetitionSport $competitionSport
      * @param int $priority
      * @param Field|null $field
      * @throws Exception
      */
-    public function checkFieldPriority(SportConfig $sportConfig, int $priority, Field $field = null)
+    public function checkFieldPriority(CompetitionSport $competitionSport, int $priority, Field $field = null)
     {
-        return $this->checkPriority($sportConfig->getFields()->toArray(), $priority, $field);
+        return $this->checkPriority($competitionSport->getFields()->toArray(), $priority, $field);
     }
 
     /**

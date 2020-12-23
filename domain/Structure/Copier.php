@@ -5,6 +5,7 @@ namespace Sports\Structure;
 
 use \Exception;
 use Sports\Competition;
+use Sports\Competition\Sport as CompetitionSport ;
 use Sports\Structure;
 use Sports\Round\Number as RoundNumber;
 use Sports\Qualify\Group as QualifyGroup;
@@ -47,8 +48,7 @@ class Copier
                     $planningConfigService->copy($roundNumber->getPlanningConfig(), $newRoundNumber);
                 }
                 foreach ($roundNumber->getFirstSportScoreConfigs() as $sportScoreConfig) {
-                    $sport = $this->getSportFromCompetition($sportScoreConfig->getSport(), $this->competition);
-                    $sportScoreConfigService->copy($sport, $newRoundNumber, $sportScoreConfig);
+                    $sportScoreConfigService->copy($sportScoreConfig->getCompetitionSport(), $newRoundNumber, $sportScoreConfig);
                 }
 
                 if ($firstRoundNumber === null) {
@@ -112,16 +112,16 @@ class Copier
         }
     }
 
-    protected function getSportFromCompetition(Sport $sport, Competition $competition): Sport
-    {
-        $foundSports = $competition->getSports()->filter(
-            function ($sportIt) use ($sport): bool {
-                return $sportIt->getName() === $sport->getName();
-            }
-        );
-        if ($foundSports->count() !== 1) {
-            throw new Exception("Er kon geen overeenkomende sport worden gevonden", E_ERROR);
-        }
-        return $foundSports->first();
-    }
+//    protected function getSportFromCompetition(CompetitionSport $competitionSport, Competition $competition): Sport
+//    {
+//        $foundSports = $competition->getSports()->filter(
+//            function (CompetitionSport $competitionSportIt) use ($competitionSport): bool {
+//                return $competitionSportIt->getSport()->getName() === $competitionSport->getSport()->getName();
+//            }
+//        );
+//        if ($foundSports->count() !== 1) {
+//            throw new Exception("Er kon geen overeenkomende sport worden gevonden", E_ERROR);
+//        }
+//        return $foundSports->first();
+//    }
 }

@@ -3,15 +3,14 @@
 namespace Sports;
 
 use \Doctrine\Common\Collections\ArrayCollection;
-use Sports\Sport\Config as SportConfig;
+use InvalidArgumentException;
+use SportsHelpers\SportConfig as SportConfig;
+use SportsHelpers\Identifiable;
+use Sports\Game\Against as AgainstGame;
+use Sports\Game\Together as TogetherGame;
 
-class Poule
+class Poule extends Identifiable
 {
-    /**
-     * @var int
-     */
-    protected $id;
-
     /**
      * @var string|null
      */
@@ -55,24 +54,6 @@ class Poule
     }
 
     /**
-     * Get id
-     *
-     * @return int
-     */
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
-
-    /**
-     * @param int $id
-     */
-    public function setId(int $id = null)
-    {
-        $this->id = $id;
-    }
-
-    /**
      * @return Round
      */
     public function getRound()
@@ -113,11 +94,11 @@ class Poule
         }
 
         if (strlen($name) > static::MAX_LENGTH_NAME) {
-            throw new \InvalidArgumentException("de naam mag maximaal ".static::MAX_LENGTH_NAME." karakters bevatten", E_ERROR);
+            throw new InvalidArgumentException("de naam mag maximaal ".static::MAX_LENGTH_NAME." karakters bevatten", E_ERROR);
         }
 
         if (preg_match('/[^a-z0-9 ]/i', $name)) {
-            throw new \InvalidArgumentException("de naam mag alleen cijfers, letters en spaties bevatten", E_ERROR);
+            throw new InvalidArgumentException("de naam mag alleen cijfers, letters en spaties bevatten", E_ERROR);
         }
 
         $this->name = $name;
@@ -161,19 +142,14 @@ class Poule
     }
 
     /**
-     * @return Game[] | ArrayCollection
+     * @return AgainstGame[] | TogetherGame[] | ArrayCollection
      */
     public function getGames()
     {
-        return $this->games;
-    }
-
-    /**
-     * @param Game[] | ArrayCollection $games
-     */
-    public function setGames($games)
-    {
-        $this->games = $games;
+        if( $this->getRound()->getNumber()->getValidPlanningConfig()->getGameMode() === SportConfig::GAMEMODE_AGAINST ) {
+            return $this->againstGames;
+        }
+        return $this->togetherGames;
     }
 
     public function getGamesWithState($state)

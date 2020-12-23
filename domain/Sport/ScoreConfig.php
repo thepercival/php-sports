@@ -2,19 +2,19 @@
 
 namespace Sports\Sport;
 
+use Sports\Competition\Sport as CompetitionSport;
 use Sports\Sport as SportBase;
 use Sports\Round\Number as RoundNumber;
+use SportsHelpers\Identifiable;
 
-class ScoreConfig
+class ScoreConfig extends Identifiable
 {
     /**
      * @var int
      */
     protected $id;
-    /**
-     * @var SportBase
-     */
-    protected $sport;
+    protected $sportDep;
+    protected CompetitionSport $competitionSport;
     /**
      * @var RoundNumber
      */
@@ -43,29 +43,11 @@ class ScoreConfig
     const UPWARDS = 1;
     const DOWNWARDS = 2;
 
-    public function __construct(SportBase $sport, RoundNumber $roundNumber, ScoreConfig $previous = null)
+    public function __construct(CompetitionSport $competitionSport, RoundNumber $roundNumber, ScoreConfig $previous = null)
     {
-        $this->setSport($sport);
+        $this->competitionSport = $competitionSport;
         $this->setRoundNumber($roundNumber);
         $this->setPrevious($previous);
-    }
-
-    /**
-     * Get id
-     *
-     * @return int
-     */
-    public function getId(): int
-    {
-        return $this->id;
-    }
-
-    /**
-     * @param int $id
-     */
-    public function setId(int $id)
-    {
-        $this->id = $id;
     }
 
     /**
@@ -139,37 +121,20 @@ class ScoreConfig
         return $this;
     }
 
-    /**
-     * @return SportBase
-     */
-    public function getSport()
+    public function getCompetitionSport(): CompetitionSport
     {
-        return $this->sport;
+        return $this->competitionSport;
     }
 
-    /**
-     * @param SportBase $sport
-     */
-    public function setSport(SportBase $sport)
-    {
-        $this->sport = $sport;
-    }
-
-    /**
-     * @return RoundNumber
-     */
-    public function getRoundNumber()
+    public function getRoundNumber(): RoundNumber
     {
         return $this->roundNumber;
     }
 
-    /**
-     * @param RoundNumber $roundNumber
-     */
     protected function setRoundNumber(RoundNumber $roundNumber)
     {
         $this->roundNumber = $roundNumber;
-        $this->roundNumber->setSportScoreConfig($this);
+        $this->roundNumber->getSportScoreConfigs()->add($this);
     }
 
     /**

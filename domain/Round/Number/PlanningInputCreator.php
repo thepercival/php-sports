@@ -2,17 +2,16 @@
 
 namespace Sports\Round\Number;
 
-use SportsHelpers\GameCalculator;
 use SportsHelpers\PouleStructure;
 use SportsPlanning\Input as PlanningInput;
 use Sports\Round\Number as RoundNumber;
 use SportsPlanning\Input\Service as PlanningInputService;
 use Sports\Planning\Config\Service as PlanningConfigService;
-use SportsPlanning\Sport\NrFields as SportNrFields;
-use Sports\Sport\Service as SportService;
-use SportsHelpers\SportConfig as SportConfigHelper;
-use Sports\Sport\Config as SportConfig;
+use SportsPlanning\Input\Calculator as InputCalculator;
+use SportsHelpers\SportConfig;
+use Sports\Competition\Sport as CompetitionSport;
 use Sports\Planning\Config as PlanningConfig;
+use SportsPlanning\Resources;
 
 class PlanningInputCreator
 {
@@ -20,18 +19,18 @@ class PlanningInputCreator
     {
     }
 
-    public function create(RoundNumber $roundNumber, int $nrOfReferees): PlanningInput
+    public function create(RoundNumber $roundNumber, int $gameMode, int $nrOfReferees): PlanningInput
     {
         $config = $roundNumber->getValidPlanningConfig();
         $planningConfigService = new PlanningConfigService();
-        $teamup = $config->getTeamup() ? $planningConfigService->isTeamupAvailable($roundNumber) : $config->getTeamup();
 
-        $sportConfigBases = array_map(
-            function (SportConfig $sportConfig): SportConfigHelper {
-                return $sportConfig->createHelper();
+        $sportConfigBases = $roundNumber->getCompetitionSports()->map(
+            function (CompetitionSport $competitionSport): SportConfig {
+                return $competitionSport->createConfig();
             },
-            $roundNumber->getSportConfigs()
         );
+
+
         $pouleStructure = $this->createPouleStructure($roundNumber);
         $selfReferee = $this->getSelfReferee(
             $config,
@@ -45,35 +44,28 @@ class PlanningInputCreator
                 dus bijv. [8](8 poules van x deelnemers), 4 refs en [2] kan worden herleid naar een planninginput van [4], 2 refs en [1]
 
                 en bijv. [8,2](8 poules van x aantal deelnemers en 2 poules van y aantal deelnemers ), 4 refs en [2] kan worden herleid naar een planninginput van [4,1], 1 refs en [1]
+       */
 
+        $sportConfigs = $this->reduceFields($pouleStructure, $sportConfigBases, $selfReferee );
 
-        */
-        $nrOfHeadtohead = $config->getNrOfHeadtohead();
-        $sportConfigHelpers = $this->getSportConfigHelpers($roundNumber, $nrOfHeadtohead, $teamup);
-
-        // $multipleSports = count($sportConfig) > 1;
-//        if ($multipleSports) {
-//            $nrOfHeadtohead = $this->getSufficientNrOfHeadtoheadByRoundNumber($roundNumber, $sportConfig);
-//        }
         return new PlanningInput(
             $pouleStructure,
-            $sportConfigHelpers,
+            $sportConfigs,
+            $gameMode,
             $nrOfReferees,
-            $teamup,
             $selfReferee,
-            $nrOfHeadtohead
         );
     }
 
     /**
      * @param PlanningConfig $planningConfig
-     * @param array|SportConfigHelper[] $sportConfigHelpers
+     * @param array|SportConfig[] $sportConfigs
      * @param PouleStructure $pouleStructure
      * @return int
      */
-    protected function getSelfReferee(PlanningConfig $planningConfig, array $sportConfigHelpers, PouleStructure $pouleStructure): int
+    protected function getSelfReferee(PlanningConfig $planningConfig, array $sportConfigs, PouleStructure $pouleStructure): int
     {
-        $maxNrOfGamePlaces = (new GameCalculator())->getMaxNrOfGamePlaces($sportConfigHelpers, $planningConfig->getTeamup(), false);
+        $maxNrOfGamePlaces = (new GameCalculator())->getMaxNrOfGamePlaces($sportConfigs, $planningConfig->getTeamup(), false);
 
         $planningInputService = new PlanningInputService();
 
@@ -101,40 +93,35 @@ class PlanningInputCreator
     }
 
     /**
-     * @param RoundNumber $roundNumber
-     * @param int $nrOfHeadtohead
-     * @param bool $teamup
-     * @return array|SportConfigHelper[]
+     * @param PouleStructure $pouleStructure
+     * @param array|SportConfig[] $sportConfigs
+     * @param bool $selfReferee
+     * @return array|SportConfig[]
      */
-    protected function getSportConfigHelpers(RoundNumber $roundNumber, int $nrOfHeadtohead, bool $teamup): array
+    protected function reduceFields(PouleStructure $pouleStructure, array $sportConfigs, bool $selfReferee): array
     {
-        $maxNrOfFields = $this->getMaxNrOfFields($roundNumber, $nrOfHeadtohead, $teamup);
+        $inputCalculator = new InputCalculator();
 
-        $sportConfigHelpers = [];
-        /** @var SportConfig $sportConfig */
-        foreach ($roundNumber->getSportConfigs() as $sportConfig) {
-            $nrOfFields = $sportConfig->getFields()->count();
-            if ($nrOfFields > $maxNrOfFields) {
-                $nrOfFields = $maxNrOfFields;
+        $maxNrOfGamesPerBatch = $inputCalculator->getMaxNrOfGamesPerBatch( $pouleStructure, $sportConfigs, $selfReferee );
+        $redcuedConfigs = [];
+        foreach( $sportConfigs as $sportConfig ) {
+            $reducedNrOfFields = $sportConfig->getNrOfFields();
+            if( $reducedNrOfFields > $maxNrOfGamesPerBatch ) {
+                $reducedNrOfFields = $maxNrOfGamesPerBatch;
             }
-            $sportConfigHelpers[] = new SportConfigHelper( $nrOfFields, $sportConfig->getNrOfGamePlaces());
+            $redcuedConfigs[] = new SportConfig(
+                $sportConfig->getSport(),
+                $reducedNrOfFields,
+                $sportConfig->getGameAmount() );
         }
+
         uasort(
-            $sportConfigHelpers,
-            function (SportConfigHelper $sportConfigHelperA, SportConfigHelper $sportConfigHelperB): int {
-                return $sportConfigHelperA->getNrOfFields() > $sportConfigHelperB->getNrOfFields() ? -1 : 1;
+            $redcuedConfigs,
+            function (SportConfig $sportConfigA, SportConfig $sportConfigB): int {
+                return $sportConfigA->getNrOfFields() > $sportConfigB->getNrOfFields() ? -1 : 1;
             }
         );
-        return array_values($sportConfigHelpers);
-    }
-
-    protected function getMaxNrOfFields(RoundNumber $roundNumber, int $nrOfHeadtohead, bool $teamup): int
-    {
-        $nrOfGames = 0;
-        foreach ($roundNumber->getPoules() as $poule) {
-            $nrOfGames += (new GameCalculator())->getNrOfGamesPerPoule($poule->getPlaces()->count(), $teamup, $nrOfHeadtohead);
-        }
-        return $nrOfGames;
+        return array_values($redcuedConfigs);
     }
 
 //    public function getSufficientNrOfHeadtoheadByRoundNumber(RoundNumber $roundNumber, array $sportConfig): int

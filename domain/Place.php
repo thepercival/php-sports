@@ -7,13 +7,10 @@ use Sports\Place\Location;
 use Sports\Qualify\Rule as QualifyRule;
 use Sports\Qualify\Group as QualifyGroup;
 use Sports\Poule\Horizontal as HorizontalPoule;
+use SportsHelpers\Identifiable;
 
-class Place implements Place\Location
+class Place extends Identifiable implements Place\Location
 {
-    /**
-     * @var int
-     */
-    protected $id;
     /**
      * @var string|null
      */
@@ -67,24 +64,6 @@ class Place implements Place\Location
         $this->setPoule($poule);
         $this->setNumber($number);
         $this->setPenaltyPoints(0);
-    }
-
-    /**
-     * Get id
-     *
-     * @return int
-     */
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
-
-    /**
-     * @param int $id
-     */
-    public function setId(int $id = null)
-    {
-        $this->id = $id;
     }
 
     /**

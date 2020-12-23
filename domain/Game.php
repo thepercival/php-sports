@@ -7,6 +7,8 @@ use \Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 
 use League\Period\Period;
+use Sports\Competition\Field;
+use Sports\Competition\Referee;
 use Sports\Competitor\Team as TeamCompetitor;
 use Sports\Game\Event\Card as CardEvent;
 use Sports\Game\Event\Goal as GoalEvent;
@@ -16,28 +18,17 @@ use Sports\Game\Participation;
 use Sports\Game\Place as GamePlace;
 use Sports\Planning\Config as PlanningConfig;
 use Sports\Place\Location\Map;
-use Sports\Sport\Config as SportConfig;
+use Sports\Qualify\Config as QualifyConfig;
 use Sports\Sport\ScoreConfig as SportScoreConfig;
+use Sports\Competition\Sport as CompetitionSport;
 use SportsHelpers\Identifiable;
+use SportsHelpers\SportConfig;
 
-class Game implements Identifiable
+abstract class Game extends Identifiable
 {
-    /**
-     * @var int|string
-     */
-    protected $id;
-    /**
-     * @var Poule
-     */
-    protected $poule;
-    /**
-     * @var int
-     */
-    protected $batchNr;
-    /**
-     * @var DateTimeImmutable
-     */
-    private $startDateTime;
+    protected Poule $poule;
+    protected int $batchNr;
+    private DateTimeImmutable $startDateTime;
     /**
      * @var Referee
      */
@@ -53,14 +44,11 @@ class Game implements Identifiable
      */
     protected $field;
     protected $fieldPriority; // for serialization, not used
+    protected CompetitionSport $competitionSport;
     /**
      * @var int
      */
     protected $state;
-    /**
-     * @var Score[] | ArrayCollection
-     */
-    protected $scores;
     /**
      * @var GamePlace[] | Collection
      */
@@ -69,6 +57,8 @@ class Game implements Identifiable
      * @var Participation[] | Collection
      */
     protected $participations;
+
+    protected int $gameRoundNumber = 0;
 
     public const RESULT_WIN = 1;
     public const RESULT_DRAW = 2;
@@ -82,34 +72,17 @@ class Game implements Identifiable
     public const PHASE_PENALTIES = 4;
 
     public const ORDER_BY_BATCH = 1;
-    public const ORDER_BY_GAMENUMBER = 2;
+    public const ORDER_BY_GAMEROUNDNUMBER = 2;
 
-    public function __construct(Poule $poule, int $batchNr, \DateTimeImmutable $startDateTime)
+    public function __construct(Poule $poule, int $batchNr, DateTimeImmutable $startDateTime, CompetitionSport $competitionSport)
     {
         $this->setPoule($poule);
         $this->batchNr = $batchNr;
         $this->startDateTime = $startDateTime;
+        $this->competitionSport = $competitionSport;
         $this->setState(State::Created);
         $this->places = new ArrayCollection();
         $this->participations = new ArrayCollection();
-        $this->scores = new ArrayCollection();
-    }
-
-    /**
-     * @return int|string
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    /**
-     * @param int|string $id
-     * @return void
-     */
-    public function setId($id)
-    {
-        $this->id = $id;
     }
 
     public function getPoule(): Poule
@@ -119,7 +92,7 @@ class Game implements Identifiable
 
     public function setPoule(Poule $poule)
     {
-        if ($this->poule === null and !$poule->getGames()->contains($this)) {
+        if (!$poule->getGames()->contains($this)) {
             $poule->getGames()->add($this) ;
         }
         $this->poule = $poule;
@@ -130,26 +103,17 @@ class Game implements Identifiable
         return $this->poule->getRound();
     }
 
-    /**
-     * @return int
-     */
     public function getBatchNr(): int
     {
         return $this->batchNr;
     }
 
-    /**
-     * @return \DateTimeImmutable
-     */
-    public function getStartDateTime(): \DateTimeImmutable
+    public function getStartDateTime(): DateTimeImmutable
     {
         return $this->startDateTime;
     }
 
-    /**
-     * @param \DateTimeImmutable $startDateTime
-     */
-    public function setStartDateTime(\DateTimeImmutable $startDateTime)
+    public function setStartDateTime(DateTimeImmutable $startDateTime)
     {
         $this->startDateTime = $startDateTime;
     }
@@ -158,6 +122,11 @@ class Game implements Identifiable
     {
         $minutes = $this->getPlanningConfig()->getMaxNrOfMinutesPerGame();
         return $this->getStartDateTime()->modify("+ " . $minutes . "minutes");
+    }
+
+    public function getCompetitionSport(): CompetitionSport
+    {
+        return $this->competitionSport;
     }
 
     public function getState(): int
@@ -180,17 +149,11 @@ class Game implements Identifiable
         $this->referee = $referee;
     }
 
-    /**
-     * @return int
-     */
-    public function getRefereePriority()
+    public function getRefereePriority(): ?int
     {
         return $this->referee !== null ? $this->referee->getPriority() : $this->refereePriority;
     }
 
-    /**
-     * @param int $refereePriority
-     */
     public function setRefereePriority(int $refereePriority = null)
     {
         $this->refereePriority = $refereePriority;
@@ -248,87 +211,14 @@ class Game implements Identifiable
         $this->fieldPriority = $fieldPriority;
     }
 
-    /**
-     * @return Score[] | ArrayCollection
-     */
-    public function getScores()
+    public function getGameRoundNumber(): int
     {
-        return $this->scores;
+        return $this->gameRoundNumber;
     }
 
-    /**
-     * @param Score[] | ArrayCollection $scores
-     */
-    public function setScores($scores)
+    public function setGameRoundNumber(int $gameRoundNumber)
     {
-        $this->scores = $scores;
-    }
-
-    /**
-     * @param bool|null $homeaway
-     * @return Collection | GamePlace[]
-     */
-    public function getPlaces(bool $homeaway = null): Collection
-    {
-        if ($homeaway === null) {
-            return $this->places;
-        }
-        return $this->places->filter(function ($gamePlace) use ($homeaway): bool {
-                return $gamePlace->getHomeaway() === $homeaway;
-            });
-    }
-
-    /**
-     * @param Collection | GamePlace[] $places
-     */
-    public function setPlaces(Collection $places)
-    {
-        $this->places = $places;
-    }
-
-    /**
-     * @param \Sports\Place $place
-     * @param bool $homeaway
-     * @return GamePlace
-     */
-    public function addPlace(Place $place, bool $homeaway): GamePlace
-    {
-        return new GamePlace($this, $place, $homeaway);
-    }
-
-    /**
-     * @param \Sports\Place $place
-     * @param bool|null $homeaway
-     * @return bool
-     */
-    public function isParticipating(Place $place, bool $homeaway = null): bool
-    {
-        $places = $this->getPlaces($homeaway)->map(function ($gamePlace) {
-            return $gamePlace->getPlace();
-        });
-        return $places->contains($place);
-    }
-
-    public function getHomeAway(Place $place): ?bool
-    {
-        if ($this->isParticipating($place, Game::HOME)) {
-            return Game::HOME;
-        }
-        if ($this->isParticipating($place, Game::AWAY)) {
-            return Game::AWAY;
-        }
-        return null;
-    }
-
-    /**
-     * @param Map $placeLocationMap
-     * @param bool|null $homeAway
-     * @return Collection|Competitor[]
-     */
-    public function getCompetitors( Map $placeLocationMap, bool $homeAway = null ): Collection {
-        return $this->getPlaces( $homeAway )->map( function ( GamePlace $gamePlace ) use ($placeLocationMap) : Competitor {
-            return $placeLocationMap->getCompetitor( $gamePlace->getPlace() );
-        });
+        $this->gameRoundNumber = $gameRoundNumber;
     }
 
     /**
@@ -486,37 +376,19 @@ class Game implements Identifiable
         return $events;
     }
 
-    public function getFinalPhase(): int
-    {
-        if ($this->getScores()->count()  === 0) {
-            return 0;
-        }
-        return $this->getScores()->last()->getPhase();
-    }
-
     public function getPlanningConfig(): PlanningConfig
     {
         return $this->getRound()->getNumber()->getValidPlanningConfig();
     }
 
-    public function getSportConfig(): SportConfig
-    {
-        $field = $this->getField();
-        if ($field === null) {
-            return $this->getRound()->getNumber()->getCompetition()->getFirstSportConfig();
-        }
-        return $this->getRound()->getNumber()->getCompetition()->getSportConfig($field->getSport());
-    }
-
     public function getSportScoreConfig(): SportScoreConfig
     {
-        $field = $this->getField();
-        if ($field === null) {
-            $sportScoreConfigs = $this->getRound()->getNumber()->getValidSportScoreConfigs();
-            return reset($sportScoreConfigs);
-        }
-        // return $this->getRound()->getNumber()->getCompetition()->getSportConfig($field->getSport());
-        return $this->getRound()->getNumber()->getValidSportScoreConfig($this->getField()->getSport());
+        return $this->getRound()->getNumber()->getValidSportScoreConfig($this->getCompetitionSport() );
+    }
+
+    public function getQualifyConfig(): QualifyConfig
+    {
+        return $this->getRound()->getNumber()->getValidQualifyConfig($this->getCompetitionSport() );
     }
 
     public function getPeriod(): Period

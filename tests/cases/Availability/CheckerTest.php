@@ -17,12 +17,12 @@ class CheckerTest extends \PHPUnit\Framework\TestCase
         /** @var Competition $competition */
         $competition = $this->createCompetition();
 
-        $sportConfig = $competition->getFirstSportConfig();
-        $checker->checkFieldPriority( $sportConfig, 3);
+        $competitionSport = $this->getCompetitionSport();
+        $checker->checkFieldPriority( $competitionSport, 3);
 
-        $checker->checkFieldPriority( $sportConfig, 2, $sportConfig->getField(2));
+        $checker->checkFieldPriority( $competitionSport, 2, $competitionSport->getField(2));
         self::expectException(\Exception::class);
-        $checker->checkFieldPriority( $sportConfig, 2);
+        $checker->checkFieldPriority( $competitionSport, 2);
     }
 
     public function testRefereePriority()
@@ -83,7 +83,6 @@ class CheckerTest extends \PHPUnit\Framework\TestCase
         $competition = $this->createCompetition();
 
         $field1 = $competition->getField(1);
-
         $checker->checkFieldName($competition, "1", $field1);
         $checker->checkFieldName($competition, "3");
 

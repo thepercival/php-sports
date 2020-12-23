@@ -2,7 +2,7 @@
 
 namespace Sports\Tests\Priority;
 
-use Sports\Referee;
+use Sports\Competition\Referee;
 use Sports\TestHelper\CompetitionCreator;
 use Sports\Priority\Service as PriorityService;
 

@@ -8,12 +8,8 @@ use League\Period\Period;
 use SportsHelpers\Identifiable;
 use Sports\Team\Player;
 
-class Person implements Identifiable
+class Person extends Identifiable
 {
-    /**
-     * @var int|string
-     */
-    protected $id;
     protected string $firstName;
     /**
      * @var string|null
@@ -48,22 +44,7 @@ class Person implements Identifiable
         $this->players = new ArrayCollection();
     }
 
-    /**
-     * @return int|string
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
 
-    /**
-     * @param int|string $id
-     * @return void
-     */
-    public function setId($id)
-    {
-        $this->id = $id;
-    }
 
     public function getFirstName(): string
     {

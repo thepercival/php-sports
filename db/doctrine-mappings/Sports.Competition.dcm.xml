@@ -37,7 +37,7 @@
         <cascade-remove/>
       </cascade>
     </one-to-many>
-    <one-to-many field="referees" target-entity="Sports\Referee" mapped-by="competition" fetch="EXTRA_LAZY" >
+    <one-to-many field="referees" target-entity="Sports\Competition\Referee" mapped-by="competition" fetch="EXTRA_LAZY" >
       <cascade>
         <cascade-remove/>
       </cascade>

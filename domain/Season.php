@@ -6,12 +6,8 @@ use League\Period\Period;
 use \Doctrine\Common\Collections\ArrayCollection;
 use SportsHelpers\Identifiable;
 
-class Season implements Identifiable
+class Season extends Identifiable
 {
-    /**
-     * @var int|string
-     */
-    protected $id;
     /**
      * @var string
      */
@@ -39,22 +35,6 @@ class Season implements Identifiable
         $this->setPeriod($period);
     }
 
-    /**
-     * @return int|string
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    /**
-     * @param int|string $id
-     * @return void
-     */
-    public function setId($id)
-    {
-        $this->id = $id;
-    }
     /**
      * @return string
      */

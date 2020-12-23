@@ -6,13 +6,14 @@ use DateTimeImmutable;
 use League\Period\Period;
 use Sports\Association;
 use Sports\Competition;
-use Sports\Field;
+use Sports\Competition\Field;
 use Sports\League;
-use Sports\Referee;
+use Sports\Competition\Referee;
 use Sports\Season;
 use Sports\Sport;
 use Sports\Sport\Custom as SportCustom;
-use Sports\Sport\Config\Service as SportConfigService;
+use Sports\Competition\Sport as CompetitionSport;
+use Sports\Competition\Sport\Service as CompetitionSportService;
 
 trait CompetitionCreator {
     /**
@@ -42,7 +43,7 @@ trait CompetitionCreator {
         $referee2 = new Referee( $this->competition );
         $referee2->setInitials("222");
 
-        $sportConfigService = new SportConfigService();
+        $sportConfigService = new CompetitionSportService();
         $sportConfig = $sportConfigService->createDefault( $this->createSport(), $this->competition);
         $field1 = new Field($sportConfig);
         $field1->setName("1");
@@ -58,10 +59,17 @@ trait CompetitionCreator {
             return $this->sport;
         }
 
-        $this->sport = new Sport("voetbal");
-        $this->sport->setTeam( true );
+        $this->sport = new Sport("voetbal", true, 2, true );
         $this->sport->setCustomId( SportCustom::Football );
         return $this->sport;
+    }
+
+    protected function getCompetitionSport(): ?CompetitionSport
+    {
+        if( $this->competition === null ) {
+            return null;
+        }
+        return $this->competition->getSports()->count() > 0 ? $this->competition->getSports()->first() : null;
     }
 }
 

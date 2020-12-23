@@ -6,12 +6,8 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Sports\Team\Player;
 use SportsHelpers\Identifiable;
 
-class Team implements Identifiable
+class Team extends Identifiable
 {
-    /**
-     * @var int|string
-     */
-    protected $id;
     /**
      * @var string
      */
@@ -51,23 +47,6 @@ class Team implements Identifiable
     {
         $this->setAssociation($association);
         $this->setName($name);
-    }
-
-    /**
-     * @return int|string
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    /**
-     * @param int|string $id
-     * @return void
-     */
-    public function setId($id)
-    {
-        $this->id = $id;
     }
 
     public function getName(): string

@@ -18,7 +18,7 @@ use Sports\Planning\Config\Service as PlanningConfigService;
 use Sports\Qualify\Rule\Service as QualifyRuleService;
 use Sports\Qualify\Group as QualifyGroup;
 use Sports\Qualify\Group\Service as QualifyGroupService;
-use Sports\Sport\Config\Service as SportConfigService;
+use Sports\Competition\Sport\Service as CompetitionSportService;
 use SportsHelpers\PouleStructure;
 
 class Service
@@ -46,14 +46,14 @@ class Service
     public function create(Competition $competition, int $nrOfPlaces, int $nrOfPoules = null): StructureBase
     {
         $firstRoundNumber = new RoundNumber($competition);
-        $sportConfigService = new SportConfigService();
+        $competitionSportService = new CompetitionSportService();
         $this->planningConfigService->createDefault($firstRoundNumber);
         $rootRound = new Round($firstRoundNumber, null);
         $nrOfPoulesToAdd = ($nrOfPoules !== null) ? $nrOfPoules : $this->getDefaultNrOfPoules($nrOfPlaces);
         $this->updateRound($rootRound, $nrOfPlaces, $nrOfPoulesToAdd);
         $structure = new StructureBase($firstRoundNumber, $rootRound);
-        foreach ($competition->getSportConfigs() as $sportConfig) {
-            $sportConfigService->addToStructure($sportConfig, $structure);
+        foreach ($competition->getSports() as $competitionSport) {
+            $competitionSportService->addToStructure($competitionSport, $structure);
         }
         $structure->setStructureNumbers();
         return $structure;

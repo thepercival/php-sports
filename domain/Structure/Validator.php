@@ -50,10 +50,13 @@ class Validator
             throw new Exception($prefix . " bevat geen ronden", E_ERROR);
         }
 
-        foreach ($competition->getSportConfigs() as $sportConfig) {
+        foreach ($competition->getSports() as $competitionSport) {
             if ($roundNumber->isFirst()) {
-                if ($roundNumber->getSportScoreConfig($sportConfig->getSport()) === null) {
+                if ($roundNumber->getSportScoreConfig($competitionSport) === null) {
                     throw new Exception($prefix . " bevat geen geldige sportscoreconfig", E_ERROR);
+                }
+                if ($roundNumber->getQualifyConfig($competitionSport) === null) {
+                    throw new Exception($prefix . " bevat geen geldige puntenconfig", E_ERROR);
                 }
             }
         }

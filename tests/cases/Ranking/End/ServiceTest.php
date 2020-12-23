@@ -10,8 +10,6 @@ use Sports\Qualify\Group as QualifyGroup;
 use Sports\Qualify\Service as QualifyService;
 use Sports\Ranking\Service as RankingService;
 use Sports\Ranking\End\Service as EndRankingService;
-use Sports\Planning\Service as PlanningService;
-use Sports\Competitor;
 
 class ServiceTest extends \PHPUnit\Framework\TestCase
 {

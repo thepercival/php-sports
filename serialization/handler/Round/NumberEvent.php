@@ -28,10 +28,12 @@ class NumberEvent implements EventSubscriberInterface
         /** @var RoundNumber $roundNumber */
         $roundNumber = $event->getObject();
 
-        $roundNumber->setSportScoreConfigs(
-            $roundNumber->getSportScoreConfigs()->filter(function (SportScoreConfig $config): bool {
-                return $config->isFirst();
-            })
-        );
+        $filtered = $roundNumber->getSportScoreConfigs()->filter(function (SportScoreConfig $config): bool {
+            return $config->isFirst();
+        });
+        $roundNumber->getSportScoreConfigs()->clear();
+        foreach( $filtered as $firstSportScoreConfig ) {
+            $roundNumber->getSportScoreConfigs()->add( $firstSportScoreConfig );
+        }
     }
 }

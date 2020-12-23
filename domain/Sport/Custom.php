@@ -19,7 +19,8 @@ abstract class Custom
     const Volleyball = 12;
     const Baseball = 13;
     const IceHockey = 14;
-    const Max = 14;
+    const Sjoelen = 15; // Shuffleboard
+    const Max = 15;
 
     CONST Football_Line_GoalKepeer = 1;
     CONST Football_Line_Defense = 2;

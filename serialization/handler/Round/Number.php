@@ -8,9 +8,11 @@ use JMS\Serializer\GraphNavigatorInterface;
 use JMS\Serializer\Metadata\StaticPropertyMetadata;
 use JMS\Serializer\JsonDeserializationVisitor;
 use JMS\Serializer\Context;
+use Sports\Competition;
 use Sports\Round\Number as RoundNumber;
-use Sports\Sport\ScoreConfig as SportScoreConfig;
 use Sports\Sport;
+use Sports\Sport\ScoreConfig as SportScoreConfig;
+use Sports\Competition\Sport as CompetitionSport;
 
 class Number implements SubscribingHandlerInterface
 {
@@ -68,8 +70,8 @@ class Number implements SubscribingHandlerInterface
 
         if (array_key_exists("sportScoreConfigs", $arrRoundNumber)) {
             foreach ($arrRoundNumber["sportScoreConfigs"] as $arrSportScoreConfig) {
-                $sport = $this->createSport($arrSportScoreConfig["sport"]);
-                $this->createSportScoreConfig($arrSportScoreConfig, $sport, $roundNumber);
+                $competitionSport = $this->createCompetitionSport($roundNumber->getCompetition(), $arrSportScoreConfig["sport"]);
+                $this->createSportScoreConfig($arrSportScoreConfig, $competitionSport, $roundNumber);
             }
         }
         if (array_key_exists("next", $arrRoundNumber) && $arrRoundNumber["next"] !== null) {
@@ -85,22 +87,26 @@ class Number implements SubscribingHandlerInterface
         return $roundNumber;
     }
 
-    protected function createSport(array $arrSport): Sport
+    protected function createCompetitionSport(Competition $competition, array $arrSport): CompetitionSport
     {
-        $sport = new Sport($arrSport["name"]);
-        $sport->setTeam($arrSport["team"]);
+        $sport = new Sport(
+            $arrSport["name"],
+            $arrSport["team"],
+            $arrSport["nrOfGamePlaces"],
+            $arrSport["againstEachOther"]
+        );
         $sport->setCustomId($arrSport["customId"]);
-        return $sport;
+        return new CompetitionSport( $sport, $competition );
     }
 
-    protected function createSportScoreConfig(array $arrConfig, Sport $sport, RoundNumber $roundNumber, SportScoreConfig $previous = null)
+    protected function createSportScoreConfig(array $arrConfig, CompetitionSport $competitionSport, RoundNumber $roundNumber, SportScoreConfig $previous = null)
     {
-        $config = new SportScoreConfig($sport, $roundNumber, $previous);
+        $config = new SportScoreConfig($competitionSport, $roundNumber, $previous);
         $config->setDirection($arrConfig["direction"]);
         $config->setMaximum($arrConfig["maximum"]);
         $config->setEnabled($arrConfig["enabled"]);
         if (array_key_exists("next", $arrConfig) && $arrConfig["next"] !== null) {
-            $this->createSportScoreConfig($arrConfig["next"], $sport, $roundNumber, $config);
+            $this->createSportScoreConfig($arrConfig["next"], $competitionSport, $roundNumber, $config);
         }
     }
 

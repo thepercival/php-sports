@@ -2,42 +2,40 @@
 
 namespace Sports\Sport\ScoreConfig;
 
+use Sports\Competition\Sport as CompetitionSport;
 use Sports\Sport;
-use Sports\Sport\Config as SportConfig;
+use Sports\Sport\ConfigDep as SportConfig;
 use Sports\Round\Number as RoundNumber;
 
 class Repository extends \Sports\Repository
 {
-    public function addObjects(Sport $sport, RoundNumber $roundNumber)
+    public function addObjects(CompetitionSport $competitionSport, RoundNumber $roundNumber)
     {
-        $sportScoreConfig = $roundNumber->getSportScoreConfig($sport);
+        $sportScoreConfig = $roundNumber->getSportScoreConfig($competitionSport);
         if ($sportScoreConfig === null) {
             return;
         }
         $this->save($sportScoreConfig);
         if ($roundNumber->hasNext()) {
-            $this->addObjects($sport, $roundNumber->getNext());
+            $this->addObjects($competitionSport, $roundNumber->getNext());
         }
     }
 
-    public function removeObjects(SportConfig $sportConfig)
+    public function removeObjects(CompetitionSport $competitionSport)
     {
-        $sportScoreConfigs = $this->findBySportConfig($sportConfig);
+        $sportScoreConfigs = $this->findByCompetitionSport($competitionSport);
         foreach ($sportScoreConfigs as $config) {
             $this->remove($config);
         }
     }
 
-    public function findBySportConfig(SportConfig $sportConfig)
+    public function findByCompetitionSport(CompetitionSport $competitionSport)
     {
-        $competition = $sportConfig->getCompetition();
         $query = $this->createQueryBuilder('ssc')
             ->join("ssc.roundNumber", "rn")
-            ->where('rn.competition = :competition')
-            ->andWhere('ssc.sport = :sport')
+            ->where('ssc.competitionSport = :competitionSport')
         ;
-        $query = $query->setParameter('competition', $competition);
-        $query = $query->setParameter('sport', $sportConfig->getSport());
+        $query = $query->setParameter('competitionSport', $competitionSport);
         return $query->getQuery()->getResult();
     }
 }

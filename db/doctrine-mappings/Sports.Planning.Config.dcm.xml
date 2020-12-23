@@ -12,6 +12,11 @@
     <field name="minutesBetweenGames" column="minutesBetweenGames" type="smallint" nullable="true" unique="false"/>
     <field name="teamup" column="teamup" type="boolean" nullable="true" unique="false"/>
     <field name="selfReferee" column="selfReferee" type="smallint" nullable="true" unique="false"/>
-    <field name="nrOfHeadtohead" column="nrOfHeadtohead" type="smallint" nullable="false" unique="false"/>
+    <field name="nrOfHeadtoheadDep" column="nrOfHeadtoheadDep" type="smallint" nullable="false" unique="false"/>
+    <one-to-many field="nrOfHeadtoheads" target-entity="Sports\Planning\Config\NrOfHeadtohead" mapped-by="planningConfig" fetch="EXTRA_LAZY">
+      <cascade>
+        <cascade-remove/>
+      </cascade>
+    </one-to-many>
   </entity>
 </doctrine-mapping>

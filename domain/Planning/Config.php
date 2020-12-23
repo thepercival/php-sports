@@ -54,7 +54,7 @@ class Config
 
     const DEFAULTEXTENSION = false;
     const DEFAULTENABLETIME = true;
-    const DEFAULTNROFHEADTOHEAD = 1;
+    const DEFAULTGAMEAMOUNT = 1;
 
     public function __construct(RoundNumber $roundNumber)
     {

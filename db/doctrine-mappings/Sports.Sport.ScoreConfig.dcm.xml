@@ -9,7 +9,7 @@
     <field name="enabled" column="enabled" type="boolean" nullable="true" unique="false"/>
     <one-to-one field="previous" target-entity="Sports\Sport\ScoreConfig" inversed-by="next">
       <join-columns>
-        <join-column name="parentid" referenced-column-name="id" nullable="true" on-delete="CASCADE"/>
+        <join-column name="parentId" referenced-column-name="id" nullable="true" on-delete="CASCADE"/>
       </join-columns>
     </one-to-one>
     <one-to-one field="next" target-entity="Sports\Sport\ScoreConfig" mapped-by="previous">
@@ -20,16 +20,21 @@
     </one-to-one>
     <many-to-one field="roundNumber" target-entity="Sports\Round\Number" inversed-by="sportScoreConfigs">
       <join-columns>
-        <join-column name="roundnumberid" referenced-column-name="id" nullable="true" on-delete="CASCADE"/>
+        <join-column name="roundNumberId" referenced-column-name="id" nullable="true" on-delete="CASCADE"/>
       </join-columns>
     </many-to-one>
-    <many-to-one field="sport" target-entity="Sports\Sport">
+    <many-to-one field="competitionSport" target-entity="Sports\Competition\Sport">
       <join-columns>
-        <join-column name="sportid" referenced-column-name="id" nullable="true" on-delete="CASCADE"/>
+        <join-column name="competitionSportId" referenced-column-name="id" nullable="true" on-delete="CASCADE"/>
+      </join-columns>
+    </many-to-one>
+    <many-to-one field="sportDep" target-entity="Sports\Sport">
+      <join-columns>
+        <join-column name="sportDepId" referenced-column-name="id" nullable="true" on-delete="CASCADE"/>
       </join-columns>
     </many-to-one>
     <unique-constraints>
-      <unique-constraint columns="roundnumberid,sportid,parentid" name="number_u1_idx" />
+      <unique-constraint columns="roundNumberId,competitionSportId,parentId" name="number_u1_idx" />
     </unique-constraints>
   </entity>
 </doctrine-mapping>

@@ -20,7 +20,7 @@ Sports\Competition:
     sportConfigs:
       type: ArrayCollection<Sports\Sport\Config>
     referees:
-      type: ArrayCollection<Sports\Referee>
+      type: ArrayCollection<Sports\Competition\Referee>
     teamCompetitors:
       type: ArrayCollection<Sports\Competitor\Team>
       groups: [ teamCompetitors ]

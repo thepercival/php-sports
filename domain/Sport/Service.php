@@ -4,18 +4,15 @@ namespace Sports\Sport;
 
 use SportsPlanning\Sport\NrFieldsGames as SportNrFieldsGames;
 use SportsPlanning\Sport\NrFields as SportNrFields;
-use SportsHelpers\Math as Math;
+use SportsHelpers\SportMath;
 
 class Service
 {
-    /**
-     * @var Math
-     */
-    protected $math;
+    protected SportMath $math;
 
     public function __construct()
     {
-        $this->math = new Math();
+        $this->math = new SportMath();
     }
 
     protected function convertSportsNrFields(array $sportsNrFields): array
