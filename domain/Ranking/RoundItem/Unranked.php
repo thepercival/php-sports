@@ -7,46 +7,24 @@ use Sports\Place\Location as PlaceLocation;
 
 class Unranked
 {
-    /**
-     * @var Round
-     */
-    private $round;
-    /**
-     * @var PlaceLocation
-     */
-    private $placeLocation;
+    private Round $round;
+    private PlaceLocation $placeLocation;
     /**
      * @var int
      */
     private $penaltyPoints;
 
-    /**
-     * @var int
-     */
-    private $games = 0;
+    private int $games = 0;
     /**
      * @var float
      */
     private $points = 0;
-    /**
-     * @var int
-     */
-    private $scored = 0;
-    /**
-     * @var int
-     */
-    private $received = 0;
-    /**
-     * @var int
-     */
-    private $subScored = 0;
-    /**
-     * @var int
-     */
-    private $subReceived = 0;
+    private int $scored = 0;
+    private int $received = 0;
+    private int $subScored = 0;
+    private int $subReceived = 0;
 
     /**
-     * Unranked constructor.
      * @param Round $round
      * @param PlaceLocation $placeLocation
      * @param int|null $penaltyPoints

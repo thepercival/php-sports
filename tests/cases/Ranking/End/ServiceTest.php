@@ -2,16 +2,17 @@
 
 namespace Sports\Tests\Ranking\End;
 
+use PHPUnit\Framework\TestCase;
 use Sports\TestHelper\CompetitionCreator;
 use Sports\TestHelper\GamesCreator;
 use Sports\TestHelper\SetScores;
 use Sports\Structure\Service as StructureService;
 use Sports\Qualify\Group as QualifyGroup;
 use Sports\Qualify\Service as QualifyService;
-use Sports\Ranking\Service as RankingService;
 use Sports\Ranking\End\Service as EndRankingService;
+use Sports\Ranking\Service\Against as AgainstRankingService;
 
-class ServiceTest extends \PHPUnit\Framework\TestCase
+class ServiceTest extends TestCase
 {
     use CompetitionCreator, SetScores;
 
@@ -31,7 +32,7 @@ class ServiceTest extends \PHPUnit\Framework\TestCase
         $this->setScoreSingle($pouleOne, 1, 3, 3, 1);
         $this->setScoreSingle($pouleOne, 2, 3, 3, 2);
 
-        $endRankingService = new EndRankingService($structure, RankingService::RULESSET_WC);
+        $endRankingService = new EndRankingService($structure, AgainstRankingService::RULESSET_WC);
         $items = $endRankingService->getItems();
 
         for ($rank = 1; $rank <= count($items); $rank++) {
@@ -56,7 +57,7 @@ class ServiceTest extends \PHPUnit\Framework\TestCase
         $this->setScoreSingle($pouleOne, 1, 3, 3, 1);
         // $this->setScoreSingle($pouleOne, 2, 3, 3, 2);
 
-        $endRankingService = new EndRankingService($structure, RankingService::RULESSET_WC);
+        $endRankingService = new EndRankingService($structure, AgainstRankingService::RULESSET_WC);
         $items = $endRankingService->getItems();
 
         for ($rank = 1; $rank <= count($items); $rank++) {
@@ -95,10 +96,10 @@ class ServiceTest extends \PHPUnit\Framework\TestCase
         $loserssPoule = $rootRound->getChild(QualifyGroup::LOSERS, 1)->getPoule(1);
         $this->setScoreSingle($loserssPoule, 1, 2, 2, 1);
 
-        $qualifyService = new QualifyService($rootRound, RankingService::RULESSET_WC);
+        $qualifyService = new QualifyService($rootRound, AgainstRankingService::RULESSET_WC);
         $qualifyService->setQualifiers();
 
-        $endRankingService = new EndRankingService($structure, RankingService::RULESSET_WC);
+        $endRankingService = new EndRankingService($structure, AgainstRankingService::RULESSET_WC);
         $items = $endRankingService->getItems();
 
         for ($rank = 1; $rank <= count($items); $rank++) {

@@ -2,6 +2,7 @@
 
 namespace Sports\Output\ConsoleTable;
 
+use DateTime;
 use LucidFrame\Console\ConsoleTable;
 use Sports\Competition;
 use Sports\Game\Against as AgainstGameBase;
@@ -234,7 +235,7 @@ class AgainstGame
         return [
             $competition->getLeague()->getName(),
             $competition->getSeason()->getName(),
-            $this->game->getBatchNr() . ' : ' . $this->game->getStartDateTime()->format(\DateTime::ATOM)
+            $this->game->getBatchNr() . ' : ' . $this->game->getStartDateTime()->format(DateTime::ATOM)
         ];
     }
 
@@ -243,7 +244,7 @@ class AgainstGame
      */
     protected function getScoreRow(): array {
         $sportScoreConfigService = new SportScoreConfigService();
-        $finalScore = $sportScoreConfigService->getFinalScore($this->game);
+        $finalScore = $sportScoreConfigService->getFinalAgainstScore($this->game);
 
         $score = " - ";
         if( $finalScore !== null ) {

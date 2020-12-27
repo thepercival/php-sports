@@ -11,34 +11,25 @@ use Sports\Game\Together as TogetherGame;
 
 class Poule extends Identifiable
 {
+    protected Round $round;
+    protected int $number;
     /**
      * @var string|null
      */
     protected $name;
-
-    /**
-     * @var int
-     */
-    protected $number;
-
-    /**
-     * @var Round
-     */
-    protected $round;
-
     /**
      * @var Place[] | ArrayCollection
      */
     protected $places;
-
     /**
-     * @var Game[] | ArrayCollection
+     * @var AgainstGame[] | ArrayCollection
      */
-    protected $games;
+    protected $againstGames;
     /**
-     * @var int
+     * @var TogetherGame[] | ArrayCollection
      */
-    protected $structureNumber = 0;
+    protected $togetherGames;
+    protected int $structureNumber = 0;
 
     const MAX_LENGTH_NAME = 10;
 
@@ -50,7 +41,8 @@ class Poule extends Identifiable
         $this->setRound($round);
         $this->setNumber($number);
         $this->places = new ArrayCollection();
-        $this->games = new ArrayCollection();
+        $this->againstGames = new ArrayCollection();
+        $this->togetherGames = new ArrayCollection();
     }
 
     /**
@@ -149,6 +141,22 @@ class Poule extends Identifiable
         if( $this->getRound()->getNumber()->getValidPlanningConfig()->getGameMode() === SportConfig::GAMEMODE_AGAINST ) {
             return $this->againstGames;
         }
+        return $this->togetherGames;
+    }
+
+    /**
+     * @return AgainstGame[] |  ArrayCollection
+     */
+    public function getAgainstGames()
+    {
+        return $this->againstGames;
+    }
+
+    /**
+     * @return TogetherGame[] |  ArrayCollection
+     */
+    public function getTogetherGames()
+    {
         return $this->togetherGames;
     }
 

@@ -2,16 +2,13 @@
 
 namespace Sports\Score;
 
-use Sports\Game;
+use Sports\Game\Against as AgainstGame;
 
 trait AgainstTrait
 {
     protected int $homeScore;
     protected int $awayScore;
 
-    /**
-     * @return int
-     */
     public function getHomeScore(): int
     {
         return $this->homeScore;
@@ -33,14 +30,14 @@ trait AgainstTrait
     }
 
     public function get( bool $homeAway): int {
-        return $homeAway === Game::HOME ? $this->getHomeScore() : $this->getAwayScore();
+        return $homeAway === AgainstGame::HOME ? $this->getHomeScore() : $this->getAwayScore();
     }
 
     public function getResult( bool $homeAway ): int
     {
         if ($this->getHomeScore() === $this->getAwayScore()) {
-            return Game::RESULT_DRAW;
+            return AgainstGame::RESULT_DRAW;
         }
-        return $this->get($homeAway) > $this->get(!$homeAway) ? Game::RESULT_WIN : Game::RESULT_LOST;
+        return $this->get($homeAway) > $this->get(!$homeAway) ? AgainstGame::RESULT_WIN : AgainstGame::RESULT_LOST;
     }
 }

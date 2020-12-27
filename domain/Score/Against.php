@@ -3,13 +3,11 @@
 namespace Sports\Score;
 
 use Sports\Game\Against as AgainstGame;
-use SportsHelpers\Identifiable;
+use Sports\Score;
 
-class Against extends Identifiable
+class Against extends Score
 {
     private AgainstGame $game;
-    protected int $number;
-    protected int $phase;
     use AgainstTrait;
 
     const SCORED = 1;
@@ -23,8 +21,7 @@ class Against extends Identifiable
         if ($number === null) {
             $number = $game->getScores()->count();
         }
-        $this->phase = $phase;
-        $this->number = $number;
+        parent::__construct($phase, $number );
     }
 
     public function getGame(): AgainstGame
@@ -34,19 +31,9 @@ class Against extends Identifiable
 
     protected function setGame(AgainstGame $game)
     {
-        if ($this->game === null and !$game->getScores()->contains($this)) {
+        if (!$game->getScores()->contains($this)) {
             $game->getScores()->add($this) ;
         }
         $this->game = $game;
-    }
-
-    public function getPhase(): int
-    {
-        return $this->phase;
-    }
-
-    public function getNumber(): int
-    {
-        return $this->number;
     }
 }

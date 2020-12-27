@@ -7,12 +7,12 @@ namespace Sports\Game\Against;
 use Doctrine\ORM\QueryBuilder;
 use Sports\Game\Repository as GameRepository;
 use Sports\Competitor;
-use Sports\Game as GameBase;
+use Sports\Game\Against as AgainstGame;
 use League\Period\Period;
 
 class Repository extends GameRepository
 {
-    public function findOneByExt(Competitor $homeCompetitor, Competitor $awayCompetitor, Period $period): ?GameBase
+    public function findOneByExt(Competitor $homeCompetitor, Competitor $awayCompetitor, Period $period): ?AgainstGame
     {
         $exprHome = $this->getEM()->getExpressionBuilder();
         $exprAway = $this->getEM()->getExpressionBuilder();
@@ -44,9 +44,9 @@ class Repository extends GameRepository
                         ->getDQL()
                 )
             );
-        $query = $query->setParameter('home', GameBase::HOME);
+        $query = $query->setParameter('home', AgainstGame::HOME);
         $query = $query->setParameter('homecompetitor', $homeCompetitor);
-        $query = $query->setParameter('away', GameBase::AWAY);
+        $query = $query->setParameter('away', AgainstGame::AWAY);
         $query = $query->setParameter('awaycompetitor', $awayCompetitor);
         $query = $this->applyExtraFilters( $query, null, null, $period );
         $games = $query->getQuery()->getResult();

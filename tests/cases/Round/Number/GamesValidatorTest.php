@@ -4,7 +4,7 @@ namespace Sports\Tests\Round\Number;
 
 use \Exception;
 use League\Period\Period;
-use Sports\Game;
+use Sports\Game\Against as AgainstGame;
 use Sports\Poule;
 use SportsPlanning\Input as PlanningInput;
 use Sports\TestHelper\CompetitionCreator;
@@ -71,7 +71,7 @@ class GamesValidatorTest extends \PHPUnit\Framework\TestCase
 
         $firstPoule = $firstRoundNumber->getRounds()->first()->getPoule(1);
         $game = $firstPoule->getGames()->first();
-        $firstHomePlace = $game->getPlaces(Game::HOME)->first()->getPlace();
+        $firstHomePlace = $game->getPlaces(AgainstGame::HOME)->first()->getPlace();
         $game->setRefereePlace($firstHomePlace);
 
         $gamesValidator = new GamesValidator();
@@ -114,7 +114,7 @@ class GamesValidatorTest extends \PHPUnit\Framework\TestCase
         $firstRoundNumber = $structure->getFirstRoundNumber();
 
         $firstPoule = $firstRoundNumber->getRounds()->first()->getPoule(1);
-        /** @var Game $game */
+        /** @var AgainstGame $game */
         $game = $firstPoule->getGames()->first();
         $newRefereePriority = $game->getReferee()->getPriority() === 1 ? 2 : 1;
         $game->setReferee($competition->getReferee($newRefereePriority));
@@ -144,7 +144,7 @@ class GamesValidatorTest extends \PHPUnit\Framework\TestCase
 //            $outputGame->output( $gameIt );
 //        }
 
-        /** @var Game $game */
+        /** @var AgainstGame $game */
         foreach ($firstPoule->getGames() as $game) {
             $game->setReferee(null);
         }
@@ -168,7 +168,7 @@ class GamesValidatorTest extends \PHPUnit\Framework\TestCase
 
         $firstPoule = $firstRoundNumber->getRounds()->first()->getPoule(1);
 
-        /** @var Game $game */
+        /** @var AgainstGame $game */
         foreach ($firstPoule->getGames() as $game) {
             if ($game->getReferee()->getPriority() === 1 && $game->getBatchNr() <= 3) {
                 $game->setReferee(null);
@@ -202,7 +202,7 @@ class GamesValidatorTest extends \PHPUnit\Framework\TestCase
         /** @var Poule $firstPoule */
         $firstPoule = $firstRoundNumber->getRounds()->first()->getPoule(1);
 
-        /** @var Game $game */
+        /** @var AgainstGame $game */
         $game = $firstPoule->getGames()->first();
         $game->setRefereePlace($firstPoule->getPlace(3));
 
@@ -251,8 +251,8 @@ class GamesValidatorTest extends \PHPUnit\Framework\TestCase
         $blockedPeriod = new Period($start, $start->modify("+30 minutes"));
         (new GamesCreator())->createStructureGames( $structure );
 
-        /** @var Game[] $games */
-        $games = $firstRoundNumber->getGames(Game::ORDER_BY_BATCH);
+        /** @var AgainstGame[] $games */
+        $games = $firstRoundNumber->getGames(AgainstGame::ORDER_BY_BATCH);
         $game = reset($games);
         $game->setStartDateTime($start->modify("+10 minutes"));
 //        $outputGame = new \Sports\Output\Game();

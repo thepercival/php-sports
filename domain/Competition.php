@@ -4,13 +4,12 @@ declare(strict_types=1);
 
 namespace Sports;
 
+use DateTimeImmutable;
 use \Doctrine\Common\Collections\ArrayCollection;
-use \Doctrine\Common\Collections\Collection;
 use \Doctrine\ORM\PersistentCollection;
-use Sports\Ranking\Service as RankingService;
+use Sports\Ranking\Service\Against as AgainstRankingService;
 use Sports\Competition\Sport as CompetitionSport;
 use Sports\Competition\Field as CompetitionField;
-use Sports\Sport\ConfigDep as SportConfig;
 use SportsHelpers\Identifiable;
 use Sports\Competitor\Team as TeamCompetitor;
 use Sports\Competition\Referee;
@@ -28,7 +27,7 @@ class Competition extends Identifiable
     private $season;
 
     /**
-     * @var \DateTimeImmutable
+     * @var DateTimeImmutable
      */
     private $startDateTime;
 
@@ -67,7 +66,7 @@ class Competition extends Identifiable
     {
         $this->setLeague($league);
         $this->season = $season;
-        $this->ruleSet = RankingService::RULESSET_WC;
+        $this->ruleSet = AgainstRankingService::RULESSET_WC;
         $this->state = State::Created;
         $this->roundNumbers = new ArrayCollection();
         $this->referees = new ArrayCollection();
@@ -106,7 +105,7 @@ class Competition extends Identifiable
     }
 
     /**
-     * @return \DateTimeImmutable
+     * @return DateTimeImmutable
      */
     public function getStartDateTime()
     {
@@ -114,9 +113,9 @@ class Competition extends Identifiable
     }
 
     /**
-     * @param \DateTimeImmutable $datetime
+     * @param DateTimeImmutable $datetime
      */
-    public function setStartDateTime(\DateTimeImmutable $datetime)
+    public function setStartDateTime(DateTimeImmutable $datetime)
     {
         $this->startDateTime = $datetime;
     }

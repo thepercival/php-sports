@@ -10,7 +10,7 @@ use Sports\NameService;
 use Sports\Place;
 use SportsHelpers\Output as OutputBase;
 use Sports\Place\Location\Map as PlaceLocationMap;
-use Sports\Ranking\ItemsGetter;
+use Sports\Ranking\ItemsGetter\Against as AgainstItemsGetter;
 use Sports\Sport\ScoreConfig\Service as SportScoreConfigService;
 use Sports\State;
 
@@ -107,7 +107,7 @@ class AgainstGame extends OutputBase
         if ($game->getState() !== State::Finished) {
             return $score;
         }
-        $finalScore = $this->sportScoreConfigService->getFinalScore($game);
+        $finalScore = $this->sportScoreConfigService->getFinalAgainstScore($game);
         if ($finalScore === null) {
             return $score;
         }
@@ -126,8 +126,8 @@ class AgainstGame extends OutputBase
         if ($game->getState() !== State::Finished) {
             return $score;
         }
-        $itemGetter = new ItemsGetter( $game->getRound(), State::Finished );
-        $finalScore = $this->sportScoreConfigService->getFinalScore($game);
+        $itemGetter = new AgainstItemsGetter( $game->getRound(), State::Finished );
+        $finalScore = $this->sportScoreConfigService->getFinalAgainstScore($game);
         if ($finalScore === null) {
             return $score;
         }

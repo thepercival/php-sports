@@ -6,7 +6,6 @@ use Sports\Round\Number\PlanningInputCreator as PlanningInputService;
 use SportsPlanning\Planning;
 use SportsPlanning\Planning\Repository as PlanningRepository;
 use SportsPlanning\Input\Repository as PlanningInputRepository;
-use Sports\Round\Number\PlanningScheduler;
 use Sports\Round\Number as RoundNumber;
 use Sports\Round\Number\Repository as RoundNumberRepository;
 use League\Period\Period;

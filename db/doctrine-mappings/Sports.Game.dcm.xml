@@ -29,12 +29,6 @@
         <join-column name="competitionSportId" referenced-column-name="id" nullable="false" on-delete="CASCADE"/>
       </join-columns>
     </many-to-one>
-    <one-to-many field="scores" target-entity="Sports\Game\Score" mapped-by="game" orphan-removal="true">
-      <cascade>
-        <cascade-persist/>
-        <cascade-remove/>
-      </cascade>
-    </one-to-many>
     <one-to-many field="participations" target-entity="Sports\Game\Participation" mapped-by="game" orphan-removal="true">
       <cascade>
         <cascade-persist/>

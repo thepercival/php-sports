@@ -3,11 +3,14 @@
 namespace Sports;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use InvalidArgumentException;
 use Sports\Place\Location;
 use Sports\Qualify\Rule as QualifyRule;
 use Sports\Qualify\Group as QualifyGroup;
 use Sports\Poule\Horizontal as HorizontalPoule;
 use SportsHelpers\Identifiable;
+use Sports\Game\Against as AgainstGame;
+use Sports\Game\Together as TogetherGame;
 
 class Place extends Identifiable implements Place\Location
 {
@@ -144,11 +147,11 @@ class Place extends Identifiable implements Place\Location
         }
 
         if (strlen($name) > static::MAX_LENGTH_NAME) {
-            throw new \InvalidArgumentException("de naam mag maximaal ".static::MAX_LENGTH_NAME." karakters bevatten", E_ERROR);
+            throw new InvalidArgumentException("de naam mag maximaal ".static::MAX_LENGTH_NAME." karakters bevatten", E_ERROR);
         }
 
         if (preg_match('/[^a-z0-9 ]/i', $name)) {
-            throw new \InvalidArgumentException("de naam mag alleen cijfers, letters en spaties bevatten", E_ERROR);
+            throw new InvalidArgumentException("de naam mag alleen cijfers, letters en spaties bevatten", E_ERROR);
         }
 
         $this->name = $name;
@@ -221,12 +224,13 @@ class Place extends Identifiable implements Place\Location
     }
 
     /**
-     * @return ArrayCollection|Game[]
+     * @return ArrayCollection|AgainstGame[]|TogetherGame[]
      */
     public function getGames(): ArrayCollection
     {
         return $this->getPoule()->getGames()->filter(
-            function (Game $game): bool {
+            /** @var AgainstGame|TogetherGame $game  */
+            function ($game): bool {
                 return $game->isParticipating($this);
             }
         );

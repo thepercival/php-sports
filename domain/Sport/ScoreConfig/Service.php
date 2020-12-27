@@ -3,7 +3,9 @@
 namespace Sports\Sport\ScoreConfig;
 
 use Sports\Sport\ScoreConfig as SportScoreConfig;
-use Sports\Score\AgainstHelper as ScoreHomeAway;
+use Sports\Score\AgainstHelper as AgainstScore;
+use Sports\Score\Together as TogetherScore;
+use Sports\Game\Place\Together as TogetherGamePlace;
 use Sports\Sport;
 use Sports\Game\Against as AgainstGame;
 use Sports\Sport\Custom as SportCustom;
@@ -84,7 +86,7 @@ class Service
         return $sportScoreConfigA->getNext() === $sportScoreConfigB->getNext();
     }
 
-    public function getFinalScore(AgainstGame $game): ?ScoreHomeAway
+    public function getFinalAgainstScore(AgainstGame $game): ?AgainstScore
     {
         if ($game->getScores()->count() === 0) {
             return null;
@@ -93,27 +95,53 @@ class Service
             $home = 0;
             $away = 0;
             foreach ($game->getScores() as $score) {
-                if ($score->getHome() > $score->getAway()) {
+                if ($score->getHomeScore() > $score->getAwayScore()) {
                     $home++;
-                } elseif ($score->getHome() < $score->getAway()) {
+                } elseif ($score->getHomeScore() < $score->getAwayScore()) {
                     $away++;
                 }
             }
-            return new ScoreHomeAway($home, $away);
+            return new AgainstScore($home, $away);
         }
         $home = $game->getScores()->first()->getHome();
         $away = $game->getScores()->first()->getAway();
-        return new ScoreHomeAway($home, $away);
+        return new AgainstScore($home, $away);
     }
 
-    public function getFinalSubScore(AgainstGame $game): ScoreHomeAway
+    public function getFinalAgainstSubScore(AgainstGame $game): AgainstScore
     {
         $home = 0;
         $away = 0;
         foreach ($game->getScores() as $score) {
-            $home += $score->getHome();
-            $away += $score->getAway();
+            $home += $score->getHomeScore();
+            $away += $score->getAwayScore();
         }
-        return new ScoreHomeAway($home, $away);
+        return new AgainstScore($home, $away);
+    }
+
+    public function getFinalTogetherScore(TogetherGamePlace $gamePlace): int
+    {
+        $score = 0;
+        if ($gamePlace->getScores()->count() === 0) {
+            return $score;
+        }
+        if ($gamePlace->getGame()->getSportScoreConfig()->useSubScore()) {
+            $score = 0;
+            foreach ($gamePlace->getScores() as $subScore) {
+                $score += $subScore;
+            }
+            return $score;
+        }
+        return $gamePlace->getScores()->first()->getScore();
+    }
+
+    public function getFinalTogetherSubScore(TogetherGamePlace $gamePlace): int
+    {
+        $score = 0;
+        /** @var TogetherScore $togetherScore */
+        foreach ($gamePlace->getScores() as $togetherScore) {
+            $score += $togetherScore->getScore();
+        }
+        return $score;
     }
 }

@@ -2,17 +2,17 @@
 
 namespace Sports\Tests\Qualify;
 
+use PHPUnit\Framework\TestCase;
 use Sports\TestHelper\CompetitionCreator;
 use Sports\TestHelper\GamesCreator;
 use Sports\TestHelper\SetScores;
 use Sports\Structure\Service as StructureService;
 use Sports\Qualify\Service as QualifyService;
-use Sports\Ranking\Service as RankingService;
+use Sports\Ranking\Service\Against as AgainstRankingService;
 use Sports\Qualify\ReservationService as QualifyReservationService;
 use Sports\Qualify\Group as QualifyGroup;
-use Sports\Competitor;
 
-class ReservationServiceTest extends \PHPUnit\Framework\TestCase
+class ReservationServiceTest extends TestCase
 {
     use CompetitionCreator, SetScores;
 
@@ -41,7 +41,7 @@ class ReservationServiceTest extends \PHPUnit\Framework\TestCase
         $this->setScoreSingle($pouleOne, 3, 5, 5, 3);
         $this->setScoreSingle($pouleOne, 4, 5, 5, 4);
 
-        $qualifyService = new QualifyService($rootRound, RankingService::RULESSET_WC);
+        $qualifyService = new QualifyService($rootRound, AgainstRankingService::RULESSET_WC);
         $qualifyService->setQualifiers();
 
         $winnersRound = $rootRound->getChild(QualifyGroup::WINNERS, 1);
@@ -85,7 +85,7 @@ class ReservationServiceTest extends \PHPUnit\Framework\TestCase
         $this->setScoreSingle($pouleFour, 1, 3, 1, 3);
         $this->setScoreSingle($pouleFour, 2, 3, 2, 3);
 
-        $qualifyService = new QualifyService($rootRound, RankingService::RULESSET_WC);
+        $qualifyService = new QualifyService($rootRound, AgainstRankingService::RULESSET_WC);
         $qualifyService->setQualifiers();
 
         $winnersRound = $rootRound->getChild(QualifyGroup::WINNERS, 1);
@@ -144,7 +144,7 @@ class ReservationServiceTest extends \PHPUnit\Framework\TestCase
         $this->setScoreSingle($pouleThree, 1, 3, 1, 3);
         // $this->setScoreSingle(pouleThree, 2, 3, 2, 5);
 
-        $qualifyService = new QualifyService($rootRound, RankingService::RULESSET_WC);
+        $qualifyService = new QualifyService($rootRound, AgainstRankingService::RULESSET_WC);
         $qualifyService->setQualifiers();
 
         $winnersPoule = $rootRound->getChild(QualifyGroup::WINNERS, 1)->getPoule(1);

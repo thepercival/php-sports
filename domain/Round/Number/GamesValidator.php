@@ -2,10 +2,14 @@
 
 namespace Sports\Round\Number;
 
+use DateTimeImmutable;
 use Exception;
 use League\Period\Period;
 use Sports\Game;
-use Sports\Game\Place as GamePlace;
+use Sports\Game\Against as AgainstGame;
+use Sports\Game\Together as TogetherGame;
+use Sports\Game\Place\Against as AgainstGamePlace;
+use Sports\Game\Place\Together as TogetherGamePlace;
 use Sports\Place;
 use Sports\Poule;
 use Sports\Structure;
@@ -23,7 +27,7 @@ class GamesValidator
     protected $blockedPeriod;
 
     /**
-     * @var array | Game[]
+     * @var array | AgainstGame[] | TogetherGame[]
      */
     protected $games;
 
@@ -124,13 +128,14 @@ class GamesValidator
     }
 
     /**
-     * @param Game $game
+     * @param TogetherGame|AgainstGame $game
      * @return array|Place[]
      */
-    protected function getPlaces(Game $game): array
+    protected function getPlaces($game): array
     {
         return $game->getPlaces()->map(
-            function (GamePlace $gamePlace): Place {
+            /** @var AgainstGamePlace|TogetherGamePlace $gamePlace */
+            function ($gamePlace): Place {
                 return $gamePlace->getPlace();
             }
         )->toArray();
@@ -267,7 +272,7 @@ class GamesValidator
     {
         $orderedGames = $this->roundNumber->getGames(Game::ORDER_BY_BATCH);
         $gamesFirstBatch = $this->getGamesForBatch($orderedGames);
-        $pointInTime = new \DateTimeImmutable("2020-08-03"); // @TODO CDK DEPRECATED
+        $pointInTime = new DateTimeImmutable("2020-08-03"); // @TODO CDK DEPRECATED
         $priority = 1;
         foreach ($gamesFirstBatch as $game) {
             if ($game->getStartDateTime() < $pointInTime) {

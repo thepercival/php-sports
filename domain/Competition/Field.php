@@ -75,7 +75,7 @@ class Field extends Identifiable implements Prioritizable
 
     public function getCompetition(): Competition
     {
-        return $this->getCompetition();
+        return $this->competitionSport->getCompetition();
     }
 
 

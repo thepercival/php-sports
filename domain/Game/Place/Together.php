@@ -4,6 +4,7 @@ namespace Sports\Game\Place;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Sports\Game\Together as TogetherGame;
+use Sports\Score\Together as TogetherScore;
 use Sports\Place as PlaceBase;
 use Sports\Game\Place as GamePlaceBase;
 
@@ -12,15 +13,16 @@ class Together extends GamePlaceBase
     protected TogetherGame $game;
     protected int $gameRoundNumber;
     /**
-     * @var int|null
+     * @var ArrayCollection|TogetherScore[]
      */
-    protected $score;
+    protected $scores;
 
     public function __construct(TogetherGame $game, PlaceBase $place, int $gameRoundNumber)
     {
         parent::__construct($place);
         $this->setGame($game);
         $this->gameRoundNumber = $gameRoundNumber;
+        $this->scores = new ArrayCollection();
     }
 
     public function getPlace(): PlaceBase
@@ -51,11 +53,10 @@ class Together extends GamePlaceBase
         return $this->gameRoundNumber;
     }
 
-    public function setScore( int $score ) {
-        $this->score = $score;
-    }
-
-    public function getScore(): ?int {
-        return $this->score;
+    /**
+     * @return ArrayCollection|TogetherScore[]
+     */
+    public function getScores() {
+        return $this->scores;
     }
 }

@@ -250,11 +250,13 @@ class NameServiceTest extends \PHPUnit\Framework\TestCase
     {
         $nameService = new NameService();
         $competition = $this->createCompetition();
+        $competitionSport = $competition->getSports()->first();
+        $competitionSport->getFields()->removeElement( $competitionSport->getFields()->last() );
 
         // basics
         {
             $structureService = new StructureService([]);
-            $structure = $structureService->create($competition, 3, 1);
+            $structure = $structureService->create($competition, 2, 1);
             $rootRound = $structure->getRootRound();
 
             $firstPlace = $rootRound->getFirstPlace(QualifyGroup::WINNERS);
@@ -273,7 +275,7 @@ class NameServiceTest extends \PHPUnit\Framework\TestCase
             $game = $rootRound->getGames()[0];
             $gamePlaces = $game->getPlaces();
 
-            self::assertSame($nameService->getPlacesFromName($gamePlaces, false, false), 'A2 & A3');
+            self::assertSame($nameService->getPlacesFromName($gamePlaces, false, false), 'A1 & A2');
         }
     }
 
@@ -331,14 +333,14 @@ class NameServiceTest extends \PHPUnit\Framework\TestCase
 
     public function testRefereeName()
     {
-        $nameService = new NameService();
         $competition = $this->createCompetition();
-
+        $competitionSport = $competition->getSports()->first();
+        $competitionSport->getFields()->removeElement( $competitionSport->getFields()->last() );
 
         // basics
         {
             $structureService = new StructureService([]);
-            $structure = $structureService->create($competition, 3);
+            $structure = $structureService->create($competition, 2);
             $rootRound = $structure->getRootRound();
 
             $firstPlace = $rootRound->getFirstPlace(QualifyGroup::WINNERS);

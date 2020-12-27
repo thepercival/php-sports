@@ -3,6 +3,7 @@
 namespace Sports\Planning\Config;
 
 use Sports\Planning\Config as PlanningConfig;
+use SportsHelpers\SportConfig;
 use SportsPlanning\Input as PlanningInput;
 use Sports\Round\Number as RoundNumber;
 
@@ -20,9 +21,8 @@ class Service
         $config->setMinutesPerGame($this->getDefaultMinutesPerGame());
         $config->setMinutesBetweenGames($this->getDefaultMinutesBetweenGames());
         $config->setMinutesAfter($this->getDefaultMinutesAfter());
-        $config->setTeamup(false);
         $config->setSelfReferee(PlanningInput::SELFREFEREE_DISABLED);
-        $config->setNrOfHeadtohead(PlanningConfig::DEFAULTGAMEAMOUNT);
+        $config->setGameMode(SportConfig::GAMEMODE_AGAINST);
         return $config;
     }
 
@@ -40,9 +40,8 @@ class Service
         $newPlanningConfig->setMinutesPerGame($planningConfig->getMinutesPerGame());
         $newPlanningConfig->setMinutesBetweenGames($planningConfig->getMinutesBetweenGames());
         $newPlanningConfig->setMinutesAfter($planningConfig->getMinutesAfter());
-        $newPlanningConfig->setTeamup($planningConfig->getTeamup());
         $newPlanningConfig->setSelfReferee($planningConfig->getSelfReferee());
-        $newPlanningConfig->setNrOfHeadtohead($planningConfig->getNrOfHeadtohead());
+        $newPlanningConfig->setGameMode($planningConfig->getGameMode());
     }
 
     public function getDefaultMinutesPerGame(): int
@@ -74,7 +73,7 @@ class Service
             }
         }
         foreach ($roundNumber->getPoules() as $poule) {
-            if ($poule->getPlaces()->count() > PlanningInput::AGAINSTEACHOTHER_MAXNROFGAMEPLACES) {
+            if ($poule->getPlaces()->count() > PlanningInput::AGAINST_MAXNROFGAMEPLACES) {
                 return false;
             }
         }

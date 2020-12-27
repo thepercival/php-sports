@@ -54,7 +54,7 @@
   "scripts": {
     "start": "php -S localhost:2990 -t public/",
     "test": [
-      "vendor/bin/phpunit --configuration tests/phpunit.xml tests/cases/"
+      "XDEBUG_MODE=coverage vendor/bin/phpunit --configuration tests/phpunit.xml tests/cases/"
     ],
     "stan": "vendor/bin/phpstan analyse --level=5 domain/ tests/cases/ tests/helpers/ serialization/",
     "cs-fix": "php-cs-fixer fix .",

@@ -3,54 +3,22 @@
 namespace Sports\Planning;
 
 use Sports\Round\Number as RoundNumber;
+use SportsHelpers\Identifiable;
 use SportsPlanning\Input as PlanningInput;
 
-class Config
+class Config extends Identifiable
 {
-    /**
-     * @var RoundNumber
-     */
-    protected $roundNumber;
-    /**
-     * @var int
-     */
-    protected $id;
-    /**
-     * @var bool
-     */
-    protected $extension;
-    /**
-     * @var bool
-     */
-    protected $enableTime;
-    /**
-     * @var int
-     */
-    protected $minutesPerGame;
-    /**
-     * @var int
-     */
-    protected $minutesPerGameExt;
-    /**
-     * @var int
-     */
-    protected $minutesBetweenGames;
-    /**
-     * @var int
-     */
-    protected $minutesAfter;
-    /**
-     * @var bool
-     */
-    protected $teamup;
-    /**
-     * @var int
-     */
-    protected $selfReferee;
-    /**
-     * @var int
-     */
-    protected $nrOfHeadtohead;
+    protected RoundNumber $roundNumber;
+    protected bool $extension;
+    protected bool $enableTime;
+    protected int $minutesPerGame;
+    protected int $minutesPerGameExt;
+    protected int $minutesBetweenGames;
+    protected int $minutesAfter;
+    protected bool $teamupDep;
+    protected int $selfReferee;
+    protected int $nrOfHeadtoheadDep;
+    protected int $gameMode;
 
     const DEFAULTEXTENSION = false;
     const DEFAULTENABLETIME = true;
@@ -60,24 +28,6 @@ class Config
     {
         $this->roundNumber = $roundNumber;
         $this->roundNumber->setPlanningConfig($this);
-    }
-
-    /**
-     * Get id
-     *
-     * @return int
-     */
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
-
-    /**
-     * @param int $id
-     */
-    public function setId(int $id = null)
-    {
-        $this->id = $id;
     }
 
     public function getExtension(): bool
@@ -100,33 +50,21 @@ class Config
         $this->enableTime = $enableTime;
     }
 
-    /**
-     * @return int
-     */
-    public function getMinutesBetweenGames()
+    public function getMinutesBetweenGames(): int
     {
         return $this->minutesBetweenGames;
     }
 
-    /**
-     * @param int $minutesBetweenGames
-     */
     public function setMinutesBetweenGames(int $minutesBetweenGames)
     {
         $this->minutesBetweenGames = $minutesBetweenGames;
     }
 
-    /**
-     * @return int
-     */
-    public function getMinutesAfter()
+    public function getMinutesAfter(): int
     {
         return $this->minutesAfter;
     }
 
-    /**
-     * @param int $minutesAfter
-     */
     public function setMinutesAfter(int $minutesAfter)
     {
         $this->minutesAfter = $minutesAfter;
@@ -137,46 +75,24 @@ class Config
         return $this->getMinutesPerGame() + $this->getMinutesPerGameExt();
     }
 
-    /**
-     * @return int
-     */
-    public function getMinutesPerGame()
+    public function getMinutesPerGame(): int
     {
         return $this->minutesPerGame;
     }
 
-    /**
-     * @param int $minutesPerGame
-     */
     public function setMinutesPerGame(int $minutesPerGame)
     {
         $this->minutesPerGame = $minutesPerGame;
     }
 
-    /**
-     * @return int
-     */
-    public function getMinutesPerGameExt()
+    public function getMinutesPerGameExt(): int
     {
         return $this->minutesPerGameExt;
     }
 
-    /**
-     * @param int $minutesPerGameExt
-     */
     public function setMinutesPerGameExt(int $minutesPerGameExt)
     {
         $this->minutesPerGameExt = $minutesPerGameExt;
-    }
-
-    public function getTeamup(): bool
-    {
-        return $this->teamup;
-    }
-
-    public function setTeamup(bool $teamup)
-    {
-        $this->teamup = $teamup;
     }
 
     public function getSelfReferee(): int
@@ -194,24 +110,16 @@ class Config
         return $this->selfReferee !== PlanningInput::SELFREFEREE_DISABLED;
     }
 
-    public function getNrOfHeadtohead(): int
+    public function getGameMode(): int
     {
-        return $this->nrOfHeadtohead;
+        return $this->gameMode;
     }
 
-    public function setNrOfHeadtohead(int $nrOfHeadtohead)
+    public function setGameMode(int $gameMode)
     {
-        $this->nrOfHeadtohead = $nrOfHeadtohead;
+        $this->gameMode = $gameMode;
     }
 
-    public function getNrOfCompetitorsPerGame(): int
-    {
-        return $this->getTeamup() ? 4 : 2;
-    }
-
-    /**
-     * @return RoundNumber
-     */
     protected function getRoundNumber(): RoundNumber
     {
         return $this->roundNumber;

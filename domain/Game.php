@@ -13,16 +13,13 @@ use Sports\Competitor\Team as TeamCompetitor;
 use Sports\Game\Event\Card as CardEvent;
 use Sports\Game\Event\Goal as GoalEvent;
 use Sports\Game\Event\Substitution as SubstitutionEvent;
-use Sports\Game\Score;
 use Sports\Game\Participation;
 use Sports\Game\Place as GamePlace;
 use Sports\Planning\Config as PlanningConfig;
-use Sports\Place\Location\Map;
 use Sports\Qualify\Config as QualifyConfig;
 use Sports\Sport\ScoreConfig as SportScoreConfig;
 use Sports\Competition\Sport as CompetitionSport;
 use SportsHelpers\Identifiable;
-use SportsHelpers\SportConfig;
 
 abstract class Game extends Identifiable
 {
@@ -57,15 +54,6 @@ abstract class Game extends Identifiable
      * @var Participation[] | Collection
      */
     protected $participations;
-
-    protected int $gameRoundNumber = 0;
-
-    public const RESULT_WIN = 1;
-    public const RESULT_DRAW = 2;
-    public const RESULT_LOST = 3;
-
-    public const HOME = true;
-    public const AWAY = false;
 
     public const PHASE_REGULARTIME = 1;
     public const PHASE_EXTRATIME = 2;
@@ -188,37 +176,21 @@ abstract class Game extends Identifiable
     }
 
     /**
-     * @param Field $field
+     * @param Field|null $field
      */
     public function setField(Field $field = null)
     {
         $this->field = $field;
     }
 
-    /**
-     * @return int
-     */
-    public function getFieldPriority()
+    public function getFieldPriority(): int
     {
         return $this->field !== null ? $this->field->getPriority() : $this->fieldPriority;
     }
 
-    /**
-     * @param int $fieldPriority
-     */
     public function setFieldPriority(int $fieldPriority = null)
     {
         $this->fieldPriority = $fieldPriority;
-    }
-
-    public function getGameRoundNumber(): int
-    {
-        return $this->gameRoundNumber;
-    }
-
-    public function setGameRoundNumber(int $gameRoundNumber)
-    {
-        $this->gameRoundNumber = $gameRoundNumber;
     }
 
     /**

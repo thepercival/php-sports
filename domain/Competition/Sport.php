@@ -56,12 +56,12 @@ class Sport extends Identifiable
         return count($fields) > 0 ? array_shift($fields) : null;
     }
 
-    public function createConfig(): SportConfig
+    public function createConfig( int $gameAmount ): SportConfig
     {
         return new SportConfig(
             $this->getSport(),
             $this->fields->count(),
-            $this->getSport()->getNrOfGamePlaces()
+            $gameAmount
         );
     }
 }

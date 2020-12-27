@@ -2,11 +2,16 @@
 <doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
   <entity name="Sports\Game\Place\Together" table="gamePlacesTogether" repository-class="Sports\Game\Place\Together\Repository">
     <field name="gameRoundNumber" column="gameRoundNumber" type="smallint" nullable="false" unique="false"/>
-    <field name="score" column="score" type="smallint" nullable="false" unique="false"/>
     <many-to-one field="game" target-entity="Sports\Game\Together" inversed-by="places">
       <join-columns>
         <join-column name="gameId" referenced-column-name="id" nullable="false" on-delete="CASCADE"/>
       </join-columns>
     </many-to-one>
+    <one-to-many field="scores" target-entity="Sports\Score\Together" mapped-by="gamePlace" orphan-removal="true">
+      <cascade>
+        <cascade-persist/>
+        <cascade-remove/>
+      </cascade>
+    </one-to-many>
   </entity>
 </doctrine-mapping>

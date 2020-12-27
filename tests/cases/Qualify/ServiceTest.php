@@ -2,16 +2,16 @@
 
 namespace Sports\Tests\Qualify;
 
+use PHPUnit\Framework\TestCase;
 use Sports\TestHelper\CompetitionCreator;
 use Sports\TestHelper\GamesCreator;
 use Sports\TestHelper\SetScores;
 use Sports\Structure\Service as StructureService;
 use Sports\Qualify\Service as QualifyService;
-use Sports\Ranking\Service as RankingService;
+use Sports\Ranking\Service\Against as AgainstRankingService;
 use Sports\Qualify\Group as QualifyGroup;
-use Sports\Competitor;
 
-class ServiceTest extends \PHPUnit\Framework\TestCase
+class ServiceTest extends TestCase
 {
     use CompetitionCreator, SetScores;
 
@@ -41,7 +41,7 @@ class ServiceTest extends \PHPUnit\Framework\TestCase
         $this->setScoreSingle($pouleOne, 3, 5, 5, 3);
         $this->setScoreSingle($pouleOne, 4, 5, 5, 4);
 
-        $qualifyService = new QualifyService($rootRound, RankingService::RULESSET_WC);
+        $qualifyService = new QualifyService($rootRound, AgainstRankingService::RULESSET_WC);
         $qualifyService->setQualifiers();
 
         $winnersPoule = $rootRound->getChild(QualifyGroup::WINNERS, 1)->getPoule(1);
@@ -85,7 +85,7 @@ class ServiceTest extends \PHPUnit\Framework\TestCase
         $this->setScoreSingle($pouleTwo, 1, 3, 3, 1);
         $this->setScoreSingle($pouleTwo, 2, 3, 4, 1);
 
-        $qualifyService = new QualifyService($rootRound, RankingService::RULESSET_WC);
+        $qualifyService = new QualifyService($rootRound, AgainstRankingService::RULESSET_WC);
         $qualifyService->setQualifiers($pouleOne);
 
         $winnersPoule = $rootRound->getChild(QualifyGroup::WINNERS, 1)->getPoule(1);
@@ -130,7 +130,7 @@ class ServiceTest extends \PHPUnit\Framework\TestCase
         $this->setScoreSingle($pouleThree, 1, 3, 1, 3);
         $this->setScoreSingle($pouleThree, 2, 3, 2, 5);
 
-        $qualifyService = new QualifyService($rootRound, RankingService::RULESSET_WC);
+        $qualifyService = new QualifyService($rootRound, AgainstRankingService::RULESSET_WC);
         $changedPlaces = $qualifyService->setQualifiers();
         self::assertSame(count($changedPlaces), 8);
 
@@ -184,7 +184,7 @@ class ServiceTest extends \PHPUnit\Framework\TestCase
         $this->setScoreSingle($pouleThree, 1, 3, 1, 3);
         // $this->setScoreSingle(pouleThree, 2, 3, 2, 5);
 
-        $qualifyService = new QualifyService($rootRound, RankingService::RULESSET_WC);
+        $qualifyService = new QualifyService($rootRound, AgainstRankingService::RULESSET_WC);
         $qualifyService->setQualifiers();
 
         $winnersPoule = $rootRound->getChild(QualifyGroup::WINNERS, 1)->getPoule(1);
@@ -218,7 +218,7 @@ class ServiceTest extends \PHPUnit\Framework\TestCase
         $this->setScoreSingle($pouleTwo, 3, 1, 0, 1);
         $this->setScoreSingle($pouleTwo, 2, 3, 1, 0);
 
-        $qualifyService = new QualifyService($rootRound, RankingService::RULESSET_WC);
+        $qualifyService = new QualifyService($rootRound, AgainstRankingService::RULESSET_WC);
         $qualifyService->setQualifiers();
 
         $winnersPoule = $rootRound->getChild(QualifyGroup::WINNERS, 1)->getPoule(1);

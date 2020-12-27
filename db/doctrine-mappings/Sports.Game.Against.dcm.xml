@@ -7,5 +7,11 @@
         <cascade-remove/>
       </cascade>
     </one-to-many>
+    <one-to-many field="scores" target-entity="Sports\Score\Against" mapped-by="game" orphan-removal="true">
+      <cascade>
+        <cascade-persist/>
+        <cascade-remove/>
+      </cascade>
+    </one-to-many>
   </entity>
 </doctrine-mapping>

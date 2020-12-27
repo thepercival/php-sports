@@ -18,8 +18,10 @@ use Sports\Round;
 use Sports\Round\Number as RoundNumber;
 use Sports\Sport;
 use Sports\State;
-use Sports\Game;
+use Sports\Game\Against as AgainstGame;
+use Sports\Game\Together as TogetherGame;
 use SportsHelpers\Identifiable;
+use SportsHelpers\SportConfig;
 
 class Number extends Identifiable
 {
@@ -220,7 +222,7 @@ class Number extends Identifiable
 
     /**
      * @param int|null $order
-     * @return array|Game[]
+     * @return array|AgainstGame[]|TogetherGame[]
      */
     public function getGames(int $order = null): array
     {
@@ -232,7 +234,12 @@ class Number extends Identifiable
         if ($order === GameBase::ORDER_BY_BATCH) {
             uasort(
                 $games,
-                function (Game $g1, Game $g2): int {
+                /**
+                 * @param TogetherGame|AgainstGame $g1
+                 * @param TogetherGame|AgainstGame $g2
+                 * @return int
+                 */
+                function ($g1, $g2): int {
                     if ($g1->getBatchNr() === $g2->getBatchNr()) {
                         if( $g1->getField() !== null && $g2->getField() !== null ) {
                             $retVal = $g1->getField()->getPriority() - $g2->getField()->getPriority();
@@ -305,6 +312,17 @@ class Number extends Identifiable
     public function getCompetitionSports()
     {
         return $this->getCompetition()->getSports();
+    }
+
+    /**
+     * @return array | SportConfig[]
+     */
+    public function getSportConfigs(): array
+    {
+        return $this->getCompetition()->getSports()->map( function (CompetitionSport $competitionSport ): SportConfig {
+            $gameAmountConfig = $this->getValidGameAmountConfig($competitionSport);
+            return $competitionSport->createConfig( $gameAmountConfig->getAmount() );
+        })->toArray();
     }
 
     /**

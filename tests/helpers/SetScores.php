@@ -3,10 +3,10 @@
 namespace Sports\TestHelper;
 
 use Sports\Poule;
-use Sports\Game;
 use Sports\Place;
-use Sports\Game\Place as GamPlace;
-use Sports\Game\Score as GameScore;
+use Sports\Game\Against as AgainstGame;
+use Sports\Game\Place\Against as AgainstGamPlace;
+use Sports\Score\Against as AgainstGameScore;
 use Sports\State;
 
 trait SetScores {
@@ -14,14 +14,14 @@ trait SetScores {
     {
         $homePlace = $poule->getPlace($homePlaceNr);
         $awayPlace = $poule->getPlace($awayPlaceNr);
-        $foundGames = $poule->getGames()->filter(function (Game $game) use ($homePlace, $awayPlace) {
-            $homePlaces = $game->getPlaces(Game::HOME)->map(
-                function (GamPlace $gamePlace): Place {
+        $foundGames = $poule->getGames()->filter(function (AgainstGame $game) use ($homePlace, $awayPlace) {
+            $homePlaces = $game->getPlaces(AgainstGame::HOME)->map(
+                function (AgainstGamPlace $gamePlace): Place {
                     return $gamePlace->getPlace();
                 }
             );
-            $awayPlaces = $game->getPlaces(Game::AWAY)->map(
-                function (GamPlace $gamePlace): Place {
+            $awayPlaces = $game->getPlaces(AgainstGame::AWAY)->map(
+                function (AgainstGamPlace $gamePlace): Place {
                     return $gamePlace->getPlace();
                 }
             );
@@ -49,10 +49,10 @@ trait SetScores {
             return ($homePlacesHasHomePlace && $awayPlacesHasAwayPlace) || ($homePlacesHasAwayPlace && $awayPlacesHasHomePlace);
         });
         $foundGame = $foundGames->first();
-        $newHomeGoals = $foundGame->getHomeAway($homePlace) === Game::HOME ? $homeGoals : $awayGoals;
-        $newAwayGoals = $foundGame->getHomeAway($awayPlace) === Game::AWAY ? $awayGoals : $homeGoals;
+        $newHomeGoals = $foundGame->getHomeAway($homePlace) === AgainstGame::HOME ? $homeGoals : $awayGoals;
+        $newAwayGoals = $foundGame->getHomeAway($awayPlace) === AgainstGame::AWAY ? $awayGoals : $homeGoals;
 
-        $foundGame->getScores()->add(new GameScore($foundGame, $newHomeGoals, $newAwayGoals, Game::PHASE_REGULARTIME));
+        $foundGame->getScores()->add(new AgainstGameScore($foundGame, $newHomeGoals, $newAwayGoals, AgainstGame::PHASE_REGULARTIME));
         $foundGame->setState($state !== null ? $state : State::Finished);
     }
 }

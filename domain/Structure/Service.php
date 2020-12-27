@@ -3,6 +3,7 @@
 namespace Sports\Structure;
 
 use \Doctrine\Common\Collections\ArrayCollection;
+use Exception;
 use Sports\Round;
 use Sports\Round\Number as RoundNumber;
 use Sports\Structure as StructureBase;
@@ -23,14 +24,11 @@ use SportsHelpers\PouleStructure;
 
 class Service
 {
-    /**
-     * @var PlanningConfigService
-     */
-    private $planningConfigService;
+    private PlanningConfigService $planningConfigService;
     /**
      * @var array|PlaceRange[]
      */
-    private $placeRanges;
+    private array $placeRanges;
 
     public const DEFAULTNROFPLACES = 5;
 
@@ -64,7 +62,7 @@ class Service
         // console.log('removePoulePlace for round ' + round.getNumberAsValue());
         $nrOfPlaces = $round->getNrOfPlaces();
         if ($nrOfPlaces === $round->getNrOfPlacesChildren()) {
-            throw new \Exception(
+            throw new Exception(
                 'de deelnemer kan niet verwijderd worden, omdat alle deelnemer naar de volgende ronde gaan',
                 E_ERROR
             );
@@ -72,7 +70,7 @@ class Service
         $newNrOfPlaces = $nrOfPlaces - 1;
         $this->checkRanges($newNrOfPlaces);
         if (($newNrOfPlaces / $round->getPoules()->count()) < 2) {
-            throw new \Exception(
+            throw new Exception(
                 'Er kan geen deelnemer verwijderd worden. De minimale aantal deelnemers per poule is 2.',
                 E_ERROR
             );
@@ -104,13 +102,13 @@ class Service
     {
         $poules = $round->getPoules();
         if ($poules->count() <= 1) {
-            throw new \Exception('er moet minimaal 1 poule overblijven', E_ERROR);
+            throw new Exception('er moet minimaal 1 poule overblijven', E_ERROR);
         }
         $lastPoule = $poules[$poules->count() - 1];
         $newNrOfPlaces = $round->getNrOfPlaces() - ($modifyNrOfPlaces ? $lastPoule->getPlaces()->count() : 0);
 
         if ($newNrOfPlaces < $round->getNrOfPlacesChildren()) {
-            throw new \Exception(
+            throw new Exception(
                 'de poule kan niet verwijderd worden, omdat er te weinig deelnemers overblijven om naar de volgende ronde gaan',
                 E_ERROR
             );
@@ -172,7 +170,7 @@ class Service
     {
         if ($round->getBorderQualifyGroup($winnersOrLosers) === null) {
             if ($nrOfQualifiers < 2) {
-                throw new \Exception("Voeg miniaal 2 gekwalificeerden toe", E_ERROR);
+                throw new Exception("Voeg miniaal 2 gekwalificeerden toe", E_ERROR);
             }
             $nrOfQualifiers--;
         }
@@ -187,7 +185,7 @@ class Service
         $placesToAdd = ($nrOfPlaces === 0 ? 2 : 1);
 
         if (($round->getNrOfPlacesChildren() + $placesToAdd) > $round->getNrOfPlaces()) {
-            throw new \Exception(
+            throw new Exception(
                 'er mogen maximaal ' . $round->getNrOfPlacesChildren() . ' deelnemers naar de volgende ronde',
                 E_ERROR
             );
@@ -244,7 +242,7 @@ class Service
     public function splitQualifyGroup(QualifyGroup $qualifyGroup, HorizontalPoule $pouleOne, HorizontalPoule $pouleTwo)
     {
         if (!$this->isQualifyGroupSplittable($pouleOne, $pouleTwo)) {
-            throw new \Exception('de kwalificatiegroepen zijn niet splitsbaar', E_ERROR);
+            throw new Exception('de kwalificatiegroepen zijn niet splitsbaar', E_ERROR);
         }
         $round = $qualifyGroup->getRound();
 
@@ -274,7 +272,7 @@ class Service
     public function mergeQualifyGroups(QualifyGroup $qualifyGroupOne, QualifyGroup $qualifyGroupTwo)
     {
         if (!$this->areQualifyGroupsMergable($qualifyGroupOne, $qualifyGroupTwo)) {
-            throw new \Exception('de kwalificatiegroepen zijn niet te koppelen', E_ERROR);
+            throw new Exception('de kwalificatiegroepen zijn niet te koppelen', E_ERROR);
         }
         $round = $qualifyGroupOne->getRound();
         $winnersOrLosers = $qualifyGroupOne->getWinnersOrLosers();
@@ -446,7 +444,7 @@ class Service
         }
 
         if ((($nrOfPlaces / $nrOfPoules) < 2)) {
-            throw new \Exception('De minimale aantal deelnemers per poule is 2.', E_ERROR);
+            throw new Exception('De minimale aantal deelnemers per poule is 2.', E_ERROR);
         }
         $round->getPoules()->clear();
 
@@ -482,17 +480,17 @@ class Service
                     return;
                 }
                 $pouleStructure = new BalancedPouleStructure($nrOfPlaces, $nrOfPoules);
-                $flooredNrOfPlacesPerPoule = $pouleStructure->getNrOfPlacesPerPoule(true);
+                $flooredNrOfPlacesPerPoule = $pouleStructure->getRoundedNrOfPlacesPerPoule(true);
                 if ($flooredNrOfPlacesPerPoule < $placeRange->getPlacesPerPouleRange()->min) {
-                    throw new \Exception(
+                    throw new Exception(
                         'er moeten minimaal ' . $placeRange->getPlacesPerPouleRange(
                         )->min . ' deelnemers per poule zijn',
                         E_ERROR
                     );
                 }
-                $ceiledNrOfPlacesPerPoule = $pouleStructure->getNrOfPlacesPerPoule(false);
+                $ceiledNrOfPlacesPerPoule = $pouleStructure->getRoundedNrOfPlacesPerPoule(false);
                 if ($ceiledNrOfPlacesPerPoule > $placeRange->getPlacesPerPouleRange()->max) {
-                    throw new \Exception(
+                    throw new Exception(
                         'er mogen maximaal ' . $placeRange->getPlacesPerPouleRange(
                         )->max . ' deelnemers per poule zijn',
                         E_ERROR
@@ -501,7 +499,7 @@ class Service
                 return;
             }
         }
-        throw new \Exception(
+        throw new Exception(
             'het aantal deelnemers is kleiner dan het minimum of groter dan het maximum', E_ERROR
         );
     }
