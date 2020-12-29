@@ -9,10 +9,6 @@ use SportsHelpers\Identifiable;
 
 class ScoreConfig extends Identifiable
 {
-    /**
-     * @var int
-     */
-    protected $id;
     protected $sportDep;
     protected CompetitionSport $competitionSport;
     /**

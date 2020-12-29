@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Sports\Round;
 
+use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\PersistentCollection;
@@ -12,6 +13,7 @@ use Sports\Game as GameBase;
 use Sports\Poule;
 use Sports\Competition\Sport as CompetitionSport;
 use Sports\Sport\ScoreConfig as SportScoreConfig;
+use Sports\Sport\GameAmountConfig as SportGameAmountConfig;
 use Sports\Qualify\Config as QualifyConfig;
 use Sports\Planning\Config as PlanningConfig;
 use Sports\Round;
@@ -54,6 +56,10 @@ class Number extends Identifiable
      */
     protected $qualifyConfigs;
     /**
+     * @var SportGameAmountConfig[] | ArrayCollection
+     */
+    protected $sportGameAmountConfigs;
+    /**
      * @var SportScoreConfig[] | ArrayCollection
      */
     protected $sportScoreConfigs;
@@ -69,6 +75,7 @@ class Number extends Identifiable
         $this->number = $previous === null ? 1 : $previous->getNumber() + 1;
         $this->qualifyConfigs = new ArrayCollection();
         $this->sportScoreConfigs = new ArrayCollection();
+        $this->sportGameAmountConfigs = new ArrayCollection();
         $this->hasPlanning = false;
     }
 
@@ -320,7 +327,7 @@ class Number extends Identifiable
     public function getSportConfigs(): array
     {
         return $this->getCompetition()->getSports()->map( function (CompetitionSport $competitionSport ): SportConfig {
-            $gameAmountConfig = $this->getValidGameAmountConfig($competitionSport);
+            $gameAmountConfig = $this->getValidSportGameAmountConfig($competitionSport);
             return $competitionSport->createConfig( $gameAmountConfig->getAmount() );
         })->toArray();
     }
@@ -339,6 +346,46 @@ class Number extends Identifiable
             return $competitionSport->getSport() === $sport;
         });
         return $filtered->count() === 1 ? $filtered->first() : null;
+    }
+
+    /**
+     * @return ArrayCollection | SportGameAmountConfig[]
+     */
+    public function getSportGameAmountConfigs()
+    {
+        return $this->sportGameAmountConfigs;
+    }
+
+    public function getSportGameAmountConfig(CompetitionSport $competitionSport): ?SportGameAmountConfig
+    {
+        $sportGameAmountConfigs = $this->sportGameAmountConfigs->filter(function (SportGameAmountConfig $sportGameAmountConfigIt) use ($competitionSport): bool {
+            return $sportGameAmountConfigIt->getCompetitionSport() === $competitionSport;
+        });
+        if ($sportGameAmountConfigs->count() === 1) {
+            return $sportGameAmountConfigs->first();
+        }
+        return null;
+    }
+
+    public function getValidSportGameAmountConfig(CompetitionSport $competitionSport): SportGameAmountConfig
+    {
+        $sportGameAmountConfig = $this->getSportGameAmountConfig($competitionSport);
+        if ($sportGameAmountConfig !== null) {
+            return $sportGameAmountConfig;
+        }
+        return $this->getPrevious()->getValidSportGameAmountConfig($competitionSport);
+    }
+
+    /**
+     * @return array|SportGameAmountConfig[]
+     */
+    public function getValidSportGameAmountConfigs(): array
+    {
+        return $this->getCompetitionSports()->map(
+            function (CompetitionSport $competitionSport): SportGameAmountConfig {
+                return $this->getValidSportGameAmountConfig($competitionSport);
+            }
+        )->toArray();
     }
 
     /**
@@ -431,14 +478,14 @@ class Number extends Identifiable
         )->toArray();
     }
 
-    public function getFirstStartDateTime(): \DateTimeImmutable
+    public function getFirstStartDateTime(): DateTimeImmutable
     {
         $games = $this->getGames(GameBase::ORDER_BY_BATCH);
         $leastRecentGame = reset($games);
         return $leastRecentGame->getStartDateTime();
     }
 
-    public function getLastStartDateTime(): \DateTimeImmutable
+    public function getLastStartDateTime(): DateTimeImmutable
     {
         $games = $this->getGames(GameBase::ORDER_BY_BATCH);
         $mostRecentGame = end($games);

@@ -6,4 +6,3 @@
 /tests/.phpunit.result.cache
 /tests/codecoverage/
 /.php_cs.cache
-.phpunit.result.cache

@@ -4,7 +4,9 @@ namespace Sports\Tests\Round\Number;
 
 use \Exception;
 use League\Period\Period;
+use Sports\Output\AgainstGame as AgainstGameOutput;
 use Sports\Game\Against as AgainstGame;
+use Sports\Place;
 use Sports\Poule;
 use SportsPlanning\Input as PlanningInput;
 use Sports\TestHelper\CompetitionCreator;
@@ -168,12 +170,24 @@ class GamesValidatorTest extends \PHPUnit\Framework\TestCase
 
         $firstPoule = $firstRoundNumber->getRounds()->first()->getPoule(1);
 
+//        $outputGame = new AgainstGameOutput();
+//        $games = $firstRoundNumber->getGames(AgainstGame::ORDER_BY_BATCH);
+//        foreach( $games as $gameIt ) {
+//            $outputGame->output( $gameIt );
+//        }
+
         /** @var AgainstGame $game */
         foreach ($firstPoule->getGames() as $game) {
             if ($game->getReferee()->getPriority() === 1 && $game->getBatchNr() <= 3) {
                 $game->setReferee(null);
             }
         }
+
+//        $outputGame = new AgainstGameOutput();
+//        $games = $firstRoundNumber->getGames(AgainstGame::ORDER_BY_BATCH);
+//        foreach( $games as $gameIt ) {
+//            $outputGame->output( $gameIt );
+//        }
 
         $gamesValidator = new GamesValidator();
         self::expectException(Exception::class);
@@ -193,8 +207,8 @@ class GamesValidatorTest extends \PHPUnit\Framework\TestCase
 
         (new GamesCreator())->createStructureGames( $structure );
 
-//        $outputGame = new \Sports\Output\Game();
-//        $games = $firstRoundNumber->getGames(Game::ORDER_BY_BATCH);
+//        $outputGame = new AgainstGameOutput();
+//        $games = $firstRoundNumber->getGames(AgainstGame::ORDER_BY_BATCH);
 //        foreach( $games as $gameIt ) {
 //            $outputGame->output( $gameIt );
 //        }
@@ -204,7 +218,16 @@ class GamesValidatorTest extends \PHPUnit\Framework\TestCase
 
         /** @var AgainstGame $game */
         $game = $firstPoule->getGames()->first();
-        $game->setRefereePlace($firstPoule->getPlace(3));
+        $availablePlaces = $firstPoule->getPlaces()->filter( function( Place $place ) use ($game): bool {
+            return !$game->isParticipating($place) && $place !== $game->getRefereePlace();
+        });
+        $game->setRefereePlace( $availablePlaces->first() );
+
+//        $outputGame = new AgainstGameOutput();
+//        $games = $firstRoundNumber->getGames(AgainstGame::ORDER_BY_BATCH);
+//        foreach( $games as $gameIt ) {
+//            $outputGame->output( $gameIt );
+//        }
 
         $gamesValidator = new GamesValidator();
         self::expectException(Exception::class);

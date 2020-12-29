@@ -4,8 +4,10 @@ namespace Sports\Competition\Sport;
 
 use Sports\Sport;
 use Sports\Sport\ScoreConfig as SportScoreConfig;
+use Sports\Sport\GameAmountConfig as SportGameAmountConfig;
 use Sports\Qualify\Config as QualifyConfig;
 use Sports\Sport\ScoreConfig\Service as ScoreConfigService;
+use Sports\Sport\GameAmountConfig\Service as GameAmountConfigService;
 use Sports\Qualify\Config\Service as QualifyConfigService;
 use Sports\Competition;
 use Sports\Competition\Sport as CompetitionSport;
@@ -14,11 +16,13 @@ use Sports\Structure;
 class Service
 {
     protected ScoreConfigService $scoreConfigService;
+    protected GameAmountConfigService $gameAmountConfigService;
     protected QualifyConfigService $qualifyConfigService;
 
     public function __construct()
     {
         $this->scoreConfigService = new ScoreConfigService();
+        $this->gameAmountConfigService = new GameAmountConfigService();
         $this->qualifyConfigService = new QualifyConfigService();
     }
 
@@ -31,8 +35,6 @@ class Service
         return $competitionSport;
     }
 
-
-
     public function copy(Competition $newCompetition, Sport $sport): CompetitionSport
     {
         return new CompetitionSport($sport, $newCompetition);
@@ -44,6 +46,7 @@ class Service
         while ($roundNumber !== null) {
             if ($roundNumber->hasPrevious() === false || $roundNumber->getSportScoreConfigs()->count() > 0) {
                 $this->scoreConfigService->createDefault($competitionSport, $roundNumber);
+                $this->gameAmountConfigService->createDefault($competitionSport, $roundNumber);
                 $this->qualifyConfigService->createDefault($competitionSport, $roundNumber);
             }
             $roundNumber = $roundNumber->getNext();
@@ -67,8 +70,20 @@ class Service
                     return $scoreConfigs->removeElement($scoreConfigIt);
                 }
             );
+
+            $gameAmountConfigs = $roundNumber->getSportGameAmountConfigs();
+            $gameAmountConfigs->filter(
+                function (SportGameAmountConfig $gameAmountConfigIt) use ($competitionSport): bool {
+                    return $gameAmountConfigIt->getCompetitionSport() === $competitionSport;
+                }
+            )->forAll(
+                function (SportGameAmountConfig $gameAmountConfigIt) use ($gameAmountConfigs): bool {
+                    return $gameAmountConfigs->removeElement($gameAmountConfigIt);
+                }
+            );
+            
             $qualifyConfigs = $roundNumber->getQualifyConfigs();
-            $scoreConfigs->filter(
+            $qualifyConfigs->filter(
                 function (QualifyConfig $qualifyConfigIt) use ($competitionSport): bool {
                     return $qualifyConfigIt->getCompetitionSport() === $competitionSport;
                 }

@@ -194,7 +194,7 @@ class PlanningAssigner
     {
         $this->refereeMap = [];
         foreach ($planning->getReferees() as $planningReferee) {
-            $referee = $roundNumber->getCompetition()->getReferee($planningReferee->getPriority());
+            $referee = $roundNumber->getCompetition()->getReferee($planningReferee->getNumber());
             $this->refereeMap[$planningReferee->getNumber()] = $referee;
         }
     }

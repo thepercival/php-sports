@@ -103,8 +103,8 @@ class Service
             }
             return new AgainstScore($home, $away);
         }
-        $home = $game->getScores()->first()->getHome();
-        $away = $game->getScores()->first()->getAway();
+        $home = $game->getScores()->first()->getHomeScore();
+        $away = $game->getScores()->first()->getAwayScore();
         return new AgainstScore($home, $away);
     }
 

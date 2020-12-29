@@ -29,7 +29,7 @@ class AgainstGame extends OutputBase
      */
     private $sportScoreConfigService;
 
-    public function __construct(PlaceLocationMap $placeLocationMap, LoggerInterface $logger = null)
+    public function __construct(PlaceLocationMap $placeLocationMap = null, LoggerInterface $logger = null)
     {
         parent::__construct($logger);
         $this->nameService = new NameService();
