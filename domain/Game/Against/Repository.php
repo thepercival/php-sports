@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Sports\Game\Against;
 
-use Doctrine\ORM\QueryBuilder;
 use Sports\Game\Repository as GameRepository;
 use Sports\Competitor;
 use Sports\Game\Against as AgainstGame;
@@ -12,6 +11,11 @@ use League\Period\Period;
 
 class Repository extends GameRepository
 {
+    public function find($id, $lockMode = null, $lockVersion = null): ?AgainstGame
+    {
+        return $this->_em->find($this->_entityName, $id, $lockMode, $lockVersion);
+    }
+
     public function findOneByExt(Competitor $homeCompetitor, Competitor $awayCompetitor, Period $period): ?AgainstGame
     {
         $exprHome = $this->getEM()->getExpressionBuilder();

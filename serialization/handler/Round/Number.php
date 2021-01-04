@@ -13,9 +13,15 @@ use Sports\Round\Number as RoundNumber;
 use Sports\Sport;
 use Sports\Sport\ScoreConfig as SportScoreConfig;
 use Sports\Competition\Sport as CompetitionSport;
+use SportsHelpers\SportConfig;
 
 class Number implements SubscribingHandlerInterface
 {
+    /**
+     * @var array | CompetitionSport[]
+     */
+    private static $competitionSports  = [];
+
     public static function getSubscribingMethods()
     {
         return [
@@ -70,10 +76,12 @@ class Number implements SubscribingHandlerInterface
 
         if (array_key_exists("sportScoreConfigs", $arrRoundNumber)) {
             foreach ($arrRoundNumber["sportScoreConfigs"] as $arrSportScoreConfig) {
-                $competitionSport = $this->createCompetitionSport($roundNumber->getCompetition(), $arrSportScoreConfig["sport"]);
+                $competitionSport = $this->createCompetitionSport($roundNumber->getCompetition(), (int) $arrSportScoreConfig["competitionSportId"]);
                 $this->createSportScoreConfig($arrSportScoreConfig, $competitionSport, $roundNumber);
             }
         }
+        // qualifyAgainst en gameAmountConfigs ook toevoegen!!!
+
         if (array_key_exists("next", $arrRoundNumber) && $arrRoundNumber["next"] !== null) {
             $arrRoundNumber["next"]["previous"] = $roundNumber;
             $metadataNext = new StaticPropertyMetadata('Sports\Round\Number', "next", $arrRoundNumber["next"]);
@@ -87,16 +95,32 @@ class Number implements SubscribingHandlerInterface
         return $roundNumber;
     }
 
-    protected function createCompetitionSport(Competition $competition, array $arrSport): CompetitionSport
+    protected function createCompetitionSport(Competition $competition, int $competitionSportId): CompetitionSport
     {
-        $sport = new Sport(
-            $arrSport["name"],
-            $arrSport["team"],
-            $arrSport["nrOfGamePlaces"],
-            $arrSport["againstEachOther"]
-        );
-        $sport->setCustomId($arrSport["customId"]);
-        return new CompetitionSport( $sport, $competition );
+        if (array_key_exists($competitionSportId, self::$competitionSports)) {
+            return self::$competitionSports[$competitionSportId];
+        }
+        $getCompetitionSport = function (int $competitionSportId) use ($competition): ?CompetitionSport {
+            foreach ($competition->getSports() as $competitionSport) {
+                if ($competitionSport->getId() == $competitionSportId) {
+                    return $competitionSport;
+                }
+            }
+            return null;
+        };
+        $competitionSport = $getCompetitionSport($competitionSportId);
+        if ($competitionSport === null) {
+            $sport = new Sport(
+                "dummy",
+                true,
+                2,
+                SportConfig::GAMEMODE_AGAINST
+            );
+            $competitionSport = new CompetitionSport($sport, $competition);
+            $competitionSport->setId($competitionSportId);
+            self::$competitionSports[$competitionSportId] = $competitionSport;
+        }
+        return $competitionSport;
     }
 
     protected function createSportScoreConfig(array $arrConfig, CompetitionSport $competitionSport, RoundNumber $roundNumber, SportScoreConfig $previous = null)

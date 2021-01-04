@@ -4,9 +4,7 @@ Sports\Game\Place:
   access_type: public_method
 
   properties:
-    id:
-      type: integer
-    homeaway:
+    homeAway:
       type: boolean
   virtual_properties:
     getPlaceNr:

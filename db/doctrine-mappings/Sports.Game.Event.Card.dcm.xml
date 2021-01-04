@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
   <entity name="Sports\Game\Event\Card" table="gameCardEvents" repository-class="Sports\Game\Event\Card\Repository">
-    <id name="id" type="integer" column="id">
-      <generator strategy="AUTO"/>
-    </id>
     <field name="minute" column="minute" type="smallint" nullable="false" unique="false"/>
     <field name="type" column="type" type="smallint" nullable="false" unique="false"/>
     <many-to-one field="gameParticipation" target-entity="Sports\Game\Participation" inversed-by="cards">

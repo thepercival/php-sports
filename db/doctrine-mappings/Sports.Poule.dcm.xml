@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
   <entity name="Sports\Poule" table="poules" repository-class="Sports\Poule\Repository">
-    <id name="id" type="integer" column="id">
-      <generator strategy="AUTO"/>
-    </id>
     <field name="name" column="name" type="string" length="10" nullable="true" unique="false"/>
     <field name="number" column="number" type="smallint" nullable="false" unique="false"/>
     <many-to-one field="round" target-entity="Sports\Round" inversed-by="poules">

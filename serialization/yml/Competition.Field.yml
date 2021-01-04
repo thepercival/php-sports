@@ -1,14 +1,10 @@
-Sports\Field:
+Sports\Competition\Field:
   exclusion_policy: ALL
   exclude: false
   access_type: public_method
 
   properties:
-    id:
-      type: integer
     priority:
       type: integer
     name:
       type: string
-    sport:
-      type: Sports\Sport

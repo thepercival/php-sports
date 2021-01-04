@@ -27,7 +27,7 @@
     </many-to-one>
     <many-to-one field="sportDep" target-entity="Sports\Sport">
       <join-columns>
-        <join-column name="sportDepId" referenced-column-name="id" nullable="true" on-delete="CASCADE"/>
+        <join-column name="sportId" referenced-column-name="id" nullable="true" on-delete="CASCADE"/>
       </join-columns>
     </many-to-one>
     <unique-constraints>

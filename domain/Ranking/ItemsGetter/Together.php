@@ -16,7 +16,7 @@ class Together extends ItemsGetterBase
 {
     public function __construct(Round $round, int $gameStates)
     {
-        parent::__construct($round, $gameStates );
+        parent::__construct($round, $gameStates);
     }
 
     /**
@@ -38,7 +38,7 @@ class Together extends ItemsGetterBase
                 continue;
             }
             $useSubScore = $game->getSportScoreConfig()->useSubScore();
-            foreach( $game->getPlaces() as $gamePlace ) {
+            foreach ($game->getPlaces() as $gamePlace) {
                 $finalScore = $this->sportScoreConfigService->getFinalTogetherScore($gamePlace);
                 $foundItems = array_filter(
                     $items,
@@ -52,7 +52,7 @@ class Together extends ItemsGetterBase
                 $item->addGame();
                 $item->addPoints($finalScore);
                 $item->addScored($finalScore);
-                if( $useSubScore ) {
+                if ($useSubScore) {
                     $finalSubScore = $this->sportScoreConfigService->getFinalTogetherSubScore($gamePlace);
                     $item->addSubScored($finalSubScore);
                 }
@@ -91,6 +91,4 @@ class Together extends ItemsGetterBase
 //        }
 //        return $this->getGameScorePart($finalScore, $scoredReceived === AgainstScore::SCORED ? $homeAway : !$homeAway);
 //    }
-
-
 }

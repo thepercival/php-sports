@@ -1,10 +1,12 @@
 <?php
+declare(strict_types=1);
 
 namespace Sports;
 
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping\ClassMetadata;
+use Exception;
 
 class Repository extends EntityRepository
 {
@@ -18,8 +20,8 @@ class Repository extends EntityRepository
         try {
             $this->_em->persist($object);
             $this->_em->flush();
-        } catch (\Exception $e) {
-            throw new \Exception($e->getMessage(), E_ERROR);
+        } catch (Exception $e) {
+            throw new Exception($e->getMessage(), E_ERROR);
         }
 
         return $object;

@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
   <entity name="Sports\Competition" table="competitions" repository-class="Sports\Competition\Repository">
-    <id name="id" type="integer" column="id">
-      <generator strategy="AUTO"/>
-    </id>
     <field name="ruleSet" column="ruleSet" type="smallint" nullable="false" unique="false"/>
     <field name="state" column="state" type="smallint" nullable="false" unique="false">
       <options>
@@ -16,7 +13,7 @@
         <cascade-persist/>
       </cascade>
       <join-columns>
-        <join-column name="leagueid" referenced-column-name="id" nullable="false" on-delete="CASCADE"/>
+        <join-column name="leagueId" referenced-column-name="id" nullable="false" on-delete="CASCADE"/>
       </join-columns>
     </many-to-one>
     <many-to-one field="season" target-entity="Sports\Season" inversed-by="competitions">
@@ -24,7 +21,7 @@
         <cascade-persist/>
       </cascade>
       <join-columns>
-        <join-column name="seasonid" referenced-column-name="id" nullable="false" on-delete="RESTRICT"/>
+        <join-column name="seasonId" referenced-column-name="id" nullable="false" on-delete="RESTRICT"/>
       </join-columns>
     </many-to-one>
     <one-to-many field="roundNumbers" target-entity="Sports\Round\Number" mapped-by="competition" fetch="EXTRA_LAZY" >
@@ -45,14 +42,14 @@
         <order-by-field name="priority" direction="ASC"/>
       </order-by>
     </one-to-many>
-    <one-to-many field="sportConfigs" target-entity="Sports\Sport\Config" mapped-by="competition" fetch="EXTRA_LAZY" >
+    <one-to-many field="sports" target-entity="Sports\Competition\Sport" mapped-by="competition" fetch="EXTRA_LAZY" >
       <cascade>
         <cascade-persist/>
         <cascade-remove/>
       </cascade>
     </one-to-many>
     <unique-constraints>
-      <unique-constraint columns="leagueid,seasonid" name="main_u_idx" />
+      <unique-constraint columns="leagueId,seasonId" name="main_u_idx" />
     </unique-constraints>
   </entity>
 </doctrine-mapping>

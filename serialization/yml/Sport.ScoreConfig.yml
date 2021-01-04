@@ -1,11 +1,7 @@
 Sports\Sport\ScoreConfig:
   exclusion_policy: ALL
   exclude: false
-  access_type: public_method
-
   properties:
-    id:
-      type: integer
     direction:
       type: integer
     maximum:
@@ -14,5 +10,9 @@ Sports\Sport\ScoreConfig:
       type: boolean
     next:
       type: Sports\Sport\ScoreConfig
-    sport:
-      type: Sports\Sport
+    competitionSportId:
+      type: integer
+  virtual_properties:
+    getCompetitionSportId:
+      type: integer
+      serialized_name: competitionSportId

@@ -9,14 +9,10 @@ use Doctrine\Common\Collections\Collection;
 use League\Period\Period;
 use Sports\Competition\Field;
 use Sports\Competition\Referee;
-use Sports\Competitor\Team as TeamCompetitor;
-use Sports\Game\Event\Card as CardEvent;
-use Sports\Game\Event\Goal as GoalEvent;
-use Sports\Game\Event\Substitution as SubstitutionEvent;
 use Sports\Game\Participation;
 use Sports\Game\Place as GamePlace;
 use Sports\Planning\Config as PlanningConfig;
-use Sports\Qualify\Config as QualifyConfig;
+use Sports\Qualify\AgainstConfig as QualifyConfig;
 use Sports\Sport\ScoreConfig as SportScoreConfig;
 use Sports\Competition\Sport as CompetitionSport;
 use SportsHelpers\Identifiable;
@@ -50,10 +46,6 @@ abstract class Game extends Identifiable
      * @var GamePlace[] | Collection
      */
     protected $places;
-    /**
-     * @var Participation[] | Collection
-     */
-    protected $participations;
 
     public const PHASE_REGULARTIME = 1;
     public const PHASE_EXTRATIME = 2;
@@ -70,7 +62,6 @@ abstract class Game extends Identifiable
         $this->competitionSport = $competitionSport;
         $this->setState(State::Created);
         $this->places = new ArrayCollection();
-        $this->participations = new ArrayCollection();
     }
 
     public function getPoule(): Poule
@@ -193,161 +184,6 @@ abstract class Game extends Identifiable
         $this->fieldPriority = $fieldPriority;
     }
 
-    /**
-     * @param TeamCompetitor|null $teamCompetitor
-     * @return ArrayCollection|Collection|Participation[]
-     */
-    public function getParticipations(TeamCompetitor $teamCompetitor = null)
-    {
-        if ($teamCompetitor === null) {
-            return $this->participations;
-        }
-        return $this->getFilteredParticipations(function (Participation $participation) use ($teamCompetitor): bool {
-            return $participation->getPlayer()->getTeam() === $teamCompetitor->getTeam();
-        });
-    }
-
-    /**
-     * @param TeamCompetitor|null $teamCompetitor
-     * @return array|Participation[]
-     */
-    public function getLineup(TeamCompetitor $teamCompetitor = null): array
-    {
-        $lineupParticipations = $this->getFilteredParticipations(function (Participation $participation) use ($teamCompetitor): bool {
-            return ($teamCompetitor === null || $participation->getPlayer()->getTeam() === $teamCompetitor->getTeam())
-                && $participation->isBeginning();
-        })->toArray();
-        uasort( $lineupParticipations, function( Participation $participationA, Participation $participationB ): int {
-            if( $participationA->getPlayer()->getLine() === $participationB->getPlayer()->getLine() ) {
-                return $participationA->getEndMinute() > $participationB->getEndMinute() ? -1 : 1;
-            }
-            return $participationA->getPlayer()->getLine() > $participationB->getPlayer()->getLine() ? -1 : 1;
-        });
-        return $lineupParticipations;
-    }
-
-    /**
-     * @param TeamCompetitor|null $teamCompetitor
-     * @return array|Participation[]
-     */
-    public function getSubstitutes(TeamCompetitor $teamCompetitor = null): array
-    {
-        $substitutes = $this->getFilteredParticipations(function (Participation $participation) use ($teamCompetitor): bool {
-            return ($teamCompetitor === null || $participation->getPlayer()->getTeam() === $teamCompetitor->getTeam() )
-                && !$participation->isBeginning();
-        })->toArray();
-        uasort( $substitutes, function( Participation $participationA, Participation $participationB ): int {
-            return $participationA->getBeginMinute() < $participationB->getBeginMinute() ? -1 : 1;
-        });
-        return $substitutes;
-    }
-
-    /**
-     * @param TeamCompetitor|null $teamCompetitor
-     * @return array|Participation[]
-     */
-    public function getSubstituted(TeamCompetitor $teamCompetitor = null): array
-    {
-        $substituted = $this->getFilteredParticipations(function (Participation $participation) use ($teamCompetitor): bool {
-            return ($teamCompetitor === null || $participation->getPlayer()->getTeam() === $teamCompetitor->getTeam() )
-                && $participation->isSubstituted();
-        })->toArray();
-        uasort( $substituted, function( Participation $participationA, Participation $participationB ): int {
-            return $participationA->getEndMinute() < $participationB->getEndMinute() ? -1 : 1;
-        });
-        return $substituted;
-    }
-
-    public function getParticipation(Person $person ): ?Participation
-    {
-        $filtered = $this->getFilteredParticipations(function (Participation $participation) use ($person): bool {
-            return $participation->getPlayer()->getPerson() === $person;
-        });
-        return $filtered->count() === 0 ? null : $filtered->first();
-    }
-
-    /**
-     * @param callable $filter
-     * @return ArrayCollection|Collection|Participation[]
-     */
-    protected function getFilteredParticipations( callable $filter )
-    {
-        return $this->participations->filter( $filter );
-    }
-
-    /**
-     * @param TeamCompetitor|null $teamCompetitor
-     * @return array|GoalEvent[]
-     */
-    public function getGoalEvents(TeamCompetitor $teamCompetitor = null): array
-    {
-        $goalEvents = [];
-        foreach( $this->getParticipations($teamCompetitor) as $participation ) {
-            $goalEvents = array_merge( $goalEvents, $participation->getGoals()->toArray() );
-        }
-        return $goalEvents;
-    }
-
-    /**
-     * @param TeamCompetitor|null $teamCompetitor
-     * @return array|CardEvent[]
-     */
-    public function getCardEvents(TeamCompetitor $teamCompetitor = null): array
-    {
-        $cardEvents = [];
-        foreach( $this->getParticipations($teamCompetitor) as $participation ) {
-            $cardEvents = array_merge( $cardEvents, $participation->getCards()->toArray() );
-        }
-        return $cardEvents;
-    }
-
-    /**
-     * @param TeamCompetitor|null $teamCompetitor
-     * @return array|SubstitutionEvent[]
-     */
-    public function getSubstituteEvents(TeamCompetitor $teamCompetitor = null): array
-    {
-        $substituteEvents = [];
-        $substitutes = $this->getSubstitutes($teamCompetitor);
-        $fncRemoveSubstitute = function ( $minute ) use(&$substitutes) : ?Participation {
-            foreach( $substitutes as $substitute ) {
-                if( $substitute->getBeginMinute() === $minute ) {
-                    $substitutes = array_udiff( $substitutes, [$substitute],
-                        function (Participation $a, Participation $b): int {
-                            return $a === $b ? 0 : 1;
-                        } );
-                    return $substitute;
-                }
-            }
-            return null;
-        };
-        foreach( $this->getSubstituted($teamCompetitor) as $substituted ) {
-            $substitute = $fncRemoveSubstitute( $substituted->getEndMinute() );
-            if( $substitute === null ) {
-                continue;
-            }
-            $substituteEvents[] = new SubstitutionEvent( $substitute->getBeginMinute(), $substituted, $substitute );
-        }
-        return $substituteEvents;
-    }
-
-    /**
-     * @param TeamCompetitor|null $teamCompetitor
-     * @return array|GoalEvent[]|CardEvent[]
-     */
-    public function getEvents(TeamCompetitor $teamCompetitor = null): array
-    {
-        $events = array_merge(
-            $this->getGoalEvents($teamCompetitor),
-            $this->getCardEvents($teamCompetitor),
-            $this->getSubstituteEvents($teamCompetitor)
-        );
-        uasort( $events, function ( $eventA, $eventB ): int {
-            return $eventA->getMinute() < $eventB->getMinute() ? -1 : 1;
-        });
-        return $events;
-    }
-
     public function getPlanningConfig(): PlanningConfig
     {
         return $this->getRound()->getNumber()->getValidPlanningConfig();
@@ -355,16 +191,16 @@ abstract class Game extends Identifiable
 
     public function getSportScoreConfig(): SportScoreConfig
     {
-        return $this->getRound()->getNumber()->getValidSportScoreConfig($this->getCompetitionSport() );
+        return $this->getRound()->getNumber()->getValidSportScoreConfig($this->getCompetitionSport());
     }
 
     public function getQualifyConfig(): QualifyConfig
     {
-        return $this->getRound()->getNumber()->getValidQualifyConfig($this->getCompetitionSport() );
+        return $this->getRound()->getNumber()->getValidQualifyConfig($this->getCompetitionSport());
     }
 
     public function getPeriod(): Period
     {
-        return new Period( $this->getStartDateTime(), $this->getEndDateTime() );
+        return new Period($this->getStartDateTime(), $this->getEndDateTime());
     }
 }

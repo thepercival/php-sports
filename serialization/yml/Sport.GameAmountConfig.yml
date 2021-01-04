@@ -1,0 +1,10 @@
+Sports\Sport\GameAmountConfig:
+  exclusion_policy: ALL
+  exclude: false
+  properties:
+    amount:
+      type: integer
+  virtual_properties:
+    getCompetitionSportId:
+      type: integer
+      serialized_name: competitionSportId

@@ -1,9 +1,8 @@
 Sports\Planning\Config:
   exclusion_policy: ALL
   exclude: false
-  access_type: public_method
   properties:
-    id:
+    gameMode:
       type: integer
     extension:
       type: boolean
@@ -17,9 +16,5 @@ Sports\Planning\Config:
       type: integer
     minutesBetweenGames:
       type: integer
-    teamup:
-      type: boolean
     selfReferee:
-      type: integer
-    nrOfHeadtohead:
       type: integer

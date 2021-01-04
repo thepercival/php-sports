@@ -23,6 +23,7 @@ class Field extends Identifiable implements Prioritizable
      * @var CompetitionSport
      */
     private $competitionSport;
+    private $sportConfigDep;
 
     const MIN_LENGTH_NAME = 1;
     const MAX_LENGTH_NAME = 3;

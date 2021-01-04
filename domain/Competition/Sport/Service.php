@@ -1,14 +1,15 @@
 <?php
+declare(strict_types=1);
 
 namespace Sports\Competition\Sport;
 
 use Sports\Sport;
 use Sports\Sport\ScoreConfig as SportScoreConfig;
 use Sports\Sport\GameAmountConfig as SportGameAmountConfig;
-use Sports\Qualify\Config as QualifyConfig;
+use Sports\Qualify\AgainstConfig as QualifyConfig;
 use Sports\Sport\ScoreConfig\Service as ScoreConfigService;
 use Sports\Sport\GameAmountConfig\Service as GameAmountConfigService;
-use Sports\Qualify\Config\Service as QualifyConfigService;
+use Sports\Qualify\AgainstConfig\Service as QualifyConfigService;
 use Sports\Competition;
 use Sports\Competition\Sport as CompetitionSport;
 use Sports\Structure;
@@ -82,7 +83,7 @@ class Service
                 }
             );
             
-            $qualifyConfigs = $roundNumber->getQualifyConfigs();
+            $qualifyConfigs = $roundNumber->getQualifyAgainstConfigs();
             $qualifyConfigs->filter(
                 function (QualifyConfig $qualifyConfigIt) use ($competitionSport): bool {
                     return $qualifyConfigIt->getCompetitionSport() === $competitionSport;

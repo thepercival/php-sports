@@ -20,14 +20,14 @@ class Sport extends SportBase
     private string $name;
     private bool $team;
     private int $customId = 0;
-    protected bool $againstEachOther;
+    protected int $gameMode;
 
-    public function __construct(string $name, bool $team, int $nrOfGamePlaces, bool $againstEachOther)
+    public function __construct(string $name, bool $team, int $nrOfGamePlaces, int $gameMode)
     {
         parent::__construct($nrOfGamePlaces);
         $this->setName($name);
         $this->team = $team;
-        $this->againstEachOther = $againstEachOther;
+        $this->gameMode = $gameMode;
     }
 
     public function getName(): string
@@ -59,8 +59,8 @@ class Sport extends SportBase
         $this->customId = $id;
     }
 
-    public function getAgainstEachOther(): bool
+    public function getGameMode(): int
     {
-        return $this->againstEachOther;
+        return $this->gameMode;
     }
 }

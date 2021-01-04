@@ -5,21 +5,18 @@ namespace Sports\Game;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Sports\Competitor\Team as TeamCompetitor;
-use Sports\Game;
 use Sports\Game\Event\Goal as GoalEvent;
 use Sports\Game\Event\Card as CardEvent;
+use Sports\Game\Against as AgainstGame;
 use Sports\Team\Player;
+use SportsHelpers\Identifiable;
 
-class Participation
+class Participation extends Identifiable
 {
     /**
-     * @var int|string
+     * @var AgainstGame
      */
-    protected $id;
-    /**
-     * @var Game
-     */
-    private $game;
+    private $againstGame;
     /**
      * @var Player
      */
@@ -41,7 +38,7 @@ class Participation
      */
     private $goalsAndAssists;
 
-    public function __construct(Game $game, Player $player, int $beginMinute, int $endMinute )
+    public function __construct(AgainstGame $game, Player $player, int $beginMinute, int $endMinute)
     {
         $this->setGame($game);
         $this->player = $player;
@@ -52,22 +49,6 @@ class Participation
     }
 
     /**
-     * @return int|string
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    /**
-     * @param int|string $id
-     */
-    public function setId($id)
-    {
-        $this->id = $id;
-    }
-
-    /**
      * @return Player
      */
     public function getPlayer()
@@ -75,23 +56,17 @@ class Participation
         return $this->player;
     }
 
-    /**
-     * @return Game
-     */
-    public function getGame()
+    public function getGame(): AgainstGame
     {
-        return $this->game;
+        return $this->againstGame;
     }
 
-    /**
-     * @param Game $game
-     */
-    protected function setGame(Game $game)
+    protected function setGame(AgainstGame $game)
     {
-        if ($this->game === null and !$game->getParticipations()->contains($this)) {
+        if (!$game->getParticipations()->contains($this)) {
             $game->getParticipations()->add($this) ;
         }
-        $this->game = $game;
+        $this->againstGame = $game;
     }
 
     public function getBeginMinute(): int
@@ -99,7 +74,7 @@ class Participation
         return $this->beginMinute;
     }
 
-    public function setBeginMinute( int $minute )
+    public function setBeginMinute(int $minute)
     {
         $this->beginMinute = $minute;
     }
@@ -114,7 +89,7 @@ class Participation
         return $this->endMinute;
     }
 
-    public function setEndMinute( int $minute )
+    public function setEndMinute(int $minute)
     {
         $this->endMinute = $minute;
     }
@@ -124,12 +99,12 @@ class Participation
         return $this->endMinute > 0;
     }
 
-    public function getCards( int $type = null ): Collection
+    public function getCards(int $type = null): Collection
     {
-        if( $type === null ) {
+        if ($type === null) {
             return $this->cards;
         }
-        return $this->cards->filter( function ( CardEvent $cardEvent ) use ($type) : bool {
+        return $this->cards->filter(function (CardEvent $cardEvent) use ($type) : bool {
             return $cardEvent->getType() === $type;
         });
     }
@@ -139,16 +114,16 @@ class Participation
         return $this->goalsAndAssists;
     }
 
-    public function getGoals( int $type = null ): Collection
+    public function getGoals(int $type = null): Collection
     {
-        return $this->goalsAndAssists->filter( function( GoalEvent $goalEvent ) use ($type): bool {
-            return $goalEvent->getGameParticipation() === $this && ( $type === null || $goalEvent->isType($type) );
+        return $this->goalsAndAssists->filter(function (GoalEvent $goalEvent) use ($type): bool {
+            return $goalEvent->getGameParticipation() === $this && ($type === null || $goalEvent->isType($type));
         });
     }
 
     public function getAssists(): Collection
     {
-        return $this->goalsAndAssists->filter( function( GoalEvent $goalEvent ): bool {
+        return $this->goalsAndAssists->filter(function (GoalEvent $goalEvent): bool {
             return $goalEvent->getAssistGameParticipation() === $this;
         });
     }

@@ -5,49 +5,21 @@ namespace Sports\Game\Event;
 use Sports\Game\Participation as GameParticipation;
 use Sports\Team;
 use Sports\Game\Event as GameEvent;
+use SportsHelpers\Identifiable;
 
-class Substitution implements GameEvent
+class Substitution extends Identifiable implements GameEvent
 {
-    /**
-     * @var int|string
-     */
-    protected $id;
-    /**
-     * @var int
-     */
-    private $minute;
-    /**
-     * @var GameParticipation
-     */
-    private $out;
-    /**
-     * @var GameParticipation
-     */
-    private $in;
+    private int $minute;
+    private GameParticipation $out;
+    private GameParticipation $in;
     
-    public function __construct( int $minute, GameParticipation $out, GameParticipation $in )
+    public function __construct(int $minute, GameParticipation $out, GameParticipation $in)
     {
         $this->minute = $minute;
         $this->out = $out;
-        $this->out->setEndMinute( $minute );
+        $this->out->setEndMinute($minute);
         $this->in = $in;
-        $this->in->setBeginMinute( $minute );
-    }
-
-    /**
-     * @return int|string
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    /**
-     * @param int|string $id
-     */
-    public function setId($id)
-    {
-        $this->id = $id;
+        $this->in->setBeginMinute($minute);
     }
 
     public function getMinute(): int
@@ -65,7 +37,8 @@ class Substitution implements GameEvent
         return $this->in;
     }
 
-    public function getTeam(): Team {
+    public function getTeam(): Team
+    {
         return $this->getOut()->getPlayer()->getTeam();
     }
 }

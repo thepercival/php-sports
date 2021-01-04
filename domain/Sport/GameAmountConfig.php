@@ -26,6 +26,11 @@ class GameAmountConfig extends Identifiable
         return $this->competitionSport;
     }
 
+    public function getCompetitionSportId(): int
+    {
+        return $this->competitionSport->getId();
+    }
+
     public function getRoundNumber(): RoundNumber
     {
         return $this->roundNumber;

@@ -102,7 +102,7 @@ class PlanningAssigner
             /** @var AgainstPlanningGamePlace $againstPlanningGamePlace */
             foreach ($planningGame->getPlaces() as $againstPlanningGamePlace) {
                 new AgainstGamePlace(
-                    $game, $this->getPlace($againstPlanningGamePlace->getPlace()), $againstPlanningGamePlace->getHomeaway()
+                    $game, $this->getPlace($againstPlanningGamePlace->getPlace()), $againstPlanningGamePlace->getHomeAway()
                 );
             }
         }

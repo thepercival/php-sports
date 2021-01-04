@@ -4,7 +4,7 @@ namespace Sports\Tests\Round\Number;
 
 use \Exception;
 use League\Period\Period;
-use Sports\Output\AgainstGame as AgainstGameOutput;
+use Sports\Output\Against as AgainstGameOutput;
 use Sports\Game\Against as AgainstGame;
 use Sports\Place;
 use Sports\Poule;

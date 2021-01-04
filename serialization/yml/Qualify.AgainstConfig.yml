@@ -1,11 +1,9 @@
-Sports\Sport\Config:
+Sports\Qualify\AgainstConfig:
   exclusion_policy: ALL
   exclude: false
   access_type: public_method
 
   properties:
-    id:
-      type: integer
     winPoints:
       type: float
     drawPoints:
@@ -18,9 +16,5 @@ Sports\Sport\Config:
       type: float
     pointsCalculation:
       type: integer
-    nrOfGamePlaces:
-      type: integer
     sport:
       type: Sports\Sport
-    fields:
-      type: ArrayCollection<Sports\Field>

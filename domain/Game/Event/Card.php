@@ -6,13 +6,10 @@ use Sports\Game\Participation as GameParticipation;
 
 use Sports\Game\Event as GameEvent;
 use Sports\Team;
+use SportsHelpers\Identifiable;
 
-class Card implements GameEvent
+class Card extends Identifiable implements GameEvent
 {
-    /**
-     * @var int|string
-     */
-    protected $id;
     /**
      * @var int
      */
@@ -31,22 +28,6 @@ class Card implements GameEvent
         $this->setGameParticipation($gameParticipation);
         $this->minute = $minute;
         $this->type = $type;
-    }
-
-    /**
-     * @return int|string
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    /**
-     * @param int|string $id
-     */
-    public function setId($id)
-    {
-        $this->id = $id;
     }
 
     public function getMinute(): int

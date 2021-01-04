@@ -48,7 +48,8 @@ class Copier
                     $planningConfigService->copy($roundNumber->getPlanningConfig(), $newRoundNumber);
                 }
                 foreach ($roundNumber->getFirstSportScoreConfigs() as $sportScoreConfig) {
-                    $sportScoreConfigService->copy($sportScoreConfig->getCompetitionSport(), $newRoundNumber, $sportScoreConfig);
+                    $newCompetitionSport = $this->getNewCompetitionSport($sportScoreConfig->getCompetitionSport());
+                    $sportScoreConfigService->copy($newCompetitionSport, $newRoundNumber, $sportScoreConfig);
                 }
 
                 if ($firstRoundNumber === null) {
@@ -65,6 +66,15 @@ class Copier
         $postCreateService = new PostCreateService($newStructure);
         $postCreateService->create();
         return $newStructure;
+    }
+
+    protected function getNewCompetitionSport( CompetitionSport $sourceCompetitionSport): CompetitionSport {
+        foreach( $this->competition->getSports() as $competitionSport ) {
+            if( $competitionSport->getId() === $sourceCompetitionSport->getId() ) {
+                return $competitionSport;
+            }
+        }
+        throw new Exception("een sport kon niet gevonden worden", E_ERROR );
     }
 
     protected function copyRound(RoundNumber $roundNumber, Round $round, QualifyGroup $parentQualifyGroup = null): Round

@@ -19,9 +19,9 @@
         <join-column name="placerefereeId" referenced-column-name="id" nullable="true" on-delete="SET NULL"/>
       </join-columns>
     </many-to-one>
-    <many-to-one field="competitionField" target-entity="Sports\Competition\Field">
+    <many-to-one field="field" target-entity="Sports\Competition\Field">
       <join-columns>
-        <join-column name="competitionFieldId" referenced-column-name="id" nullable="true" on-delete="SET NULL"/>
+        <join-column name="fieldId" referenced-column-name="id" nullable="true" on-delete="SET NULL"/>
       </join-columns>
     </many-to-one>
     <many-to-one field="competitionSport" target-entity="Sports\Competition\Sport">
@@ -29,11 +29,5 @@
         <join-column name="competitionSportId" referenced-column-name="id" nullable="false" on-delete="CASCADE"/>
       </join-columns>
     </many-to-one>
-    <one-to-many field="participations" target-entity="Sports\Game\Participation" mapped-by="game" orphan-removal="true">
-      <cascade>
-        <cascade-persist/>
-        <cascade-remove/>
-      </cascade>
-    </one-to-many>
   </mapped-superclass>
 </doctrine-mapping>

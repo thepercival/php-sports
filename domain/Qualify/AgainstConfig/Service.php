@@ -1,8 +1,9 @@
 <?php
+declare(strict_types=1);
 
-namespace Sports\Qualify\Config;
+namespace Sports\Qualify\AgainstConfig;
 
-use Sports\Qualify\Config as QualifyConfig;
+use Sports\Qualify\AgainstConfig as QualifyConfig;
 use Sports\Sport;
 use Sports\Competition\Sport as CompetitionSport;
 use Sports\Sport\Custom as SportCustom;
@@ -19,7 +20,6 @@ class Service
         $qualifyConfig->setWinPointsExt($this->getDefaultWinPointsExt($sport));
         $qualifyConfig->setDrawPointsExt($this->getDefaultDrawPointsExt($sport));
         $qualifyConfig->setLosePointsExt($this->getDefaultLosePointsExt($sport));
-        $qualifyConfig->setPointsCalculation(QualifyConfig::POINTS_CALC_GAMEPOINTS);
         return $qualifyConfig;
     }
 

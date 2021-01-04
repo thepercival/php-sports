@@ -6,18 +6,15 @@ use Sports\Game\Event\Goal as GoalEvent;
 use Sports\Game\Participation as GameParticipation;
 use Sports\Team;
 use Sports\Game\Event as GameEvent;
+use SportsHelpers\Identifiable;
 use SuperElf\PersonStats as PersonStatsBase;
 
-class Goal implements GameEvent
+class Goal extends Identifiable implements GameEvent
 {
     public const FIELD = 1;
     public const PENALTY = 2;
     public const OWN = 4;
 
-    /**
-     * @var int|string
-     */
-    protected $id;
     /**
      * @var int
      */
@@ -45,22 +42,6 @@ class Goal implements GameEvent
         $this->setGameParticipation($gameParticipation);
         $this->own = false;
         $this->penalty = false;
-    }
-
-    /**
-     * @return int|string
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    /**
-     * @param int|string $id
-     */
-    public function setId($id)
-    {
-        $this->id = $id;
     }
 
     public function getMinute(): int

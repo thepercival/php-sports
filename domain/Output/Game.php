@@ -1,11 +1,16 @@
 <?php
+declare(strict_types=1);
 
 namespace Sports\Output;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Psr\Log\LoggerInterface;
 use Sports\Competition\Field;
-use Sports\Game\Against as AgainstGameBase;
+use Sports\Game\Against as AgainstGame;
 use Sports\Game\Place\Against as AgainstGamePlace;
+use Sports\Game\Together as TogetherGame;
+use Sports\Game\Place\Together as TogetherGamePlace;
 use Sports\NameService;
 use Sports\Place;
 use SportsHelpers\Output as OutputBase;
@@ -14,20 +19,14 @@ use Sports\Ranking\ItemsGetter\Against as AgainstItemsGetter;
 use Sports\Sport\ScoreConfig\Service as SportScoreConfigService;
 use Sports\State;
 
-class AgainstGame extends OutputBase
+abstract class Game extends OutputBase
 {
-    /**
-     * @var NameService
-     */
-    protected $nameService;
+    protected NameService $nameService;
     /**
      * @var PlaceLocationMap|null
      */
     protected $placeLocationMap;
-    /**
-     * @var SportScoreConfigService
-     */
-    private $sportScoreConfigService;
+    protected SportScoreConfigService $sportScoreConfigService;
 
     public function __construct(PlaceLocationMap $placeLocationMap = null, LoggerInterface $logger = null)
     {
@@ -37,7 +36,11 @@ class AgainstGame extends OutputBase
         $this->sportScoreConfigService = new SportScoreConfigService();
     }
 
-    public function output(AgainstGameBase $game, string $prefix = null)
+    /**
+     * @param AgainstGame|TogetherGame $game
+     * @param string|null $prefix
+     */
+    public function output($game, string $prefix = null)
     {
         $field = $game->getField();
 
@@ -46,9 +49,7 @@ class AgainstGame extends OutputBase
             $game->getStartDateTime()->format("Y-m-d H:i") . " " .
             $this->getBatchNrAsString($game->getBatchNr()) . " " .
             'poule ' . $game->getPoule()->getNumber()
-            . ', ' . $this->getPlacesAsString($game, AgainstGameBase::HOME)
-            . ' ' . $this->getScoreAsString($game) . ' '
-            . $this->getPlacesAsString($game, AgainstGameBase::AWAY)
+            . ', ' . $this->getDescriptionAsString($game)
             . ' , ' . $this->getRefereeAsString($game)
             . ', ' . $this->getFieldAsString($field)
             . ', ' . $game->getCompetitionSport()->getSport()->getName()
@@ -56,10 +57,39 @@ class AgainstGame extends OutputBase
         );
     }
 
+    /**
+     * @param AgainstGame|TogetherGame $game
+     * @return string
+     */
+    abstract protected function getDescriptionAsString($game): string;
+    /**
+     * @param AgainstGame|TogetherGame $game
+     * @return string
+     */
+    abstract protected function getScoreAsString( $game ): string;
+    /**
+     * @param AgainstGame|TogetherGame $game
+     * @return string
+     */
+    abstract protected function getPointsAsString( $game ): string;
+
     protected function getBatchNrAsString( int $batchNr ): string {
         $batchColor = $this->useColors() ? ($batchNr % 10) : -1;
         $retVal = 'batch ' . ( $batchNr < 10 ? ' ' : '') . $batchNr;
         return $this->outputColor($batchColor, $retVal);
+    }
+
+    /**
+     * @param Collection|TogetherGamePlace[]|AgainstGamePlace[] $gamePlaces
+     * @return string
+     */
+    protected function getPlacesAsString($gamePlaces): string
+    {
+        return implode(' & ', $gamePlaces->map(
+            function (AgainstGamePlace $gamePlace): string {
+                return $this->getPlaceAsString($gamePlace->getPlace());
+            }
+        )->toArray() );
     }
 
     protected function getFieldAsString( Field $field = null ): string {
@@ -70,16 +100,6 @@ class AgainstGame extends OutputBase
         $fieldColor = $this->useColors() ? ($priority % 10) : -1;
         $retVal = 'field ' . ($priority < 10 ? ' ' : '') . $priority;
         return $this->outputColor($fieldColor, $retVal);
-    }
-
-    protected function getPlacesAsString(AgainstGameBase $game, bool $homeAway): string
-    {
-        $placesAsArrayOfStrings = $game->getPlaces($homeAway)->map(
-            function (AgainstGamePlace $gamePlace): string {
-                return $this->getPlaceAsString($gamePlace->getPlace());
-            }
-        )->toArray();
-        return implode(' & ', $placesAsArrayOfStrings);
     }
 
     protected function getPlaceAsString(Place $place): string
@@ -102,41 +122,11 @@ class AgainstGame extends OutputBase
         return $this->outputColor($placeColor, $retVal);
     }
 
-    protected function getScoreAsString( AgainstGameBase $game ): string {
-        $score = ' - ';
-        if ($game->getState() !== State::Finished) {
-            return $score;
-        }
-        $finalScore = $this->sportScoreConfigService->getFinalAgainstScore($game);
-        if ($finalScore === null) {
-            return $score;
-        }
-        $retVal = $finalScore->getHomeScore() . $score . $finalScore->getAwayScore();
-        if( $game->getFinalPhase() === AgainstGameBase::PHASE_EXTRATIME ) {
-            $retVal .= ' nv';
-        }
-        while( strlen( $retVal ) < 10 ) {
-            $retVal .=  ' ';
-        }
-        return $retVal;
-    }
-
-    protected function getPointsAsString( AgainstGameBase $game ): string {
-        $score = ' - ';
-        if ($game->getState() !== State::Finished) {
-            return $score;
-        }
-        $itemGetter = new AgainstItemsGetter( $game->getRound(), State::Finished );
-        $finalScore = $this->sportScoreConfigService->getFinalAgainstScore($game);
-        if ($finalScore === null) {
-            return $score;
-        }
-        $homePoints = $itemGetter->getNrOfPoints($finalScore, AgainstGameBase::HOME,$game);
-        $awayPoints = $itemGetter->getNrOfPoints($finalScore, AgainstGameBase::AWAY,$game);
-        return $homePoints . 'p' . $score . $awayPoints . 'p';
-    }
-
-    protected function getRefereeAsString( AgainstGameBase $game ): string {
+    /**
+     * @param AgainstGame|TogetherGame $game
+     * @return string
+     */
+    protected function getRefereeAsString( $game ): string {
         $refereeDescription = '';
         if ( $game->getRefereePlace() !== null ) {
             $refereeDescription = $this->nameService->getPlaceFromName( $game->getRefereePlace(), false, false );

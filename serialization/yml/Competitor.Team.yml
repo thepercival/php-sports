@@ -4,8 +4,6 @@ Sports\Competitor\Team:
   access_type: public_method
 
   properties:
-    id:
-      read_only: true
     team:
       type: Sports\Team
     abbreviation:

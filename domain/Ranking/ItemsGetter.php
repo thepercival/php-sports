@@ -10,8 +10,6 @@ use Sports\Ranking\RoundItem\Unranked as UnrankedRoundItem;
 use Sports\Game\Together as TogetherGame;
 use Sports\Game\Against as AgainstGame;
 
-/* tslint:disable:no-bitwise */
-
 abstract class ItemsGetter
 {
     protected Round $round;

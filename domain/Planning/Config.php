@@ -9,16 +9,17 @@ use SportsPlanning\Input as PlanningInput;
 class Config extends Identifiable
 {
     protected RoundNumber $roundNumber;
+    protected int $gameMode;
     protected bool $extension;
     protected bool $enableTime;
     protected int $minutesPerGame;
     protected int $minutesPerGameExt;
     protected int $minutesBetweenGames;
     protected int $minutesAfter;
-    protected bool $teamupDep;
     protected int $selfReferee;
+
+    protected bool $teamupDep;
     protected int $nrOfHeadtoheadDep;
-    protected int $gameMode;
 
     const DEFAULTEXTENSION = false;
     const DEFAULTENABLETIME = true;
@@ -28,6 +29,16 @@ class Config extends Identifiable
     {
         $this->roundNumber = $roundNumber;
         $this->roundNumber->setPlanningConfig($this);
+    }
+
+    public function getGameMode(): int
+    {
+        return $this->gameMode;
+    }
+
+    public function setGameMode(int $gameMode)
+    {
+        $this->gameMode = $gameMode;
     }
 
     public function getExtension(): bool
@@ -110,15 +121,7 @@ class Config extends Identifiable
         return $this->selfReferee !== PlanningInput::SELFREFEREE_DISABLED;
     }
 
-    public function getGameMode(): int
-    {
-        return $this->gameMode;
-    }
 
-    public function setGameMode(int $gameMode)
-    {
-        $this->gameMode = $gameMode;
-    }
 
     protected function getRoundNumber(): RoundNumber
     {

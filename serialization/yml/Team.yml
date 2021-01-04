@@ -4,8 +4,6 @@ Sports\Team:
   access_type: public_method
 
   properties:
-    id:
-      read_only: true
     name:
       type: string
     abbreviation:

@@ -152,12 +152,6 @@ class Repository extends \Sports\Repository
         return  $query;
     }
 
-    public function find($id, $lockMode = null, $lockVersion = null): ?Game
-    {
-        return $this->_em->find($this->_entityName, $id, $lockMode, $lockVersion);
-    }
-
-
     public function customRemove(GameBase $game)
     {
         $game->getPoule()->getGames()->removeElement($game);

@@ -14,7 +14,7 @@ use Sports\Poule;
 use Sports\Competition\Sport as CompetitionSport;
 use Sports\Sport\ScoreConfig as SportScoreConfig;
 use Sports\Sport\GameAmountConfig as SportGameAmountConfig;
-use Sports\Qualify\Config as QualifyConfig;
+use Sports\Qualify\AgainstConfig as QualifyAgainstConfig;
 use Sports\Planning\Config as PlanningConfig;
 use Sports\Round;
 use Sports\Round\Number as RoundNumber;
@@ -52,9 +52,9 @@ class Number extends Identifiable
      */
     protected $hasPlanning;
     /**
-     * @var QualifyConfig[] | ArrayCollection
+     * @var QualifyAgainstConfig[] | ArrayCollection
      */
-    protected $qualifyConfigs;
+    protected $qualifyAgainstConfigs;
     /**
      * @var SportGameAmountConfig[] | ArrayCollection
      */
@@ -73,7 +73,7 @@ class Number extends Identifiable
         $this->competition = $competition;
         $this->previous = $previous;
         $this->number = $previous === null ? 1 : $previous->getNumber() + 1;
-        $this->qualifyConfigs = new ArrayCollection();
+        $this->qualifyAgainstConfigs = new ArrayCollection();
         $this->sportScoreConfigs = new ArrayCollection();
         $this->sportGameAmountConfigs = new ArrayCollection();
         $this->hasPlanning = false;
@@ -333,11 +333,11 @@ class Number extends Identifiable
     }
 
     /**
-     * @return ArrayCollection | QualifyConfig[]
+     * @return ArrayCollection | QualifyAgainstConfig[]
      */
-    public function getQualifyConfigs()
+    public function getQualifyAgainstConfigs()
     {
-        return $this->qualifyConfigs;
+        return $this->qualifyAgainstConfigs;
     }
 
     public function getCompetitionSport(Sport $sport): ?CompetitionSport
@@ -439,16 +439,16 @@ class Number extends Identifiable
     }
 
     /**
-     * @return ArrayCollection | QualifyConfig[]
+     * @return ArrayCollection | QualifyAgainstConfig[]
      */
-    public function QualifyConfigs()
+    public function QualifyAgainstConfigs()
     {
-        return $this->qualifyConfigs;
+        return $this->qualifyAgainstConfigs;
     }
 
-    public function getQualifyConfig(CompetitionSport $competitionSport): ?QualifyConfig
+    public function getQualifyConfig(CompetitionSport $competitionSport): ?QualifyAgainstConfig
     {
-        $qualifyConfigs = $this->qualifyConfigs->filter(function (QualifyConfig $qualifyConfigIt) use ($competitionSport): bool {
+        $qualifyConfigs = $this->qualifyAgainstConfigs->filter(function (QualifyAgainstConfig $qualifyConfigIt) use ($competitionSport): bool {
             return $qualifyConfigIt->getCompetitionSport() === $competitionSport;
         });
         if ($qualifyConfigs->count() === 1) {
@@ -457,7 +457,7 @@ class Number extends Identifiable
         return null;
     }
 
-    public function getValidQualifyConfig(CompetitionSport $competitionSport): QualifyConfig
+    public function getValidQualifyConfig(CompetitionSport $competitionSport): QualifyAgainstConfig
     {
         $qualifyConfig = $this->getQualifyConfig($competitionSport);
         if ($qualifyConfig !== null) {
@@ -467,12 +467,12 @@ class Number extends Identifiable
     }
 
     /**
-     * @return array|QualifyConfig[]
+     * @return array|QualifyAgainstConfig[]
      */
     public function getValidQualifyConfigs(): array
     {
         return $this->getCompetitionSports()->map(
-            function (CompetitionSport $competitionSport): QualifyConfig {
+            function (CompetitionSport $competitionSport): QualifyAgainstConfig {
                 return $this->getValidQualifyConfig($competitionSport);
             },
         )->toArray();

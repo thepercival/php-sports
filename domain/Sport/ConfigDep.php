@@ -13,10 +13,7 @@ class ConfigDep extends Identifiable
      * @var SportBase
      */
     protected $sport;
-    /**
-     * @var RoundNumber
-     */
-    protected $roundNumber;
+    protected $competition;
     /**
      * @var double
      */

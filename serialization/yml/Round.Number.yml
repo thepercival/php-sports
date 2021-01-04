@@ -15,12 +15,13 @@ Sports\Round\Number:
       type: Sports\Round\Number
     planningConfig:
       type: Sports\Planning\Config
+    gameAmountConfigs:
+      type: ArrayCollection<Sports\Sport\GameAmountConfig>
 #    sportScoreConfigs:
 #      type: ArrayCollection<Sports\Sport\ScoreConfig>
-#      read_only: true #temperarily
-#    sportPlanningConfigs:
-#      type: ArrayCollection<Sports\Sport\PlanningConfig>
-#      read_only: true #temperarily
+
+#    qualifyAgainstConfigs:
+#      type: ArrayCollection<Sports\Qualify\AgainstConfig>
     hasPlanning:
       type: boolean
       read_only: true

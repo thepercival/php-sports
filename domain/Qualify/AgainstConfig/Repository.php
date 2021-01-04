@@ -1,12 +1,13 @@
 <?php
+declare(strict_types=1);
 
-namespace Sports\Qualify\Config;
+namespace Sports\Qualify\AgainstConfig;
 
 use Sports\Competition\Sport as CompetitionSport;
-use Sports\Sport\ConfigDep as SportConfig;
+use Sports\Repository as SportRepository;
 use Sports\Round\Number as RoundNumber;
 
-class Repository extends \Sports\Repository
+class Repository extends SportRepository
 {
     public function addObjects(CompetitionSport $competitionSport, RoundNumber $roundNumber)
     {
@@ -27,7 +28,6 @@ class Repository extends \Sports\Repository
 
     public function findByCompetitionSport(CompetitionSport $competitionSport)
     {
-        $competition = $competitionSport->getCompetition();
         $query = $this->createQueryBuilder('qc')
             ->join("qc.roundNumber", "rn")
             ->where('qc.competitionSport = :competitionSport')

@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
-  <entity name="Sports\Planning\Config" table="planningconfigs" repository-class="Sports\Planning\Config\Repository">
-    <id name="id" type="integer" column="id">
-      <generator strategy="AUTO"/>
-    </id>
+  <entity name="Sports\Planning\Config" table="planningConfigs" repository-class="Sports\Planning\Config\Repository">
     <field name="extension" column="extension" type="boolean" nullable="false" unique="false"/>
     <field name="enableTime" column="enableTime" type="boolean" nullable="false" unique="false"/>
     <field name="minutesPerGame" column="minutesPerGame" type="smallint" nullable="false" unique="false"/>
@@ -12,7 +9,7 @@
     <field name="minutesBetweenGames" column="minutesBetweenGames" type="smallint" nullable="true" unique="false"/>
     <field name="gameMode" column="gameMode" type="smallint" nullable="false" unique="false"/>
     <field name="selfReferee" column="selfReferee" type="smallint" nullable="true" unique="false"/>
-    <field name="nrOfHeadtoheadDep" column="nrOfHeadtoheadDep" type="smallint" nullable="false" unique="false"/>
-    <field name="teamupDep" column="teamupDep" type="boolean" nullable="true" unique="false"/>
+    <field name="nrOfHeadtoheadDep" column="nrOfHeadtohead" type="smallint" nullable="false" unique="false"/>
+    <field name="teamupDep" column="teamup" type="boolean" nullable="true" unique="false"/>
   </entity>
 </doctrine-mapping>

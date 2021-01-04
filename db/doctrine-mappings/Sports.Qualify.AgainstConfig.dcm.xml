@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
-  <entity name="Sports\Qualify\Config" table="qualifyConfigs" repository-class="Sports\Qualify\Config\Repository">
-    <id name="id" type="integer" column="id">
-      <generator strategy="AUTO"/>
-    </id>
+  <entity name="Sports\Qualify\AgainstConfig" table="qualifyAgainstConfigs" repository-class="Sports\Qualify\AgainstConfig\Repository">
     <field name="winPoints" column="winPoints" type="decimal" precision="3" scale="1" nullable="false" unique="false"/>
     <field name="drawPoints" column="drawPoints" type="decimal" precision="3" scale="1" nullable="false" unique="false"/>
     <field name="winPointsExt" column="winPointsExt" type="decimal" precision="3" scale="1" nullable="false" unique="false"/>

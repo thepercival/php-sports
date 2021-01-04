@@ -5,14 +5,10 @@ namespace Sports\Qualify;
 use Doctrine\Common\Collections\ArrayCollection;
 use Sports\Round;
 use Sports\Poule\Horizontal as HorizontalPoule;
+use SportsHelpers\Identifiable;
 
-class Group
+class Group extends Identifiable
 {
-    /**
-     * @var int
-     */
-    protected $id;
-
     /**
      * @var int
      */
@@ -50,24 +46,6 @@ class Group
         } else {
             $this->insertRoundAt($round, $number);
         }
-    }
-
-    /**
-     * Get id
-     *
-     * @return int
-     */
-    public function getId(): int
-    {
-        return $this->id;
-    }
-
-    /**
-     * @param int $id
-     */
-    public function setId(int $id)
-    {
-        $this->id = $id;
     }
 
     public function getWinnersOrLosers(): int

@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Sports\Competition\Sport;
 
@@ -13,6 +14,11 @@ use Sports\Round\Number as RoundNumber;
 
 class Repository extends \Sports\Repository
 {
+    public function find($id, $lockMode = null, $lockVersion = null): ?CompetitionSport
+    {
+        return $this->_em->find($this->_entityName, $id, $lockMode, $lockVersion);
+    }
+
     public function customAdd(CompetitionSport $competitionSport, RoundNumber $roundNumber)
     {
         $conn = $this->_em->getConnection();

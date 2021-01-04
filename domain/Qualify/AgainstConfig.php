@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Sports\Qualify;
 
@@ -7,7 +8,7 @@ use Sports\Round\Number as RoundNumber;
 use Sports\Sport as SportBase;
 use SportsHelpers\Identifiable;
 
-class Config extends Identifiable
+class AgainstConfig extends Identifiable
 {
     protected CompetitionSport $competitionSport;
     protected RoundNumber $roundNumber;
@@ -16,19 +17,19 @@ class Config extends Identifiable
     protected float $winPointsExt = 0.0;
     protected float $drawPointsExt = 0.0;
     protected float $losePointsExt = 0.0;
-    protected int $pointsCalculation = self::POINTS_CALC_GAMEPOINTS;
+    protected int $pointsCalculation = self::POINTS_CALC_POULEPOINTS;
 
     const DEFAULT_WINPOINTS = 3;
     const DEFAULT_DRAWPOINTS = 1;
-    const POINTS_CALC_GAMEPOINTS = 0;
-    const POINTS_CALC_SCOREPOINTS = 1;
+    const POINTS_CALC_POULEPOINTS = 0;
+    const POINTS_CALC_GAMESCORE = 1;
     const POINTS_CALC_BOTH = 2;
 
     public function __construct(CompetitionSport $competitionSport, RoundNumber $roundNumber)
     {
         $this->competitionSport = $competitionSport;
         $this->roundNumber = $roundNumber;
-        $this->roundNumber->getQualifyConfigs()->add($this);
+        $this->roundNumber->getQualifyAgainstConfigs()->add($this);
     }
 
     public function getCompetitionSport(): CompetitionSport
