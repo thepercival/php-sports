@@ -12,7 +12,12 @@
               <join-column name="competitionSportId" referenced-column-name="id" nullable="true" on-delete="CASCADE"/>
           </join-columns>
       </many-to-one>
-      <many-to-one field="roundNumber" target-entity="Sports\Round\Number" inversed-by="qualifyConfigs">
+      <many-to-one field="round" target-entity="Sports\Round" inversed-by="qualifyConfigs">
+          <join-columns>
+              <join-column name="roundId" referenced-column-name="id" nullable="true" on-delete="CASCADE"/>
+          </join-columns>
+      </many-to-one>
+      <many-to-one field="roundNumberDep" target-entity="Sports\Round\Number">
           <join-columns>
               <join-column name="roundNumberId" referenced-column-name="id" nullable="true" on-delete="CASCADE"/>
           </join-columns>

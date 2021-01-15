@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Sports\Ranking;
 
-use Sports\Sport\ScoreConfig\Service as SportScoreConfigService;
+use Sports\Score\Config\Service as ScoreConfigService;
 use Sports\Place;
 use Sports\Round;
 use Sports\Ranking\RoundItem\Unranked as UnrankedRoundItem;
@@ -14,13 +14,13 @@ abstract class ItemsGetter
 {
     protected Round $round;
     protected int $gameStates;
-    protected SportScoreConfigService $sportScoreConfigService;
+    protected ScoreConfigService $scoreConfigService;
 
     public function __construct(Round $round, int $gameStates)
     {
         $this->round = $round;
         $this->gameStates = $gameStates;
-        $this->sportScoreConfigService = new SportScoreConfigService();
+        $this->scoreConfigService = new ScoreConfigService();
     }
 
     protected static function getIndex(Place $place): string

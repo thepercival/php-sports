@@ -8,20 +8,13 @@ use JMS\Serializer\GraphNavigatorInterface;
 use JMS\Serializer\Metadata\StaticPropertyMetadata;
 use JMS\Serializer\JsonDeserializationVisitor;
 use JMS\Serializer\Context;
-use Sports\Competition;
 use Sports\Round\Number as RoundNumber;
-use Sports\Sport;
-use Sports\Sport\ScoreConfig as SportScoreConfig;
+use Sports\SerializationHandler\CompetitionSportCreator;
+use Sports\Planning\GameAmountConfig;
 use Sports\Competition\Sport as CompetitionSport;
-use SportsHelpers\SportConfig;
 
 class Number implements SubscribingHandlerInterface
 {
-    /**
-     * @var array | CompetitionSport[]
-     */
-    private static $competitionSports  = [];
-
     public static function getSubscribingMethods()
     {
         return [
@@ -74,10 +67,14 @@ class Number implements SubscribingHandlerInterface
             $roundNumber->setPlanningConfig($visitor->visitProperty($metadataConfig, $arrRoundNumber));
         }
 
-        if (array_key_exists("sportScoreConfigs", $arrRoundNumber)) {
-            foreach ($arrRoundNumber["sportScoreConfigs"] as $arrSportScoreConfig) {
-                $competitionSport = $this->createCompetitionSport($roundNumber->getCompetition(), (int) $arrSportScoreConfig["competitionSportId"]);
-                $this->createSportScoreConfig($arrSportScoreConfig, $competitionSport, $roundNumber);
+        if (array_key_exists("gameAmountConfigs", $arrRoundNumber)) {
+            $competitionSportCreator = new CompetitionSportCreator();
+            foreach ($arrRoundNumber["gameAmountConfigs"] as $arrGameAmountConfig) {
+                $competitionSport = $competitionSportCreator->create(
+                    $roundNumber->getCompetition(),
+                    (int) $arrGameAmountConfig["competitionSport"]["id"],
+                    (int) $arrGameAmountConfig["competitionSport"]["sport"]["id"]);
+                $this->createGameAmountConfig($arrGameAmountConfig, $competitionSport, $roundNumber);
             }
         }
         // qualifyAgainst en gameAmountConfigs ook toevoegen!!!
@@ -95,43 +92,9 @@ class Number implements SubscribingHandlerInterface
         return $roundNumber;
     }
 
-    protected function createCompetitionSport(Competition $competition, int $competitionSportId): CompetitionSport
+    protected function createGameAmountConfig(array $arrConfig, CompetitionSport $competitionSport, RoundNumber $roundNumber )
     {
-        if (array_key_exists($competitionSportId, self::$competitionSports)) {
-            return self::$competitionSports[$competitionSportId];
-        }
-        $getCompetitionSport = function (int $competitionSportId) use ($competition): ?CompetitionSport {
-            foreach ($competition->getSports() as $competitionSport) {
-                if ($competitionSport->getId() == $competitionSportId) {
-                    return $competitionSport;
-                }
-            }
-            return null;
-        };
-        $competitionSport = $getCompetitionSport($competitionSportId);
-        if ($competitionSport === null) {
-            $sport = new Sport(
-                "dummy",
-                true,
-                2,
-                SportConfig::GAMEMODE_AGAINST
-            );
-            $competitionSport = new CompetitionSport($sport, $competition);
-            $competitionSport->setId($competitionSportId);
-            self::$competitionSports[$competitionSportId] = $competitionSport;
-        }
-        return $competitionSport;
-    }
-
-    protected function createSportScoreConfig(array $arrConfig, CompetitionSport $competitionSport, RoundNumber $roundNumber, SportScoreConfig $previous = null)
-    {
-        $config = new SportScoreConfig($competitionSport, $roundNumber, $previous);
-        $config->setDirection($arrConfig["direction"]);
-        $config->setMaximum($arrConfig["maximum"]);
-        $config->setEnabled($arrConfig["enabled"]);
-        if (array_key_exists("next", $arrConfig) && $arrConfig["next"] !== null) {
-            $this->createSportScoreConfig($arrConfig["next"], $competitionSport, $roundNumber, $config);
-        }
+        return new GameAmountConfig($competitionSport, $roundNumber, $arrConfig["amount"]);
     }
 
 

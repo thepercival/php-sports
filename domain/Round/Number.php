@@ -6,19 +6,15 @@ namespace Sports\Round;
 
 use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\PersistentCollection;
 use Sports\Competition;
 use Sports\Game as GameBase;
 use Sports\Poule;
 use Sports\Competition\Sport as CompetitionSport;
-use Sports\Sport\ScoreConfig as SportScoreConfig;
-use Sports\Sport\GameAmountConfig as SportGameAmountConfig;
-use Sports\Qualify\AgainstConfig as QualifyAgainstConfig;
+use Sports\Planning\GameAmountConfig as GameAmountConfig;
 use Sports\Planning\Config as PlanningConfig;
 use Sports\Round;
 use Sports\Round\Number as RoundNumber;
-use Sports\Sport;
 use Sports\State;
 use Sports\Game\Against as AgainstGame;
 use Sports\Game\Together as TogetherGame;
@@ -52,31 +48,21 @@ class Number extends Identifiable
      */
     protected $hasPlanning;
     /**
-     * @var QualifyAgainstConfig[] | ArrayCollection
-     */
-    protected $qualifyAgainstConfigs;
-    /**
-     * @var SportGameAmountConfig[] | ArrayCollection
-     */
-    protected $sportGameAmountConfigs;
-    /**
-     * @var SportScoreConfig[] | ArrayCollection
-     */
-    protected $sportScoreConfigs;
-    /**
      * @var PlanningConfig
      */
     protected $planningConfig;
+    /**
+     * @var GameAmountConfig[] | ArrayCollection
+     */
+    protected $gameAmountConfigs;
 
     public function __construct(Competition $competition, RoundNumber $previous = null)
     {
         $this->competition = $competition;
         $this->previous = $previous;
         $this->number = $previous === null ? 1 : $previous->getNumber() + 1;
-        $this->qualifyAgainstConfigs = new ArrayCollection();
-        $this->sportScoreConfigs = new ArrayCollection();
-        $this->sportGameAmountConfigs = new ArrayCollection();
         $this->hasPlanning = false;
+        $this->gameAmountConfigs = new ArrayCollection();
     }
 
     public function hasNext(): bool
@@ -163,11 +149,6 @@ class Number extends Identifiable
         return $this->rounds;
     }
 
-    public function getARound(): Round
-    {
-        return $this->getRounds()->first();
-    }
-
     public function needsRanking(): bool
     {
         foreach ($this->getRounds() as $round) {
@@ -248,13 +229,16 @@ class Number extends Identifiable
                  */
                 function ($g1, $g2): int {
                     if ($g1->getBatchNr() === $g2->getBatchNr()) {
-                        if( $g1->getField() !== null && $g2->getField() !== null ) {
-                            $retVal = $g1->getField()->getPriority() - $g2->getField()->getPriority();
+                        $field1 = $g1->getField();
+                        $field2 = $g2->getField();
+                        if ($field1 !== null && $field2 !== null) {
+                            $retVal = $field1->getPriority() - $field2->getPriority();
                             return $this->isFirst() ? $retVal : -$retVal;
                         }
                     }
                     return $g1->getBatchNr() - $g2->getBatchNr();
-                });
+                }
+            );
         }
         return $games;
     }
@@ -321,163 +305,6 @@ class Number extends Identifiable
         return $this->getCompetition()->getSports();
     }
 
-    /**
-     * @return array | SportConfig[]
-     */
-    public function getSportConfigs(): array
-    {
-        return $this->getCompetition()->getSports()->map( function (CompetitionSport $competitionSport ): SportConfig {
-            $gameAmountConfig = $this->getValidSportGameAmountConfig($competitionSport);
-            return $competitionSport->createConfig( $gameAmountConfig->getAmount() );
-        })->toArray();
-    }
-
-    /**
-     * @return ArrayCollection | QualifyAgainstConfig[]
-     */
-    public function getQualifyAgainstConfigs()
-    {
-        return $this->qualifyAgainstConfigs;
-    }
-
-    public function getCompetitionSport(Sport $sport): ?CompetitionSport
-    {
-        $filtered = $this->getCompetitionSports()->filter(function (CompetitionSport $competitionSport) use ($sport): bool {
-            return $competitionSport->getSport() === $sport;
-        });
-        return $filtered->count() === 1 ? $filtered->first() : null;
-    }
-
-    /**
-     * @return ArrayCollection | SportGameAmountConfig[]
-     */
-    public function getSportGameAmountConfigs()
-    {
-        return $this->sportGameAmountConfigs;
-    }
-
-    public function getSportGameAmountConfig(CompetitionSport $competitionSport): ?SportGameAmountConfig
-    {
-        $sportGameAmountConfigs = $this->sportGameAmountConfigs->filter(function (SportGameAmountConfig $sportGameAmountConfigIt) use ($competitionSport): bool {
-            return $sportGameAmountConfigIt->getCompetitionSport() === $competitionSport;
-        });
-        if ($sportGameAmountConfigs->count() === 1) {
-            return $sportGameAmountConfigs->first();
-        }
-        return null;
-    }
-
-    public function getValidSportGameAmountConfig(CompetitionSport $competitionSport): SportGameAmountConfig
-    {
-        $sportGameAmountConfig = $this->getSportGameAmountConfig($competitionSport);
-        if ($sportGameAmountConfig !== null) {
-            return $sportGameAmountConfig;
-        }
-        return $this->getPrevious()->getValidSportGameAmountConfig($competitionSport);
-    }
-
-    /**
-     * @return array|SportGameAmountConfig[]
-     */
-    public function getValidSportGameAmountConfigs(): array
-    {
-        return $this->getCompetitionSports()->map(
-            function (CompetitionSport $competitionSport): SportGameAmountConfig {
-                return $this->getValidSportGameAmountConfig($competitionSport);
-            }
-        )->toArray();
-    }
-
-    /**
-     * @return ArrayCollection | SportScoreConfig[]
-     */
-    public function getSportScoreConfigs()
-    {
-        return $this->sportScoreConfigs;
-    }
-
-    public function getSportScoreConfig(CompetitionSport $competitionSport): ?SportScoreConfig
-    {
-        $sportScoreConfigs = $this->sportScoreConfigs->filter(function (SportScoreConfig $sportScoreConfigIt) use ($competitionSport): bool {
-            return $sportScoreConfigIt->isFirst() && $sportScoreConfigIt->getCompetitionSport() === $competitionSport;
-        });
-        if ($sportScoreConfigs->count() === 1) {
-            return $sportScoreConfigs->first();
-        }
-        return null;
-    }
-
-    public function getValidSportScoreConfig(CompetitionSport $competitionSport): SportScoreConfig
-    {
-        $sportScoreConfig = $this->getSportScoreConfig($competitionSport);
-        if ($sportScoreConfig !== null) {
-            return $sportScoreConfig;
-        }
-        return $this->getPrevious()->getValidSportScoreConfig($competitionSport);
-    }
-
-    /**
-     * @return array|SportScoreConfig[]
-     */
-    public function getValidSportScoreConfigs(): array
-    {
-        return $this->getCompetitionSports()->map(
-            function (CompetitionSport $competitionSport): SportScoreConfig {
-                return $this->getValidSportScoreConfig($competitionSport);
-            }
-        )->toArray();
-    }
-
-    /**
-     * @return Collection|SportScoreConfig[]
-     */
-    public function getFirstSportScoreConfigs(): Collection
-    {
-        return $this->getSportScoreConfigs()->filter(function (SportScoreConfig $config): bool {
-            return $config->isFirst();
-        });
-    }
-
-    /**
-     * @return ArrayCollection | QualifyAgainstConfig[]
-     */
-    public function QualifyAgainstConfigs()
-    {
-        return $this->qualifyAgainstConfigs;
-    }
-
-    public function getQualifyConfig(CompetitionSport $competitionSport): ?QualifyAgainstConfig
-    {
-        $qualifyConfigs = $this->qualifyAgainstConfigs->filter(function (QualifyAgainstConfig $qualifyConfigIt) use ($competitionSport): bool {
-            return $qualifyConfigIt->getCompetitionSport() === $competitionSport;
-        });
-        if ($qualifyConfigs->count() === 1) {
-            return $qualifyConfigs->first();
-        }
-        return null;
-    }
-
-    public function getValidQualifyConfig(CompetitionSport $competitionSport): QualifyAgainstConfig
-    {
-        $qualifyConfig = $this->getQualifyConfig($competitionSport);
-        if ($qualifyConfig !== null) {
-            return $qualifyConfig;
-        }
-        return $this->getPrevious()->getValidQualifyConfig($competitionSport);
-    }
-
-    /**
-     * @return array|QualifyAgainstConfig[]
-     */
-    public function getValidQualifyConfigs(): array
-    {
-        return $this->getCompetitionSports()->map(
-            function (CompetitionSport $competitionSport): QualifyAgainstConfig {
-                return $this->getValidQualifyConfig($competitionSport);
-            },
-        )->toArray();
-    }
-
     public function getFirstStartDateTime(): DateTimeImmutable
     {
         $games = $this->getGames(GameBase::ORDER_BY_BATCH);
@@ -490,5 +317,56 @@ class Number extends Identifiable
         $games = $this->getGames(GameBase::ORDER_BY_BATCH);
         $mostRecentGame = end($games);
         return $mostRecentGame->getStartDateTime();
+    }
+
+    /**
+     * @return ArrayCollection | GameAmountConfig[]
+     */
+    public function getGameAmountConfigs()
+    {
+        return $this->gameAmountConfigs;
+    }
+
+    public function getGameAmountConfig(CompetitionSport $competitionSport): ?GameAmountConfig
+    {
+        $gameAmountConfigs = $this->gameAmountConfigs->filter(function (GameAmountConfig $gameAmountConfigIt) use ($competitionSport): bool {
+            return $gameAmountConfigIt->getCompetitionSport() === $competitionSport;
+        });
+        if ($gameAmountConfigs->count() === 1) {
+            return $gameAmountConfigs->first();
+        }
+        return null;
+    }
+
+    public function getValidGameAmountConfig(CompetitionSport $competitionSport): GameAmountConfig
+    {
+        $gameAmountConfig = $this->getGameAmountConfig($competitionSport);
+        if ($gameAmountConfig !== null) {
+            return $gameAmountConfig;
+        }
+        return $this->getPrevious()->getValidGameAmountConfig($competitionSport);
+    }
+
+    /**
+     * @return array|GameAmountConfig[]
+     */
+    public function getValidGameAmountConfigs(): array
+    {
+        return $this->getCompetitionSports()->map(
+            function (CompetitionSport $competitionSport): GameAmountConfig {
+                return $this->getValidGameAmountConfig($competitionSport);
+            }
+        )->toArray();
+    }
+
+    /**
+     * @return array | SportConfig[]
+     */
+    public function createSportConfigs(): array
+    {
+        return $this->getCompetition()->getSports()->map(function (CompetitionSport $competitionSport): SportConfig {
+            $gameAmountConfig = $this->getValidGameAmountConfig($competitionSport);
+            return $competitionSport->createConfig($gameAmountConfig->getAmount());
+        })->toArray();
     }
 }

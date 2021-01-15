@@ -4,12 +4,18 @@
 namespace Sports;
 
 use \Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\PersistentCollection;
+use Sports\Competition\Sport as CompetitionSport;
+use Sports\Planning\GameAmountConfig as GameAmountConfig;
+use Sports\Qualify\AgainstConfig as QualifyAgainstConfig;
 use Sports\Qualify\Group as QualifyGroup;
 use Sports\Poule\Horizontal as HorizontalPoule;
+use Sports\Score\Config as ScoreConfig;
 use Sports\State;
 use Sports\Place\Location as PlaceLocation;
 use SportsHelpers\Identifiable;
+use SportsHelpers\SportConfig;
 
 class Round extends Identifiable
 {
@@ -42,6 +48,14 @@ class Round extends Identifiable
      */
     protected $winnersHorizontalPoules = array();
     /**
+     * @var QualifyAgainstConfig[] | ArrayCollection
+     */
+    protected $qualifyAgainstConfigs;
+    /**
+     * @var ScoreConfig[] | ArrayCollection
+     */
+    protected $scoreConfigs;
+    /**
      * @var int
      */
     protected $structureNumber;
@@ -72,6 +86,8 @@ class Round extends Identifiable
         $this->poules = new ArrayCollection();
         $this->setParentQualifyGroup($parentQualifyGroup);
         $this->qualifyGroups = new ArrayCollection();
+        $this->qualifyAgainstConfigs = new ArrayCollection();
+        $this->scoreConfigs = new ArrayCollection();
     }
 
     /**
@@ -412,5 +428,108 @@ class Round extends Identifiable
             $nrOfPlacesChildRounds += $qualifyGroup->getChildRound()->getNrOfPlaces();
         }
         return $nrOfPlacesChildRounds;
+    }
+
+    public function getCompetition(): Competition
+    {
+        return $this->number->getCompetition();
+    }
+
+    public function getCompetitionSport(Sport $sport): ?CompetitionSport
+    {
+        $filtered = $this->number->getCompetitionSports()->filter(function (CompetitionSport $competitionSport) use ($sport): bool {
+            return $competitionSport->getSport() === $sport;
+        });
+        return $filtered->count() === 1 ? $filtered->first() : null;
+    }
+
+    /**
+     * @return ArrayCollection | ScoreConfig[]
+     */
+    public function getScoreConfigs()
+    {
+        return $this->scoreConfigs;
+    }
+
+    public function getScoreConfig(CompetitionSport $competitionSport): ?ScoreConfig
+    {
+        $scoreConfigs = $this->scoreConfigs->filter(function (ScoreConfig $scoreConfigIt) use ($competitionSport): bool {
+            return $scoreConfigIt->isFirst() && $scoreConfigIt->getCompetitionSport() === $competitionSport;
+        });
+        if ($scoreConfigs->count() === 1) {
+            return $scoreConfigs->first();
+        }
+        return null;
+    }
+
+    public function getValidScoreConfig(CompetitionSport $competitionSport): ScoreConfig
+    {
+        $scoreConfig = $this->getScoreConfig($competitionSport);
+        if ($scoreConfig !== null) {
+            return $scoreConfig;
+        }
+        return $this->getParent()->getValidScoreConfig($competitionSport);
+    }
+
+    /**
+     * @return array|ScoreConfig[]
+     */
+    public function getValidScoreConfigs(): array
+    {
+        return $this->number->getCompetitionSports()->map(
+            function (CompetitionSport $competitionSport): ScoreConfig {
+                return $this->getValidScoreConfig($competitionSport);
+            }
+        )->toArray();
+    }
+
+    /**
+     * @return Collection|ScoreConfig[]
+     */
+    public function getFirstScoreConfigs(): Collection
+    {
+        return $this->getScoreConfigs()->filter(function (ScoreConfig $config): bool {
+            return $config->isFirst();
+        });
+    }
+
+    /**
+     * @return ArrayCollection | QualifyAgainstConfig[]
+     */
+    public function getQualifyAgainstConfigs()
+    {
+        return $this->qualifyAgainstConfigs;
+    }
+
+    public function getQualifyConfig(CompetitionSport $competitionSport): ?QualifyAgainstConfig
+    {
+        $qualifyConfigs = $this->qualifyAgainstConfigs->filter(function (QualifyAgainstConfig $qualifyConfigIt) use ($competitionSport): bool {
+            return $qualifyConfigIt->getCompetitionSport() === $competitionSport;
+        });
+        if ($qualifyConfigs->count() === 1) {
+            return $qualifyConfigs->first();
+        }
+        return null;
+    }
+
+    public function getValidQualifyConfig(CompetitionSport $competitionSport): QualifyAgainstConfig
+    {
+        $qualifyConfig = $this->getQualifyConfig($competitionSport);
+        if ($qualifyConfig !== null) {
+            return $qualifyConfig;
+        }
+        return $this->getParent()->getValidQualifyConfig($competitionSport);
+    }
+
+    /**
+     * @return array|QualifyAgainstConfig[]
+     */
+    public function getValidQualifyConfigs(): array
+    {
+        return $this->number->getCompetitionSports()->map(
+            function (CompetitionSport $competitionSport): QualifyAgainstConfig {
+                return $this->getValidQualifyConfig($competitionSport);
+            },
+        )->toArray();
     }
 }

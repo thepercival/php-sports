@@ -42,7 +42,7 @@ class Together extends OutputGame
             return '';
         }
         return join(",", $game->getPlaces()->map(function (TogetherGamePlace $gamePlace): string {
-            return (string)$this->sportScoreConfigService->getFinalTogetherScore($gamePlace);
+            return (string)$this->scoreConfigService->getFinalTogetherScore($gamePlace);
         })->toArray());
     }
 }

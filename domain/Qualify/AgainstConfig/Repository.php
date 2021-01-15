@@ -5,13 +5,14 @@ namespace Sports\Qualify\AgainstConfig;
 
 use Sports\Competition\Sport as CompetitionSport;
 use Sports\Repository as SportRepository;
+use Sports\Round;
 use Sports\Round\Number as RoundNumber;
 
 class Repository extends SportRepository
 {
-    public function addObjects(CompetitionSport $competitionSport, RoundNumber $roundNumber)
+    public function addObjects(CompetitionSport $competitionSport, Round $round)
     {
-        $qualifyConfig = $roundNumber->getQualifyConfig($competitionSport);
+        $qualifyConfig = $round->getQualifyConfig($competitionSport);
         if ($qualifyConfig === null) {
             return;
         }
@@ -20,19 +21,9 @@ class Repository extends SportRepository
 
     public function removeObjects(CompetitionSport $competitionSport)
     {
-        $qualifyConfigs = $this->findByCompetitionSport($competitionSport);
+        $qualifyConfigs = $this->findBy(["competitionSport" => $competitionSport]);
         foreach ($qualifyConfigs as $qualifyConfig) {
             $this->remove($qualifyConfig);
         }
-    }
-
-    public function findByCompetitionSport(CompetitionSport $competitionSport)
-    {
-        $query = $this->createQueryBuilder('qc')
-            ->join("qc.roundNumber", "rn")
-            ->where('qc.competitionSport = :competitionSport')
-        ;
-        $query = $query->setParameter('competitionSport', $competitionSport);
-        return $query->getQuery()->getResult();
     }
 }

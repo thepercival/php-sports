@@ -7,14 +7,14 @@ use Sports\Qualify\AgainstConfig as QualifyConfig;
 use Sports\Sport;
 use Sports\Competition\Sport as CompetitionSport;
 use Sports\Sport\Custom as SportCustom;
-use Sports\Round\Number as RoundNumber;
+use Sports\Round;
 
 class Service
 {
-    public function createDefault(CompetitionSport $competitionSport, RoundNumber $roundNumber)
+    public function createDefault(CompetitionSport $competitionSport, Round $round)
     {
         $sport = $competitionSport->getSport();
-        $qualifyConfig = new QualifyConfig($competitionSport, $roundNumber);
+        $qualifyConfig = new QualifyConfig($competitionSport, $round);
         $qualifyConfig->setWinPoints($this->getDefaultWinPoints($sport));
         $qualifyConfig->setDrawPoints($this->getDefaultDrawPoints($sport));
         $qualifyConfig->setWinPointsExt($this->getDefaultWinPointsExt($sport));
@@ -90,23 +90,14 @@ class Service
 //    }
 //
 
-//    public function copy(Sport $sport, RoundNumber $roundNumber, SportScoreConfig $sourceConfig)
-//    {
-//        $newScoreConfig = new SportScoreConfig($sport, $roundNumber, null);
-//        $newScoreConfig->setDirection($sourceConfig->getDirection());
-//        $newScoreConfig->setMaximum($sourceConfig->getMaximum());
-//        $newScoreConfig->setEnabled($sourceConfig->getEnabled());
-//        $previousSubScoreConfig = $sourceConfig->getNext();
-//        if ($previousSubScoreConfig !== null) {
-//            $newSubScoreConfig = new SportScoreConfig($sport, $roundNumber, $newScoreConfig);
-//            $newSubScoreConfig->setDirection($previousSubScoreConfig->getDirection());
-//            $newSubScoreConfig->setMaximum($previousSubScoreConfig->getMaximum());
-//            $newSubScoreConfig->setEnabled($previousSubScoreConfig->getEnabled());
-//        }
-//    }
-
-
-
-
-
+    public function copy(CompetitionSport $competitionSport, Round $round, QualifyConfig $sourceConfig)
+    {
+        $newConfig = new QualifyConfig($competitionSport, $round);
+        $newConfig->setWinPoints($sourceConfig->getWinPoints());
+        $newConfig->setDrawPoints($sourceConfig->getDrawPoints());
+        $newConfig->setWinPointsExt($sourceConfig->getWinPointsExt());
+        $newConfig->setDrawPointsExt($sourceConfig->getDrawPointsExt());
+        $newConfig->setLosePointsExt($sourceConfig->getLosePointsExt());
+        $newConfig->setPointsCalculation($sourceConfig->getPointsCalculation());
+    }
 }

@@ -20,7 +20,7 @@ class PlanningInputCreator
     {
         $config = $roundNumber->getValidPlanningConfig();
 
-        $sportConfigBases = $roundNumber->getSportConfigs();
+        $sportConfigBases = $roundNumber->createSportConfigs();
         $pouleStructure = $this->createPouleStructure($roundNumber);
         $selfReferee = $this->getSelfReferee(
             $config,

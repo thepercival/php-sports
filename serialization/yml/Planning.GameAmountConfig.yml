@@ -1,0 +1,8 @@
+Sports\Planning\GameAmountConfig:
+  exclusion_policy: ALL
+  exclude: false
+  properties:
+    amount:
+      type: integer
+    competitionSport:
+      type: Sports\Competition\Sport

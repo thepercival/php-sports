@@ -1,6 +1,6 @@
 <?php
 
-namespace Sports\Sport;
+namespace Sports\Planning;
 
 use Sports\Competition\Sport as CompetitionSport;
 use Sports\Sport as SportBase;
@@ -13,22 +13,17 @@ class GameAmountConfig extends Identifiable
     protected RoundNumber $roundNumber;
     protected int $amount;
 
-    public function __construct(CompetitionSport $competitionSport, RoundNumber $roundNumber, int $amount )
+    public function __construct(CompetitionSport $competitionSport, RoundNumber $roundNumber, int $amount)
     {
         $this->competitionSport = $competitionSport;
         $this->roundNumber = $roundNumber;
-        $this->roundNumber->getSportGameAmountConfigs()->add($this);
+        $this->roundNumber->getGameAmountConfigs()->add($this);
         $this->amount = $amount;
     }
 
     public function getCompetitionSport(): CompetitionSport
     {
         return $this->competitionSport;
-    }
-
-    public function getCompetitionSportId(): int
-    {
-        return $this->competitionSport->getId();
     }
 
     public function getRoundNumber(): RoundNumber
@@ -41,4 +36,8 @@ class GameAmountConfig extends Identifiable
         return $this->amount;
     }
 
+    public function setAmount(int $amount)
+    {
+        $this->amount = $amount;
+    }
 }

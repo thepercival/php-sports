@@ -43,7 +43,7 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
         $structureValidator->checkValidity($competition, $structure);
     }
 
-    public function testRoundNumberNoValidSportScoreConfig()
+    public function testRoundNumberNoValidScoreConfig()
     {
         $competition = $this->createCompetition();
 
@@ -51,7 +51,7 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
 
         $structure = $structureService->create($competition, 4);
 
-        $structure->getFirstRoundNumber()->getSportScoreConfigs()->clear();
+        $structure->getRootRound()->getScoreConfigs()->clear();
 
         $structureValidator = new StructureValidator();
         self::expectException(Exception::class);

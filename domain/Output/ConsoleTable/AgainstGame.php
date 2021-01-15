@@ -14,7 +14,7 @@ use Sports\NameService;
 use Sports\Place\Location\Map as PlaceLocationMap;
 use Sports\Competitor\Team as TeamCompetitor;
 use Sports\Sport;
-use Sports\Sport\ScoreConfig\Service as SportScoreConfigService;
+use Sports\Score\Config\Service as ScoreConfigService;
 
 class AgainstGame
 {
@@ -243,8 +243,8 @@ class AgainstGame
      * @return array|string[]
      */
     protected function getScoreRow(): array {
-        $sportScoreConfigService = new SportScoreConfigService();
-        $finalScore = $sportScoreConfigService->getFinalAgainstScore($this->game);
+        $scoreConfigService = new ScoreConfigService();
+        $finalScore = $scoreConfigService->getFinalAgainstScore($this->game);
 
         $score = " - ";
         if( $finalScore !== null ) {

@@ -19,7 +19,7 @@ class Against extends ItemsGetterBase
 {
     public function __construct(Round $round, int $gameStates)
     {
-        parent::__construct($round, $gameStates );
+        parent::__construct($round, $gameStates);
     }
 
 
@@ -41,11 +41,11 @@ class Against extends ItemsGetterBase
             if (($game->getState() & $this->gameStates) === 0) {
                 continue;
             }
-            $useSubScore = $game->getSportScoreConfig()->useSubScore();
-            $finalScore = $this->sportScoreConfigService->getFinalAgainstScore($game);
-            $finalSubScore = $useSubScore ? $this->sportScoreConfigService->getFinalAgainstSubScore($game) : null;
+            $useSubScore = $game->getScoreConfig()->useSubScore();
+            $finalScore = $this->scoreConfigService->getFinalAgainstScore($game);
+            $finalSubScore = $useSubScore ? $this->scoreConfigService->getFinalAgainstSubScore($game) : null;
 
-            // $finalScore = $this->sportScoreConfigService->getFinal($game);
+            // $finalScore = $this->scoreConfigService->getFinal($game);
             foreach ([AgainstGame::HOME, AgainstGame::AWAY] as $homeAway) {
                 $points = $this->getNrOfPoints($finalScore, $homeAway, $game);
                 $scored = $this->getNrOfUnits($finalScore, $homeAway, AgainstGameScore::SCORED);
@@ -84,13 +84,13 @@ class Against extends ItemsGetterBase
         if ($finalScore === null) {
             return 0;
         }
-        if ($finalScore->getResult( $homeAway ) === AgainstGame::RESULT_WIN ) {
+        if ($finalScore->getResult($homeAway) === AgainstGame::RESULT_WIN) {
             if ($game->getFinalPhase() === Game::PHASE_REGULARTIME) {
                 return $game->getQualifyConfig()->getWinPoints();
             } elseif ($game->getFinalPhase() === Game::PHASE_EXTRATIME) {
                 return $game->getQualifyConfig()->getWinPointsExt();
             }
-        } elseif ($finalScore->getResult( $homeAway ) === AgainstGame::RESULT_DRAW ) {
+        } elseif ($finalScore->getResult($homeAway) === AgainstGame::RESULT_DRAW) {
             if ($game->getFinalPhase() === Game::PHASE_REGULARTIME) {
                 return $game->getQualifyConfig()->getDrawPoints();
             } elseif ($game->getFinalPhase() === Game::PHASE_EXTRATIME) {

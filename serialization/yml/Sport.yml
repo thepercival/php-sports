@@ -4,9 +4,13 @@ Sports\Sport:
   properties:
     name:
       type: string
+      groups: [noReference]
     team:
       type: boolean
+      groups: [noReference]
     customId:
       type: integer
+      groups: [noReference]
     gameMode:
       type: integer
+      groups: [noReference]

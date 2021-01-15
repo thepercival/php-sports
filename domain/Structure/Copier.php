@@ -11,11 +11,13 @@ use Sports\Round\Number as RoundNumber;
 use Sports\Qualify\Group as QualifyGroup;
 use Sports\Round;
 use Sports\Place;
-use Sports\Sport;
 use Sports\Poule;
+use Sports\Score\Config as ScoreConfig;
+use Sports\Qualify\AgainstConfig as QualifyAgainstConfig;
 use Sports\Planning\Config\Service as PlanningConfigService;
-use Sports\Sport\ScoreConfig\Service as SportScoreConfigService;
-use Sports\Competitor;
+use Sports\Score\Config\Service as ScoreConfigService;
+use Sports\Planning\GameAmountConfig\Service as GameAmountConfigService;
+use Sports\Qualify\AgainstConfig\Service as QualifyAgainstConfigService;
 
 class Copier
 {
@@ -32,7 +34,7 @@ class Copier
     public function copy(Structure $structure): Structure
     {
         $planningConfigService = new PlanningConfigService();
-        $sportScoreConfigService = new SportScoreConfigService();
+        $gameAmountConfigService = new GameAmountConfigService();
 
         $firstRoundNumber = null;
         $rootRound = null;
@@ -47,9 +49,9 @@ class Copier
                 if ($roundNumber->getPlanningConfig() !== null) {
                     $planningConfigService->copy($roundNumber->getPlanningConfig(), $newRoundNumber);
                 }
-                foreach ($roundNumber->getFirstSportScoreConfigs() as $sportScoreConfig) {
-                    $newCompetitionSport = $this->getNewCompetitionSport($sportScoreConfig->getCompetitionSport());
-                    $sportScoreConfigService->copy($newCompetitionSport, $newRoundNumber, $sportScoreConfig);
+                foreach ($roundNumber->getGameAmountConfigs() as $gameAmountConfig) {
+                    $newCompetitionSport = $this->getNewCompetitionSport($gameAmountConfig->getCompetitionSport());
+                    $gameAmountConfigService->copy($newCompetitionSport, $newRoundNumber, $gameAmountConfig->getAmount() );
                 }
 
                 if ($firstRoundNumber === null) {
@@ -68,18 +70,23 @@ class Copier
         return $newStructure;
     }
 
-    protected function getNewCompetitionSport( CompetitionSport $sourceCompetitionSport): CompetitionSport {
-        foreach( $this->competition->getSports() as $competitionSport ) {
-            if( $competitionSport->getId() === $sourceCompetitionSport->getId() ) {
+    protected function getNewCompetitionSport(CompetitionSport $sourceCompetitionSport): CompetitionSport
+    {
+        foreach ($this->competition->getSports() as $competitionSport) {
+            if ($competitionSport->getSport()->getId() === $sourceCompetitionSport->getSport()->getId()) {
                 return $competitionSport;
             }
         }
-        throw new Exception("een sport kon niet gevonden worden", E_ERROR );
+        throw new Exception("een sport kon niet gevonden worden", E_ERROR);
     }
 
     protected function copyRound(RoundNumber $roundNumber, Round $round, QualifyGroup $parentQualifyGroup = null): Round
     {
-        $newRound = $this->copyRoundHelper($roundNumber, $round->getPoules()->toArray(), $parentQualifyGroup);
+        $newRound = $this->copyRoundHelper($roundNumber,
+                                           $round->getPoules()->toArray(),
+                                           $round->getFirstScoreConfigs()->toArray(),
+                                           $round->getQualifyAgainstConfigs()->toArray(),
+                                           $parentQualifyGroup);
 
         foreach ($round->getQualifyGroups() as $qualifyGroup) {
             $newQualifyGroup = new QualifyGroup($newRound, $qualifyGroup->getWinnersOrLosers());
@@ -93,17 +100,31 @@ class Copier
     /**
      * @param RoundNumber $roundNumber
      * @param array|Poule[] $poules
+     * @param array|ScoreConfig[] $scoreConfigs
+     * @param array|QualifyAgainstConfig[] $qualifyAgainstConfigs
      * @param QualifyGroup|null $parentQualifyGroup
      * @return Round
      */
     protected function copyRoundHelper(
         RoundNumber $roundNumber,
         array $poules,
+        array $scoreConfigs,
+        array $qualifyAgainstConfigs,
         QualifyGroup $parentQualifyGroup = null
     ): Round {
         $round = new Round($roundNumber, $parentQualifyGroup);
         foreach ($poules as $poule) {
             $this->copyPoule($round, $poule->getNumber(), $poule->getPlaces()->toArray());
+        }
+        $scoreConfigService = new ScoreConfigService();
+        foreach ($scoreConfigs as $scoreConfig) {
+            $newCompetitionSport = $this->getNewCompetitionSport($scoreConfig->getCompetitionSport());
+            $scoreConfigService->copy($newCompetitionSport, $round, $scoreConfig);
+        }
+        $qualifyAgainstConfigService = new QualifyAgainstConfigService();
+        foreach ($qualifyAgainstConfigs as $qualifyAgainstConfig) {
+            $newCompetitionSport = $this->getNewCompetitionSport($qualifyAgainstConfig->getCompetitionSport());
+            $qualifyAgainstConfigService->copy($newCompetitionSport, $round, $qualifyAgainstConfig);
         }
         return $round;
     }

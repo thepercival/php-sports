@@ -6,11 +6,16 @@ namespace Sports\Competition\Sport;
 use Exception;
 use Sports\Competition\Field;
 use Sports\Sport\Repository as SportRepository;
-use Sports\Sport\ScoreConfig as SportScoreConfig;
-use Sports\Sport\ScoreConfig\Repository as SportScoreConfigRepos;
+use Sports\Score\Config as ScoreConfig;
+use Sports\Planning\GameAmountConfig;
+use Sports\Planning\GameAmountConfig\Repository as GameAmountConfigRepos;
+use Sports\Qualify\AgainstConfig as QualifyAgainstConfig;
+use Sports\Qualify\AgainstConfig\Repository as QualifyAgainstConfigRepos;
+use Sports\Score\Config\Repository as ScoreConfigRepos;
 use Sports\Competition\Sport as CompetitionSport;
 use Sports\Competition\Field\Repository as FieldRepository;
 use Sports\Round\Number as RoundNumber;
+use Sports\Structure;
 
 class Repository extends \Sports\Repository
 {
@@ -19,18 +24,25 @@ class Repository extends \Sports\Repository
         return $this->_em->find($this->_entityName, $id, $lockMode, $lockVersion);
     }
 
-    public function customAdd(CompetitionSport $competitionSport, RoundNumber $roundNumber)
+    public function customAdd(CompetitionSport $competitionSport, Structure $structure)
     {
         $conn = $this->_em->getConnection();
         $conn->beginTransaction();
         try {
             $this->save($competitionSport);
 
-            $scoreRepos = new SportScoreConfigRepos($this->_em, $this->_em->getClassMetadata(SportScoreConfig::class));
-            $scoreRepos->addObjects($competitionSport, $roundNumber);
+            $rootRound = $structure->getRootRound();
+            $scoreRepos = new ScoreConfigRepos($this->_em, $this->_em->getClassMetadata(ScoreConfig::class));
+            $scoreRepos->addObjects($competitionSport, $rootRound);
 
-//            $planningRepos = new SportPlanningConfigRepos($this->_em, $this->_em->getClassMetaData(SportPlanningConfig::class));
-//            $planningRepos->addObjects($sportConfig->getSport(), $roundNumber );
+            $qualifyAgainstConfigRepos = new QualifyAgainstConfigRepos($this->_em, $this->_em->getClassMetadata(QualifyAgainstConfig::class));
+            $qualifyAgainstConfigRepos->addObjects($competitionSport, $rootRound);
+
+            $firstRoundNumber = $structure->getFirstRoundNumber();
+            $gameAmountRepos = new GameAmountConfigRepos($this->_em, $this->_em->getClassMetadata(GameAmountConfig::class));
+            $gameAmountRepos->addObjects($competitionSport, $firstRoundNumber);
+
+
 
             $this->_em->flush();
             $conn->commit();
@@ -55,7 +67,7 @@ class Repository extends \Sports\Repository
                 $fieldRepos->remove($field);
             }
 
-            $scoreRepos = new SportScoreConfigRepos($this->_em, $this->_em->getClassMetadata(SportScoreConfig::class));
+            $scoreRepos = new ScoreConfigRepos($this->_em, $this->_em->getClassMetadata(ScoreConfig::class));
             $scoreRepos->removeObjects($competitionSport);
 
 //            $planningRepos = new SportPlanningConfigRepos($this->_em, $this->_em->getClassMetaData(SportPlanningConfig::class));

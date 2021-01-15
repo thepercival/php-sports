@@ -1,15 +1,13 @@
 Sports\Poule:
   exclusion_policy: ALL
   exclude: false
-  access_type: public_method
   custom_accessor_order: [places, games]
-
   properties:
-    id:
-      type: integer
     number:
       type: integer
     places:
       type: ArrayCollection<Sports\Place>
-    games:
-      type: ArrayCollection<Sports\Game>
+    againstGames:
+      type: ArrayCollection<Sports\Game\Against>
+    togetherGames:
+      type: ArrayCollection<Sports\Game\Together>

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Sports\Qualify;
 
 use Doctrine\Common\Collections\ArrayCollection;

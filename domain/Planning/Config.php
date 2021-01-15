@@ -18,8 +18,8 @@ class Config extends Identifiable
     protected int $minutesAfter;
     protected int $selfReferee;
 
-    protected bool $teamupDep;
-    protected int $nrOfHeadtoheadDep;
+    protected bool $teamupDep = false;
+    protected int $nrOfHeadtoheadDep = 1;
 
     const DEFAULTEXTENSION = false;
     const DEFAULTENABLETIME = true;

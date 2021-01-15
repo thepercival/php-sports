@@ -1,11 +1,7 @@
 Sports\Round\Number:
   exclusion_policy: ALL
   exclude: false
-  access_type: public_method
-
   properties:
-    id:
-      type: integer
     number:
       access_type: property
       type: integer
@@ -16,16 +12,7 @@ Sports\Round\Number:
     planningConfig:
       type: Sports\Planning\Config
     gameAmountConfigs:
-      type: ArrayCollection<Sports\Sport\GameAmountConfig>
-#    sportScoreConfigs:
-#      type: ArrayCollection<Sports\Sport\ScoreConfig>
-
-#    qualifyAgainstConfigs:
-#      type: ArrayCollection<Sports\Qualify\AgainstConfig>
+      type: ArrayCollection<Sports\Planning\GameAmountConfig>
     hasPlanning:
       type: boolean
       read_only: true
-  virtual_properties:
-    getFirstSportScoreConfigs:
-      type: ArrayCollection<Sports\Sport\ScoreConfig>
-      serialized_name: sportScoreConfigs

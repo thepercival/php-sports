@@ -6,3 +6,4 @@ Sports\Competition\Sport:
       type: Sports\Sport
     fields:
       type: ArrayCollection<Sports\Competition\Field>
+      groups: [noReference]

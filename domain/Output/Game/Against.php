@@ -37,7 +37,7 @@ class Against extends OutputGame
         if ($game->getState() !== State::Finished) {
             return $score;
         }
-        $finalScore = $this->sportScoreConfigService->getFinalAgainstScore($game);
+        $finalScore = $this->scoreConfigService->getFinalAgainstScore($game);
         if ($finalScore === null) {
             return $score;
         }
@@ -62,7 +62,7 @@ class Against extends OutputGame
             return $score;
         }
         $itemGetter = new AgainstItemsGetter($game->getRound(), State::Finished);
-        $finalScore = $this->sportScoreConfigService->getFinalAgainstScore($game);
+        $finalScore = $this->scoreConfigService->getFinalAgainstScore($game);
         if ($finalScore === null) {
             return $score;
         }

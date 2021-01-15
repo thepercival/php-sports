@@ -1,33 +1,34 @@
 <?php
 
-namespace Sports\Sport\ScoreConfig;
+declare(strict_types=1);
 
-use Sports\Sport\ScoreConfig as SportScoreConfig;
+namespace Sports\Score\Config;
+
+use Sports\Score\Config as ScoreConfig;
 use Sports\Score\AgainstHelper as AgainstScore;
 use Sports\Score\Together as TogetherScore;
 use Sports\Game\Place\Together as TogetherGamePlace;
-use Sports\Sport;
 use Sports\Game\Against as AgainstGame;
 use Sports\Sport\Custom as SportCustom;
-use Sports\Round\Number as RoundNumber;
+use Sports\Round;
 use Sports\Competition\Sport as CompetitionSport;
 
 class Service
 {
-    public function createDefault(CompetitionSport $competitionSport, RoundNumber $roundNumber)
+    public function createDefault(CompetitionSport $competitionSport, Round $round)
     {
-        $sportScoreConfig = new SportScoreConfig($competitionSport, $roundNumber);
-        $sportScoreConfig->setDirection(SportScoreConfig::UPWARDS);
-        $sportScoreConfig->setMaximum(0);
-        $sportScoreConfig->setEnabled(true);
+        $scoreConfig = new ScoreConfig($competitionSport, $round);
+        $scoreConfig->setDirection(ScoreConfig::UPWARDS);
+        $scoreConfig->setMaximum(0);
+        $scoreConfig->setEnabled(true);
         $sport = $competitionSport->getSport();
         if ($sport->getCustomId() !== null && $this->hasNext($sport->getCustomId())) {
-            $subScoreConfig = new SportScoreConfig($competitionSport, $roundNumber, $sportScoreConfig);
-            $subScoreConfig->setDirection(SportScoreConfig::UPWARDS);
+            $subScoreConfig = new ScoreConfig($competitionSport, $round, $scoreConfig);
+            $subScoreConfig->setDirection(ScoreConfig::UPWARDS);
             $subScoreConfig->setMaximum(0);
             $subScoreConfig->setEnabled(false);
         }
-        return $sportScoreConfig;
+        return $scoreConfig;
     }
 
     protected function hasNext(int $customId): bool
@@ -45,45 +46,45 @@ class Service
         return false;
     }
 
-    public function copy(CompetitionSport $competitionSport, RoundNumber $roundNumber, SportScoreConfig $sourceConfig)
+    public function copy(CompetitionSport $competitionSport, Round $round, ScoreConfig $sourceConfig)
     {
-        $newScoreConfig = new SportScoreConfig($competitionSport, $roundNumber, null);
+        $newScoreConfig = new ScoreConfig($competitionSport, $round, null);
         $newScoreConfig->setDirection($sourceConfig->getDirection());
         $newScoreConfig->setMaximum($sourceConfig->getMaximum());
         $newScoreConfig->setEnabled($sourceConfig->getEnabled());
         $previousSubScoreConfig = $sourceConfig->getNext();
         if ($previousSubScoreConfig !== null) {
-            $newSubScoreConfig = new SportScoreConfig($competitionSport, $roundNumber, $newScoreConfig);
+            $newSubScoreConfig = new ScoreConfig($competitionSport, $round, $newScoreConfig);
             $newSubScoreConfig->setDirection($previousSubScoreConfig->getDirection());
             $newSubScoreConfig->setMaximum($previousSubScoreConfig->getMaximum());
             $newSubScoreConfig->setEnabled($previousSubScoreConfig->getEnabled());
         }
     }
 
-    public function isDefault(SportScoreConfig $sportScoreConfig): bool
+    public function isDefault(ScoreConfig $scoreConfig): bool
     {
-        if ($sportScoreConfig->getDirection() !== SportScoreConfig::UPWARDS
-            || $sportScoreConfig->getMaximum() !== 0
+        if ($scoreConfig->getDirection() !== ScoreConfig::UPWARDS
+            || $scoreConfig->getMaximum() !== 0
         ) {
             return false;
         }
-        if ($sportScoreConfig->getNext() === null) {
+        if ($scoreConfig->getNext() === null) {
             return true;
         }
-        return $this->isDefault($sportScoreConfig->getNext());
+        return $this->isDefault($scoreConfig->getNext());
     }
 
-    public function areEqual(SportScoreConfig $sportScoreConfigA, SportScoreConfig $sportScoreConfigB): bool
+    public function areEqual(ScoreConfig $scoreConfigA, ScoreConfig $scoreConfigB): bool
     {
-        if ($sportScoreConfigA->getDirection() !== $sportScoreConfigB->getDirection()
-            || $sportScoreConfigA->getMaximum() !== $sportScoreConfigB->getMaximum()
+        if ($scoreConfigA->getDirection() !== $scoreConfigB->getDirection()
+            || $scoreConfigA->getMaximum() !== $scoreConfigB->getMaximum()
         ) {
             return false;
         }
-        if ($sportScoreConfigA->getNext() !== null && $sportScoreConfigB->getNext() !== null) {
-            return $this->areEqual($sportScoreConfigA->getNext(), $sportScoreConfigB->getNext());
+        if ($scoreConfigA->getNext() !== null && $scoreConfigB->getNext() !== null) {
+            return $this->areEqual($scoreConfigA->getNext(), $scoreConfigB->getNext());
         }
-        return $sportScoreConfigA->getNext() === $sportScoreConfigB->getNext();
+        return $scoreConfigA->getNext() === $scoreConfigB->getNext();
     }
 
     public function getFinalAgainstScore(AgainstGame $game): ?AgainstScore
@@ -91,7 +92,7 @@ class Service
         if ($game->getScores()->count() === 0) {
             return null;
         }
-        if ($game->getSportScoreConfig()->useSubScore()) {
+        if ($game->getScoreConfig()->useSubScore()) {
             $home = 0;
             $away = 0;
             foreach ($game->getScores() as $score) {
@@ -125,7 +126,7 @@ class Service
         if ($gamePlace->getScores()->count() === 0) {
             return $score;
         }
-        if ($gamePlace->getGame()->getSportScoreConfig()->useSubScore()) {
+        if ($gamePlace->getGame()->getScoreConfig()->useSubScore()) {
             $score = 0;
             foreach ($gamePlace->getScores() as $subScore) {
                 $score += $subScore;

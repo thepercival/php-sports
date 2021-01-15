@@ -31,7 +31,7 @@ class Service
         }
 
         $competition = new Competition($league, $season);
-        $competition->setRuleSet($ruleSet);
+        $competition->setRankingRuleSet($ruleSet);
         $competition->setStartDateTime($startDateTime);
 
         return $competition;
@@ -70,7 +70,7 @@ class Service
             throw new Exception("de competitie kan niet worden gewijzigd, omdat deze al gespeelde wedstrijden heeft", E_ERROR);
         }
 
-        $competition->setRuleSet($ruleSet);
+        $competition->setRankingRuleSet($ruleSet);
 
         return $competition;
     }

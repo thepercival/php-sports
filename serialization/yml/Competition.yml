@@ -2,9 +2,8 @@ Sports\Competition:
   exclusion_policy: ALL
   exclude: false
   custom_accessor_order: [sportConfigs,fields]
-
   properties:
-    ruleSet:
+    rankingRuleSet:
       type: integer
     state:
       type: integer
@@ -16,6 +15,7 @@ Sports\Competition:
       type: DateTimeImmutable<'Y-m-d\TH:i:s.u\Z'>
     sports:
       type: ArrayCollection<Sports\Competition\Sport>
+      groups: [noReference]
     referees:
       type: ArrayCollection<Sports\Competition\Referee>
     teamCompetitors:

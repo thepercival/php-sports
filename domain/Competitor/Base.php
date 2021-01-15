@@ -25,23 +25,6 @@ trait Base
         $this->setRegistered(false);
     }
 
-    /**
-     * @return int|string
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    /**
-     * @param int|string $id
-     * @return void
-     */
-    public function setId($id)
-    {
-        $this->id = $id;
-    }
-
     public function getRegistered(): bool
     {
         return $this->registered;

@@ -1,8 +1,6 @@
 Sports\Qualify\AgainstConfig:
   exclusion_policy: ALL
   exclude: false
-  access_type: public_method
-
   properties:
     winPoints:
       type: float
@@ -16,5 +14,5 @@ Sports\Qualify\AgainstConfig:
       type: float
     pointsCalculation:
       type: integer
-    sport:
-      type: Sports\Sport
+    competitionSport:
+      type: Sports\Competition\Sport

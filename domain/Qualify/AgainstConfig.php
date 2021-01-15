@@ -4,14 +4,15 @@ declare(strict_types=1);
 namespace Sports\Qualify;
 
 use Sports\Competition\Sport as CompetitionSport;
-use Sports\Round\Number as RoundNumber;
-use Sports\Sport as SportBase;
+use Sports\Round;
+use Sports\Sport;
 use SportsHelpers\Identifiable;
 
 class AgainstConfig extends Identifiable
 {
     protected CompetitionSport $competitionSport;
-    protected RoundNumber $roundNumber;
+    protected Round $round;
+    protected $roundNumberDep;
     protected float $winPoints = 0.0;
     protected float $drawPoints = 0.0;
     protected float $winPointsExt = 0.0;
@@ -25,11 +26,11 @@ class AgainstConfig extends Identifiable
     const POINTS_CALC_GAMESCORE = 1;
     const POINTS_CALC_BOTH = 2;
 
-    public function __construct(CompetitionSport $competitionSport, RoundNumber $roundNumber)
+    public function __construct(CompetitionSport $competitionSport, Round $round)
     {
         $this->competitionSport = $competitionSport;
-        $this->roundNumber = $roundNumber;
-        $this->roundNumber->getQualifyAgainstConfigs()->add($this);
+        $this->round = $round;
+        $this->round->getQualifyAgainstConfigs()->add($this);
     }
 
     public function getCompetitionSport(): CompetitionSport
@@ -37,14 +38,14 @@ class AgainstConfig extends Identifiable
         return $this->competitionSport;
     }
 
-    public function getSport(): SportBase
+    public function getSport(): Sport
     {
         return $this->competitionSport->getSport();
     }
 
-    public function getRoundNumber(): RoundNumber
+    public function getRound(): Round
     {
-        return $this->roundNumber;
+        return $this->round;
     }
 
     public function getWinPoints(): float

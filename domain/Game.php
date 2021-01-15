@@ -9,11 +9,10 @@ use Doctrine\Common\Collections\Collection;
 use League\Period\Period;
 use Sports\Competition\Field;
 use Sports\Competition\Referee;
-use Sports\Game\Participation;
 use Sports\Game\Place as GamePlace;
 use Sports\Planning\Config as PlanningConfig;
 use Sports\Qualify\AgainstConfig as QualifyConfig;
-use Sports\Sport\ScoreConfig as SportScoreConfig;
+use Sports\Score\Config as ScoreConfig;
 use Sports\Competition\Sport as CompetitionSport;
 use SportsHelpers\Identifiable;
 
@@ -189,14 +188,14 @@ abstract class Game extends Identifiable
         return $this->getRound()->getNumber()->getValidPlanningConfig();
     }
 
-    public function getSportScoreConfig(): SportScoreConfig
+    public function getScoreConfig(): ScoreConfig
     {
-        return $this->getRound()->getNumber()->getValidSportScoreConfig($this->getCompetitionSport());
+        return $this->getRound()->getValidScoreConfig($this->getCompetitionSport());
     }
 
     public function getQualifyConfig(): QualifyConfig
     {
-        return $this->getRound()->getNumber()->getValidQualifyConfig($this->getCompetitionSport());
+        return $this->getRound()->getValidQualifyConfig($this->getCompetitionSport());
     }
 
     public function getPeriod(): Period

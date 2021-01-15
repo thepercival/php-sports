@@ -16,7 +16,7 @@ use Sports\Place;
 use SportsHelpers\Output as OutputBase;
 use Sports\Place\Location\Map as PlaceLocationMap;
 use Sports\Ranking\ItemsGetter\Against as AgainstItemsGetter;
-use Sports\Sport\ScoreConfig\Service as SportScoreConfigService;
+use Sports\Score\Config\Service as ScoreConfigService;
 use Sports\State;
 
 abstract class Game extends OutputBase
@@ -26,14 +26,14 @@ abstract class Game extends OutputBase
      * @var PlaceLocationMap|null
      */
     protected $placeLocationMap;
-    protected SportScoreConfigService $sportScoreConfigService;
+    protected ScoreConfigService $scoreConfigService;
 
     public function __construct(PlaceLocationMap $placeLocationMap = null, LoggerInterface $logger = null)
     {
         parent::__construct($logger);
         $this->nameService = new NameService();
         $this->placeLocationMap = $placeLocationMap;
-        $this->sportScoreConfigService = new SportScoreConfigService();
+        $this->scoreConfigService = new ScoreConfigService();
     }
 
     /**

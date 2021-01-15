@@ -30,5 +30,17 @@
         <order-by-field name="winnersOrLosers" direction="ASC" />
       </order-by>
     </one-to-many>
+    <one-to-many field="scoreConfigs" target-entity="Sports\Score\Config" mapped-by="round">
+      <cascade>
+        <cascade-persist/>
+        <cascade-remove/>
+      </cascade>
+    </one-to-many>
+    <one-to-many field="qualifyAgainstConfigs" target-entity="Sports\Qualify\AgainstConfig" mapped-by="round">
+      <cascade>
+        <cascade-persist/>
+        <cascade-remove/>
+      </cascade>
+    </one-to-many>
   </entity>
 </doctrine-mapping>

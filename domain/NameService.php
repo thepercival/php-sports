@@ -38,7 +38,7 @@ class NameService
     public function getRoundNumberName(RoundNumber $roundNumber): string
     {
         if ($this->roundsHaveSameName($roundNumber)) {
-            return $this->getRoundName($roundNumber->getARound(), true);
+            return $this->getRoundName($roundNumber->getRounds()->first(), true);
         }
         return $this->getHtmlNumber($roundNumber->getNumber()) . ' ronde';
     }

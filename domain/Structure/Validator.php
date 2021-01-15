@@ -50,13 +50,10 @@ class Validator
             throw new Exception($prefix . " bevat geen ronden", E_ERROR);
         }
 
-        foreach ($competition->getSports() as $competitionSport) {
-            if ($roundNumber->isFirst()) {
-                if ($roundNumber->getSportScoreConfig($competitionSport) === null) {
-                    throw new Exception($prefix . " bevat geen geldige sportscoreconfig", E_ERROR);
-                }
-                if ($roundNumber->getQualifyConfig($competitionSport) === null) {
-                    throw new Exception($prefix . " bevat geen geldige puntenconfig", E_ERROR);
+        if ($roundNumber->isFirst()) {
+            foreach ($competition->getSports() as $competitionSport) {
+                if ($roundNumber->getGameAmountConfig($competitionSport) === null) {
+                    throw new Exception($prefix . " bevat geen geldige wedstrijd-aantal-config", E_ERROR);
                 }
             }
         }
@@ -75,8 +72,9 @@ class Validator
      */
     public function checkRoundValidity(Round $round)
     {
+        $prefix = "ronde " . $this->getIdOutput($round->getId());
         if ($round->getPoules()->count() === 0) {
-            throw new Exception("ronde " . $this->getIdOutput($round->getId()) . " bevat geen poules", E_ERROR);
+            throw new Exception($prefix . " bevat geen poules", E_ERROR);
         }
 
         $this->checkPoulesNumberGap($round->getPoules());
@@ -87,10 +85,20 @@ class Validator
 
         if (!$round->getNumber()->hasNext() && $round->getQualifyGroups()->count() > 0) {
             throw new Exception(
-                "ronde " . $this->getIdOutput(
-                    $round->getId()
-                ) . " heeft geen volgende ronde, maar wel kwalificatiegroepen", E_ERROR
+                $prefix . " heeft geen volgende ronde, maar wel kwalificatiegroepen",
+                E_ERROR
             );
+        }
+
+        if ($round->isRoot()) {
+            foreach ($round->getNumber()->getCompetitionSports() as $competitionSport) {
+                if ($round->getScoreConfig($competitionSport) === null) {
+                    throw new Exception($prefix . " bevat geen geldige scoreConfig", E_ERROR);
+                }
+                if ($round->getQualifyConfig($competitionSport) === null) {
+                    throw new Exception($prefix . " bevat geen geldige puntenconfig", E_ERROR);
+                }
+            }
         }
 
         $this->checkQualifyGroupsNumberGap($round->getQualifyGroups(QualifyGroup::WINNERS));
@@ -149,9 +157,9 @@ class Validator
         $this->checkPlacesNumberGap($poule->getPlaces());
         if ($poule->getPlaces()->count() === 0) {
             $prefix = "poule " . $this->getIdOutput($poule->getId()) . "(" . $this->nameService->getPouleName(
-                    $poule,
-                    false
-                ) . ", rondenummer: " . $poule->getRound()->getNumberAsValue() . " )";
+                $poule,
+                false
+            ) . ", rondenummer: " . $poule->getRound()->getNumberAsValue() . " )";
             throw new Exception($prefix . " bevat geen plekken", E_ERROR);
         }
     }

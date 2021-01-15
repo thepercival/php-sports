@@ -34,7 +34,7 @@ class Competition extends Identifiable
     /**
      * @var int
      */
-    private $ruleSet;
+    private $rankingRuleSet;
 
     /**
      * @var int
@@ -66,7 +66,7 @@ class Competition extends Identifiable
     {
         $this->setLeague($league);
         $this->season = $season;
-        $this->ruleSet = AgainstRankingService::RULESSET_WC;
+        $this->rankingRuleSet = AgainstRankingService::RULESSET_WC;
         $this->state = State::Created;
         $this->roundNumbers = new ArrayCollection();
         $this->referees = new ArrayCollection();
@@ -123,17 +123,17 @@ class Competition extends Identifiable
     /**
      * @return int
      */
-    public function getRuleSet()
+    public function getRankingRuleSet()
     {
-        return $this->ruleSet;
+        return $this->rankingRuleSet;
     }
 
     /**
-     * @param int $ruleSet
+     * @param int $rankingRuleSet
      */
-    public function setRuleSet($ruleSet)
+    public function setRankingRuleSet($rankingRuleSet)
     {
-        $this->ruleSet = $ruleSet;
+        $this->rankingRuleSet = $rankingRuleSet;
     }
 
     /**

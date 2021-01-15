@@ -1,26 +1,27 @@
 <?php
 
-namespace Sports\Sport;
+declare(strict_types=1);
+
+namespace Sports\Score;
 
 use Sports\Competition\Sport as CompetitionSport;
+use Sports\Round;
 use Sports\Sport as SportBase;
 use Sports\Round\Number as RoundNumber;
 use SportsHelpers\Identifiable;
 
-class ScoreConfig extends Identifiable
+class Config extends Identifiable
 {
     protected $sportDep;
     protected CompetitionSport $competitionSport;
+    protected Round $round;
+    protected $roundNumberDep;
     /**
-     * @var RoundNumber
-     */
-    protected $roundNumber;
-    /**
-     * @var ScoreConfig|null
+     * @var Config|null
      */
     protected $previous;
     /**
-     * @var ScoreConfig
+     * @var Config
      */
     protected $next;
     /**
@@ -39,25 +40,25 @@ class ScoreConfig extends Identifiable
     const UPWARDS = 1;
     const DOWNWARDS = 2;
 
-    public function __construct(CompetitionSport $competitionSport, RoundNumber $roundNumber, ScoreConfig $previous = null)
+    public function __construct(CompetitionSport $competitionSport, Round $round, Config $previous = null)
     {
         $this->competitionSport = $competitionSport;
-        $this->setRoundNumber($roundNumber);
+        $this->setRound($round);
         $this->setPrevious($previous);
     }
 
     /**
-     * @return ScoreConfig
+     * @return Config
      */
-    public function getPrevious(): ?ScoreConfig
+    public function getPrevious(): ?Config
     {
         return $this->previous;
     }
 
     /**
-     * @param ScoreConfig $scoreConfig
+     * @param Config $scoreConfig
      */
-    public function setPrevious(ScoreConfig $scoreConfig = null)
+    public function setPrevious(Config $scoreConfig = null)
     {
         $this->previous = $scoreConfig;
         if ($this->previous !== null) {
@@ -82,17 +83,17 @@ class ScoreConfig extends Identifiable
     }
 
     /**
-     * @return ScoreConfig
+     * @return Config
      */
-    public function getNext(): ?ScoreConfig
+    public function getNext(): ?Config
     {
         return $this->next;
     }
 
     /**
-     * @param ScoreConfig $scoreConfig
+     * @param Config $scoreConfig
      */
-    public function setNext(ScoreConfig $scoreConfig = null)
+    public function setNext(Config $scoreConfig = null)
     {
         $this->next = $scoreConfig;
     }
@@ -106,7 +107,7 @@ class ScoreConfig extends Identifiable
     }
 
     /**
-     * @return ScoreConfig
+     * @return Config
      */
     public function getFirst()
     {
@@ -122,20 +123,15 @@ class ScoreConfig extends Identifiable
         return $this->competitionSport;
     }
 
-    public function getCompetitionSportId(): int
+    public function getRound(): Round
     {
-        return $this->competitionSport->getId();
+        return $this->round;
     }
 
-    public function getRoundNumber(): RoundNumber
+    protected function setRound(Round $round)
     {
-        return $this->roundNumber;
-    }
-
-    protected function setRoundNumber(RoundNumber $roundNumber)
-    {
-        $this->roundNumber = $roundNumber;
-        $this->roundNumber->getSportScoreConfigs()->add($this);
+        $this->round = $round;
+        $this->round->getScoreConfigs()->add($this);
     }
 
     /**
@@ -151,7 +147,7 @@ class ScoreConfig extends Identifiable
      */
     public function setDirection(int $direction)
     {
-        if ($direction !== ScoreConfig::UPWARDS and $direction !== ScoreConfig::DOWNWARDS) {
+        if ($direction !== Config::UPWARDS and $direction !== Config::DOWNWARDS) {
             throw new \InvalidArgumentException("de richting heeft een onjuiste waarde", E_ERROR);
         }
         $this->direction = $direction;
@@ -194,7 +190,7 @@ class ScoreConfig extends Identifiable
         return !$this->hasNext();
     }
 
-    public function getCalculate(): ScoreConfig
+    public function getCalculate(): Config
     {
         $first = $this->getFirst();
         if ($first->hasNext() && $first->getNext()->getEnabled()) {

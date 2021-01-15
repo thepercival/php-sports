@@ -37,9 +37,9 @@ class Together extends ItemsGetterBase
             if (($game->getState() & $this->gameStates) === 0) {
                 continue;
             }
-            $useSubScore = $game->getSportScoreConfig()->useSubScore();
+            $useSubScore = $game->getScoreConfig()->useSubScore();
             foreach ($game->getPlaces() as $gamePlace) {
-                $finalScore = $this->sportScoreConfigService->getFinalTogetherScore($gamePlace);
+                $finalScore = $this->scoreConfigService->getFinalTogetherScore($gamePlace);
                 $foundItems = array_filter(
                     $items,
                     function (UnrankedRoundItem $item) use ($gamePlace): bool {
@@ -53,7 +53,7 @@ class Together extends ItemsGetterBase
                 $item->addPoints($finalScore);
                 $item->addScored($finalScore);
                 if ($useSubScore) {
-                    $finalSubScore = $this->sportScoreConfigService->getFinalTogetherSubScore($gamePlace);
+                    $finalSubScore = $this->scoreConfigService->getFinalTogetherSubScore($gamePlace);
                     $item->addSubScored($finalSubScore);
                 }
             }
