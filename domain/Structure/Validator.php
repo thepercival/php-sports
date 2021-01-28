@@ -95,7 +95,7 @@ class Validator
                 if ($round->getScoreConfig($competitionSport) === null) {
                     throw new Exception($prefix . " bevat geen geldige scoreConfig", E_ERROR);
                 }
-                if ($round->getQualifyConfig($competitionSport) === null) {
+                if ($round->getQualifyAgainstConfig($competitionSport) === null) {
                     throw new Exception($prefix . " bevat geen geldige puntenconfig", E_ERROR);
                 }
             }

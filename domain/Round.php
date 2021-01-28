@@ -501,7 +501,7 @@ class Round extends Identifiable
         return $this->qualifyAgainstConfigs;
     }
 
-    public function getQualifyConfig(CompetitionSport $competitionSport): ?QualifyAgainstConfig
+    public function getQualifyAgainstConfig(CompetitionSport $competitionSport): ?QualifyAgainstConfig
     {
         $qualifyConfigs = $this->qualifyAgainstConfigs->filter(function (QualifyAgainstConfig $qualifyConfigIt) use ($competitionSport): bool {
             return $qualifyConfigIt->getCompetitionSport() === $competitionSport;
@@ -512,23 +512,23 @@ class Round extends Identifiable
         return null;
     }
 
-    public function getValidQualifyConfig(CompetitionSport $competitionSport): QualifyAgainstConfig
+    public function getValidQualifyAgainstConfig(CompetitionSport $competitionSport): QualifyAgainstConfig
     {
-        $qualifyConfig = $this->getQualifyConfig($competitionSport);
+        $qualifyConfig = $this->getQualifyAgainstConfig($competitionSport);
         if ($qualifyConfig !== null) {
             return $qualifyConfig;
         }
-        return $this->getParent()->getValidQualifyConfig($competitionSport);
+        return $this->getParent()->getValidQualifyAgainstConfig($competitionSport);
     }
 
     /**
      * @return array|QualifyAgainstConfig[]
      */
-    public function getValidQualifyConfigs(): array
+    public function getValidQualifyAgainstConfigs(): array
     {
         return $this->number->getCompetitionSports()->map(
             function (CompetitionSport $competitionSport): QualifyAgainstConfig {
-                return $this->getValidQualifyConfig($competitionSport);
+                return $this->getValidQualifyAgainstConfig($competitionSport);
             },
         )->toArray();
     }

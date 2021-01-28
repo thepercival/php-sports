@@ -6,6 +6,7 @@ use Sports\Planning\Config as PlanningConfig;
 use Sports\Planning\GameAmountConfig;
 use Sports\Round\Number as RoundNumber;
 use Sports\Competition\Sport as CompetitionSport;
+use SportsHelpers\GameMode;
 use SportsHelpers\SportConfig;
 
 class Service
@@ -14,7 +15,7 @@ class Service
     {
         $gameMode = $roundNumber->getValidPlanningConfig()->getGameMode();
         $amount = PlanningConfig::DEFAULTGAMEAMOUNT;
-        if ($gameMode === SportConfig::GAMEMODE_TOGETHER) {
+        if ($gameMode === GameMode::TOGETHER) {
             $amount = $competitionSport->getFields()->count();
         }
         return new GameAmountConfig($competitionSport, $roundNumber, $amount);

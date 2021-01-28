@@ -112,12 +112,11 @@ class Round implements SubscribingHandlerInterface
 
     protected function createQualifyAgainstConfig(array $arrConfig, CompetitionSport $competitionSport, RoundBase $round)
     {
-        $config = new QualifyAgainstConfig($competitionSport, $round);
+        $config = new QualifyAgainstConfig($competitionSport, $round, $arrConfig["pointsCalculation"]);
         $config->setWinPoints($arrConfig["winPoints"]);
         $config->setWinPointsExt($arrConfig["winPointsExt"]);
         $config->setDrawPoints($arrConfig["drawPoints"]);
         $config->setDrawPointsExt($arrConfig["drawPointsExt"]);
         $config->setLosePointsExt($arrConfig["losePointsExt"]);
-        $config->setPointsCalculation($arrConfig["pointsCalculation"]);
     }
 }

@@ -12,7 +12,7 @@ class Repository extends SportRepository
 {
     public function addObjects(CompetitionSport $competitionSport, Round $round)
     {
-        $qualifyConfig = $round->getQualifyConfig($competitionSport);
+        $qualifyConfig = $round->getQualifyAgainstConfig($competitionSport);
         if ($qualifyConfig === null) {
             return;
         }

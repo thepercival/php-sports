@@ -1,11 +1,6 @@
 Sports\Game\Place:
   exclusion_policy: ALL
   exclude: false
-  access_type: public_method
-
-  properties:
-    homeAway:
-      type: boolean
   virtual_properties:
     getPlaceNr:
       type: integer

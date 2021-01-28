@@ -4,23 +4,33 @@ declare(strict_types=1);
 namespace Sports\Qualify\AgainstConfig;
 
 use Sports\Qualify\AgainstConfig as QualifyConfig;
+use Sports\Ranking\PointsCalculation;
 use Sports\Sport;
 use Sports\Competition\Sport as CompetitionSport;
 use Sports\Sport\Custom as SportCustom;
 use Sports\Round;
+use SportsHelpers\GameMode;
 
 class Service
 {
     public function createDefault(CompetitionSport $competitionSport, Round $round)
     {
         $sport = $competitionSport->getSport();
-        $qualifyConfig = new QualifyConfig($competitionSport, $round);
+        $qualifyConfig = new QualifyConfig($competitionSport, $round, $this->getDefaultPointCalculation($round));
         $qualifyConfig->setWinPoints($this->getDefaultWinPoints($sport));
         $qualifyConfig->setDrawPoints($this->getDefaultDrawPoints($sport));
         $qualifyConfig->setWinPointsExt($this->getDefaultWinPointsExt($sport));
         $qualifyConfig->setDrawPointsExt($this->getDefaultDrawPointsExt($sport));
         $qualifyConfig->setLosePointsExt($this->getDefaultLosePointsExt($sport));
         return $qualifyConfig;
+    }
+
+    protected function getDefaultPointCalculation(Round $round): int
+    {
+        if ($round->getNumber()->getValidPlanningConfig()->getGameMode() === GameMode::AGAINST) {
+            return PointsCalculation::AGAINSTGAMEPOINTS;
+        }
+        return PointsCalculation::SCORES;
     }
 
     protected function getDefaultWinPoints(Sport $sport): float
@@ -92,12 +102,11 @@ class Service
 
     public function copy(CompetitionSport $competitionSport, Round $round, QualifyConfig $sourceConfig)
     {
-        $newConfig = new QualifyConfig($competitionSport, $round);
+        $newConfig = new QualifyConfig($competitionSport, $round, $sourceConfig->getPointsCalculation());
         $newConfig->setWinPoints($sourceConfig->getWinPoints());
         $newConfig->setDrawPoints($sourceConfig->getDrawPoints());
         $newConfig->setWinPointsExt($sourceConfig->getWinPointsExt());
         $newConfig->setDrawPointsExt($sourceConfig->getDrawPointsExt());
         $newConfig->setLosePointsExt($sourceConfig->getLosePointsExt());
-        $newConfig->setPointsCalculation($sourceConfig->getPointsCalculation());
     }
 }

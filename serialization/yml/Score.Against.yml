@@ -1,0 +1,8 @@
+Sports\Score\Against:
+  exclusion_policy: ALL
+  exclude: false
+  properties:
+    home:
+      type: integer
+    away:
+      type: integer

@@ -10,7 +10,7 @@ use Sports\Poule\Horizontal as HorizontalPoule;
 use Sports\Place;
 use Sports\Round;
 use Sports\Ranking\RoundItem\Ranked as RankedRoundItem;
-use SportsHelpers\SportConfig;
+use SportsHelpers\GameMode;
 
 class Service
 {
@@ -30,7 +30,7 @@ class Service
     public function __construct(Round $round, int $rulesSet, int $gameStates = null)
     {
         $gameMode = $round->getNumber()->getValidPlanningConfig()->getGameMode();
-        if( $gameMode === SportConfig::GAMEMODE_AGAINST ) {
+        if( $gameMode === GameMode::AGAINST ) {
             $this->helper = new Service\Against($round, $rulesSet, $gameStates );
         }
     }

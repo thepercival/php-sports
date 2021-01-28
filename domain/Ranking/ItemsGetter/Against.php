@@ -84,20 +84,21 @@ class Against extends ItemsGetterBase
         if ($finalScore === null) {
             return 0;
         }
+        $qualifyAgainstConfig = $game->getQualifyAgainstConfig();
         if ($finalScore->getResult($homeAway) === AgainstGame::RESULT_WIN) {
             if ($game->getFinalPhase() === Game::PHASE_REGULARTIME) {
-                return $game->getQualifyConfig()->getWinPoints();
+                return $qualifyAgainstConfig->getWinPoints();
             } elseif ($game->getFinalPhase() === Game::PHASE_EXTRATIME) {
-                return $game->getQualifyConfig()->getWinPointsExt();
+                return $qualifyAgainstConfig->getWinPointsExt();
             }
         } elseif ($finalScore->getResult($homeAway) === AgainstGame::RESULT_DRAW) {
             if ($game->getFinalPhase() === Game::PHASE_REGULARTIME) {
-                return $game->getQualifyConfig()->getDrawPoints();
+                return $qualifyAgainstConfig->getDrawPoints();
             } elseif ($game->getFinalPhase() === Game::PHASE_EXTRATIME) {
-                return $game->getQualifyConfig()->getDrawPointsExt();
+                return $qualifyAgainstConfig->getDrawPointsExt();
             }
         } elseif ($game->getFinalPhase() === Game::PHASE_EXTRATIME) {
-            return $game->getQualifyConfig()->getLosePointsExt();
+            return $qualifyAgainstConfig->getLosePointsExt();
         }
         return 0;
     }

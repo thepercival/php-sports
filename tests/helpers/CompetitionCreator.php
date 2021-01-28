@@ -14,7 +14,7 @@ use Sports\Sport;
 use Sports\Sport\Custom as SportCustom;
 use Sports\Competition\Sport as CompetitionSport;
 use Sports\Competition\Sport\Service as CompetitionSportService;
-use SportsHelpers\SportConfig;
+use SportsHelpers\GameMode;
 
 trait CompetitionCreator {
     /**
@@ -60,7 +60,7 @@ trait CompetitionCreator {
             return $this->sport;
         }
 
-        $this->sport = new Sport("voetbal", true, 2, SportConfig::GAMEMODE_AGAINST );
+        $this->sport = new Sport("voetbal", true, 2, GameMode::AGAINST );
         $this->sport->setCustomId( SportCustom::Football );
         return $this->sport;
     }

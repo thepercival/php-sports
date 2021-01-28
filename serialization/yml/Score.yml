@@ -1,12 +1,7 @@
-Sports\Game\Score:
+Sports\Score:
   exclusion_policy: ALL
   exclude: false
-  access_type: public_method
-
   properties:
-    id:
-      type: integer
-
     home:
       type: integer
     away:

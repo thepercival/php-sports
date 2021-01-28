@@ -1,0 +1,8 @@
+Sports\Game\Against:
+  exclusion_policy: ALL
+  exclude: false
+  properties:
+    places:
+      type: ArrayCollection<Sports\Game\Place\Against>
+    scores:
+      type: ArrayCollection<Sports\Score\Against>

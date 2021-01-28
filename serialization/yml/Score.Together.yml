@@ -1,0 +1,6 @@
+Sports\Score\Together:
+  exclusion_policy: ALL
+  exclude: false
+  properties:
+    score:
+      type: integer

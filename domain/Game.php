@@ -11,7 +11,6 @@ use Sports\Competition\Field;
 use Sports\Competition\Referee;
 use Sports\Game\Place as GamePlace;
 use Sports\Planning\Config as PlanningConfig;
-use Sports\Qualify\AgainstConfig as QualifyConfig;
 use Sports\Score\Config as ScoreConfig;
 use Sports\Competition\Sport as CompetitionSport;
 use SportsHelpers\Identifiable;
@@ -35,7 +34,6 @@ abstract class Game extends Identifiable
      * @var ?Field
      */
     protected $field;
-    protected $fieldPriority; // for serialization, not used
     protected CompetitionSport $competitionSport;
     /**
      * @var int
@@ -173,16 +171,6 @@ abstract class Game extends Identifiable
         $this->field = $field;
     }
 
-    public function getFieldPriority(): int
-    {
-        return $this->field !== null ? $this->field->getPriority() : $this->fieldPriority;
-    }
-
-    public function setFieldPriority(int $fieldPriority = null)
-    {
-        $this->fieldPriority = $fieldPriority;
-    }
-
     public function getPlanningConfig(): PlanningConfig
     {
         return $this->getRound()->getNumber()->getValidPlanningConfig();
@@ -191,11 +179,6 @@ abstract class Game extends Identifiable
     public function getScoreConfig(): ScoreConfig
     {
         return $this->getRound()->getValidScoreConfig($this->getCompetitionSport());
-    }
-
-    public function getQualifyConfig(): QualifyConfig
-    {
-        return $this->getRound()->getValidQualifyConfig($this->getCompetitionSport());
     }
 
     public function getPeriod(): Period

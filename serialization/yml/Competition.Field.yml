@@ -1,10 +1,10 @@
 Sports\Competition\Field:
   exclusion_policy: ALL
   exclude: false
-  access_type: public_method
-
   properties:
     priority:
       type: integer
+      groups: [noReference]
     name:
       type: string
+      groups: [noReference]

@@ -6,7 +6,7 @@ namespace Sports\SerializationHandler;
 use Sports\Competition;
 use Sports\Competition\Sport as CompetitionSport;
 use Sports\Sport;
-use SportsHelpers\SportConfig;
+use SportsHelpers\GameMode;
 
 class CompetitionSportCreator
 {
@@ -34,7 +34,7 @@ class CompetitionSportCreator
                 'dummy',
                 true,
                 2,
-                SportConfig::GAMEMODE_AGAINST
+                GameMode::AGAINST
             );
             $sport->setId($sportId);
             $competitionSport = new CompetitionSport($sport, $competition);

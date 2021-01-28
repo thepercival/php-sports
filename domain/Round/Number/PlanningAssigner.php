@@ -4,6 +4,7 @@ namespace Sports\Round\Number;
 
 use DateTimeImmutable;
 use Exception;
+use SportsHelpers\GameMode;
 use SportsHelpers\SportConfig;
 use SportsPlanning\Batch;
 use SportsPlanning\Batch\SelfReferee as SelfRefereeBatch;
@@ -74,7 +75,7 @@ class PlanningAssigner
      */
     protected function createBatchGames($batch, PlanningConfig $planningConfig, DateTimeImmutable $gameStartDateTime)
     {
-        if( $planningConfig->getGameMode() === SportConfig::GAMEMODE_AGAINST ) {
+        if( $planningConfig->getGameMode() === GameMode::AGAINST ) {
             $this->createAgainstBatchGames($batch, $gameStartDateTime);
         } else {
             $this->createTogetherBatchGames($batch, $gameStartDateTime);

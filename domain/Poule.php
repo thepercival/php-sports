@@ -4,6 +4,7 @@ namespace Sports;
 
 use \Doctrine\Common\Collections\ArrayCollection;
 use InvalidArgumentException;
+use SportsHelpers\GameMode;
 use SportsHelpers\SportConfig as SportConfig;
 use SportsHelpers\Identifiable;
 use Sports\Game\Against as AgainstGame;
@@ -138,7 +139,7 @@ class Poule extends Identifiable
      */
     public function getGames()
     {
-        if( $this->getRound()->getNumber()->getValidPlanningConfig()->getGameMode() === SportConfig::GAMEMODE_AGAINST ) {
+        if ($this->getRound()->getNumber()->getValidPlanningConfig()->getGameMode() === GameMode::AGAINST) {
             return $this->againstGames;
         }
         return $this->togetherGames;
@@ -175,7 +176,7 @@ class Poule extends Identifiable
         return ($this->getPlaces()->count() > 2);
     }
 
-    public function getNrOfGamesPerRoundNumber( SportConfig $sportConfig ): int
+    public function getNrOfGamesPerRoundNumber(SportConfig $sportConfig): int
     {
         $nrOfPlaces = $this->getPlaces()->count();
         $rest = $nrOfPlaces % $sportConfig->getNrOfGamePlaces();
