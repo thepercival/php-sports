@@ -44,7 +44,7 @@ class AgainstGames
 
     protected function getScore(AgainstGame $game): string {
         return join( "&", $game->getScores()->map( function( AgainstScore $gameScore ): string {
-            return $gameScore->getHomeScore() . " - " . $gameScore->getAwayScore() ;
+            return $gameScore->getHome() . " - " . $gameScore->getAway() ;
         })->toArray() );
     }
 }

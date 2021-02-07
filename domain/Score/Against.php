@@ -13,15 +13,15 @@ class Against extends Score
     const SCORED = 1;
     const RECEIVED = 2;
 
-    public function __construct(AgainstGame $game, int $homeScore, int $awayScore, int $phase, int $number = null)
+    public function __construct(AgainstGame $game, int $home, int $away, int $phase, int $number = null)
     {
-        $this->setHomeScore($homeScore);
-        $this->setAwayScore($awayScore);
+        $this->setHome($home);
+        $this->setAway($away);
         $this->setGame($game);
         if ($number === null) {
             $number = $game->getScores()->count();
         }
-        parent::__construct($phase, $number );
+        parent::__construct($phase, $number);
     }
 
     public function getGame(): AgainstGame

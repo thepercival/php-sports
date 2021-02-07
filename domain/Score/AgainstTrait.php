@@ -6,36 +6,37 @@ use Sports\Game\Against as AgainstGame;
 
 trait AgainstTrait
 {
-    protected int $homeScore;
-    protected int $awayScore;
+    protected int $home;
+    protected int $away;
 
-    public function getHomeScore(): int
+    public function getHome(): int
     {
-        return $this->homeScore;
+        return $this->home;
     }
 
-    public function setHomeScore(int $homeScore)
+    public function setHome(int $home)
     {
-        $this->homeScore = $homeScore;
+        $this->home = $home;
     }
 
-    public function getAwayScore(): int
+    public function getAway(): int
     {
-        return $this->awayScore;
+        return $this->away;
     }
 
-    public function setAwayScore(int $awayScore)
+    public function setAway(int $away)
     {
-        $this->awayScore = $awayScore;
+        $this->away = $away;
     }
 
-    public function get( bool $homeAway): int {
-        return $homeAway === AgainstGame::HOME ? $this->getHomeScore() : $this->getAwayScore();
+    public function get(bool $homeAway): int
+    {
+        return $homeAway === AgainstGame::HOME ? $this->getHome() : $this->getAway();
     }
 
-    public function getResult( bool $homeAway ): int
+    public function getResult(bool $homeAway): int
     {
-        if ($this->getHomeScore() === $this->getAwayScore()) {
+        if ($this->getHome() === $this->getAway()) {
             return AgainstGame::RESULT_DRAW;
         }
         return $this->get($homeAway) > $this->get(!$homeAway) ? AgainstGame::RESULT_WIN : AgainstGame::RESULT_LOST;

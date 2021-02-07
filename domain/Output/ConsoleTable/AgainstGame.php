@@ -27,49 +27,52 @@ class AgainstGame
      * @param AgainstGameBase $game
      * @param array|TeamCompetitor[] $teamCompetitors
      */
-    public function display( Competition $competition, AgainstGameBase $game, array $teamCompetitors ) {
+    public function display(Competition $competition, AgainstGameBase $game, array $teamCompetitors)
+    {
         $table = new ConsoleTable();
         // $table->setHeaders(array('league', 'season', 'batchNr', 'id', 'datetime', 'state', 'home', 'score', 'away' ) );
 
-        $this->placeLocationMap = new PlaceLocationMap( $teamCompetitors );
-        $this->nameService = new NameService( $this->placeLocationMap );
+        $this->placeLocationMap = new PlaceLocationMap($teamCompetitors);
+        $this->nameService = new NameService($this->placeLocationMap);
         $this->game = $game;
 
-        $table->addRow( $this->getGameRow( $competition ) );
-        $table->addRow( $this->getScoreRow() );
-        $table->addRow( ["", "", ""] );
+        $table->addRow($this->getGameRow($competition));
+        $table->addRow($this->getScoreRow());
+        $table->addRow(["", "", ""]);
 
-        $this->displayLineups( $table );
-        $table->addRow( ["", "", ""] );
+        $this->displayLineups($table);
+        $table->addRow(["", "", ""]);
 
-        $this->displayEvents( $table );
+        $this->displayEvents($table);
 
         $table->display();
     }
 
-    protected function displayLineups( ConsoleTable $table ) {
-        $homeParticipations = $this->getLineup( AgainstGameBase::HOME );
-        $awayParticipations = $this->getLineup( AgainstGameBase::AWAY );
-        while( count($homeParticipations) > 0 || count($awayParticipations) > 0 ) {
+    protected function displayLineups(ConsoleTable $table)
+    {
+        $homeParticipations = $this->getLineup(AgainstGameBase::HOME);
+        $awayParticipations = $this->getLineup(AgainstGameBase::AWAY);
+        while (count($homeParticipations) > 0 || count($awayParticipations) > 0) {
             $homeParticipationName = "";
-            $homeParticipation = array_pop( $homeParticipations );
-            if( $homeParticipation !== null ) {
+            $homeParticipation = array_pop($homeParticipations);
+            if ($homeParticipation !== null) {
                 $homeParticipationName = $homeParticipation->getPlayer()->getLineLetter() . " ";
                 $homeParticipationName .= $homeParticipation->getPlayer()->getPerson()->getName();
             }
             $awayParticipationName = "";
-            $awayParticipation = array_pop( $awayParticipations );
-            if( $awayParticipation !== null ) {
+            $awayParticipation = array_pop($awayParticipations);
+            if ($awayParticipation !== null) {
                 $awayParticipationName = $awayParticipation->getPlayer()->getLineLetter() . " ";
                 $awayParticipationName .= $awayParticipation->getPlayer()->getPerson()->getName();
                 // $awayParticipationName .= " : " . $awayParticipation->getBeginMinute() . " => " . $awayParticipation->getEndMinute();
             }
-            $table->addRow( [  $homeParticipationName, "", $awayParticipationName ] );
+            $table->addRow([  $homeParticipationName, "", $awayParticipationName ]);
         }
     }
 
-    protected function displayEvents( ConsoleTable $table ) {
-        foreach( $this->game->getEvents() as $event ) {
+    protected function displayEvents(ConsoleTable $table)
+    {
+        foreach ($this->game->getEvents() as $event) {
             foreach ($this->getEventRows($event) as $eventRow) {
                 $table->addRow($eventRow);
             }
@@ -80,14 +83,15 @@ class AgainstGame
      * @param GoalEvent|CardEvent|SubstitutionEvent $event
      * @return array
      */
-    protected function getEventRows( $event ): array {
+    protected function getEventRows($event): array
+    {
         $rows = [];
-        foreach( [AgainstGameBase::HOME,AgainstGameBase::AWAY] as $homeAway ) {
+        foreach ([AgainstGameBase::HOME,AgainstGameBase::AWAY] as $homeAway) {
             foreach ($this->game->getCompetitors($this->placeLocationMap, $homeAway) as $competitor) {
-                if( !($competitor instanceof TeamCompetitor) || $competitor->getTeam() !== $event->getTeam() ) {
+                if (!($competitor instanceof TeamCompetitor) || $competitor->getTeam() !== $event->getTeam()) {
                     continue;
                 }
-                $rows = array_merge( $rows, $this->getEventRowsHelper( $event, $homeAway ) );
+                $rows = array_merge($rows, $this->getEventRowsHelper($event, $homeAway));
             }
         }
         return $rows;
@@ -98,10 +102,11 @@ class AgainstGame
      * @param bool $homeAway
      * @return array
      */
-    protected function getEventRowsHelper( $event, bool $homeAway ): array {
-        if( $event instanceof GoalEvent ) {
+    protected function getEventRowsHelper($event, bool $homeAway): array
+    {
+        if ($event instanceof GoalEvent) {
             return $this->getGoalEventRows($event, $homeAway);
-        } elseif( $event instanceof CardEvent ) {
+        } elseif ($event instanceof CardEvent) {
             return $this->getCardEventRows($event, $homeAway);
         } // else if( $event instanceof SubstitutionEvent ) {
         return $this->getSubstituteEventRows($event, $homeAway);
@@ -109,8 +114,10 @@ class AgainstGame
         // return [];
     }
 
-    protected function getGoalEventRows( GoalEvent $event, bool $homeAway ): array {
-        $valueHome = ""; $valueAway = "";
+    protected function getGoalEventRows(GoalEvent $event, bool $homeAway): array
+    {
+        $valueHome = "";
+        $valueAway = "";
         $rows = [];
         if ($homeAway === AgainstGameBase::HOME) {
             $valueHome .= "GL  ";
@@ -125,11 +132,13 @@ class AgainstGame
         return $rows;
     }
 
-    protected function getCardEventRows( CardEvent $event, bool $homeAway ): array {
-        $valueHome = ""; $valueAway = "";
+    protected function getCardEventRows(CardEvent $event, bool $homeAway): array
+    {
+        $valueHome = "";
+        $valueAway = "";
         $rows = [];
         if ($homeAway === AgainstGameBase::HOME) {
-            if( $event->getType() === Sport::WARNING ) {
+            if ($event->getType() === Sport::WARNING) {
                 $valueHome .= "YC  ";
             } else {
                 $valueHome .= "RC  ";
@@ -139,7 +148,7 @@ class AgainstGame
         } else {
             $valueAway .= $event->getGameParticipation()->getPlayer()->getPerson()->getName();
             $valueAway .= " " . $event->getMinute() . "'";
-            if( $event->getType() === Sport::WARNING ) {
+            if ($event->getType() === Sport::WARNING) {
                 $valueAway .= "  YC";
             } else {
                 $valueAway .= "  RC  ";
@@ -149,9 +158,12 @@ class AgainstGame
         return $rows;
     }
 
-    protected function getSubstituteEventRows( SubstitutionEvent $event, bool $homeAway ): array {
-        $valueHomeOut = ""; $valueAwayOut = "";
-        $valueHomeIn = ""; $valueAwayIn = "";
+    protected function getSubstituteEventRows(SubstitutionEvent $event, bool $homeAway): array
+    {
+        $valueHomeOut = "";
+        $valueAwayOut = "";
+        $valueHomeIn = "";
+        $valueAwayIn = "";
         $rows = [];
         if ($homeAway === AgainstGameBase::HOME) {
             $valueHomeOut .= "OUT ";
@@ -177,61 +189,63 @@ class AgainstGame
      * @param bool $homeAway
      * @return array|GameParticipation[]
      */
-    protected function getLineup( bool $homeAway ): array {
+    protected function getLineup(bool $homeAway): array
+    {
         $participations = [];
-        $homeCompetitors = $this->game->getCompetitors( $this->placeLocationMap, $homeAway );
-        foreach( $homeCompetitors as $homeTeamCompetitor ) {
-            if( !($homeTeamCompetitor instanceof TeamCompetitor) ) {
+        $homeCompetitors = $this->game->getCompetitors($this->placeLocationMap, $homeAway);
+        foreach ($homeCompetitors as $homeTeamCompetitor) {
+            if (!($homeTeamCompetitor instanceof TeamCompetitor)) {
                 continue;
             }
             $participations = array_merge(
                 $participations,
-                $this->game->getLineup( $homeTeamCompetitor )
+                $this->game->getLineup($homeTeamCompetitor)
             );
         }
         return $participations;
     }
 
 
-//| Fortuna Sittard                               | 1 - 3   | Heerenveen                                    |
-//|                                               |         |                                               |
-//| alexei-koselev/98078      K Alexei Koşelev    |         | erwin-mulder/19019        K Erwin Mulder      |
-//| roel-janssen/110360       V Roel Janssen      |         | jan-paul-van-hecke/962012 V Jan Paul van Heck |
-//| lazaros-rota/941338       V Lazaros Rota      |         | pawel-bochniewicz/286097  V Paweł Bochniewic |
-//| george-cox/920556         V George Cox        |         | lucas-woudenberg/282705   V Lucas Woudenberg  |
-//| branislav-ninaj/193328    V Branislav Niňaj   |         | sherel-floranus/803021    V Sherel Floranus   |
-//| jorrit-smeets/770183      M Jorrit Smeets     |         | joey-veerman/850816       M Joey Veerman      |
-//| ben-rienstra/123879       M Ben Rienstra      |         | mitchell-van-bergen/82766 M Mitchell Van Berg |
-//| mats-seuntjens/163541     M Mats Seuntjens    |         | arjen-van-der-heide/91700 M Arjen Van Der Hei |
-//| sebastian-polter/39733    A Sebastian Polter  |         | kongolo-rodney/792319     M Rodney Kongolo    |
-//| flemming-zian/875137      A Zian Flemming     |         | henk-veerman/313264       A Henk Veerman      |
-//| emil-hansson/794362       A Emil Hansson      |         | meier-oliver-batista/9076 A Oliver Batista Me |
-//|  ----------------------------                 |         |  ----------------------------                 |
-//|                                               | 0 - 1   | 15"  GOL Oliver Batista Meier                 |
-// |                                               |         |      ASS Henk Veerman                         |
-// |                                               | 0 - 2   | 29"  PEN Joey Veerman                         |
-//|                                               | 0 - 3   | 34"  GOL Henk Veerman                         |
-// |                                               |         |      ASS Arjen Van Der Heide                  |
-// | 46"  OUT Ben Rienstra                         |         |                                               |
-//|      IN  Tesfaldet Tekie                      |         |                                               |
-//| 46"  OUT Emil Hansson                         |         |                                               |
-// |      IN  Lisandro Semedo                      |         |                                               |
-// | 62"  YC  Roel Janssen                         |         |                                               |
-//| 69"  YC  Branislav Niňaj                      |         |                                               |
-// |                                               |         | 69"  OUT Oliver Batista Meier                 |
-//|                                               |         |      IN  Rami Hajal                           |
-//| 72"  YC  Lazaros Rota                         |         |                                               |
-// | 73"  GOL Sebastian Polter                     | 1 - 3   |                                               |
-//|      ASS Lisandro Semedo                      |         |                                               |
-//| 87"  YC  Zian Flemming                        |         |                                               |
-// |                                               |         | 90"  OUT Arjen Van Der Heide                  |
-//|                                               |         |      IN  Couhaib Driouech                     |
+    //| Fortuna Sittard                               | 1 - 3   | Heerenveen                                    |
+    //|                                               |         |                                               |
+    //| alexei-koselev/98078      K Alexei Koşelev    |         | erwin-mulder/19019        K Erwin Mulder      |
+    //| roel-janssen/110360       V Roel Janssen      |         | jan-paul-van-hecke/962012 V Jan Paul van Heck |
+    //| lazaros-rota/941338       V Lazaros Rota      |         | pawel-bochniewicz/286097  V Paweł Bochniewic |
+    //| george-cox/920556         V George Cox        |         | lucas-woudenberg/282705   V Lucas Woudenberg  |
+    //| branislav-ninaj/193328    V Branislav Niňaj   |         | sherel-floranus/803021    V Sherel Floranus   |
+    //| jorrit-smeets/770183      M Jorrit Smeets     |         | joey-veerman/850816       M Joey Veerman      |
+    //| ben-rienstra/123879       M Ben Rienstra      |         | mitchell-van-bergen/82766 M Mitchell Van Berg |
+    //| mats-seuntjens/163541     M Mats Seuntjens    |         | arjen-van-der-heide/91700 M Arjen Van Der Hei |
+    //| sebastian-polter/39733    A Sebastian Polter  |         | kongolo-rodney/792319     M Rodney Kongolo    |
+    //| flemming-zian/875137      A Zian Flemming     |         | henk-veerman/313264       A Henk Veerman      |
+    //| emil-hansson/794362       A Emil Hansson      |         | meier-oliver-batista/9076 A Oliver Batista Me |
+    //|  ----------------------------                 |         |  ----------------------------                 |
+    //|                                               | 0 - 1   | 15"  GOL Oliver Batista Meier                 |
+    // |                                               |         |      ASS Henk Veerman                         |
+    // |                                               | 0 - 2   | 29"  PEN Joey Veerman                         |
+    //|                                               | 0 - 3   | 34"  GOL Henk Veerman                         |
+    // |                                               |         |      ASS Arjen Van Der Heide                  |
+    // | 46"  OUT Ben Rienstra                         |         |                                               |
+    //|      IN  Tesfaldet Tekie                      |         |                                               |
+    //| 46"  OUT Emil Hansson                         |         |                                               |
+    // |      IN  Lisandro Semedo                      |         |                                               |
+    // | 62"  YC  Roel Janssen                         |         |                                               |
+    //| 69"  YC  Branislav Niňaj                      |         |                                               |
+    // |                                               |         | 69"  OUT Oliver Batista Meier                 |
+    //|                                               |         |      IN  Rami Hajal                           |
+    //| 72"  YC  Lazaros Rota                         |         |                                               |
+    // | 73"  GOL Sebastian Polter                     | 1 - 3   |                                               |
+    //|      ASS Lisandro Semedo                      |         |                                               |
+    //| 87"  YC  Zian Flemming                        |         |                                               |
+    // |                                               |         | 90"  OUT Arjen Van Der Heide                  |
+    //|                                               |         |      IN  Couhaib Driouech                     |
 
     /**
      * @param Competition $competition
      * @return array|string[]
      */
-    protected function getGameRow(Competition $competition): array {
+    protected function getGameRow(Competition $competition): array
+    {
         return [
             $competition->getLeague()->getName(),
             $competition->getSeason()->getName(),
@@ -242,20 +256,21 @@ class AgainstGame
     /**
      * @return array|string[]
      */
-    protected function getScoreRow(): array {
+    protected function getScoreRow(): array
+    {
         $scoreConfigService = new ScoreConfigService();
         $finalScore = $scoreConfigService->getFinalAgainstScore($this->game);
 
         $score = " - ";
-        if( $finalScore !== null ) {
-            $score = $finalScore->getHomeScore() . $score . $finalScore->getAwayScore();
+        if ($finalScore !== null) {
+            $score = $finalScore->getHome() . $score . $finalScore->getAway();
         }
         $homePlaces = $this->game->getPlaces(AgainstGameBase::HOME);
         $awayPlaces = $this->game->getPlaces(AgainstGameBase::AWAY);
         return [
-            $this->nameService->getPlacesFromName( $homePlaces, true, true),
+            $this->nameService->getPlacesFromName($homePlaces, true, true),
             $score,
-            $this->nameService->getPlacesFromName( $awayPlaces, true, true)
+            $this->nameService->getPlacesFromName($awayPlaces, true, true)
         ];
     }
 

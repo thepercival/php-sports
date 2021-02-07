@@ -32,7 +32,7 @@ INSERT INTO gamePlacesAgainst (homeAway, placeId, gameId)
 (
     SELECT homeAway, placeId, gameId from gameplaces
 );
-INSERT INTO scoresAgainst (phase, number, homeScore, awayScore, gameId)
+INSERT INTO scoresAgainst (phase, number, home, away, gameId)
 (
     SELECT phase, number, home, away, gameId from gamescores
 );

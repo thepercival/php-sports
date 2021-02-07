@@ -6,9 +6,9 @@ class AgainstHelper
 {
     use AgainstTrait;
 
-    public function __construct(int $homeScore, int $awayScore)
+    public function __construct(int $home, int $away)
     {
-        $this->setHomeScore($homeScore);
-        $this->setAwayScore($awayScore);
+        $this->setHome($home);
+        $this->setAway($away);
     }
 }

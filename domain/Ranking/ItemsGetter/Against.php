@@ -113,6 +113,6 @@ class Against extends ItemsGetterBase
 
     private function getGameScorePart(AgainstScore $gameScoreHomeAway, bool $homeAway): int
     {
-        return $homeAway === AgainstGame::HOME ? $gameScoreHomeAway->getHomeScore() : $gameScoreHomeAway->getAwayScore();
+        return $homeAway === AgainstGame::HOME ? $gameScoreHomeAway->getHome() : $gameScoreHomeAway->getAway();
     }
 }

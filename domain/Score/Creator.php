@@ -26,7 +26,7 @@ class Creator
     public function addAgainstScores(AgainstGame $game, array $newGameScores)
     {
         foreach ($newGameScores as $newGameScore) {
-            new AgainstScore($game, $newGameScore->getHomeScore(), $newGameScore->getAwayScore(), $newGameScore->getPhase());
+            new AgainstScore($game, $newGameScore->getHome(), $newGameScore->getAway(), $newGameScore->getPhase());
         }
     }
 }

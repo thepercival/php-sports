@@ -96,16 +96,16 @@ class Service
             $home = 0;
             $away = 0;
             foreach ($game->getScores() as $score) {
-                if ($score->getHomeScore() > $score->getAwayScore()) {
+                if ($score->getHome() > $score->getAway()) {
                     $home++;
-                } elseif ($score->getHomeScore() < $score->getAwayScore()) {
+                } elseif ($score->getHome() < $score->getAway()) {
                     $away++;
                 }
             }
             return new AgainstScore($home, $away);
         }
-        $home = $game->getScores()->first()->getHomeScore();
-        $away = $game->getScores()->first()->getAwayScore();
+        $home = $game->getScores()->first()->getHome();
+        $away = $game->getScores()->first()->getAway();
         return new AgainstScore($home, $away);
     }
 
@@ -114,8 +114,8 @@ class Service
         $home = 0;
         $away = 0;
         foreach ($game->getScores() as $score) {
-            $home += $score->getHomeScore();
-            $away += $score->getAwayScore();
+            $home += $score->getHome();
+            $away += $score->getAway();
         }
         return new AgainstScore($home, $away);
     }

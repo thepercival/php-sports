@@ -41,7 +41,7 @@ class Against extends OutputGame
         if ($finalScore === null) {
             return $score;
         }
-        $retVal = $finalScore->getHomeScore() . $score . $finalScore->getAwayScore();
+        $retVal = $finalScore->getHome() . $score . $finalScore->getAway();
         if ($game->getFinalPhase() === Game::PHASE_EXTRATIME) {
             $retVal .= ' nv';
         }
