@@ -272,12 +272,8 @@ class GamesValidator
     {
         $orderedGames = $this->roundNumber->getGames(Game::ORDER_BY_BATCH);
         $gamesFirstBatch = $this->getGamesForBatch($orderedGames);
-        $pointInTime = new DateTimeImmutable("2020-08-03"); // @TODO CDK DEPRECATED
         $priority = 1;
         foreach ($gamesFirstBatch as $game) {
-            if ($game->getStartDateTime() < $pointInTime) {
-                continue;
-            }
             if ($game->getField()->getPriority() !== $priority) {
                 throw new Exception("fields are not prioritized", E_ERROR);
             }

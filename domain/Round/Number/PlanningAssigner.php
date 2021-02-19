@@ -75,7 +75,7 @@ class PlanningAssigner
      */
     protected function createBatchGames($batch, PlanningConfig $planningConfig, DateTimeImmutable $gameStartDateTime)
     {
-        if( $planningConfig->getGameMode() === GameMode::AGAINST ) {
+        if ($planningConfig->getGameMode() === GameMode::AGAINST) {
             $this->createAgainstBatchGames($batch, $gameStartDateTime);
         } else {
             $this->createTogetherBatchGames($batch, $gameStartDateTime);
@@ -95,7 +95,7 @@ class PlanningAssigner
         /** @var AgainstPlanningGame $planningGame */
         foreach ($batch->getGames() as $planningGame) {
             $poule = $this->getPoule($planningGame->getPoule());
-            $competitionSport = $this->getCompetitionSport($planningGame->getField()->getSport() );
+            $competitionSport = $this->getCompetitionSport($planningGame->getField()->getSport());
             $game = new AgainstGame($poule, $planningGame->getBatchNr(), $gameStartDateTime, $competitionSport);
             $game->setField($this->getField($planningGame->getField()));
             $game->setReferee($this->getReferee($planningGame->getReferee()));
@@ -103,7 +103,9 @@ class PlanningAssigner
             /** @var AgainstPlanningGamePlace $againstPlanningGamePlace */
             foreach ($planningGame->getPlaces() as $againstPlanningGamePlace) {
                 new AgainstGamePlace(
-                    $game, $this->getPlace($againstPlanningGamePlace->getPlace()), $againstPlanningGamePlace->getHomeAway()
+                    $game,
+                    $this->getPlace($againstPlanningGamePlace->getPlace()),
+                    $againstPlanningGamePlace->getHomeAway()
                 );
             }
         }
@@ -118,7 +120,7 @@ class PlanningAssigner
         /** @var TogetherPlanningGame $planningGame */
         foreach ($batch->getGames() as $planningGame) {
             $poule = $this->getPoule($planningGame->getPoule());
-            $competitionSport = $this->getCompetitionSport($planningGame->getField()->getSport() );
+            $competitionSport = $this->getCompetitionSport($planningGame->getField()->getSport());
             $game = new TogetherGame($poule, $planningGame->getBatchNr(), $gameStartDateTime, $competitionSport);
             $game->setField($this->getField($planningGame->getField()));
             $game->setReferee($this->getReferee($planningGame->getReferee()));
@@ -126,7 +128,9 @@ class PlanningAssigner
             /** @var TogetherPlanningGamePlace $togetherPlanningGamePlace */
             foreach ($planningGame->getPlaces() as $togetherPlanningGamePlace) {
                 new TogetherGamePlace(
-                    $game, $this->getPlace($togetherPlanningGamePlace->getPlace()), $togetherPlanningGamePlace->getGameRoundNumber()
+                    $game,
+                    $this->getPlace($togetherPlanningGamePlace->getPlace()),
+                    $togetherPlanningGamePlace->getGameRoundNumber()
                 );
             }
         }
@@ -160,21 +164,22 @@ class PlanningAssigner
         $this->poules = array_values($poules);
     }
 
-    protected function initCompetitionSports(RoundNumber $roundNumber, Planning $planning) {
+    protected function initCompetitionSports(RoundNumber $roundNumber, Planning $planning)
+    {
         $maxNrOfFields = $planning->getInput()->getMaxNrOfBatchGames();
         $this->competitionSportMap = [];
         $competitionSports = $roundNumber->getCompetitionSports()->toArray();
-        foreach( $planning->getSports() as $sport ) {
-            $filtered = array_filter( $competitionSports, function( CompetitionSport $competitionSport) use($sport, $maxNrOfFields): bool {
-                return ( $competitionSport->getFields()->count() === $sport->getFields()->count()
-                        || $competitionSport->getFields()->count() > $maxNrOfFields )
+        foreach ($planning->getSports() as $sport) {
+            $filtered = array_filter($competitionSports, function (CompetitionSport $competitionSport) use ($sport, $maxNrOfFields): bool {
+                return ($competitionSport->getFields()->count() === $sport->getFields()->count()
+                        || $competitionSport->getFields()->count() > $maxNrOfFields)
                     && $competitionSport->getSport()->getNrOfGamePlaces() === $sport->getNrOfGamePlaces();
             });
             $filteredCompetitionSport = reset($filtered);
-            if( $filteredCompetitionSport === false ) {
-                throw new Exception("competitionsport could not be found", E_ERROR );
+            if ($filteredCompetitionSport === false) {
+                throw new Exception("competitionsport could not be found", E_ERROR);
             }
-            array_splice($competitionSports, array_search($filteredCompetitionSport, $competitionSports, true ) );
+            array_splice($competitionSports, array_search($filteredCompetitionSport, $competitionSports, true), 1);
             $this->competitionSportMap[$sport->getNumber()] = $filteredCompetitionSport;
         }
         $this->initFields($planning);
@@ -185,10 +190,15 @@ class PlanningAssigner
         $planningFields = $planning->getFields();
         $this->fieldMap = [];
         foreach ($planningFields as $planningField) {
-            $sportConfig = $this->getCompetitionSport($planningField->getSport());
-            $field = $sportConfig->getField($planningField->getNumber());
-            $this->fieldMap[$planningField->getNumber()] = $field;
+            $competitionSport = $this->getCompetitionSport($planningField->getSport());
+            $field = $competitionSport->getField($planningField->getNumber());
+            $this->fieldMap[$this->getFieldId($planningField)] = $field;
         }
+    }
+
+    protected function getFieldId(PlanningField $planningField): string
+    {
+        return $planningField->getSport()->getNumber() . '-' . $planningField->getNumber();
     }
 
     protected function initReferees(RoundNumber $roundNumber, Planning $planning)
@@ -205,13 +215,14 @@ class PlanningAssigner
         return $this->poules[$poule->getNumber() - 1];
     }
 
-    protected function getCompetitionSport(PlanningSport $planningSport ): CompetitionSport {
+    protected function getCompetitionSport(PlanningSport $planningSport): CompetitionSport
+    {
         return $this->competitionSportMap[$planningSport->getNumber()];
     }
 
     protected function getField(PlanningField $field): Field
     {
-        return $this->fieldMap[$field->getNumber()];
+        return $this->fieldMap[$this->getFieldId($field)];
     }
 
     protected function getReferee(PlanningReferee $referee = null): ?Referee

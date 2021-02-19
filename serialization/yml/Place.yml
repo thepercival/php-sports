@@ -8,7 +8,9 @@ Sports\Place:
       type: integer
     number:
       type: integer
-    competitor:
-      type: Sports\Competitor
     penaltyPoints:
       type: integer
+  virtual_properties:
+    getQualifiedPlaceLocation:
+      type: Sports\Place\LocationBase
+      serialized_name: qualifiedPlaceLocation

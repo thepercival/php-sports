@@ -35,22 +35,22 @@ class Service
 
     protected function getDefaultWinPoints(Sport $sport): float
     {
-        return $sport->getCustomId() === SportCustom::Chess ? 3 : 1;
+        return $sport->getCustomId() !== SportCustom::Chess ? 3 : 1;
     }
 
     protected function getDefaultDrawPoints(Sport $sport): float
     {
-        return $sport->getCustomId() === SportCustom::Chess ? 1 : 0.5;
+        return $sport->getCustomId() !== SportCustom::Chess ? 1 : 0.5;
     }
 
     protected function getDefaultWinPointsExt(Sport $sport): float
     {
-        return $sport->getCustomId() === SportCustom::Chess ? 2 : 1;
+        return $sport->getCustomId() !== SportCustom::Chess ? 2 : 1;
     }
 
     protected function getDefaultDrawPointsExt(Sport $sport): float
     {
-        return $sport->getCustomId() === SportCustom::Chess ? 1 : 0.5;
+        return $sport->getCustomId() !== SportCustom::Chess ? 1 : 0.5;
     }
 
     protected function getDefaultLosePointsExt(Sport $sport): float

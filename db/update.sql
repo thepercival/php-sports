@@ -2,9 +2,13 @@
 alter table roundnumbers rename roundNumbers;
 alter table planningconfigs rename planningConfigs;
 
+update competitors set registered = 0 where registered is null;
 
 -- POST POST POST doctrine-update ===========================================================
 update sports set gameMode = 2, nrOfGamePlaces = 2;
+update planningConfigs set gameMode = 2;
+
+update fields f join sportconfigs sc on sc.id = f.sportConfigId set competitionSportId = ( select id from competitionSports where competitionId = sc.competitionId );
 
 -- scoreConfigs: fk to competitionSports needs to be not null again
 -- fields: fk to competitionSports needs to be not null again

@@ -4,7 +4,8 @@ namespace Sports;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use InvalidArgumentException;
-use Sports\Place\Location;
+use Sports\Place\Location as PlaceLocation;
+use Sports\Place\LocationBase as PlaceLocationBase;
 use Sports\Qualify\Rule as QualifyRule;
 use Sports\Qualify\Group as QualifyGroup;
 use Sports\Poule\Horizontal as HorizontalPoule;
@@ -12,7 +13,7 @@ use SportsHelpers\Identifiable;
 use Sports\Game\Against as AgainstGame;
 use Sports\Game\Together as TogetherGame;
 
-class Place extends Identifiable implements Place\Location
+class Place extends Identifiable implements PlaceLocation
 {
     /**
      * @var string|null
@@ -236,16 +237,28 @@ class Place extends Identifiable implements Place\Location
         );
     }
 
-    public function getQualifiedPlace(): ?Place {
+    public function getQualifiedPlace(): ?Place
+    {
         return $this->qualifiedPlace;
     }
 
-    public function setQualifiedPlace(Place $place = null): void {
+    public function setQualifiedPlace(Place $place = null): void
+    {
         $this->qualifiedPlace = $place;
     }
 
-    public function getStartLocation(): Location {
+    public function getQualifiedPlaceLocation(): ?PlaceLocationBase
+    {
         if( $this->qualifiedPlace === null ) {
+            return null;
+        }
+        return new PlaceLocationBase(
+            $this->qualifiedPlace->getPoule()->getNumber(),  $this->qualifiedPlace->getNumber() );
+    }
+
+    public function getStartLocation(): PlaceLocation
+    {
+        if ($this->qualifiedPlace === null) {
             return $this;
         }
         return $this->qualifiedPlace->getStartLocation();

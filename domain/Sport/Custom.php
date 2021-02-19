@@ -20,7 +20,8 @@ abstract class Custom
     const Baseball = 13;
     const IceHockey = 14;
     const Sjoelen = 15; // Shuffleboard
-    const Max = 15;
+    const Klaverjassen = 16; // Jass
+    const Max = 16;
 
     CONST Football_Line_GoalKepeer = 1;
     CONST Football_Line_Defense = 2;
@@ -44,7 +45,9 @@ abstract class Custom
             Custom::Tennis,
             Custom::Football,
             Custom::Volleyball,
-            Custom::IceHockey
+            Custom::IceHockey,
+            Custom::Sjoelen,
+            Custom::Klaverjassen,
         ];
     }
 }
