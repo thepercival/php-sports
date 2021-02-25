@@ -6,6 +6,7 @@ use DateTimeImmutable;
 use \Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 
+use SportsHelpers\Against\Side as AgainstSide;
 use Sports\Competitor;
 use Sports\Competitor\Team as TeamCompetitor;
 use Sports\Game\Event\Card as CardEvent;
@@ -37,13 +38,6 @@ class Against extends GameBase
     protected $participations;
     protected int $gameRoundNumber;
 
-    public const RESULT_WIN = 1;
-    public const RESULT_DRAW = 2;
-    public const RESULT_LOST = 3;
-
-    public const HOME = true;
-    public const AWAY = false;
-
     public function __construct(Poule $poule, int $batchNr, DateTimeImmutable $startDateTime, CompetitionSport $competitionSport)
     {
         parent::__construct($poule, $batchNr, $startDateTime, $competitionSport);
@@ -71,16 +65,16 @@ class Against extends GameBase
     }
 
     /**
-     * @param bool|null $homeAway
+     * @param int|null $side
      * @return Collection | AgainstGamePlace[]
      */
-    public function getPlaces(bool $homeAway = null): Collection
+    public function getPlaces(int $side = null): Collection
     {
-        if ($homeAway === null) {
+        if ($side === null) {
             return $this->places;
         }
-        return $this->places->filter(function ($gamePlace) use ($homeAway): bool {
-            return $gamePlace->getHomeAway() === $homeAway;
+        return $this->places->filter(function (AgainstGamePlace $gamePlace) use ($side): bool {
+            return $gamePlace->getSide() === $side;
         });
     }
 
@@ -91,36 +85,36 @@ class Against extends GameBase
 
     /**
      * @param Place $place
-     * @param bool|null $homeAway
+     * @param int|null $side
      * @return bool
      */
-    public function isParticipating(Place $place, bool $homeAway = null): bool
+    public function isParticipating(Place $place, int $side = null): bool
     {
-        $places = $this->getPlaces($homeAway)->map(function ($gamePlace) {
+        $places = $this->getPlaces($side)->map(function (AgainstGamePlace $gamePlace): Place {
             return $gamePlace->getPlace();
         });
         return $places->contains($place);
     }
 
-    public function getHomeAway(Place $place): ?bool
+    public function getSide(Place $place): ?int
     {
-        if ($this->isParticipating($place, self::HOME)) {
-            return self::HOME;
+        if ($this->isParticipating($place, AgainstSide::HOME)) {
+            return AgainstSide::HOME;
         }
-        if ($this->isParticipating($place, self::AWAY)) {
-            return self::AWAY;
+        if ($this->isParticipating($place, AgainstSide::AWAY)) {
+            return AgainstSide::AWAY;
         }
         return null;
     }
 
     /**
      * @param Map $placeLocationMap
-     * @param bool|null $homeAway
+     * @param int|null $side
      * @return Collection|Competitor[]
      */
-    public function getCompetitors(Map $placeLocationMap, bool $homeAway = null): Collection
+    public function getCompetitors(Map $placeLocationMap, int $side = null): Collection
     {
-        return $this->getPlaces($homeAway)->map(function (AgainstGamePlace $gamePlace) use ($placeLocationMap) : Competitor {
+        return $this->getPlaces($side)->map(function (AgainstGamePlace $gamePlace) use ($placeLocationMap) : Competitor {
             return $placeLocationMap->getCompetitor($gamePlace->getPlace());
         });
     }

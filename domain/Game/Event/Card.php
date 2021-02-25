@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Sports\Game\Event;
 
@@ -23,7 +24,7 @@ class Card extends Identifiable implements GameEvent
      */
     private $type;
 
-    public function __construct(int $minute, GameParticipation $gameParticipation, int $type )
+    public function __construct(int $minute, GameParticipation $gameParticipation, int $type)
     {
         $this->setGameParticipation($gameParticipation);
         $this->minute = $minute;
@@ -53,7 +54,8 @@ class Card extends Identifiable implements GameEvent
         return $this->type;
     }
 
-    public function getTeam(): Team {
+    public function getTeam(): Team
+    {
         return $this->getGameParticipation()->getPlayer()->getTeam();
     }
 }

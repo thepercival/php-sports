@@ -1,19 +1,23 @@
 Sports\Competition\Referee:
   exclusion_policy: ALL
   exclude: false
-
   properties:
     priority:
       type: integer
+      groups: [noReference]
     initials:
       type: string
+      groups: [noReference]
     name:
       type: string
+      groups: [noReference]
     emailaddress:
       type: string
-      groups: [privacy]
+      groups: [privacy,noReference]
     userId:
       type: number
+      groups: [noReference]
     info:
       type: string
+      groups: [noReference]
 

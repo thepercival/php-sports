@@ -2,5 +2,5 @@ Sports\Game\Place\Against:
   exclusion_policy: ALL
   exclude: false
   properties:
-    homeAway:
-      type: boolean
+    side:
+      type: int

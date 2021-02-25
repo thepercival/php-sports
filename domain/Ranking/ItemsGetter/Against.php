@@ -5,13 +5,17 @@ namespace Sports\Ranking\ItemsGetter;
 
 use Sports\Game;
 use Sports\Score\Against as AgainstGameScore;
-use Sports\Score\AgainstHelper as AgainstScore;
+use Sports\Score\AgainstHelper as AgainstScoreHelper;
+use Sports\Score\Against as AgainstScore;
 use Sports\Ranking\ItemsGetter as ItemsGetterBase;
 use Sports\Place;
 use Sports\Round;
 use Sports\Ranking\RoundItem\Unranked as UnrankedRoundItem;
 use Sports\Game\Together as TogetherGame;
 use Sports\Game\Against as AgainstGame;
+use SportsHelpers\Against\Side as AgainstSide;
+use SportsHelpers\Against\Result as AgainstResult;
+
 
 /* tslint:disable:no-bitwise */
 
@@ -46,18 +50,18 @@ class Against extends ItemsGetterBase
             $finalSubScore = $useSubScore ? $this->scoreConfigService->getFinalAgainstSubScore($game) : null;
 
             // $finalScore = $this->scoreConfigService->getFinal($game);
-            foreach ([AgainstGame::HOME, AgainstGame::AWAY] as $homeAway) {
-                $points = $this->getNrOfPoints($finalScore, $homeAway, $game);
-                $scored = $this->getNrOfUnits($finalScore, $homeAway, AgainstGameScore::SCORED);
-                $received = $this->getNrOfUnits($finalScore, $homeAway, AgainstGameScore::RECEIVED);
+            foreach ([AgainstSide::HOME, AgainstSide::AWAY] as $side) {
+                $points = $this->getNrOfPoints($finalScore, $side, $game);
+                $scored = $this->getNrOfUnits($finalScore, $side, AgainstGameScore::SCORED);
+                $received = $this->getNrOfUnits($finalScore, $side, AgainstGameScore::RECEIVED);
                 $subScored = 0;
                 $subReceived = 0;
                 if ($useSubScore) {
-                    $subScored = $this->getNrOfUnits($finalSubScore, $homeAway, AgainstGameScore::SCORED);
-                    $subReceived = $this->getNrOfUnits($finalSubScore, $homeAway, AgainstGameScore::RECEIVED);
+                    $subScored = $this->getNrOfUnits($finalSubScore, $side, AgainstGameScore::SCORED);
+                    $subReceived = $this->getNrOfUnits($finalSubScore, $side, AgainstGameScore::RECEIVED);
                 }
 
-                foreach ($game->getPlaces($homeAway) as $gamePlace) {
+                foreach ($game->getPlaces($side) as $gamePlace) {
                     $foundItems = array_filter(
                         $items,
                         function (UnrankedRoundItem $item) use ($gamePlace): bool {
@@ -79,19 +83,19 @@ class Against extends ItemsGetterBase
         return $items;
     }
 
-    public function getNrOfPoints(?AgainstScore $finalScore, bool $homeAway, AgainstGame $game): float
+    public function getNrOfPoints(?AgainstScoreHelper $finalScore, int $side, AgainstGame $game): float
     {
         if ($finalScore === null) {
             return 0;
         }
         $qualifyAgainstConfig = $game->getQualifyAgainstConfig();
-        if ($finalScore->getResult($homeAway) === AgainstGame::RESULT_WIN) {
+        if ($finalScore->getResult($side) === AgainstResult::WIN) {
             if ($game->getFinalPhase() === Game::PHASE_REGULARTIME) {
                 return $qualifyAgainstConfig->getWinPoints();
             } elseif ($game->getFinalPhase() === Game::PHASE_EXTRATIME) {
                 return $qualifyAgainstConfig->getWinPointsExt();
             }
-        } elseif ($finalScore->getResult($homeAway) === AgainstGame::RESULT_DRAW) {
+        } elseif ($finalScore->getResult($side) === AgainstResult::DRAW) {
             if ($game->getFinalPhase() === Game::PHASE_REGULARTIME) {
                 return $qualifyAgainstConfig->getDrawPoints();
             } elseif ($game->getFinalPhase() === Game::PHASE_EXTRATIME) {
@@ -103,16 +107,17 @@ class Against extends ItemsGetterBase
         return 0;
     }
 
-    private function getNrOfUnits(?AgainstScore $finalScore, bool $homeAway, int $scoredReceived): int
+    private function getNrOfUnits(?AgainstScoreHelper $finalScore, int $side, int $scoredReceived): int
     {
         if ($finalScore === null) {
             return 0;
         }
-        return $this->getGameScorePart($finalScore, $scoredReceived === AgainstGameScore::SCORED ? $homeAway : !$homeAway);
+        $opposite = $side === AgainstSide::HOME ? AgainstSide::AWAY : AgainstSide::HOME;
+        return $this->getGameScorePart($finalScore, $scoredReceived === AgainstScore::SCORED ? $side : $opposite);
     }
 
-    private function getGameScorePart(AgainstScore $gameScoreHomeAway, bool $homeAway): int
+    private function getGameScorePart(AgainstScoreHelper $againstGameScore, int $side): int
     {
-        return $homeAway === AgainstGame::HOME ? $gameScoreHomeAway->getHome() : $gameScoreHomeAway->getAway();
+        return $side === AgainstSide::HOME ? $againstGameScore->getHome() : $againstGameScore->getAway();
     }
 }

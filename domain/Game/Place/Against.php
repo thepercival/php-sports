@@ -9,13 +9,13 @@ use Sports\Game\Place as GamePlaceBase;
 class Against extends GamePlaceBase
 {
     private AgainstGame $game;
-    private bool $homeAway;
+    private int $side;
 
-    public function __construct(AgainstGame $game, PlaceBase $place, bool $homeAway )
+    public function __construct(AgainstGame $game, PlaceBase $place, int $side )
     {
         parent::__construct($place);
         $this->setGame($game);
-        $this->homeAway = $homeAway;
+        $this->side = $side;
     }
 
     public function getGame(): AgainstGame
@@ -31,8 +31,8 @@ class Against extends GamePlaceBase
         $this->game = $game;
     }
 
-    public function getHomeAway(): bool
+    public function getSide(): int
     {
-        return $this->homeAway;
+        return $this->side;
     }
 }

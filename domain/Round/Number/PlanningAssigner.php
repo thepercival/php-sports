@@ -105,7 +105,7 @@ class PlanningAssigner
                 new AgainstGamePlace(
                     $game,
                     $this->getPlace($againstPlanningGamePlace->getPlace()),
-                    $againstPlanningGamePlace->getHomeAway()
+                    $againstPlanningGamePlace->getSide()
                 );
             }
         }

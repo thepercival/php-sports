@@ -8,6 +8,7 @@ use Sports\Game\Repository as GameRepository;
 use Sports\Competitor;
 use Sports\Game\Against as AgainstGame;
 use League\Period\Period;
+use SportsHelpers\Against\Side as AgainstSide;
 
 class Repository extends GameRepository
 {
@@ -31,7 +32,7 @@ class Repository extends GameRepository
                         ->from('Sports\Game\Place', 'gpphome')
                         ->join("gpphome.place", "pphome")
                         ->where('gpphome.game = g')
-                        ->andWhere('gpphome.homeAway = :home')
+                        ->andWhere('gpphome.side = :home')
                         ->andWhere('pphome.competitor = :homecompetitor')
                         ->getDQL()
                 )
@@ -43,14 +44,14 @@ class Repository extends GameRepository
                         ->from('Sports\Game\Place', 'gppaway')
                         ->join("gppaway.place", "ppaway")
                         ->where('gppaway.game = g')
-                        ->andWhere('gppaway.homeAway = :away')
+                        ->andWhere('gppaway.side = :away')
                         ->andWhere('ppaway.competitor = :awaycompetitor')
                         ->getDQL()
                 )
             );
-        $query = $query->setParameter('home', AgainstGame::HOME);
+        $query = $query->setParameter('home', AgainstSide::HOME);
         $query = $query->setParameter('homecompetitor', $homeCompetitor);
-        $query = $query->setParameter('away', AgainstGame::AWAY);
+        $query = $query->setParameter('away', AgainstSide::AWAY);
         $query = $query->setParameter('awaycompetitor', $awayCompetitor);
         $query = $this->applyExtraFilters( $query, null, null, $period );
         $games = $query->getQuery()->getResult();

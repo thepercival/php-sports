@@ -1,11 +1,7 @@
 Sports\Place:
   exclusion_policy: ALL
   exclude: false
-  access_type: public_method
-
   properties:
-    id:
-      type: integer
     number:
       type: integer
     penaltyPoints:

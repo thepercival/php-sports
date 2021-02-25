@@ -16,6 +16,7 @@ use Sports\Ranking\RoundItem\Unranked as UnrankedRoundItem;
 use Sports\Ranking\ItemsGetter\Against as AgainstItemsGetter;
 use Sports\Ranking\Service as RankingService;
 use Sports\State;
+use SportsHelpers\Against\Side as AgainstSide;
 
 /* tslint:disable:no-bitwise */
 
@@ -299,14 +300,14 @@ class Against
                 }
                 $inHome = false;
                 foreach ($places as $place) {
-                    if ($p_gameIt->isParticipating($place, AgainstGame::HOME)) {
+                    if ($p_gameIt->isParticipating($place, AgainstSide::HOME)) {
                         $inHome = true;
                         break;
                     }
                 }
                 $inAway = false;
                 foreach ($places as $place) {
-                    if ($p_gameIt->isParticipating($place, AgainstGame::AWAY)) {
+                    if ($p_gameIt->isParticipating($place, AgainstSide::AWAY)) {
                         $inAway = true;
                         break;
                     }

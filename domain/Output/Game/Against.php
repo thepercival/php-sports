@@ -6,7 +6,7 @@ namespace Sports\Output\Game;
 use Psr\Log\LoggerInterface;
 use Sports\Output\Game as OutputGame;
 use Sports\Game\Against as AgainstGame;
-use Sports\Game\Place\Against as AgainstGamePlace;
+use SportsHelpers\Against\Side as AgainstSide;
 use Sports\Game\Together as TogetherGame;
 use Sports\Place\Location\Map as PlaceLocationMap;
 use Sports\Ranking\ItemsGetter\Against as AgainstItemsGetter;
@@ -22,9 +22,9 @@ class Against extends OutputGame
 
     protected function getDescriptionAsString($game): string
     {
-        return $this->getPlacesAsString($game->getPlaces(AgainstGame::HOME))
+        return $this->getPlacesAsString($game->getPlaces(AgainstSide::HOME))
             . ' ' . $this->getScoreAsString($game) . ' '
-            . $this->getPlacesAsString($game->getPlaces(AgainstGame::AWAY));
+            . $this->getPlacesAsString($game->getPlaces(AgainstSide::AWAY));
     }
 
     /**
@@ -66,8 +66,8 @@ class Against extends OutputGame
         if ($finalScore === null) {
             return $score;
         }
-        $homePoints = $itemGetter->getNrOfPoints($finalScore, AgainstGame::HOME, $game);
-        $awayPoints = $itemGetter->getNrOfPoints($finalScore, AgainstGame::AWAY, $game);
+        $homePoints = $itemGetter->getNrOfPoints($finalScore, AgainstSide::HOME, $game);
+        $awayPoints = $itemGetter->getNrOfPoints($finalScore, AgainstSide::AWAY, $game);
         return $homePoints . 'p' . $score . $awayPoints . 'p';
     }
 }

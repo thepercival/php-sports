@@ -32,9 +32,9 @@ INSERT INTO qualifyAgainstConfigs ( winPoints, drawPoints, winPointsExt, drawPoi
 INSERT INTO gamesAgainst (id, pouleid, resourcebatch, state, startDateTime, refereeId, placerefereeId, fieldId, competitionSportId )
     SELECT id, pouleid, resourcebatch, state, startDateTime, refereeId, placerefereeId, fieldId, (select id from competitionSports where competitionId = ( select rn.competitionId from poules p join rounds r on r.id = p.roundid join roundNumbers rn on rn.id = r.numberid where p.id = games.pouleid ) ) from games
 ;
-INSERT INTO gamePlacesAgainst (homeAway, placeId, gameId)
+INSERT INTO gamePlacesAgainst (side, placeId, gameId)
 (
-    SELECT homeAway, placeId, gameId from gameplaces
+    SELECT if(homeAway,1,2), placeId, gameId from gameplaces
 );
 INSERT INTO scoresAgainst (phase, number, home, away, gameId)
 (

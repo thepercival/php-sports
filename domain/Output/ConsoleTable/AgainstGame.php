@@ -15,6 +15,7 @@ use Sports\Place\Location\Map as PlaceLocationMap;
 use Sports\Competitor\Team as TeamCompetitor;
 use Sports\Sport;
 use Sports\Score\Config\Service as ScoreConfigService;
+use SportsHelpers\Against\Side as AgainstSide;
 
 class AgainstGame
 {
@@ -50,8 +51,8 @@ class AgainstGame
 
     protected function displayLineups(ConsoleTable $table)
     {
-        $homeParticipations = $this->getLineup(AgainstGameBase::HOME);
-        $awayParticipations = $this->getLineup(AgainstGameBase::AWAY);
+        $homeParticipations = $this->getLineup(AgainstSide::HOME);
+        $awayParticipations = $this->getLineup(AgainstSide::AWAY);
         while (count($homeParticipations) > 0 || count($awayParticipations) > 0) {
             $homeParticipationName = "";
             $homeParticipation = array_pop($homeParticipations);
@@ -86,12 +87,12 @@ class AgainstGame
     protected function getEventRows($event): array
     {
         $rows = [];
-        foreach ([AgainstGameBase::HOME,AgainstGameBase::AWAY] as $homeAway) {
-            foreach ($this->game->getCompetitors($this->placeLocationMap, $homeAway) as $competitor) {
+        foreach ([AgainstSide::HOME,AgainstSide::AWAY] as $side) {
+            foreach ($this->game->getCompetitors($this->placeLocationMap, $side) as $competitor) {
                 if (!($competitor instanceof TeamCompetitor) || $competitor->getTeam() !== $event->getTeam()) {
                     continue;
                 }
-                $rows = array_merge($rows, $this->getEventRowsHelper($event, $homeAway));
+                $rows = array_merge($rows, $this->getEventRowsHelper($event, $side));
             }
         }
         return $rows;
@@ -99,27 +100,27 @@ class AgainstGame
 
     /**
      * @param GoalEvent|CardEvent|SubstitutionEvent $event
-     * @param bool $homeAway
+     * @param int $side
      * @return array
      */
-    protected function getEventRowsHelper($event, bool $homeAway): array
+    protected function getEventRowsHelper($event, int $side): array
     {
         if ($event instanceof GoalEvent) {
-            return $this->getGoalEventRows($event, $homeAway);
+            return $this->getGoalEventRows($event, $side);
         } elseif ($event instanceof CardEvent) {
-            return $this->getCardEventRows($event, $homeAway);
+            return $this->getCardEventRows($event, $side);
         } // else if( $event instanceof SubstitutionEvent ) {
-        return $this->getSubstituteEventRows($event, $homeAway);
+        return $this->getSubstituteEventRows($event, $side);
         // }
         // return [];
     }
 
-    protected function getGoalEventRows(GoalEvent $event, bool $homeAway): array
+    protected function getGoalEventRows(GoalEvent $event, int $side): array
     {
         $valueHome = "";
         $valueAway = "";
         $rows = [];
-        if ($homeAway === AgainstGameBase::HOME) {
+        if ($side === AgainstSide::HOME) {
             $valueHome .= "GL  ";
             $valueHome .= $event->getMinute() . "' ";
             $valueHome .= $event->getGameParticipation()->getPlayer()->getPerson()->getName();
@@ -132,12 +133,12 @@ class AgainstGame
         return $rows;
     }
 
-    protected function getCardEventRows(CardEvent $event, bool $homeAway): array
+    protected function getCardEventRows(CardEvent $event, int $side): array
     {
         $valueHome = "";
         $valueAway = "";
         $rows = [];
-        if ($homeAway === AgainstGameBase::HOME) {
+        if ($side === AgainstSide::HOME) {
             if ($event->getType() === Sport::WARNING) {
                 $valueHome .= "YC  ";
             } else {
@@ -158,14 +159,14 @@ class AgainstGame
         return $rows;
     }
 
-    protected function getSubstituteEventRows(SubstitutionEvent $event, bool $homeAway): array
+    protected function getSubstituteEventRows(SubstitutionEvent $event, int $side): array
     {
         $valueHomeOut = "";
         $valueAwayOut = "";
         $valueHomeIn = "";
         $valueAwayIn = "";
         $rows = [];
-        if ($homeAway === AgainstGameBase::HOME) {
+        if ($side === AgainstSide::HOME) {
             $valueHomeOut .= "OUT ";
             $valueHomeOut .= $event->getMinute() . "' ";
             $valueHomeOut .= $event->getOut()->getPlayer()->getPerson()->getName();
@@ -186,13 +187,13 @@ class AgainstGame
     }
 
     /**
-     * @param bool $homeAway
+     * @param int $side
      * @return array|GameParticipation[]
      */
-    protected function getLineup(bool $homeAway): array
+    protected function getLineup(int $side): array
     {
         $participations = [];
-        $homeCompetitors = $this->game->getCompetitors($this->placeLocationMap, $homeAway);
+        $homeCompetitors = $this->game->getCompetitors($this->placeLocationMap, $side);
         foreach ($homeCompetitors as $homeTeamCompetitor) {
             if (!($homeTeamCompetitor instanceof TeamCompetitor)) {
                 continue;
@@ -265,8 +266,8 @@ class AgainstGame
         if ($finalScore !== null) {
             $score = $finalScore->getHome() . $score . $finalScore->getAway();
         }
-        $homePlaces = $this->game->getPlaces(AgainstGameBase::HOME);
-        $awayPlaces = $this->game->getPlaces(AgainstGameBase::AWAY);
+        $homePlaces = $this->game->getPlaces(AgainstSide::HOME);
+        $awayPlaces = $this->game->getPlaces(AgainstSide::AWAY);
         return [
             $this->nameService->getPlacesFromName($homePlaces, true, true),
             $score,

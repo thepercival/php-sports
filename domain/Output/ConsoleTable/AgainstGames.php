@@ -11,6 +11,7 @@ use Sports\NameService;
 use Sports\Place\Location\Map as PlaceLocationMap;
 use Sports\Competitor\Team as TeamCompetitor;
 use Sports\State;
+use SportsHelpers\Against\Side as AgainstSide;
 
 class AgainstGames
 {
@@ -19,13 +20,14 @@ class AgainstGames
      * @param array|AgainstGame[] $games
      * @param array|TeamCompetitor[] $teamCompetitors
      */
-    public function display( Competition $competition, array $games, array $teamCompetitors ) {
+    public function display(Competition $competition, array $games, array $teamCompetitors)
+    {
         $table = new ConsoleTable();
-        $table->setHeaders(array('league', 'season', 'batchNr', 'id', 'datetime', 'state', 'home', 'score', 'away' ) );
+        $table->setHeaders(array('league', 'season', 'batchNr', 'id', 'datetime', 'state', 'home', 'score', 'away' ));
 
-        $nameService = new NameService( new PlaceLocationMap( $teamCompetitors ) );
+        $nameService = new NameService(new PlaceLocationMap($teamCompetitors));
 
-        foreach( $games as $game ) {
+        foreach ($games as $game) {
             $row = array(
                 $competition->getLeague()->getName(),
                 $competition->getSeason()->getName(),
@@ -33,18 +35,19 @@ class AgainstGames
                 $game->getId(),
                 $game->getStartDateTime()->format(DateTime::ATOM),
                 (new State($game->getState()))->getDescription(),
-                $nameService->getPlacesFromName($game->getPlaces(AgainstGame::HOME), true, true),
+                $nameService->getPlacesFromName($game->getPlaces(AgainstSide::HOME), true, true),
                 $this->getScore($game),
-                $nameService->getPlacesFromName($game->getPlaces(AgainstGame::AWAY), true, true),
+                $nameService->getPlacesFromName($game->getPlaces(AgainstSide::AWAY), true, true),
             );
             $table->addRow($row);
         }
         $table->display();
     }
 
-    protected function getScore(AgainstGame $game): string {
-        return join( "&", $game->getScores()->map( function( AgainstScore $gameScore ): string {
+    protected function getScore(AgainstGame $game): string
+    {
+        return join("&", $game->getScores()->map(function (AgainstScore $gameScore): string {
             return $gameScore->getHome() . " - " . $gameScore->getAway() ;
-        })->toArray() );
+        })->toArray());
     }
 }

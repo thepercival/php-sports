@@ -5,6 +5,7 @@ namespace Sports\Tests\Round\Number;
 use \Exception;
 use League\Period\Period;
 use Sports\Output\Against as AgainstGameOutput;
+use SportsHelpers\Against\Side as AgainstSide;
 use Sports\Game\Against as AgainstGame;
 use Sports\Place;
 use Sports\Poule;
@@ -73,7 +74,7 @@ class GamesValidatorTest extends \PHPUnit\Framework\TestCase
 
         $firstPoule = $firstRoundNumber->getRounds()->first()->getPoule(1);
         $game = $firstPoule->getGames()->first();
-        $firstHomePlace = $game->getPlaces(AgainstGame::HOME)->first()->getPlace();
+        $firstHomePlace = $game->getPlaces(AgainstSide::HOME)->first()->getPlace();
         $game->setRefereePlace($firstHomePlace);
 
         $gamesValidator = new GamesValidator();
