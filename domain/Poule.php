@@ -135,14 +135,11 @@ class Poule extends Identifiable
     }
 
     /**
-     * @return AgainstGame[] | TogetherGame[] | ArrayCollection
+     * @return AgainstGame[] | TogetherGame[] | array
      */
-    public function getGames()
+    public function getGames(): array
     {
-        if ($this->getRound()->getNumber()->getValidPlanningConfig()->getGameMode() === GameMode::AGAINST) {
-            return $this->againstGames;
-        }
-        return $this->togetherGames;
+        return array_merge( $this->againstGames->toArray(), $this->togetherGames->toArray() );
     }
 
     /**
@@ -161,9 +158,13 @@ class Poule extends Identifiable
         return $this->togetherGames;
     }
 
-    public function getGamesWithState($state)
+    /**
+     * @param int $state
+     * @return AgainstGame[] |  TogetherGame[] | array
+     */
+    public function getGamesWithState(int $state)
     {
-        return array_filter($this->getGames()->toArray(), function ($gameIt) use ($state): bool {
+        return array_filter($this->getGames(), function (AgainstGame|TogetherGame $gameIt) use ($state): bool {
             return $gameIt->getState() === $state;
         });
     }
@@ -192,7 +193,7 @@ class Poule extends Identifiable
                 break;
             }
         }
-        if ($this->getGames()->count() > 0 && $allPlayed) {
+        if (count($this->getGames()) > 0 && $allPlayed) {
             return State::Finished;
         }
         foreach ($this->getGames() as $game) {

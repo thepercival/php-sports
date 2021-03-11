@@ -44,6 +44,9 @@ class Against extends GameBase
         $this->places = new ArrayCollection();
         $this->scores = new ArrayCollection();
         $this->participations = new ArrayCollection();
+        if (!$poule->getAgainstGames()->contains($this)) {
+            $poule->getAgainstGames()->add($this);
+        }
     }
 
 //    public function getGameRoundNumber(): int

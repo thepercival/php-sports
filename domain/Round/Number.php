@@ -216,18 +216,13 @@ class Number extends Identifiable
     {
         $games = [];
         foreach ($this->getPoules() as $poule) {
-            $games = array_merge($games, $poule->getGames()->toArray());
+            $games = array_merge($games, $poule->getGames());
         }
 
         if ($order === GameBase::ORDER_BY_BATCH) {
             uasort(
                 $games,
-                /**
-                 * @param TogetherGame|AgainstGame $g1
-                 * @param TogetherGame|AgainstGame $g2
-                 * @return int
-                 */
-                function ($g1, $g2): int {
+                function (TogetherGame|AgainstGame $g1, TogetherGame|AgainstGame $g2): int {
                     if ($g1->getBatchNr() === $g2->getBatchNr()) {
                         $field1 = $g1->getField();
                         $field2 = $g2->getField();

@@ -12,14 +12,13 @@ use Sports\Round\Number\PlanningScheduler;
 use SportsHelpers\Range;
 use SportsPlanning\Resource\RefereePlace\Service as RefereePlaceService;
 use Sports\Structure;
-use SportsPlanning\Planning;
 use Sports\Round\Number as RoundNumber;
 use Sports\Round\Number\PlanningInputCreator;
-use SportsPlanning\Service as PlanningService;
 
-class GamesCreator {
-
-    protected function getLogger(): LoggerInterface {
+class GamesCreator
+{
+    protected function getLogger(): LoggerInterface
+    {
         $logger = new Logger("test-logger");
         $processor = new UidProcessor();
         $logger->pushProcessor($processor);
@@ -37,7 +36,7 @@ class GamesCreator {
 
     public function createGames(RoundNumber $roundNumber, Period $blockedPeriod = null, Range $range = null)
     {
-        $this->removeGamesHelper( $roundNumber);
+        $this->removeGamesHelper($roundNumber);
         $this->createGamesHelper($roundNumber, $blockedPeriod, $range);
     }
 
@@ -63,16 +62,16 @@ class GamesCreator {
         }
     }
 
-    private function removeGamesHelper( RoundNumber $roundNumber )
+    private function removeGamesHelper(RoundNumber $roundNumber)
     {
-        foreach($roundNumber->getRounds() as $round ) {
-            foreach($round->getPoules() as $poule ) {
-                $poule->getGames()->clear();
+        foreach ($roundNumber->getRounds() as $round) {
+            foreach ($round->getPoules() as $poule) {
+                $poule->getAgainstGames()->clear();
+                $poule->getTogetherGames()->clear();
             }
         }
-        if( $roundNumber->hasNext() ) {
-            $this->removeGamesHelper( $roundNumber->getNext() );
+        if ($roundNumber->hasNext()) {
+            $this->removeGamesHelper($roundNumber->getNext());
         }
     }
 }
-

@@ -10,7 +10,13 @@ class Repository extends \Sports\Repository
     public function removePlanning(RoundNumber $roundNumber)
     {
         foreach ($roundNumber->getPoules() as $poule) {
-            $games = $poule->getGames();
+            $games = $poule->getAgainstGames();
+            while ($games->count() > 0) {
+                $game = $games->first();
+                $games->removeElement($game);
+                $this->_em->remove($game);
+            }
+            $games = $poule->getTogetherGames();
             while ($games->count() > 0) {
                 $game = $games->first();
                 $games->removeElement($game);

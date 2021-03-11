@@ -22,6 +22,9 @@ class Together extends GameBase
     {
         parent::__construct($poule, $batchNr, $startDateTime, $competitionSport);
         $this->places = new ArrayCollection();
+        if (!$poule->getTogetherGames()->contains($this)) {
+            $poule->getTogetherGames()->add($this);
+        }
     }
 
     /**

@@ -7,7 +7,7 @@ namespace Sports\Game;
 use Doctrine\ORM\QueryBuilder;
 use Sports\Game;
 use Sports\Round\Number as RoundNumber;
-use Sports\Competitor;
+use Sports\Game\Against as AgainstGame;
 use Sports\Competition;
 use Sports\Game as GameBase;
 use League\Period\Period;
@@ -25,7 +25,8 @@ class Repository extends \Sports\Repository
         Competition $competition,
         $gameStates = null,
         int $batchNr = null,
-        Period $period = null)
+        Period $period = null
+    )
     {
         $qb = $this->getCompetitionGamesQuery($competition, $gameStates, $batchNr, $period);
         $qb = $qb->orderBy('g.startDateTime', 'ASC');
@@ -36,7 +37,8 @@ class Repository extends \Sports\Repository
         Competition $competition,
         $gameStates = null,
         int $batchNr = null,
-        Period $period = null): bool
+        Period $period = null
+    ): bool
     {
         $games = $this->getCompetitionGamesQuery(
             $competition,
@@ -51,7 +53,9 @@ class Repository extends \Sports\Repository
         Competition $competition,
         $gameStates = null,
         int $batchNr = null,
-        Period $period = null): int {
+        Period $period = null
+    ): int
+    {
         $gamePlaces = $this->getCompetitionGamePlacessQuery(
             $competition,
             $gameStates,
@@ -65,7 +69,8 @@ class Repository extends \Sports\Repository
         Competition $competition,
         $gameStates = null,
         int $batchNr = null,
-        Period $period = null): QueryBuilder
+        Period $period = null
+    ): QueryBuilder
     {
         $query = $this->createQueryBuilder('g')
             ->join("g.poule", "p")
@@ -81,7 +86,8 @@ class Repository extends \Sports\Repository
         Competition $competition,
         $gameStates = null,
         int $batchNr = null,
-        Period $period = null ): QueryBuilder
+        Period $period = null
+    ): QueryBuilder
     {
         $query = $this->getEM()->createQueryBuilder()
             ->select('gp')
@@ -154,7 +160,12 @@ class Repository extends \Sports\Repository
 
     public function customRemove(GameBase $game)
     {
-        $game->getPoule()->getGames()->removeElement($game);
+        if( $game instanceof AgainstGame ) {
+            $game->getPoule()->getAgainstGames()->removeElement($game);
+        } else {
+            $game->getPoule()->getTogetherGames()->removeElement($game);
+        }
+
         return $this->remove($game);
     }
 }

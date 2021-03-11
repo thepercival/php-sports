@@ -212,7 +212,7 @@ class PlanningSchedulerTest extends \PHPUnit\Framework\TestCase
 
         (new GamesCreator())->createStructureGames($structure);
 
-        $secondRoundNumber->getPoules()[0]->getGames()->clear();
+        $secondRoundNumber->getPoules()[0]->getAgainstGames()->clear();
 //        foreach( $firstRoundNumber->getGames( Game::ORDER_BY_BATCH ) as $game ) {
 //            (new \SportsPlanning\Output\Game())->output($game);
 //        }

@@ -17,9 +17,6 @@ use SportsHelpers\Identifiable;
 
 abstract class Game extends Identifiable
 {
-    protected Poule $poule;
-    protected int $batchNr;
-    private DateTimeImmutable $startDateTime;
     /**
      * @var Referee
      */
@@ -34,7 +31,6 @@ abstract class Game extends Identifiable
      * @var ?Field
      */
     protected $field;
-    protected CompetitionSport $competitionSport;
     /**
      * @var int
      */
@@ -51,12 +47,13 @@ abstract class Game extends Identifiable
     public const ORDER_BY_BATCH = 1;
     public const ORDER_BY_GAMEROUNDNUMBER = 2;
 
-    public function __construct(Poule $poule, int $batchNr, DateTimeImmutable $startDateTime, CompetitionSport $competitionSport)
+    public function __construct(
+        protected Poule $poule,
+        protected int $batchNr,
+        protected DateTimeImmutable $startDateTime,
+        protected CompetitionSport $competitionSport
+    )
     {
-        $this->setPoule($poule);
-        $this->batchNr = $batchNr;
-        $this->startDateTime = $startDateTime;
-        $this->competitionSport = $competitionSport;
         $this->setState(State::Created);
         $this->places = new ArrayCollection();
     }
@@ -64,14 +61,6 @@ abstract class Game extends Identifiable
     public function getPoule(): Poule
     {
         return $this->poule;
-    }
-
-    public function setPoule(Poule $poule)
-    {
-        if (!$poule->getGames()->contains($this)) {
-            $poule->getGames()->add($this) ;
-        }
-        $this->poule = $poule;
     }
 
     public function getRound(): Round

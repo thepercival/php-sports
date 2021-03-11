@@ -2,6 +2,8 @@
 
 namespace Sports\Planning\Config;
 
+use Sports\Competition;
+use Sports\Game\CreationStrategy;
 use Sports\Planning\Config as PlanningConfig;
 use SportsHelpers\GameMode;
 use SportsPlanning\Input as PlanningInput;
@@ -13,6 +15,8 @@ class Service
     public function createDefault(RoundNumber $roundNumber): PlanningConfig
     {
         $config = new PlanningConfig($roundNumber);
+        $gameCreationStrategy = $this->getDefaultGameCreationStrategy($roundNumber->getCompetition());
+        $config->setCreationStrategy($gameCreationStrategy);
         $config->setExtension(PlanningConfig::DEFAULTEXTENSION);
         $config->setEnableTime(PlanningConfig::DEFAULTENABLETIME);
         $config->setMinutesPerGame(0);
@@ -23,7 +27,7 @@ class Service
         $config->setMinutesBetweenGames($this->getDefaultMinutesBetweenGames());
         $config->setMinutesAfter($this->getDefaultMinutesAfter());
         $config->setSelfReferee(SelfReferee::DISABLED);
-        $config->setGameMode(GameMode::AGAINST);
+
         return $config;
     }
 
@@ -31,6 +35,7 @@ class Service
     {
         $newPlanningConfig = new PlanningConfig($roundNumber);
 
+        $newPlanningConfig->setCreationStrategy($planningConfig->getCreationStrategy());
         $newPlanningConfig->setExtension($planningConfig->getExtension());
         $newPlanningConfig->setEnableTime($planningConfig->getEnableTime());
         $newPlanningConfig->setMinutesPerGame($planningConfig->getMinutesPerGame());
@@ -42,7 +47,6 @@ class Service
         $newPlanningConfig->setMinutesBetweenGames($planningConfig->getMinutesBetweenGames());
         $newPlanningConfig->setMinutesAfter($planningConfig->getMinutesAfter());
         $newPlanningConfig->setSelfReferee($planningConfig->getSelfReferee());
-        $newPlanningConfig->setGameMode($planningConfig->getGameMode());
     }
 
     public function getDefaultMinutesPerGame(): int
@@ -65,19 +69,19 @@ class Service
         return 5;
     }
 
-    public function isAgainstEachOtherAvailable(RoundNumber $roundNumber): bool
+    public function getDefaultGameCreationStrategy(Competition $competition): int
     {
-        $sportConfigs = $roundNumber->getCompetitionSports();
-        foreach ($sportConfigs as $sportConfig) {
-            if ($sportConfig->getSport()->getTeam()) {
-                return false;
-            }
+        $competitionSports = $competition->getSports();
+        if ($competitionSports->count() > 1) {
+            return CreationStrategy::StaticManual;
         }
-        foreach ($roundNumber->getPoules() as $poule) {
-            if ($poule->getPlaces()->count() > PlanningInput::AGAINST_MAXNROFGAMEPLACES) {
-                return false;
-            }
+        $sport = $competition->getSingleSport()->getSport();
+        if ($sport->getGameMode() === GameMode::AGAINST) {
+            return CreationStrategy::StaticPouleSize;
         }
-        return true;
+        if ($sport->getNrOfGamePlaces() > 2) {
+            return CreationStrategy::IncrementalRandom;
+        }
+        return CreationStrategy::StaticManual;
     }
 }

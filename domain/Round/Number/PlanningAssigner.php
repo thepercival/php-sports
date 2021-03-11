@@ -4,13 +4,10 @@ namespace Sports\Round\Number;
 
 use DateTimeImmutable;
 use Exception;
-use SportsHelpers\GameMode;
-use SportsHelpers\SportConfig;
 use SportsPlanning\Batch;
 use SportsPlanning\Batch\SelfReferee as SelfRefereeBatch;
 use Sports\Planning\Config as PlanningConfig;
 use Sports\Round\Number as RoundNumber;
-use SportsPlanning\Input\Calculator as InputCalculator;
 use SportsPlanning\Planning;
 use Sports\Game\Against as AgainstGame;
 use Sports\Game\Place\Against as AgainstGamePlace;
@@ -75,11 +72,7 @@ class PlanningAssigner
      */
     protected function createBatchGames($batch, PlanningConfig $planningConfig, DateTimeImmutable $gameStartDateTime)
     {
-        if ($planningConfig->getGameMode() === GameMode::AGAINST) {
-            $this->createAgainstBatchGames($batch, $gameStartDateTime);
-        } else {
-            $this->createTogetherBatchGames($batch, $gameStartDateTime);
-        }
+        $this->createBatchGamesHelper($batch, $gameStartDateTime);
         if ($batch->hasNext()) {
             $nextGameStartDateTime = $this->scheduleService->getNextGameStartDateTime($planningConfig, $gameStartDateTime);
             $this->createBatchGames($batch->getNext(), $planningConfig, $nextGameStartDateTime);
@@ -90,50 +83,48 @@ class PlanningAssigner
      * @param Batch|SelfRefereeBatch $batch
      * @param DateTimeImmutable $gameStartDateTime
      */
-    protected function createAgainstBatchGames($batch, DateTimeImmutable $gameStartDateTime)
+    protected function createBatchGamesHelper($batch, DateTimeImmutable $gameStartDateTime)
     {
         /** @var AgainstPlanningGame $planningGame */
         foreach ($batch->getGames() as $planningGame) {
-            $poule = $this->getPoule($planningGame->getPoule());
-            $competitionSport = $this->getCompetitionSport($planningGame->getField()->getSport());
-            $game = new AgainstGame($poule, $planningGame->getBatchNr(), $gameStartDateTime, $competitionSport);
+            $game = $this->createGame($planningGame, $gameStartDateTime);
             $game->setField($this->getField($planningGame->getField()));
             $game->setReferee($this->getReferee($planningGame->getReferee()));
             $game->setRefereePlace($this->getPlace($planningGame->getRefereePlace()));
-            /** @var AgainstPlanningGamePlace $againstPlanningGamePlace */
-            foreach ($planningGame->getPlaces() as $againstPlanningGamePlace) {
-                new AgainstGamePlace(
-                    $game,
-                    $this->getPlace($againstPlanningGamePlace->getPlace()),
-                    $againstPlanningGamePlace->getSide()
-                );
+            foreach ($planningGame->getPlaces() as $planningGamePlace) {
+                $this->createGamePlace($game, $planningGamePlace);
             }
         }
     }
 
-    /**
-     * @param Batch|SelfRefereeBatch $batch
-     * @param DateTimeImmutable $gameStartDateTime
-     */
-    protected function createTogetherBatchGames($batch, DateTimeImmutable $gameStartDateTime)
-    {
-        /** @var TogetherPlanningGame $planningGame */
-        foreach ($batch->getGames() as $planningGame) {
-            $poule = $this->getPoule($planningGame->getPoule());
-            $competitionSport = $this->getCompetitionSport($planningGame->getField()->getSport());
-            $game = new TogetherGame($poule, $planningGame->getBatchNr(), $gameStartDateTime, $competitionSport);
-            $game->setField($this->getField($planningGame->getField()));
-            $game->setReferee($this->getReferee($planningGame->getReferee()));
-            $game->setRefereePlace($this->getPlace($planningGame->getRefereePlace()));
-            /** @var TogetherPlanningGamePlace $togetherPlanningGamePlace */
-            foreach ($planningGame->getPlaces() as $togetherPlanningGamePlace) {
-                new TogetherGamePlace(
-                    $game,
-                    $this->getPlace($togetherPlanningGamePlace->getPlace()),
-                    $togetherPlanningGamePlace->getGameRoundNumber()
-                );
-            }
+    protected function createGame(
+        AgainstPlanningGame|TogetherPlanningGame $planningGame,
+        DateTimeImmutable $gameStartDateTime
+    ): AgainstGame|TogetherGame {
+        $poule = $this->getPoule($planningGame->getPoule());
+        $competitionSport = $this->getCompetitionSport($planningGame->getField()->getSport());
+        if ($planningGame instanceof AgainstPlanningGame) {
+            return new AgainstGame($poule, $planningGame->getBatchNr(), $gameStartDateTime, $competitionSport);
         }
+        return new TogetherGame($poule, $planningGame->getBatchNr(), $gameStartDateTime, $competitionSport);
+    }
+
+    protected function createGamePlace(
+        AgainstGame|TogetherGame $game,
+        AgainstPlanningGamePlace|TogetherPlanningGamePlace $planningGamePlace
+    ): AgainstGamePlace|TogetherGamePlace {
+        if ($planningGamePlace instanceof AgainstPlanningGamePlace) {
+            return new AgainstGamePlace(
+                $game,
+                $this->getPlace($planningGamePlace->getPlace()),
+                $planningGamePlace->getSide()
+            );
+        }
+        return new TogetherGamePlace(
+            $game,
+            $this->getPlace($planningGamePlace->getPlace()),
+            $planningGamePlace->getGameRoundNumber()
+        );
     }
 
     protected function initResources(RoundNumber $roundNumber, Planning $planning)

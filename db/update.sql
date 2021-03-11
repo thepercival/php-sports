@@ -6,7 +6,7 @@ update competitors set registered = 0 where registered is null;
 
 -- POST POST POST doctrine-update ===========================================================
 update sports set gameMode = 2, nrOfGamePlaces = 2;
-update planningConfigs set gameMode = 2;
+update planningConfigs set creationStrategy = 1;
 
 update fields f join sportconfigs sc on sc.id = f.sportConfigId set competitionSportId = ( select id from competitionSports where competitionId = sc.competitionId );
 

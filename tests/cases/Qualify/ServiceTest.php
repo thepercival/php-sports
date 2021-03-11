@@ -8,7 +8,7 @@ use Sports\TestHelper\GamesCreator;
 use Sports\TestHelper\SetScores;
 use Sports\Structure\Service as StructureService;
 use Sports\Qualify\Service as QualifyService;
-use Sports\Ranking\Service\Against as AgainstRankingService;
+use Sports\Ranking\Calculator\Against as AgainstRankingService;
 use Sports\Qualify\Group as QualifyGroup;
 
 class ServiceTest extends TestCase

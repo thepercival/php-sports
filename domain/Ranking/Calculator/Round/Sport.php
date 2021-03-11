@@ -2,62 +2,32 @@
 
 declare(strict_types=1);
 
-namespace Sports\Ranking\Service;
+namespace Sports\Ranking\Calculator\Round;
 
+use Exception;
+use Sports\Game\Against as AgainstGame;
 use Sports\Place\Location as PlaceLocation;
 use Sports\Poule;
 use Sports\Poule\Horizontal as HorizontalPoule;
 use Sports\Place;
 use Sports\Round;
 use Sports\Ranking\RoundItem\Ranked as RankedRoundItem;
-use Sports\Ranking\RoundItem\Unranked as UnrankedRoundItem;
+use Sports\Ranking\RoundItem\SportUnranked as UnrankedRoundItem;
+use Sports\Ranking\ItemsGetter\Against as AgainstItemsGetter;
+use Sports\Ranking\Calculator as RankingService;
 use Sports\State;
-use Sports\Ranking\Service as RankingService;
-use Sports\Ranking\ItemsGetter\Together as TogetherItemsGetter;
+use SportsHelpers\Against\Side as AgainstSide;
 
-/* tslint:disable:no-bitwise */
 
-class Together
+class Sport
 {
-    private Round $round;
-    private int $rulesSet;
-    private int $gameStates;
-    private array $cache = [];
-    /**
-     * @var array
-     */
-    private array $rankFunctions;
+    protected array $map = [];
 
     public function __construct(Round $round, int $rulesSet, int $gameStates = null)
     {
-        $this->round = $round;
-        $this->rulesSet = $rulesSet;
-        $this->gameStates = $gameStates !== null ? $gameStates : State::Finished;
-        $this->initRankFunctions();
+        $this->initMap();
     }
 
-    /**
-     * @return array|string[]
-     */
-    public function getRuleDescriptions(): array
-    {
-        return array_map(
-            function ($rankFunction) {
-                if ($rankFunction === $this->rankFunctions[RankingService::MostPoints]) {
-                    return 'het meeste aantal punten';
-                } /*elseif ($rankFunction === $this->rankFunctions[RankingService::FewestGames]) {*/
-                return 'het minste aantal wedstrijden';
-                //}
-            },
-            array_filter(
-                $this->getRankFunctions(),
-                function ($rankFunction): bool {
-                    return $rankFunction !== $this->rankFunctions[RankingService::BestSubUnitDifference]
-                        && $rankFunction !== $this->rankFunctions[RankingService::MostSubUnitsScored];
-                }
-            )
-        );
-    }
 
     /**
      * @param Poule $poule
@@ -67,9 +37,10 @@ class Together
     {
         if (array_key_exists($poule->getNumber(), $this->cache) === false) {
             $round = $poule->getRound();
-            $getter = new TogetherItemsGetter($round, $this->gameStates);
+            $getter = new AgainstItemsGetter($round, $this->gameStates);
             $unrankedItems = $getter->getUnrankedItems($poule->getPlaces()->toArray(), $poule->getGames()->toArray());
-            $this->cache[$poule->getNumber()] = $this->rankItems($unrankedItems);
+            $rankedItems = $this->rankItems($unrankedItems, true);
+            $this->cache[$poule->getNumber()] = $rankedItems;
         }
         return $this->cache[$poule->getNumber()];
     }
@@ -118,7 +89,7 @@ class Together
             $pouleRankingItem = $this->getItemByRank($pouleRankingItems, $place->getNumber());
             $unrankedRoundItems[] = $pouleRankingItem->getUnranked();
         }
-        return $this->rankItems($unrankedRoundItems);
+        return $this->rankItems($unrankedRoundItems, false);
     }
 
     /**
@@ -156,12 +127,13 @@ class Together
 
     /**
      * @param array | UnrankedRoundItem[] $unrankedItems
+     * @param bool $againstEachOther
      * @return array | RankedRoundItem[]
      */
-    private function rankItems(array $unrankedItems): array
+    private function rankItems(array $unrankedItems, bool $againstEachOther): array
     {
         $rankedItems = [];
-        $rankFunctions = $this->getRankFunctions();
+        $rankFunctions = $this->getRankFunctions($againstEachOther);
         $nrOfIterations = 0;
         while (count($unrankedItems) > 0) {
             $bestItems = $this->findBestItems($unrankedItems, $rankFunctions);
@@ -194,6 +166,11 @@ class Together
         $bestItems = $orgItems;
 
         foreach ($rankFunctions as $rankFunction) {
+            if ($rankFunction === $this->rankFunctions[RankingService::BestAgainstEachOther] && count($orgItems) === count(
+                    $bestItems
+                )) {
+                continue;
+            }
             $bestItems = $rankFunction($bestItems);
             if (count($bestItems) < 2) {
                 break;
@@ -202,64 +179,15 @@ class Together
         return $bestItems;
     }
 
-    /**
-     * @return array
-     */
-    private function getRankFunctions(): array
-    {
-        return [
-            $this->rankFunctions[RankingService::MostUnitsScored],
-            $this->rankFunctions[RankingService::MostSubUnitsScored],
-            $this->rankFunctions[RankingService::FewestGames]
-        ];
-    }
 
-    protected function initRankFunctions()
-    {
-        $this->rankFunctions = array();
 
-        $this->rankFunctions[RankingService::FewestGames] = function (array $items): array {
-            $fewestGames = null;
-            $bestItems = [];
-            foreach ($items as $item) {
-                $nrOfGames = $item->getGames();
-                if ($fewestGames === null || $nrOfGames === $fewestGames) {
-                    $fewestGames = $nrOfGames;
-                    $bestItems[] = $item;
-                } elseif ($nrOfGames < $fewestGames) {
-                    $fewestGames = $nrOfGames;
-                    $bestItems = [$item];
-                }
-            }
-            return $bestItems;
-        };
-        /**
-         * @param array|UnrankedRoundItem[] $items
-         * @param bool $sub
-         * @return array
-         */
-        $mostScored = function (array $items, bool $sub): array {
-            $mostScored = null;
-            $bestItems = [];
-            foreach ($items as $item) {
-                $scored = $sub ? $item->getSubScored() : $item->getScored();
-                if ($mostScored === null || $scored === $mostScored) {
-                    $mostScored = $scored;
-                    $bestItems[] = $item;
-                } elseif ($scored > $mostScored) {
-                    $mostScored = $scored;
-                    $bestItems = [$item];
-                }
-            }
-            return $bestItems;
-        };
 
-        $this->rankFunctions[RankingService::MostUnitsScored] = function (array $items) use ($mostScored): array {
-            return $mostScored($items, false);
-        };
 
-        $this->rankFunctions[RankingService::MostSubUnitsScored] = function (array $items) use ($mostScored): array {
-            return $mostScored($items, true);
-        };
-    }
+
+
+
+
+
+
+}
 }

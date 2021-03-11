@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Sports\Competition\Sport;
 
+use Sports\Game\CreationStrategy;
 use Sports\Round;
 use Sports\Sport;
 use Sports\Score\Config as ScoreConfig;
@@ -14,6 +15,7 @@ use Sports\Qualify\AgainstConfig\Service as QualifyConfigService;
 use Sports\Competition;
 use Sports\Competition\Sport as CompetitionSport;
 use Sports\Structure;
+use SportsHelpers\GameMode;
 
 class Service
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace Sports\Ranking\End;
+namespace Sports\Ranking\Calculator;
 
 use Sports\State;
 use Sports\Place;
@@ -8,11 +8,9 @@ use Sports\Poule\Horizontal as HorizontalPoule;
 use Sports\Qualify\Group as QualifyGroup;
 use Sports\Round;
 use Sports\Structure;
-use Sports\Ranking\Service as RankingService;
+use Sports\Ranking\Calculator as RankingService;
 
-/* tslint:disable:no-bitwise */
-
-class Service
+class End
 {
     /**
      * @var int
@@ -39,7 +37,7 @@ class Service
     }
 
     /**
-     * @return array | Item[]
+     * @return array | End[]
      */
     public function getItems(): array
     {
@@ -64,21 +62,21 @@ class Service
 
     /**
      * @param Round $round
-     * @return array | Item[]
+     * @return array | End[]
      */
     protected function getDropoutsNotPlayed(Round $round): array
     {
         $items = [];
         $nrOfDropouts = $round->getNrOfPlaces() - $round->getNrOfPlacesChildren();
         for ($i = 0; $i < $nrOfDropouts; $i++) {
-            $items[] = new Item($this->currentRank, $this->currentRank++, null);
+            $items[] = new End($this->currentRank, $this->currentRank++, null);
         }
         return $items;
     }
 
     /**
      * @param Round $round
-     * @return array | Item[]
+     * @return array | End[]
      */
     protected function getDropouts(Round $round): array
     {
@@ -116,14 +114,14 @@ class Service
     /**
      * @param HorizontalPoule $horizontalPoule
      * @param RankingService $rankingService
-     * @return array | Item[]
+     * @return array | End[]
      */
     protected function getDropoutsHorizontalPoule(HorizontalPoule $horizontalPoule, RankingService $rankingService): array
     {
         $rankedPlaces = $rankingService->getPlacesForHorizontalPoule($horizontalPoule);
         array_splice($rankedPlaces, 0, $horizontalPoule->getNrOfQualifiers());
-        return array_map(function (Place $rankedPlace): Item {
-            return new Item($this->currentRank, $this->currentRank++, $rankedPlace->getStartLocation() );
+        return array_map(function (Place $rankedPlace): End {
+            return new End($this->currentRank, $this->currentRank++, $rankedPlace->getStartLocation() );
         }, $rankedPlaces);
     }
 }

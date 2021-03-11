@@ -2,7 +2,7 @@
 
 namespace Sports\Qualify;
 
-use Sports\Ranking\Service as RankingService;
+use Sports\Ranking\Calculator as RankingService;
 use Sports\Qualify\ReservationService as QualifyReservationService;
 use Sports\Poule;
 use Sports\Place;

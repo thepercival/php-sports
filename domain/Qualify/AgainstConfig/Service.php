@@ -16,7 +16,7 @@ class Service
     public function createDefault(CompetitionSport $competitionSport, Round $round)
     {
         $sport = $competitionSport->getSport();
-        $qualifyConfig = new QualifyConfig($competitionSport, $round, $this->getDefaultPointCalculation($round));
+        $qualifyConfig = new QualifyConfig($competitionSport, $round, $this->getDefaultPointCalculation($competitionSport));
         $qualifyConfig->setWinPoints($this->getDefaultWinPoints($sport));
         $qualifyConfig->setDrawPoints($this->getDefaultDrawPoints($sport));
         $qualifyConfig->setWinPointsExt($this->getDefaultWinPointsExt($sport));
@@ -25,9 +25,9 @@ class Service
         return $qualifyConfig;
     }
 
-    protected function getDefaultPointCalculation(Round $round): int
+    protected function getDefaultPointCalculation(CompetitionSport $competitionSport): int
     {
-        if ($round->getNumber()->getValidPlanningConfig()->getGameMode() === GameMode::AGAINST) {
+        if ($competitionSport->getSport()->getGameMode() === GameMode::AGAINST) {
             return PointsCalculation::AGAINSTGAMEPOINTS;
         }
         return PointsCalculation::SCORES;

@@ -225,13 +225,13 @@ class Place extends Identifiable implements PlaceLocation
     }
 
     /**
-     * @return ArrayCollection|AgainstGame[]|TogetherGame[]
+     * @return array|AgainstGame[]|TogetherGame[]
      */
-    public function getGames(): ArrayCollection
+    public function getGames(): array
     {
-        return $this->getPoule()->getGames()->filter(
-            /** @var AgainstGame|TogetherGame $game  */
-            function ($game): bool {
+        return array_filter(
+            $this->getPoule()->getGames(),
+            function (AgainstGame|TogetherGame $game): bool {
                 return $game->isParticipating($this);
             }
         );
@@ -249,11 +249,13 @@ class Place extends Identifiable implements PlaceLocation
 
     public function getQualifiedPlaceLocation(): ?PlaceLocationBase
     {
-        if( $this->qualifiedPlace === null ) {
+        if ($this->qualifiedPlace === null) {
             return null;
         }
         return new PlaceLocationBase(
-            $this->qualifiedPlace->getPoule()->getNumber(),  $this->qualifiedPlace->getNumber() );
+            $this->qualifiedPlace->getPoule()->getNumber(),
+            $this->qualifiedPlace->getNumber()
+        );
     }
 
     public function getStartLocation(): PlaceLocation

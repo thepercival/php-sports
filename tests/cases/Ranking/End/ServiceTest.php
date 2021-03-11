@@ -9,8 +9,8 @@ use Sports\TestHelper\SetScores;
 use Sports\Structure\Service as StructureService;
 use Sports\Qualify\Group as QualifyGroup;
 use Sports\Qualify\Service as QualifyService;
-use Sports\Ranking\End\Service as EndRankingService;
-use Sports\Ranking\Service\Against as AgainstRankingService;
+use Sports\Ranking\End\End as EndRankingService;
+use Sports\Ranking\Calculator\Against as AgainstRankingService;
 
 class ServiceTest extends TestCase
 {

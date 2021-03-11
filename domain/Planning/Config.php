@@ -9,7 +9,7 @@ use SportsPlanning\SelfReferee;
 class Config extends Identifiable
 {
     protected RoundNumber $roundNumber;
-    protected int $gameMode;
+    protected int $creationStrategy;
     protected bool $extension;
     protected bool $enableTime;
     protected int $minutesPerGame;
@@ -31,14 +31,14 @@ class Config extends Identifiable
         $this->roundNumber->setPlanningConfig($this);
     }
 
-    public function getGameMode(): int
+    public function getCreationStrategy(): int
     {
-        return $this->gameMode;
+        return $this->creationStrategy;
     }
 
-    public function setGameMode(int $gameMode)
+    public function setCreationStrategy(int $creationStrategy)
     {
-        $this->gameMode = $gameMode;
+        $this->creationStrategy = $creationStrategy;
     }
 
     public function getExtension(): bool

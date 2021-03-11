@@ -7,7 +7,7 @@ namespace Sports;
 use DateTimeImmutable;
 use \Doctrine\Common\Collections\ArrayCollection;
 use \Doctrine\ORM\PersistentCollection;
-use Sports\Ranking\Service\Against as AgainstRankingService;
+use Sports\Ranking\Calculator\Against as AgainstRankingService;
 use Sports\Competition\Sport as CompetitionSport;
 use Sports\Competition\Field as CompetitionField;
 use SportsHelpers\Identifiable;
@@ -225,6 +225,11 @@ class Competition extends Identifiable
         return $this->sports;
     }
 
+    public function getSingleSport(): CompetitionSport
+    {
+        return $this->sports->first();
+    }
+
     public function getSport(Sport $sport): ?CompetitionSport
     {
         $foundConfigs = $this->sports->filter(function (CompetitionSport $competitionSport) use ($sport): bool {
@@ -259,8 +264,8 @@ class Competition extends Identifiable
     public function getFields(): array
     {
         $fields = [];
-        foreach( $this->getSports() as $competitionSport ) {
-            $fields = array_merge($fields, $competitionSport->getFields()->toArray() );
+        foreach ($this->getSports() as $competitionSport) {
+            $fields = array_merge($fields, $competitionSport->getFields()->toArray());
         }
         return $fields;
     }

@@ -201,6 +201,28 @@ class NameService
         return '';
     }
 
+    public function getRulesName(int $ruleSet): array {
+        $rankingRuleGetter = new RankingRuleGetter();
+        return array_map( function(int $rule): string {
+            switch ($rule) {
+                case RankingRule::MostPoints:
+                    return 'meeste aantal punten';
+                case RankingRule::FewestGames:
+                    return 'minste aantal wedstrijden';
+                case RankingRule::BestUnitDifference:
+                return 'beste saldo';
+                case RankingRule::MostUnitsScored:
+                return 'meeste aantal eenheden voor';
+                case RankingRule::BestAmongEachOther:
+                return 'beste onderling resultaat';
+                case RankingRule::BestSubUnitDifference:
+                return 'beste subsaldo';
+                case RankingRule::MostSubUnitsScored:
+                return 'meeste aantal subeenheden voor';
+            }
+        }, $rankingRuleGetter->getRules($ruleSet, false));
+    }
+
     protected function childRoundsHaveEqualDepth(Round $round): bool
     {
         if ($round->getQualifyGroups()->count() === 1) {

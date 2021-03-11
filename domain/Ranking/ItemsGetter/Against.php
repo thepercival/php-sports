@@ -4,52 +4,47 @@ declare(strict_types=1);
 namespace Sports\Ranking\ItemsGetter;
 
 use Sports\Game;
+use Sports\Competition\Sport as CompetitionSport;
 use Sports\Score\Against as AgainstGameScore;
 use Sports\Score\AgainstHelper as AgainstScoreHelper;
 use Sports\Score\Against as AgainstScore;
 use Sports\Ranking\ItemsGetter as ItemsGetterBase;
 use Sports\Place;
 use Sports\Round;
-use Sports\Ranking\RoundItem\Unranked as UnrankedRoundItem;
+use Sports\Ranking\Item\Round\SportUnranked as UnrankedSportRoundItem;
 use Sports\Game\Together as TogetherGame;
 use Sports\Game\Against as AgainstGame;
 use SportsHelpers\Against\Side as AgainstSide;
 use SportsHelpers\Against\Result as AgainstResult;
 
-
-/* tslint:disable:no-bitwise */
-
 class Against extends ItemsGetterBase
 {
-    public function __construct(Round $round, int $gameStates)
+    public function __construct(Round $round, CompetitionSport $competitionSport)
     {
-        parent::__construct($round, $gameStates);
+        parent::__construct($round, $competitionSport);
     }
 
 
     /**
      * @param array | Place[] $places
      * @param array | TogetherGame[] | AgainstGame[] $games
-     * @return array | UnrankedRoundItem[]
+     * @return array | UnrankedSportRoundItem[]
      */
     public function getUnrankedItems(array $places, array $games): array
     {
-        /** @var UnrankedRoundItem[]|array $items */
-        $items = array_map(
-            function ($place): UnrankedRoundItem {
-                return new UnrankedRoundItem($this->round, $place, $place->getPenaltyPoints());
+        /** @var UnrankedSportRoundItem[]|array $items */
+        $unrankedItems = array_map(
+            function (Place $place): UnrankedSportRoundItem {
+                return new UnrankedSportRoundItem($this->round, $place, $place->getPenaltyPoints());
             },
             $places
         );
-        foreach ($games as $game) {
-            if (($game->getState() & $this->gameStates) === 0) {
-                continue;
-            }
-            $useSubScore = $game->getScoreConfig()->useSubScore();
+        $unrankedMap = $this->getUnrankedMap($unrankedItems);
+        $useSubScore = $this->round->getValidScoreConfig($this->competitionSport)->useSubScore();
+        /** @var AgainstGame $game */
+        foreach ($this->getFilteredGames($games) as $game) {
             $finalScore = $this->scoreConfigService->getFinalAgainstScore($game);
             $finalSubScore = $useSubScore ? $this->scoreConfigService->getFinalAgainstSubScore($game) : null;
-
-            // $finalScore = $this->scoreConfigService->getFinal($game);
             foreach ([AgainstSide::HOME, AgainstSide::AWAY] as $side) {
                 $points = $this->getNrOfPoints($finalScore, $side, $game);
                 $scored = $this->getNrOfUnits($finalScore, $side, AgainstGameScore::SCORED);
@@ -62,21 +57,16 @@ class Against extends ItemsGetterBase
                 }
 
                 foreach ($game->getPlaces($side) as $gamePlace) {
-                    $foundItems = array_filter(
-                        $items,
-                        function (UnrankedRoundItem $item) use ($gamePlace): bool {
-                            return $item->getPlaceLocation()->getPlaceNr() === $gamePlace->getPlace()->getPlaceNr()
-                                && $item->getPlaceLocation()->getPouleNr() === $gamePlace->getPlace()->getPouleNr();
-                        }
-                    );
-                    /** @var UnrankedRoundItem $item */
-                    $item = reset($foundItems);
-                    $item->addGame();
-                    $item->addPoints($points);
-                    $item->addScored($scored);
-                    $item->addReceived($received);
-                    $item->addSubScored($subScored);
-                    $item->addSubReceived($subReceived);
+                    $unrankedItem = $unrankedMap[$gamePlace->getPlace()->getLocationId()];
+                    if ($unrankedItem === null) {
+                        continue;
+                    }
+                    $unrankedItem->addGame();
+                    $unrankedItem->addPoints($points);
+                    $unrankedItem->addScored($scored);
+                    $unrankedItem->addReceived($received);
+                    $unrankedItem->addSubScored($subScored);
+                    $unrankedItem->addSubReceived($subReceived);
                 }
             }
         };

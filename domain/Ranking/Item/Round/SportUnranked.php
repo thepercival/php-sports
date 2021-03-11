@@ -1,19 +1,14 @@
 <?php
 
-namespace Sports\Ranking\RoundItem;
+namespace Sports\Ranking\Item\Round;
 
-use Sports\Round;
+use Sports\Place;
+use Sports\Competition\Sport as CompetitionSport;
 use Sports\Place\Location as PlaceLocation;
 
-class Unranked
+class SportUnranked
 {
-    private Round $round;
-    private PlaceLocation $placeLocation;
-    /**
-     * @var int
-     */
-    private $penaltyPoints;
-
+    private int $penaltyPoints = 0;
     private int $games = 0;
     /**
      * @var float
@@ -24,28 +19,26 @@ class Unranked
     private int $subScored = 0;
     private int $subReceived = 0;
 
-    /**
-     * @param Round $round
-     * @param PlaceLocation $placeLocation
-     * @param int|null $penaltyPoints
-     */
-    public function __construct(Round $round, PlaceLocation $placeLocation, ?int $penaltyPoints)
+    public function __construct(private $competitionSport, private Place $place, ?int $penaltyPoints)
     {
-        $this->round = $round;
-        $this->placeLocation = $placeLocation;
         if ($penaltyPoints !== null) {
             $this->addPoints(-$penaltyPoints);
         }
     }
 
-    public function getRound(): Round
+    public function getCompetitionSport(): CompetitionSport
     {
-        return $this->round;
+        return $this->competitionSport;
+    }
+
+    public function getPlace(): Place
+    {
+        return $this->place;
     }
 
     public function getPlaceLocation(): PlaceLocation
     {
-        return $this->placeLocation;
+        return $this->place;
     }
 
     public function getGames(): int

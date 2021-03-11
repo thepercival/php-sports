@@ -12,10 +12,10 @@ use Sports\Qualify\AgainstConfig as QualifyAgainstConfig;
 use Sports\Qualify\Group as QualifyGroup;
 use Sports\Poule\Horizontal as HorizontalPoule;
 use Sports\Score\Config as ScoreConfig;
-use Sports\State;
+use Sports\Game\Against as AgainstGame;
+use Sports\Game\Together as TogetherGame;
 use Sports\Place\Location as PlaceLocation;
 use SportsHelpers\Identifiable;
-use SportsHelpers\SportConfig;
 
 class Round extends Identifiable
 {
@@ -363,11 +363,14 @@ class Round extends Identifiable
         return false;
     }
 
+    /**
+     * @return array | AgainstGame[] | TogetherGame[]
+     */
     public function getGames(): array
     {
         $games = [];
         foreach ($this->getPoules() as $poule) {
-            $games = array_merge($games, $poule->getGames()->toArray());
+            $games = array_merge($games, $poule->getGames());
         }
         return $games;
     }

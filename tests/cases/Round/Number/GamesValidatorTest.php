@@ -220,7 +220,7 @@ class GamesValidatorTest extends TestCase
         $firstPoule = $firstRoundNumber->getRounds()->first()->getPoule(1);
 
         /** @var AgainstGame $game */
-        $game = $firstPoule->getGames()->first();
+        $game = $firstPoule->getAgainstGames()->first();
         $availablePlaces = $firstPoule->getPlaces()->filter(function (Place $place) use ($game): bool {
             return !$game->isParticipating($place) && $place !== $game->getRefereePlace();
         });

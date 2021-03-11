@@ -2,25 +2,22 @@
 
 declare(strict_types=1);
 
-namespace Sports\Ranking\Service;
+namespace Sports\Ranking\Calculator;
 
-use Exception;
-use Sports\Game\Against as AgainstGame;
 use Sports\Place\Location as PlaceLocation;
 use Sports\Poule;
 use Sports\Poule\Horizontal as HorizontalPoule;
 use Sports\Place;
 use Sports\Round;
 use Sports\Ranking\RoundItem\Ranked as RankedRoundItem;
-use Sports\Ranking\RoundItem\Unranked as UnrankedRoundItem;
-use Sports\Ranking\ItemsGetter\Against as AgainstItemsGetter;
-use Sports\Ranking\Service as RankingService;
+use Sports\Ranking\RoundItem\SportUnranked as UnrankedRoundItem;
 use Sports\State;
-use SportsHelpers\Against\Side as AgainstSide;
+use Sports\Ranking\Calculator as RankingService;
+use Sports\Ranking\ItemsGetter\Together as TogetherItemsGetter;
 
 /* tslint:disable:no-bitwise */
 
-class Against
+class Together
 {
     private Round $round;
     private int $rulesSet;
@@ -30,9 +27,6 @@ class Against
      * @var array
      */
     private array $rankFunctions;
-
-    const RULESSET_WC = 1;
-    const RULESSET_EC = 2;
 
     public function __construct(Round $round, int $rulesSet, int $gameStates = null)
     {
@@ -44,7 +38,6 @@ class Against
 
     /**
      * @return array|string[]
-     * @throws Exception
      */
     public function getRuleDescriptions(): array
     {
@@ -52,15 +45,9 @@ class Against
             function ($rankFunction) {
                 if ($rankFunction === $this->rankFunctions[RankingService::MostPoints]) {
                     return 'het meeste aantal punten';
-                } elseif ($rankFunction === $this->rankFunctions[RankingService::FewestGames]) {
-                    return 'het minste aantal wedstrijden';
-                } elseif ($rankFunction === $this->rankFunctions[RankingService::BestUnitDifference]) {
-                    return 'het beste saldo';
-                } elseif ($rankFunction === $this->rankFunctions[RankingService::MostUnitsScored]) {
-                    return 'het meeste aantal eenheden voor';
-                } else /* if ($rankFunction === $this->rankFunctions[Service::BestAgainstEachOther]) */ {
-                    return 'het beste onderling resultaat';
-                }
+                } /*elseif ($rankFunction === $this->rankFunctions[RankingService::FewestGames]) {*/
+                return 'het minste aantal wedstrijden';
+                //}
             },
             array_filter(
                 $this->getRankFunctions(),
@@ -80,10 +67,9 @@ class Against
     {
         if (array_key_exists($poule->getNumber(), $this->cache) === false) {
             $round = $poule->getRound();
-            $getter = new AgainstItemsGetter($round, $this->gameStates);
+            $getter = new TogetherItemsGetter($round, $this->gameStates);
             $unrankedItems = $getter->getUnrankedItems($poule->getPlaces()->toArray(), $poule->getGames()->toArray());
-            $rankedItems = $this->rankItems($unrankedItems, true);
-            $this->cache[$poule->getNumber()] = $rankedItems;
+            $this->cache[$poule->getNumber()] = $this->rankItems($unrankedItems);
         }
         return $this->cache[$poule->getNumber()];
     }
@@ -132,7 +118,7 @@ class Against
             $pouleRankingItem = $this->getItemByRank($pouleRankingItems, $place->getNumber());
             $unrankedRoundItems[] = $pouleRankingItem->getUnranked();
         }
-        return $this->rankItems($unrankedRoundItems, false);
+        return $this->rankItems($unrankedRoundItems);
     }
 
     /**
@@ -170,13 +156,12 @@ class Against
 
     /**
      * @param array | UnrankedRoundItem[] $unrankedItems
-     * @param bool $againstEachOther
      * @return array | RankedRoundItem[]
      */
-    private function rankItems(array $unrankedItems, bool $againstEachOther): array
+    private function rankItems(array $unrankedItems): array
     {
         $rankedItems = [];
-        $rankFunctions = $this->getRankFunctions($againstEachOther);
+        $rankFunctions = $this->getRankFunctions();
         $nrOfIterations = 0;
         while (count($unrankedItems) > 0) {
             $bestItems = $this->findBestItems($unrankedItems, $rankFunctions);
@@ -209,11 +194,6 @@ class Against
         $bestItems = $orgItems;
 
         foreach ($rankFunctions as $rankFunction) {
-            if ($rankFunction === $this->rankFunctions[RankingService::BestAgainstEachOther] && count($orgItems) === count(
-                    $bestItems
-                )) {
-                continue;
-            }
             $bestItems = $rankFunction($bestItems);
             if (count($bestItems) < 2) {
                 break;
@@ -223,58 +203,20 @@ class Against
     }
 
     /**
-     * @param bool|null $againstEachOther
      * @return array
      */
-    private function getRankFunctions(bool $againstEachOther = null): array
+    private function getRankFunctions(): array
     {
-        $rankFunctions = [
-            $this->rankFunctions[RankingService::MostPoints],
+        return [
+            $this->rankFunctions[RankingService::MostUnitsScored],
+            $this->rankFunctions[RankingService::MostSubUnitsScored],
             $this->rankFunctions[RankingService::FewestGames]
         ];
-        $unitRankFunctions = [
-            $this->rankFunctions[RankingService::BestUnitDifference],
-            $this->rankFunctions[RankingService::MostUnitsScored],
-            $this->rankFunctions[RankingService::BestSubUnitDifference],
-            $this->rankFunctions[RankingService::MostSubUnitsScored]
-        ];
-        if ($this->rulesSet === self::RULESSET_WC) {
-            $rankFunctions = array_merge($rankFunctions, $unitRankFunctions);
-            if ($againstEachOther !== false) {
-                $rankFunctions[] = $this->rankFunctions[RankingService::BestAgainstEachOther];
-            }
-        } elseif ($this->rulesSet === self::RULESSET_EC) {
-            if ($againstEachOther !== false) {
-                $rankFunctions[] = $this->rankFunctions[RankingService::BestAgainstEachOther];
-            }
-            $rankFunctions = array_merge($rankFunctions, $unitRankFunctions);
-        } else {
-            throw new Exception('Unknown qualifying rule', E_ERROR);
-        }
-
-        return $rankFunctions;
     }
 
     protected function initRankFunctions()
     {
         $this->rankFunctions = array();
-
-        $this->rankFunctions[RankingService::MostPoints] = function (array $items): array {
-            $mostPoints = null;
-            $bestItems = [];
-            foreach ($items as $item) {
-                $points = $item->getPoints();
-                if ($mostPoints === null || $points === $mostPoints) {
-                    $mostPoints = $points;
-                    $bestItems[] = $item;
-                } elseif ($points > $mostPoints) {
-                    $mostPoints = $points;
-                    $bestItems = [];
-                    $bestItems[] = $item;
-                }
-            }
-            return $bestItems;
-        };
 
         $this->rankFunctions[RankingService::FewestGames] = function (array $items): array {
             $fewestGames = null;
@@ -291,100 +233,11 @@ class Against
             }
             return $bestItems;
         };
-
-        $getGamesBetweenEachOther = function (array $places, array $games): array {
-            $gamesRet = [];
-            foreach ($games as $p_gameIt) {
-                if (($p_gameIt->getState() & $this->gameStates) === 0) {
-                    continue;
-                }
-                $inHome = false;
-                foreach ($places as $place) {
-                    if ($p_gameIt->isParticipating($place, AgainstSide::HOME)) {
-                        $inHome = true;
-                        break;
-                    }
-                }
-                $inAway = false;
-                foreach ($places as $place) {
-                    if ($p_gameIt->isParticipating($place, AgainstSide::AWAY)) {
-                        $inAway = true;
-                        break;
-                    }
-                }
-                if ($inHome && $inAway) {
-                    $gamesRet[] = $p_gameIt;
-                }
-            }
-            return $gamesRet;
-        };
-
-        $this->rankFunctions[RankingService::BestAgainstEachOther] = function (array $items) use ($getGamesBetweenEachOther
-        ) : array {
-            $places = array_map(
-                function ($item) {
-                    return $item->getRound()->getPlace($item->getPlaceLocation());
-                },
-                $items
-            );
-            $poule = $places[0]->getPoule();
-            $round = $poule->getRound();
-            $games = $getGamesBetweenEachOther($places, $poule->getGames()->toArray());
-            if (count($games) === 0) {
-                return $items;
-            }
-            $getter = new AgainstItemsGetter($round, $this->gameStates);
-            $unrankedItems = $getter->getUnrankedItems($places, $games);
-            $rankedItems = array_filter(
-                $this->rankItems($unrankedItems, true),
-                function ($rankItem): bool {
-                    return $rankItem->getRank() === 1;
-                }
-            );
-            if (count($rankedItems) === count($items)) {
-                return $items;
-            }
-            return array_map(
-                function ($rankedItem) use ($items) {
-                    $foundItems = array_filter(
-                        $items,
-                        function ($item) use ($rankedItem): bool {
-                            return $item->getPlaceLocation()->getPouleNr() === $rankedItem->getPlaceLocation(
-                                )->getPouleNr()
-                                && $item->getPlaceLocation()->getPlaceNr() === $rankedItem->getPlaceLocation(
-                                )->getPlaceNr();
-                        }
-                    );
-                    return reset($foundItems);
-                },
-                $rankedItems
-            );
-        };
-
-        $bestDifference = function (array $items, bool $sub): array {
-            $bestDiff = null;
-            $bestItems = [];
-            foreach ($items as $item) {
-                $diff = $sub ? $item->getSubDiff() : $item->getDiff();
-                if ($bestDiff === null || $diff === $bestDiff) {
-                    $bestDiff = $diff;
-                    $bestItems[] = $item;
-                } elseif ($diff > $bestDiff) {
-                    $bestDiff = $diff;
-                    $bestItems = [$item];
-                }
-            }
-            return $bestItems;
-        };
-
-        $this->rankFunctions[RankingService::BestUnitDifference] = function (array $items) use ($bestDifference) : array {
-            return $bestDifference($items, false);
-        };
-
-        $this->rankFunctions[RankingService::BestSubUnitDifference] = function (array $items) use ($bestDifference): array {
-            return $bestDifference($items, true);
-        };
-
+        /**
+         * @param array|UnrankedRoundItem[] $items
+         * @param bool $sub
+         * @return array
+         */
         $mostScored = function (array $items, bool $sub): array {
             $mostScored = null;
             $bestItems = [];

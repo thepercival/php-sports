@@ -7,7 +7,7 @@
     <field name="minutesPerGameExt" column="minutesPerGameExt" type="smallint" nullable="false" unique="false"/>
     <field name="minutesAfter" column="minutesInBetween" type="smallint" nullable="true" unique="false"/>
     <field name="minutesBetweenGames" column="minutesBetweenGames" type="smallint" nullable="true" unique="false"/>
-    <field name="gameMode" column="gameMode" type="smallint" nullable="false" unique="false"/>
+    <field name="creationStrategy" column="creationStrategy" type="smallint" nullable="false" unique="false"/>
     <field name="selfReferee" column="selfReferee" type="smallint" nullable="true" unique="false"/>
     <field name="nrOfHeadtoheadDep" column="nrOfHeadtohead" type="smallint" nullable="false" unique="false"/>
     <field name="teamupDep" column="teamup" type="boolean" nullable="true" unique="false"/>

@@ -15,7 +15,7 @@ use SportsHelpers\GameMode;
 class Service
 {
     /**
-     * @var Service\Against | Service\Together
+     * @var Calculator\Against | Calculator\Together
      */
     private $helper;
 
@@ -31,7 +31,7 @@ class Service
     {
         $gameMode = $round->getNumber()->getValidPlanningConfig()->getGameMode();
         if( $gameMode === GameMode::AGAINST ) {
-            $this->helper = new Service\Against($round, $rulesSet, $gameStates );
+            $this->helper = new Calculator\Against($round, $rulesSet, $gameStates );
         }
     }
 

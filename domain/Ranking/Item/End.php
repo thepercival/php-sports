@@ -1,28 +1,18 @@
 <?php
 
-namespace Sports\Ranking\End;
+namespace Sports\Ranking\Item\End;
 
 use Sports\Place\Location as PlaceLocation;
 
-class Item
+class End
 {
-    /**
-     * @var int
-     */
-    private $uniqueRank;
-    /**
-     * @var int
-     */
-    private $rank;
     /**
      * @var PlaceLocation|null
      */
     private $placeLocation;
 
-    public function __construct(int $uniqueRank, int $rank, PlaceLocation $placeLocation = null)
+    public function __construct(private int $uniqueRank, private int $rank, PlaceLocation $placeLocation = null)
     {
-        $this->uniqueRank = $uniqueRank;
-        $this->rank = $rank;
         $this->placeLocation = $placeLocation;
     }
 

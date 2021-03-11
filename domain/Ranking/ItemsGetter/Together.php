@@ -6,7 +6,7 @@ namespace Sports\Ranking\ItemsGetter;
 use Sports\Ranking\ItemsGetter as ItemsGetterBase;
 use Sports\Place;
 use Sports\Round;
-use Sports\Ranking\RoundItem\Unranked as UnrankedRoundItem;
+use Sports\Ranking\RoundItem\SportUnranked as UnrankedRoundItem;
 use Sports\Game\Together as TogetherGame;
 use Sports\Game\Against as AgainstGame;
 
