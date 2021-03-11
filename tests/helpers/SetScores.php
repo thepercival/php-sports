@@ -16,7 +16,7 @@ trait SetScores
     {
         $homePlace = $poule->getPlace($homePlaceNr);
         $awayPlace = $poule->getPlace($awayPlaceNr);
-        $foundGames = $poule->getGames()->filter(function (AgainstGame $game) use ($homePlace, $awayPlace) {
+        $foundGames = $poule->getGames()->filter(function (AgainstGame $game) use ($homePlace, $awayPlace): bool {
             $homePlaces = $game->getPlaces(AgainstSide::HOME)->map(
                 function (AgainstGamPlace $gamePlace): Place {
                     return $gamePlace->getPlace();

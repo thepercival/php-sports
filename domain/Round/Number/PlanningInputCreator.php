@@ -9,6 +9,7 @@ use SportsPlanning\Input\Service as PlanningInputService;
 use SportsPlanning\Input\Calculator as InputCalculator;
 use SportsHelpers\SportConfig;
 use Sports\Planning\Config as PlanningConfig;
+use SportsPlanning\SelfReferee;
 
 class PlanningInputCreator
 {
@@ -27,11 +28,10 @@ class PlanningInputCreator
             $sportConfigBases,
             $pouleStructure
         );
-        $sportConfigs = $this->reduceFields($pouleStructure, $sportConfigBases, $selfReferee !== PlanningInput::SELFREFEREE_DISABLED );
+        $sportConfigs = $this->reduceFields($pouleStructure, $sportConfigBases, $selfReferee !== SelfReferee::DISABLED);
         return new PlanningInput(
             $pouleStructure,
             $sportConfigs,
-            $config->getGameMode(),
             $nrOfReferees,
             $selfReferee,
         );
@@ -47,16 +47,16 @@ class PlanningInputCreator
     {
         $planningInputService = new PlanningInputService();
 
-        $otherPoulesAvailable = $planningInputService->canSelfRefereeOtherPoulesBeAvailable( $pouleStructure );
-        $samePouleAvailable = $planningInputService->canSelfRefereeSamePouleBeAvailable( $pouleStructure, $sportConfigs );
+        $otherPoulesAvailable = $planningInputService->canSelfRefereeOtherPoulesBeAvailable($pouleStructure);
+        $samePouleAvailable = $planningInputService->canSelfRefereeSamePouleBeAvailable($pouleStructure, $sportConfigs);
         if (!$otherPoulesAvailable && !$samePouleAvailable) {
-            return PlanningInput::SELFREFEREE_DISABLED;
+            return SelfReferee::DISABLED;
         }
-        if ($planningConfig->getSelfReferee() === PlanningInput::SELFREFEREE_OTHERPOULES && !$otherPoulesAvailable) {
-            return PlanningInput::SELFREFEREE_SAMEPOULE;
+        if ($planningConfig->getSelfReferee() === SelfReferee::OTHERPOULES && !$otherPoulesAvailable) {
+            return SelfReferee::SAMEPOULE;
         }
-        if ($planningConfig->getSelfReferee() === PlanningInput::SELFREFEREE_SAMEPOULE && !$samePouleAvailable) {
-            return PlanningInput::SELFREFEREE_OTHERPOULES;
+        if ($planningConfig->getSelfReferee() === SelfReferee::SAMEPOULE && !$samePouleAvailable) {
+            return SelfReferee::OTHERPOULES;
         }
         return $planningConfig->getSelfReferee();
     }
@@ -67,7 +67,7 @@ class PlanningInputCreator
         foreach ($roundNumber->getPoules() as $poule) {
             $nrOfPlacesPerPoule[] = $poule->getPlaces()->count();
         }
-        return new PouleStructure( $nrOfPlacesPerPoule );
+        return new PouleStructure($nrOfPlacesPerPoule);
     }
 
     /**
@@ -79,17 +79,18 @@ class PlanningInputCreator
     protected function reduceFields(PouleStructure $pouleStructure, array $sportConfigs, bool $selfReferee): array
     {
         $inputCalculator = new InputCalculator();
-        $maxNrOfGamesPerBatch = $inputCalculator->getMaxNrOfGamesPerBatch( $pouleStructure, $sportConfigs, $selfReferee );
+        $maxNrOfGamesPerBatch = $inputCalculator->getMaxNrOfGamesPerBatch($pouleStructure, $sportConfigs, $selfReferee);
         $reducedConfigs = [];
-        foreach( $sportConfigs as $sportConfig ) {
+        foreach ($sportConfigs as $sportConfig) {
             $reducedNrOfFields = $sportConfig->getNrOfFields();
-            if( $reducedNrOfFields > $maxNrOfGamesPerBatch ) {
+            if ($reducedNrOfFields > $maxNrOfGamesPerBatch) {
                 $reducedNrOfFields = $maxNrOfGamesPerBatch;
             }
             $reducedConfigs[] = new SportConfig(
                 $sportConfig->getSport(),
                 $reducedNrOfFields,
-                $sportConfig->getGameAmount() );
+                $sportConfig->getGameAmount()
+            );
         }
 
         uasort(

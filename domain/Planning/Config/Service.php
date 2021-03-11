@@ -6,6 +6,7 @@ use Sports\Planning\Config as PlanningConfig;
 use SportsHelpers\GameMode;
 use SportsPlanning\Input as PlanningInput;
 use Sports\Round\Number as RoundNumber;
+use SportsPlanning\SelfReferee;
 
 class Service
 {
@@ -21,7 +22,7 @@ class Service
         $config->setMinutesPerGame($this->getDefaultMinutesPerGame());
         $config->setMinutesBetweenGames($this->getDefaultMinutesBetweenGames());
         $config->setMinutesAfter($this->getDefaultMinutesAfter());
-        $config->setSelfReferee(PlanningInput::SELFREFEREE_DISABLED);
+        $config->setSelfReferee(SelfReferee::DISABLED);
         $config->setGameMode(GameMode::AGAINST);
         return $config;
     }

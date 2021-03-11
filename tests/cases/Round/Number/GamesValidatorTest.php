@@ -4,6 +4,7 @@ namespace Sports\Tests\Round\Number;
 
 use \Exception;
 use League\Period\Period;
+use PHPUnit\Framework\TestCase;
 use Sports\Output\Against as AgainstGameOutput;
 use SportsHelpers\Against\Side as AgainstSide;
 use Sports\Game\Against as AgainstGame;
@@ -14,8 +15,9 @@ use Sports\TestHelper\CompetitionCreator;
 use Sports\TestHelper\GamesCreator;
 use Sports\Round\Number\GamesValidator;
 use Sports\Structure\Service as StructureService;
+use SportsPlanning\SelfReferee;
 
-class GamesValidatorTest extends \PHPUnit\Framework\TestCase
+class GamesValidatorTest extends TestCase
 {
     use CompetitionCreator;
 
@@ -204,7 +206,7 @@ class GamesValidatorTest extends \PHPUnit\Framework\TestCase
         $structure = $structureService->create($competition, 5);
 
         $firstRoundNumber = $structure->getFirstRoundNumber();
-        $firstRoundNumber->getPlanningConfig()->setSelfReferee(PlanningInput::SELFREFEREE_SAMEPOULE);
+        $firstRoundNumber->getPlanningConfig()->setSelfReferee(SelfReferee::SAMEPOULE);
 
         (new GamesCreator())->createStructureGames($structure);
 
@@ -244,7 +246,7 @@ class GamesValidatorTest extends \PHPUnit\Framework\TestCase
         $structure = $structureService->create($competition, 9, 2);
 
         $firstRoundNumber = $structure->getFirstRoundNumber();
-        $firstRoundNumber->getPlanningConfig()->setSelfReferee(PlanningInput::SELFREFEREE_OTHERPOULES);
+        $firstRoundNumber->getPlanningConfig()->setSelfReferee(SelfReferee::OTHERPOULES);
 
         (new GamesCreator())->createStructureGames($structure);
 
@@ -267,7 +269,7 @@ class GamesValidatorTest extends \PHPUnit\Framework\TestCase
         $structure = $structureService->create($competition, 9, 2);
 
         $firstRoundNumber = $structure->getFirstRoundNumber();
-        $firstRoundNumber->getPlanningConfig()->setSelfReferee(PlanningInput::SELFREFEREE_OTHERPOULES);
+        $firstRoundNumber->getPlanningConfig()->setSelfReferee(SelfReferee::OTHERPOULES);
 
         // 2 pak vervolgend een wedstrijd en laatr deze in de pauze zijn
         // 3 en laat de validator de boel opsporen!

@@ -24,7 +24,7 @@ class ServiceTest extends TestCase
         $structure = $structureService->create($competition, 3);
         $rootRound = $structure->getRootRound();
 
-        (new GamesCreator())->createStructureGames( $structure );
+        (new GamesCreator())->createStructureGames($structure);
 
         $pouleOne = $rootRound->getPoule(1);
 
@@ -49,7 +49,7 @@ class ServiceTest extends TestCase
         $structure = $structureService->create($competition, 3);
         $rootRound = $structure->getRootRound();
 
-        (new GamesCreator())->createStructureGames( $structure );
+        (new GamesCreator())->createStructureGames($structure);
 
         $pouleOne = $rootRound->getPoule(1);
 
@@ -61,7 +61,7 @@ class ServiceTest extends TestCase
         $items = $endRankingService->getItems();
 
         for ($rank = 1; $rank <= count($items); $rank++) {
-            self::assertNull($items[$rank - 1]->getPlaceLocation() );
+            self::assertNull($items[$rank - 1]->getPlaceLocation());
         }
     }
 
@@ -76,7 +76,7 @@ class ServiceTest extends TestCase
         $structureService->addQualifier($rootRound, QualifyGroup::WINNERS);
         $structureService->addQualifier($rootRound, QualifyGroup::LOSERS);
 
-        (new GamesCreator())->createStructureGames( $structure );
+        (new GamesCreator())->createStructureGames($structure);
 
         $pouleOne = $rootRound->getPoule(1);
 

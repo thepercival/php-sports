@@ -20,14 +20,12 @@ class Sport extends SportBase
     private string $name;
     private bool $team;
     private int $customId = 0;
-    protected int $gameMode;
 
     public function __construct(string $name, bool $team, int $nrOfGamePlaces, int $gameMode)
     {
-        parent::__construct($nrOfGamePlaces);
+        parent::__construct($gameMode, $nrOfGamePlaces);
         $this->setName($name);
         $this->team = $team;
-        $this->gameMode = $gameMode;
     }
 
     public function getName(): string
@@ -54,13 +52,8 @@ class Sport extends SportBase
         return $this->customId;
     }
 
-    public function setCustomId(int $id ): void
+    public function setCustomId(int $id): void
     {
         $this->customId = $id;
-    }
-
-    public function getGameMode(): int
-    {
-        return $this->gameMode;
     }
 }

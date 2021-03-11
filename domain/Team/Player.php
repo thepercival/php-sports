@@ -21,23 +21,6 @@ class Player extends Role
         $this->setLine($line);
     }
 
-    /**
-     * @return int|string
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    /**
-     * @param int|string $id
-     * @return void
-     */
-    public function setId($id)
-    {
-        $this->id = $id;
-    }
-
     public function getLine(): int
     {
         return $this->line;
@@ -48,15 +31,16 @@ class Player extends Role
         $this->line = $line;
     }
 
-    public function getLineLetter(): string {
+    public function getLineLetter(): string
+    {
         $line = $this->getLine();
-        if( $line === SportCustom::Football_Line_GoalKepeer ) {
+        if ($line === SportCustom::Football_Line_GoalKepeer) {
             return "K";
-        } elseif( $line === SportCustom::Football_Line_Defense ) {
+        } elseif ($line === SportCustom::Football_Line_Defense) {
             return "V";
-        } elseif( $line === SportCustom::Football_Line_Midfield ) {
+        } elseif ($line === SportCustom::Football_Line_Midfield) {
             return "M";
-        } elseif( $line === SportCustom::Football_Line_Forward ) {
+        } elseif ($line === SportCustom::Football_Line_Forward) {
             return "A";
         }
         return "?";

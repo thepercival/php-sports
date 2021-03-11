@@ -39,6 +39,7 @@ trait CompetitionCreator
             new DateTimeImmutable("2019-07-01"),
         ));
         $this->competition = new Competition($league, $season);
+        $this->competition->setId(0);
         $this->competition->setStartDateTime(new DateTimeImmutable("2030-01-01T12:00:00.000Z"));
         $referee1 = new Referee($this->competition);
         $referee1->setInitials("111");

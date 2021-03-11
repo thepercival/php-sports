@@ -86,7 +86,7 @@ class Structure
         };
 
         $pouleNr = 1;
-        $setPouleStructureNumbers = function (RoundNumber $roundNumber) use (&$setPouleStructureNumbers, &$pouleNr) {
+        $setPouleStructureNumbers = function (RoundNumber $roundNumber) use (&$setPouleStructureNumbers, &$pouleNr): void {
             $rounds = $roundNumber->getRounds()->toArray();
             uasort($rounds, function (Round $roundA, Round $roundB) {
                 return ($roundA->getStructureNumber() > $roundB->getStructureNumber()) ? 1 : -1;

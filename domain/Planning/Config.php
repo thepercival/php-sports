@@ -4,7 +4,7 @@ namespace Sports\Planning;
 
 use Sports\Round\Number as RoundNumber;
 use SportsHelpers\Identifiable;
-use SportsPlanning\Input as PlanningInput;
+use SportsPlanning\SelfReferee;
 
 class Config extends Identifiable
 {
@@ -118,10 +118,8 @@ class Config extends Identifiable
 
     public function selfRefereeEnabled(): bool
     {
-        return $this->selfReferee !== PlanningInput::SELFREFEREE_DISABLED;
+        return $this->selfReferee !== SelfReferee::DISABLED;
     }
-
-
 
     protected function getRoundNumber(): RoundNumber
     {

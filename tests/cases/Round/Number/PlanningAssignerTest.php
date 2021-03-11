@@ -13,6 +13,7 @@ use Sports\Round\Number as RoundNumber;
 use Sports\TestHelper\CompetitionCreator;
 use Sports\TestHelper\GamesCreator;
 use Sports\Structure\Service as StructureService;
+use SportsPlanning\SelfReferee;
 
 class PlanningAssignerTest extends \PHPUnit\Framework\TestCase
 {
@@ -63,7 +64,7 @@ class PlanningAssignerTest extends \PHPUnit\Framework\TestCase
         $structureService->addQualifiers($rootRound, QualifyGroup::WINNERS, 7);
 
         $firstRoundNumber = $structure->getFirstRoundNumber();
-        $firstRoundNumber->getPlanningConfig()->setSelfReferee(Input::SELFREFEREE_SAMEPOULE);
+        $firstRoundNumber->getPlanningConfig()->setSelfReferee(SelfReferee::SAMEPOULE);
         $secondRoundNumber = $firstRoundNumber->getNext();
 
         (new GamesCreator())->createStructureGames($structure);

@@ -40,6 +40,10 @@ class Service
             || $customId === SportCustom::TableTennis
             || $customId === SportCustom::Tennis
             || $customId === SportCustom::Volleyball
+            || $customId === SportCustom::BadmintonDouble
+            || $customId === SportCustom::SquashDouble
+            || $customId === SportCustom::TennisDouble
+            || $customId === SportCustom::TableTennisDouble
         ) {
             return true;
         }

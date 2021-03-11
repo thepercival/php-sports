@@ -19,15 +19,19 @@ abstract class Custom
     const Volleyball = 12;
     const Baseball = 13;
     const IceHockey = 14;
-    const Sjoelen = 15; // Shuffleboard
-    const Klaverjassen = 16; // Jass
-    const Max = 16;
+    const Shuffleboard = 15;
+    const Jass = 16;
+    const BadmintonDouble = 17;
+    const SquashDouble = 18;
+    const TennisDouble = 19;
+    const TableTennisDouble = 20;
+    const Max = 20;
 
-    CONST Football_Line_GoalKepeer = 1;
-    CONST Football_Line_Defense = 2;
-    CONST Football_Line_Midfield = 4;
-    CONST Football_Line_Forward = 8;
-    CONST Football_Line_All = 15;
+    const Football_Line_GoalKepeer = 1;
+    const Football_Line_Defense = 2;
+    const Football_Line_Midfield = 4;
+    const Football_Line_Forward = 8;
+    const Football_Line_All = 15;
 
     public static function get(): array
     {
@@ -46,8 +50,12 @@ abstract class Custom
             Custom::Football,
             Custom::Volleyball,
             Custom::IceHockey,
-            Custom::Sjoelen,
-            Custom::Klaverjassen,
+            Custom::Shuffleboard,
+            Custom::Jass,
+            Custom::BadmintonDouble,
+            Custom::SquashDouble,
+            Custom::TennisDouble,
+            Custom::TableTennisDouble,
         ];
     }
 }
