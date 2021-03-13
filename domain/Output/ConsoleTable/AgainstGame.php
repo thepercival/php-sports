@@ -11,7 +11,7 @@ use Sports\Game\Event\Goal as GoalEvent;
 use Sports\Game\Event\Card as CardEvent;
 use Sports\Game\Event\Substitution as SubstitutionEvent;
 use Sports\NameService;
-use Sports\Place\Location\Map as PlaceLocationMap;
+use Sports\Competitor\Map as CompetitorMap;
 use Sports\Competitor\Team as TeamCompetitor;
 use Sports\Sport;
 use Sports\Score\Config\Service as ScoreConfigService;
@@ -19,22 +19,22 @@ use SportsHelpers\Against\Side as AgainstSide;
 
 class AgainstGame
 {
-    protected PlaceLocationMap $placeLocationMap;
+    protected CompetitorMap $competitorMap;
     protected NameService $nameService;
     protected AgainstGameBase $game;
 
     /**
      * @param Competition $competition
      * @param AgainstGameBase $game
-     * @param array|TeamCompetitor[] $teamCompetitors
+     * @param array<TeamCompetitor> $teamCompetitors
      */
     public function display(Competition $competition, AgainstGameBase $game, array $teamCompetitors)
     {
         $table = new ConsoleTable();
         // $table->setHeaders(array('league', 'season', 'batchNr', 'id', 'datetime', 'state', 'home', 'score', 'away' ) );
 
-        $this->placeLocationMap = new PlaceLocationMap($teamCompetitors);
-        $this->nameService = new NameService($this->placeLocationMap);
+        $this->competitorMap = new CompetitorMap($teamCompetitors);
+        $this->nameService = new NameService($this->competitorMap);
         $this->game = $game;
 
         $table->addRow($this->getGameRow($competition));
@@ -88,7 +88,7 @@ class AgainstGame
     {
         $rows = [];
         foreach ([AgainstSide::HOME,AgainstSide::AWAY] as $side) {
-            foreach ($this->game->getCompetitors($this->placeLocationMap, $side) as $competitor) {
+            foreach ($this->game->getCompetitors($this->competitorMap, $side) as $competitor) {
                 if (!($competitor instanceof TeamCompetitor) || $competitor->getTeam() !== $event->getTeam()) {
                     continue;
                 }
@@ -188,12 +188,12 @@ class AgainstGame
 
     /**
      * @param int $side
-     * @return array|GameParticipation[]
+     * @return array<GameParticipation>
      */
     protected function getLineup(int $side): array
     {
         $participations = [];
-        $homeCompetitors = $this->game->getCompetitors($this->placeLocationMap, $side);
+        $homeCompetitors = $this->game->getCompetitors($this->competitorMap, $side);
         foreach ($homeCompetitors as $homeTeamCompetitor) {
             if (!($homeTeamCompetitor instanceof TeamCompetitor)) {
                 continue;
@@ -255,7 +255,7 @@ class AgainstGame
     }
 
     /**
-     * @return array|string[]
+     * @return array<string>
      */
     protected function getScoreRow(): array
     {
@@ -266,8 +266,8 @@ class AgainstGame
         if ($finalScore !== null) {
             $score = $finalScore->getHome() . $score . $finalScore->getAway();
         }
-        $homePlaces = $this->game->getPlaces(AgainstSide::HOME);
-        $awayPlaces = $this->game->getPlaces(AgainstSide::AWAY);
+        $homePlaces = $this->game->getSidePlaces(AgainstSide::HOME);
+        $awayPlaces = $this->game->getSidePlaces(AgainstSide::AWAY);
         return [
             $this->nameService->getPlacesFromName($homePlaces, true, true),
             $score,

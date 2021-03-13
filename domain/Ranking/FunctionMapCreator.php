@@ -3,7 +3,8 @@ declare(strict_types=1);
 
 namespace Sports\Ranking;
 
-class FunctionMapCreator {
+class FunctionMapCreator
+{
     /**
      * @var array
      */
@@ -14,7 +15,12 @@ class FunctionMapCreator {
         $this->initMap();
     }
 
-    private function initMap() {
+    public function getMap(): array {
+        return $this->map;
+    }
+
+    private function initMap()
+    {
         $this->map[Rule::MostPoints] = function (array $items): array {
             $mostPoints = null;
             $bestItems = [];

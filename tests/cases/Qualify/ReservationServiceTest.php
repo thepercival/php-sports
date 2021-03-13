@@ -41,7 +41,7 @@ class ReservationServiceTest extends TestCase
         $this->setScoreSingle($pouleOne, 3, 5, 5, 3);
         $this->setScoreSingle($pouleOne, 4, 5, 5, 4);
 
-        $qualifyService = new QualifyService($rootRound, AgainstRankingService::RULESSET_WC);
+        $qualifyService = new QualifyService($rootRound);
         $qualifyService->setQualifiers();
 
         $winnersRound = $rootRound->getChild(QualifyGroup::WINNERS, 1);
@@ -85,7 +85,7 @@ class ReservationServiceTest extends TestCase
         $this->setScoreSingle($pouleFour, 1, 3, 1, 3);
         $this->setScoreSingle($pouleFour, 2, 3, 2, 3);
 
-        $qualifyService = new QualifyService($rootRound, AgainstRankingService::RULESSET_WC);
+        $qualifyService = new QualifyService($rootRound);
         $qualifyService->setQualifiers();
 
         $winnersRound = $rootRound->getChild(QualifyGroup::WINNERS, 1);
@@ -144,7 +144,7 @@ class ReservationServiceTest extends TestCase
         $this->setScoreSingle($pouleThree, 1, 3, 1, 3);
         // $this->setScoreSingle(pouleThree, 2, 3, 2, 5);
 
-        $qualifyService = new QualifyService($rootRound, AgainstRankingService::RULESSET_WC);
+        $qualifyService = new QualifyService($rootRound);
         $qualifyService->setQualifiers();
 
         $winnersPoule = $rootRound->getChild(QualifyGroup::WINNERS, 1)->getPoule(1);

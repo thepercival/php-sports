@@ -7,7 +7,7 @@ namespace Sports;
 use DateTimeImmutable;
 use \Doctrine\Common\Collections\ArrayCollection;
 use \Doctrine\ORM\PersistentCollection;
-use Sports\Ranking\Calculator\Against as AgainstRankingService;
+use Sports\Ranking\RuleSet as RankingRuleSet;
 use Sports\Competition\Sport as CompetitionSport;
 use Sports\Competition\Field as CompetitionField;
 use SportsHelpers\Identifiable;
@@ -66,7 +66,7 @@ class Competition extends Identifiable
     {
         $this->setLeague($league);
         $this->season = $season;
-        $this->rankingRuleSet = AgainstRankingService::RULESSET_WC;
+        $this->rankingRuleSet = RankingRuleSet::Against;
         $this->state = State::Created;
         $this->roundNumbers = new ArrayCollection();
         $this->referees = new ArrayCollection();

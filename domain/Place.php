@@ -2,11 +2,11 @@
 
 namespace Sports;
 
-use Doctrine\Common\Collections\ArrayCollection;
 use InvalidArgumentException;
 use Sports\Place\Location as PlaceLocation;
 use Sports\Place\LocationBase as PlaceLocationBase;
-use Sports\Qualify\Rule as QualifyRule;
+use Sports\Qualify\Rule\Single as SingleQualifyRule;
+use Sports\Qualify\Rule\Multiple as MultipleQualifyRule;
 use Sports\Qualify\Group as QualifyGroup;
 use Sports\Poule\Horizontal as HorizontalPoule;
 use SportsHelpers\Identifiable;
@@ -23,26 +23,16 @@ class Place extends Identifiable implements PlaceLocation
      * @var int
      */
     protected $number;
-    /**
-     * @var string
-     */
-    protected $locationId;
+    protected string|null $roundLocationId = null;
     /**
      * @var int
      */
     protected $penaltyPoints;
+    protected SingleQualifyRule|MultipleQualifyRule|null $fromQualifyRule;
     /**
-     * @var Poule
+     * @var array<SingleQualifyRule|MultipleQualifyRule>
      */
-    protected $poule;
-    /**
-     * @var Qualify\Rule
-     */
-    protected $fromQualifyRule;
-    /**
-     * @var Qualify\Rule[] | array
-     */
-    protected $toQualifyRules = array();
+    protected array $toQualifyRules = [];
     /**
      * @var HorizontalPoule
      */
@@ -60,7 +50,7 @@ class Place extends Identifiable implements PlaceLocation
 
     const MAX_LENGTH_NAME = 10;
 
-    public function __construct(Poule $poule, int $number = null)
+    public function __construct(protected Poule $poule, int $number = null)
     {
         if ($number === null) {
             $number = $poule->getPlaces()->count() + 1;
@@ -78,23 +68,17 @@ class Place extends Identifiable implements PlaceLocation
         return $this->poule;
     }
 
-    /**
-     * @param Poule $poule
-     */
-    public function setPoule(Poule $poule = null)
+    public function setPoule(Poule $poule)
     {
-        if ($this->poule !== null && $this->poule->getPlaces()->contains($this)) {
-            $this->poule->getPlaces()->removeElement($this) ;
+        if (/*$this->poule !== null &&*/ $this->poule->getPlaces()->contains($this)) {
+            $this->poule->getPlaces()->removeElement($this);
         }
-        if ($poule !== null && !$poule->getPlaces()->contains($this)) {
+        if (!$poule->getPlaces()->contains($this)) {
             $poule->getPlaces()->add($this) ;
         }
         $this->poule = $poule;
     }
 
-    /**
-     * @return Round
-     */
     public function getRound(): Round
     {
         return $this->getPoule()->getRound();
@@ -158,17 +142,20 @@ class Place extends Identifiable implements PlaceLocation
         $this->name = $name;
     }
 
-    public function getFromQualifyRule(): ?QualifyRule
+    public function getFromQualifyRule(): SingleQualifyRule|MultipleQualifyRule|null
     {
         return $this->fromQualifyRule;
     }
 
-    public function setFromQualifyRule(?QualifyRule $qualifyRule)
+    public function setFromQualifyRule(SingleQualifyRule|MultipleQualifyRule|null $qualifyRule)
     {
         $this->fromQualifyRule = $qualifyRule;
     }
 
-    public function &getToQualifyRules(): array /*QualifyRule*/
+    /**
+     * @return array<int|string,SingleQualifyRule|MultipleQualifyRule>
+     */
+    public function &getToQualifyRules(): array
     {
         return $this->toQualifyRules;
     }
@@ -182,11 +169,11 @@ class Place extends Identifiable implements PlaceLocation
         return $toQualifyRule !== false ? $toQualifyRule : null;
     }
 
-    public function setToQualifyRule(int $winnersOrLosers, QualifyRule $qualifyRule = null)
+    public function setToQualifyRule(int $winnersOrLosers, SingleQualifyRule|MultipleQualifyRule|null $qualifyRule)
     {
-        $toQualifyRuleOld = $this->getToQualifyRule($winnersOrLosers);
-        if ($toQualifyRuleOld !== null) {
-            if (($key = array_search($toQualifyRuleOld, $this->toQualifyRules, true)) !== false) {
+        $originalToQualifyRule = $this->getToQualifyRule($winnersOrLosers);
+        if ($originalToQualifyRule !== null) {
+            if (($key = array_search($originalToQualifyRule, $this->toQualifyRules, true)) !== false) {
                 unset($this->toQualifyRules[$key]);
             }
         }
@@ -213,19 +200,21 @@ class Place extends Identifiable implements PlaceLocation
         }
     }
 
-    /**
-     * within roundnumber
-     */
-    public function getLocationId(): string
+    public function getRoundLocationId(): string
     {
-        if ($this->locationId === null) {
-            $this->locationId = $this->getPoule()->getStructureNumber() . '.' . $this->number;
+        if ($this->roundLocationId === null) {
+            $this->roundLocationId = $this->getPoule()->getNumber() . '.' . $this->getNumber();
         }
-        return $this->locationId;
+        return $this->roundLocationId;
+    }
+
+    public function getStructureNumber(): string
+    {
+        return $this->getPoule()->getStructureNumber() . '.' . $this->number;
     }
 
     /**
-     * @return array|AgainstGame[]|TogetherGame[]
+     * @return array<AgainstGame|TogetherGame>
      */
     public function getGames(): array
     {

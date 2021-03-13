@@ -4,29 +4,19 @@ namespace Sports\Qualify\Rule;
 
 use Sports\Poule\Horizontal as HorizontalPoule;
 use Sports\Place;
-use Sports\Qualify\Rule as QualifyRule;
+use Sports\Qualify\RuleOld as QualifyRule;
 use Sports\Round;
 
 class Multiple extends QualifyRule
 {
     /**
-     * @var array | Place[]
+     * @var array<Place>
      */
-    private $toPlaces;
-    /**
-     * @var HorizontalPoule
-     */
-    private $fromHorizontalPoule;
-    /**
-     * @var int
-     */
-    private $nrOfToPlaces;
+    private array $toPlaces;
 
-    public function __construct(HorizontalPoule $fromHorizontalPoule, int $nrOfToPlaces)
+    public function __construct(private HorizontalPoule $fromHorizontalPoule, private int $nrOfToPlaces)
     {
-        $this->fromHorizontalPoule = $fromHorizontalPoule;
-        $this->fromHorizontalPoule->setQualifyRuleMultiple($this);
-        $this->nrOfToPlaces = $nrOfToPlaces;
+        $this->fromHorizontalPoule->setMultipleQualifyRule($this);
         $this->toPlaces = [];
     }
 
@@ -38,16 +28,6 @@ class Multiple extends QualifyRule
     public function getFromRound(): Round
     {
         return $this->fromHorizontalPoule->getRound();
-    }
-
-    public function isMultiple(): bool
-    {
-        return true;
-    }
-
-    public function isSingle(): bool
-    {
-        return false;
     }
 
     public function getWinnersOrLosers(): int
@@ -67,7 +47,7 @@ class Multiple extends QualifyRule
     }
 
     /**
-     * @return array | Place[]
+     * @return array<Place>
      */
     public function getToPlaces(): array
     {

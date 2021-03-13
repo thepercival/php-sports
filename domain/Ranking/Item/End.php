@@ -1,6 +1,6 @@
 <?php
 
-namespace Sports\Ranking\Item\End;
+namespace Sports\Ranking\Item;
 
 use Sports\Place\Location as PlaceLocation;
 

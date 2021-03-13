@@ -1,12 +1,12 @@
 <?php
 
-namespace Sports\Ranking\Item\Round;
+namespace Sports\Place;
 
 use Sports\Place;
 use Sports\Competition\Sport as CompetitionSport;
 use Sports\Place\Location as PlaceLocation;
 
-class SportUnranked
+class SportPerformance
 {
     private int $penaltyPoints = 0;
     private int $games = 0;
@@ -36,9 +36,9 @@ class SportUnranked
         return $this->place;
     }
 
-    public function getPlaceLocation(): PlaceLocation
+    public function getRoundLocationId(): string
     {
-        return $this->place;
+        return $this->place->getRoundLocationId();
     }
 
     public function getGames(): int

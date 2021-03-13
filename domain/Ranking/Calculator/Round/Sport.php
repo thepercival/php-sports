@@ -4,190 +4,169 @@ declare(strict_types=1);
 
 namespace Sports\Ranking\Calculator\Round;
 
-use Exception;
-use Sports\Game\Against as AgainstGame;
-use Sports\Place\Location as PlaceLocation;
+use Sports\Qualify\Rule\Single as SingleQualifyRule;
+use Sports\Qualify\Rule\Multiple as MultipleQualifyRule;
 use Sports\Poule;
 use Sports\Poule\Horizontal as HorizontalPoule;
 use Sports\Place;
+use Sports\Ranking\Item\Round\Sport as SportRoundRankingItem;
+use Sports\Ranking\Rule\Getter as RankingRuleGetter;
+use Sports\Place\SportPerformance;
+use Sports\Competition\Sport as CompetitionSport;
 use Sports\Round;
-use Sports\Ranking\RoundItem\Ranked as RankedRoundItem;
-use Sports\Ranking\RoundItem\SportUnranked as UnrankedRoundItem;
-use Sports\Ranking\ItemsGetter\Against as AgainstItemsGetter;
-use Sports\Ranking\Calculator as RankingService;
-use Sports\State;
-use SportsHelpers\Against\Side as AgainstSide;
+use Sports\Ranking\Rule as RankingRule;
 
-
-class Sport
+abstract class Sport
 {
-    protected array $map = [];
+    /**
+     * @var array<bool>
+     */
+    protected array $gameStateMap = [];
+    protected array $rankFunctionMap = [];
+    protected RankingRuleGetter $rankingRuleGetter;
 
-    public function __construct(Round $round, int $rulesSet, int $gameStates = null)
+    public function __construct(protected CompetitionSport $competitionSport, array $gameStates)
     {
-        $this->initMap();
+        foreach ($gameStates as $state) {
+            $this->gameStateMap[$state] = true;
+        }
+        $this->rankingRuleGetter = new RankingRuleGetter();
     }
-
 
     /**
      * @param Poule $poule
-     * @return array | RankedRoundItem[]
+     * @return array<SportRoundRankingItem>
      */
-    public function getItemsForPoule(Poule $poule): array
-    {
-        if (array_key_exists($poule->getNumber(), $this->cache) === false) {
-            $round = $poule->getRound();
-            $getter = new AgainstItemsGetter($round, $this->gameStates);
-            $unrankedItems = $getter->getUnrankedItems($poule->getPlaces()->toArray(), $poule->getGames()->toArray());
-            $rankedItems = $this->rankItems($unrankedItems, true);
-            $this->cache[$poule->getNumber()] = $rankedItems;
-        }
-        return $this->cache[$poule->getNumber()];
-    }
+    abstract public function getItemsForPoule(Poule $poule): array;
+
+
+//    public function getPlaceLocationsForHorizontalPoule(HorizontalPoule $horizontalPoule): array
+//    {
+//        return array_map(function (SportRoundRankingItem $rankingItem): PlaceLocation {
+//            return $rankingItem->getPlaceLocation();
+//        }, $this->getItemsForHorizontalPoule($horizontalPoule, true));
+//    }
 
     /**
      * @param HorizontalPoule $horizontalPoule
-     * @return array | PlaceLocation[]
-     */
-    public function getPlaceLocationsForHorizontalPoule(HorizontalPoule $horizontalPoule): array
-    {
-        return array_map(
-            function (RankedRoundItem $rankingItem): PlaceLocation {
-                return $rankingItem->getPlaceLocation();
-            },
-            $this->getItemsForHorizontalPoule($horizontalPoule, true)
-        );
-    }
-
-    /**
-     * @param HorizontalPoule $horizontalPoule
-     * @return array | Place[]
+     * @return array<Place>
      */
     public function getPlacesForHorizontalPoule(HorizontalPoule $horizontalPoule): array
     {
-        return array_map(
-            function (RankedRoundItem $rankingItem): Place {
-                return $rankingItem->getPlace();
-            },
-            $this->getItemsForHorizontalPoule($horizontalPoule, true)
-        );
+        return array_map(function (SportRoundRankingItem $rankingSportItem) use ($horizontalPoule): Place {
+            return $horizontalPoule->getRound()->getPlace($rankingSportItem->getPerformance()->getPlace());
+        }, $this->getItemsForHorizontalPoule($horizontalPoule, true));
     }
 
     /**
      * @param HorizontalPoule $horizontalPoule
      * @param bool|null $checkOnSingleQualifyRule
-     * @return array | RankedRoundItem[]
+     * @return array<SportRoundRankingItem>
      */
-    public function getItemsForHorizontalPoule(HorizontalPoule $horizontalPoule, ?bool $checkOnSingleQualifyRule): array
+    public function getItemsForHorizontalPoule(HorizontalPoule $horizontalPoule, bool $checkOnSingleQualifyRule = null): array
     {
-        $unrankedRoundItems = [];
+        /** @var array<SportPerformance> $performances */
+        $performances = [];
         foreach ($horizontalPoule->getPlaces() as $place) {
             if ($checkOnSingleQualifyRule && $this->hasPlaceSingleQualifyRule($place)) {
                 continue;
             }
-            $pouleRankingItems = $this->getItemsForPoule($place->getPoule());
-            $pouleRankingItem = $this->getItemByRank($pouleRankingItems, $place->getNumber());
-            $unrankedRoundItems[] = $pouleRankingItem->getUnranked();
-        }
-        return $this->rankItems($unrankedRoundItems, false);
-    }
-
-    /**
-     * Place can have a multiple and a single rule, if so than do not process place for horizontalpoule(multiple)
-     *
-     * @param Place $place
-     * @return bool
-     */
-    protected function hasPlaceSingleQualifyRule(Place $place): bool
-    {
-        $foundRules = array_filter(
-            $place->getToQualifyRules(),
-            function ($qualifyRuleIt) {
-                return $qualifyRuleIt->isSingle();
-            }
-        );
-        return count($foundRules) > 0;
-    }
-
-    /**
-     * @param array $rankingItems | RankedRoundItem[]
-     * @param int $rank
-     * @return RankedRoundItem
-     */
-    public function getItemByRank(array $rankingItems, int $rank): RankedRoundItem
-    {
-        $foundItems = array_filter(
-            $rankingItems,
-            function ($rankingItemIt) use ($rank): bool {
-                return $rankingItemIt->getUniqueRank() === $rank;
-            }
-        );
-        return reset($foundItems);
-    }
-
-    /**
-     * @param array | UnrankedRoundItem[] $unrankedItems
-     * @param bool $againstEachOther
-     * @return array | RankedRoundItem[]
-     */
-    private function rankItems(array $unrankedItems, bool $againstEachOther): array
-    {
-        $rankedItems = [];
-        $rankFunctions = $this->getRankFunctions($againstEachOther);
-        $nrOfIterations = 0;
-        while (count($unrankedItems) > 0) {
-            $bestItems = $this->findBestItems($unrankedItems, $rankFunctions);
-            uasort( $bestItems, function (UnrankedRoundItem $unrankedA, UnrankedRoundItem $unrankedB): int {
-                if ($unrankedA->getPlaceLocation()->getPouleNr() === $unrankedB->getPlaceLocation()->getPouleNr()) {
-                    return $unrankedA->getPlaceLocation()->getPlaceNr() - $unrankedB->getPlaceLocation()->getPlaceNr();
-                }
-                return $unrankedA->getPlaceLocation()->getPouleNr() - $unrankedB->getPlaceLocation()->getPouleNr();
-            });
-            $rank = $nrOfIterations + 1;
-            foreach ($bestItems as $bestItem) {
-                array_splice($unrankedItems, array_search($bestItem, $unrankedItems, true), 1);
-                $rankedItems[] = new RankedRoundItem($bestItem, ++$nrOfIterations, $rank);
-            }
-            // if (nrOfIterations > this.maxPlaces) {
-            //     console.error('should not be happening for ranking calc');
-            //     break;
-            // }
-        }
-        return $rankedItems;
-    }
-
-    /**
-     * @param array | UnrankedRoundItem[] $orgItems
-     * @param array $rankFunctions
-     * @return array | UnrankedRoundItem[]
-     */
-    private function findBestItems(array $orgItems, array $rankFunctions): array
-    {
-        $bestItems = $orgItems;
-
-        foreach ($rankFunctions as $rankFunction) {
-            if ($rankFunction === $this->rankFunctions[RankingService::BestAgainstEachOther] && count($orgItems) === count(
-                    $bestItems
-                )) {
+            /** @var array<SportRoundRankingItem> $sportRankingItems */
+            $sportRankingItems = $this->getItemsForPoule($place->getPoule());
+            $sportRankingItem = $this->getItemByRank($sportRankingItems, $place->getNumber());
+            if ($sportRankingItem === null) {
                 continue;
             }
-            $bestItems = $rankFunction($bestItems);
-            if (count($bestItems) < 2) {
+            $performances[] = $sportRankingItem->getPerformance();
+        }
+        $scoreConfig = $horizontalPoule->getRound()->getValidScoreConfig($this->competitionSport);
+        $ruleSet = $this->competitionSport->getCompetition()->getRankingRuleSet();
+        $rankingRules = $this->rankingRuleGetter->getRules($ruleSet, $scoreConfig->useSubScore());
+        return $this->rankItems($performances, $rankingRules);
+    }
+
+
+
+    /**
+     * @param array<SportPerformance> $originalPerformances
+     * @param array<int> $rankingRules
+     * @return array<SportRoundRankingItem>
+     */
+    protected function rankItems(array $originalPerformances, array $rankingRules): array
+    {
+        $performances = $originalPerformances;
+        /** @var array<SportRoundRankingItem> $sportRankingItems */
+        $sportRankingItems = [];
+        $nrOfIterations = 0;
+        while (count($performances) > 0) {
+            $bestPerformances = $this->findBestPerformances($performances, $rankingRules);
+            $rank = $nrOfIterations + 1;
+            uasort($bestPerformances, function (SportPerformance $perfA, SportPerformance $perfB): int {
+                if ($perfA->getPlace()->getPouleNr() === $perfB->getPlace()->getPouleNr()) {
+                    return $perfA->getPlace()->getPlaceNr() - $perfB->getPlace()->getPlaceNr();
+                }
+                return $perfA->getPlace()->getPouleNr() - $perfB->getPlace()->getPouleNr();
+            });
+            foreach ($bestPerformances as $bestPerformance) {
+                array_splice($performances, array_search($bestPerformance, $performances, true), 1);
+                $sportRankingItems[] = new SportRoundRankingItem($bestPerformance, ++$nrOfIterations, $rank);
+            }
+        }
+        return $sportRankingItems;
+    }
+
+    /**
+     * @param Round $round
+     * @param array<SportPerformance> $performances
+     * @return array<SportRoundRankingItem>
+     */
+    protected function getItemsHelper(Round $round, array $performances): array
+    {
+        $scoreConfig = $round->getValidScoreConfig($this->competitionSport);
+        $ruleSet = $this->competitionSport->getCompetition()->getRankingRuleSet();
+        $rankingRules = $this->rankingRuleGetter->getRules($ruleSet, $scoreConfig->useSubScore());
+        return $this->rankItems($performances, $rankingRules);
+    }
+
+    /**
+     * @param array<SportRoundRankingItem> $rankingItems
+     * @param int $rank
+     * @return SportRoundRankingItem|null
+     */
+    public function getItemByRank(array $rankingItems, int $rank): ?SportRoundRankingItem
+    {
+        $filtered = array_filter($rankingItems, function (SportRoundRankingItem $rankingItem) use ($rank): bool {
+            return $rankingItem->getUniqueRank() === $rank;
+        });
+        return count($filtered) > 0 ? reset($filtered) : null;
+    }
+
+    /**
+     * @param array<SportPerformance> $originalPerformances
+     * @param array<int> $rankingRules
+     * @return array<SportPerformance>
+     */
+    protected function findBestPerformances(array $originalPerformances, array $rankingRules): array
+    {
+        $bestPerformances = $originalPerformances;
+        foreach ($rankingRules as $rankingRule) {
+            $rankingFunction = $this->rankFunctionMap[$rankingRule];
+            if ($rankingRule === RankingRule::BestAmongEachOther && count($originalPerformances) === count($bestPerformances)) {
+                break;
+            }
+            $bestPerformances = $rankingFunction($bestPerformances);
+            if (count($bestPerformances) >= 2) {
                 break;
             }
         }
-        return $bestItems;
+        return $bestPerformances;
     }
 
-
-
-
-
-
-
-
-
-
-
-}
+    // Place can have a multiple and a single rule, if so than do not process place for horizontalpoule(multiple)
+    protected function hasPlaceSingleQualifyRule(Place $place): bool
+    {
+        return count(array_filter($place->getToQualifyRules(), function (SingleQualifyRule|MultipleQualifyRule $qualifyRuleIt): bool {
+            return ($qualifyRuleIt instanceof SingleQualifyRule);
+        })) > 0;
+    }
 }

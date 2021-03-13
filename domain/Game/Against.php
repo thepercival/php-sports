@@ -16,7 +16,7 @@ use Sports\Person;
 use Sports\Place;
 use Sports\Game as GameBase;
 use Sports\Game\Place\Against as AgainstGamePlace;
-use Sports\Place\Location\Map;
+use Sports\Competitor\Map as CompetitorMap;
 use Sports\Poule;
 use Sports\Qualify\AgainstConfig as QualifyConfig;
 use Sports\Score\Against as AgainstScore;
@@ -25,17 +25,17 @@ use Sports\Competition\Sport as CompetitionSport;
 class Against extends GameBase
 {
     /**
-     * @var AgainstGamePlace[] | Collection
+     * @var ArrayCollection<int|string,AgainstGamePlace>
      */
-    protected $places;
+    protected ArrayCollection $places;
     /**
-     * @var AgainstScore[] | ArrayCollection
+     * @var ArrayCollection<int|string,AgainstScore>
      */
-    protected $scores;
+    protected ArrayCollection $scores;
     /**
-     * @var Participation[] | Collection
+     * @var ArrayCollection<int|string,Participation>
      */
-    protected $participations;
+    protected ArrayCollection $participations;
     protected int $gameRoundNumber;
 
     public function __construct(Poule $poule, int $batchNr, DateTimeImmutable $startDateTime, CompetitionSport $competitionSport)
@@ -60,25 +60,49 @@ class Against extends GameBase
 //    }
 
     /**
-     * @return AgainstScore[] | ArrayCollection
+     * @return ArrayCollection<int|string,AgainstScore>
      */
-    public function getScores()
+    public function getScores(): ArrayCollection
     {
         return $this->scores;
     }
 
     /**
-     * @param int|null $side
-     * @return Collection | AgainstGamePlace[]
+     * @return ArrayCollection<int|string,AgainstGamePlace>
      */
-    public function getPlaces(int $side = null): Collection
+    public function getPlaces(): ArrayCollection
     {
-        if ($side === null) {
-            return $this->places;
+        return $this->places;
+    }
+
+    public function getSidePlaces(int $side = null): array
+    {
+        if ($side === AgainstSide::HOME) {
+            return $this->getHomePlaces();
+        } elseif ($side === AgainstSide::AWAY) {
+            return $this->getAwayPlaces();
         }
-        return $this->places->filter(function (AgainstGamePlace $gamePlace) use ($side): bool {
-            return $gamePlace->getSide() === $side;
-        });
+        return $this->getPlaces()->toArray();
+    }
+
+    /**
+     * @return array<AgainstGamePlace>
+     */
+    public function getHomePlaces(): array
+    {
+        return $this->getPlaces()->filter(function (AgainstGamePlace $place): bool {
+            return $place->getSide() === AgainstSide::HOME;
+        })->toArray();
+    }
+
+    /**
+     * @return array<AgainstGamePlace>
+     */
+    public function getAwayPlaces(): array
+    {
+        return $this->getPlaces()->filter(function (AgainstGamePlace $place): bool {
+            return $place->getSide() === AgainstSide::AWAY;
+        })->toArray();
     }
 
     public function getQualifyAgainstConfig(): QualifyConfig
@@ -93,10 +117,10 @@ class Against extends GameBase
      */
     public function isParticipating(Place $place, int $side = null): bool
     {
-        $places = $this->getPlaces($side)->map(function (AgainstGamePlace $gamePlace): Place {
+        $places = array_map(function (AgainstGamePlace $gamePlace): Place {
             return $gamePlace->getPlace();
-        });
-        return $places->contains($place);
+        }, $this->getSidePlaces($side));
+        return array_search($place, $places, true) !== false;
     }
 
     public function getSide(Place $place): ?int
@@ -111,15 +135,18 @@ class Against extends GameBase
     }
 
     /**
-     * @param Map $placeLocationMap
+     * @param CompetitorMap $competitorMap
      * @param int|null $side
-     * @return Collection|Competitor[]
+     * @return array<Competitor>
      */
-    public function getCompetitors(Map $placeLocationMap, int $side = null): Collection
+    public function getCompetitors(CompetitorMap $competitorMap, int $side = null): array
     {
-        return $this->getPlaces($side)->map(function (AgainstGamePlace $gamePlace) use ($placeLocationMap) : Competitor {
-            return $placeLocationMap->getCompetitor($gamePlace->getPlace());
-        });
+        return array_map(
+            function (AgainstGamePlace $gamePlace) use ($competitorMap): Competitor {
+                return $competitorMap->getCompetitor($gamePlace->getPlace());
+            },
+            $this->getSidePlaces($side)
+        );
     }
 
     public function getFinalPhase(): int
@@ -146,7 +173,7 @@ class Against extends GameBase
 
     /**
      * @param TeamCompetitor|null $teamCompetitor
-     * @return array|Participation[]
+     * @return array<Participation>
      */
     public function getLineup(TeamCompetitor $teamCompetitor = null): array
     {
@@ -165,7 +192,7 @@ class Against extends GameBase
 
     /**
      * @param TeamCompetitor|null $teamCompetitor
-     * @return array|Participation[]
+     * @return array<Participation>
      */
     public function getSubstitutes(TeamCompetitor $teamCompetitor = null): array
     {
@@ -181,7 +208,7 @@ class Against extends GameBase
 
     /**
      * @param TeamCompetitor|null $teamCompetitor
-     * @return array|Participation[]
+     * @return array<Participation>
      */
     public function getSubstituted(TeamCompetitor $teamCompetitor = null): array
     {
@@ -214,7 +241,7 @@ class Against extends GameBase
 
     /**
      * @param TeamCompetitor|null $teamCompetitor
-     * @return array|GoalEvent[]
+     * @return array<GoalEvent>
      */
     public function getGoalEvents(TeamCompetitor $teamCompetitor = null): array
     {
@@ -227,7 +254,7 @@ class Against extends GameBase
 
     /**
      * @param TeamCompetitor|null $teamCompetitor
-     * @return array|CardEvent[]
+     * @return array<CardEvent>
      */
     public function getCardEvents(TeamCompetitor $teamCompetitor = null): array
     {
@@ -240,7 +267,7 @@ class Against extends GameBase
 
     /**
      * @param TeamCompetitor|null $teamCompetitor
-     * @return array|SubstitutionEvent[]
+     * @return array<SubstitutionEvent>
      */
     public function getSubstituteEvents(TeamCompetitor $teamCompetitor = null): array
     {
@@ -273,7 +300,7 @@ class Against extends GameBase
 
     /**
      * @param TeamCompetitor|null $teamCompetitor
-     * @return array|GoalEvent[]|CardEvent[]
+     * @return array<GoalEvent|CardEvent|SubstitutionEvent>
      */
     public function getEvents(TeamCompetitor $teamCompetitor = null): array
     {

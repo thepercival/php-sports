@@ -8,30 +8,43 @@ use Sports\Output\Game as OutputGame;
 use Sports\Game\Against as AgainstGame;
 use SportsHelpers\Against\Side as AgainstSide;
 use Sports\Game\Together as TogetherGame;
-use Sports\Place\Location\Map as PlaceLocationMap;
-use Sports\Ranking\ItemsGetter\Against as AgainstItemsGetter;
+use Sports\Competitor\Map as CompetitorMap;
+use Sports\Place\SportPerformance\Calculator\Against as AgainstSportPerformanceCalculator;
 use Sports\State;
 use Sports\Game;
 
 class Against extends OutputGame
 {
-    public function __construct(PlaceLocationMap $placeLocationMap = null, LoggerInterface $logger = null)
+    public function __construct(CompetitorMap $competitorMap = null, LoggerInterface $logger = null)
     {
-        parent::__construct($placeLocationMap, $logger);
+        parent::__construct($competitorMap, $logger);
     }
 
-    protected function getDescriptionAsString($game): string
+    public function output(AgainstGame $game, string $prefix = null)
     {
-        return $this->getPlacesAsString($game->getPlaces(AgainstSide::HOME))
+        $field = $game->getField();
+
+        $this->logger->info(
+            ($prefix !== null ? $prefix : '') .
+            $game->getStartDateTime()->format("Y-m-d H:i") . " " .
+            $this->getBatchNrAsString($game->getBatchNr()) . " " .
+            'poule ' . $game->getPoule()->getNumber()
+            . ', ' . $this->getDescriptionAsString($game)
+            . ' , ' . $this->getRefereeAsString($game)
+            . ', ' . $this->getFieldAsString($field)
+            . ', ' . $game->getCompetitionSport()->getSport()->getName()
+            . ' ' . $this->getPointsAsString($game) . ' '
+        );
+    }
+
+    protected function getDescriptionAsString(AgainstGame $game): string
+    {
+        return $this->getPlacesAsString($game->getSidePlaces(AgainstSide::HOME))
             . ' ' . $this->getScoreAsString($game) . ' '
-            . $this->getPlacesAsString($game->getPlaces(AgainstSide::AWAY));
+            . $this->getPlacesAsString($game->getSidePlaces(AgainstSide::AWAY));
     }
 
-    /**
-     * @param AgainstGame|TogetherGame $game
-     * @return string
-     */
-    protected function getScoreAsString($game): string
+    protected function getScoreAsString(AgainstGame $game): string
     {
         $score = ' - ';
         if ($game->getState() !== State::Finished) {
@@ -51,23 +64,19 @@ class Against extends OutputGame
         return $retVal;
     }
 
-    /**
-     * @param AgainstGame|TogetherGame $game
-     * @return string
-     */
-    protected function getPointsAsString($game): string
+    protected function getPointsAsString(AgainstGame $game): string
     {
         $score = ' - ';
         if ($game->getState() !== State::Finished) {
             return $score;
         }
-        $itemGetter = new AgainstItemsGetter($game->getRound(), State::Finished);
+        $performanceCalculator = new AgainstSportPerformanceCalculator($game->getRound(), $game->getCompetitionSport());
         $finalScore = $this->scoreConfigService->getFinalAgainstScore($game);
         if ($finalScore === null) {
             return $score;
         }
-        $homePoints = $itemGetter->getNrOfPoints($finalScore, AgainstSide::HOME, $game);
-        $awayPoints = $itemGetter->getNrOfPoints($finalScore, AgainstSide::AWAY, $game);
+        $homePoints = $performanceCalculator->getNrOfPoints($finalScore, AgainstSide::HOME, $game);
+        $awayPoints = $performanceCalculator->getNrOfPoints($finalScore, AgainstSide::AWAY, $game);
         return $homePoints . 'p' . $score . $awayPoints . 'p';
     }
 }

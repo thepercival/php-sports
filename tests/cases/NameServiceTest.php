@@ -2,14 +2,13 @@
 
 namespace Sports\Tests;
 
-use Sports\Place\Location\Map as PlaceLocationMap;
+use Sports\Competitor\Map as CompetitorMap;
 use Sports\Team;
 use Sports\TestHelper\CompetitionCreator;
 use Sports\NameService;
 use Sports\Competitor\Team as TeamCompetitor;
 use Sports\Competition\Referee;
 use Sports\Structure\Service as StructureService;
-use Sports\Planning\Service as PlanningService;
 use Sports\Qualify\Group as QualifyGroup;
 use Sports\TestHelper\GamesCreator;
 
@@ -164,8 +163,8 @@ class NameServiceTest extends \PHPUnit\Framework\TestCase
                 new Team($competition->getLeague()->getAssociation(), 'competitor 1')
             );
 
-            $placeLocationMap = new PlaceLocationMap([$competitor]);
-            $nameService = new NameService($placeLocationMap);
+            $competitorMap = new CompetitorMap([$competitor]);
+            $nameService = new NameService($competitorMap);
 
             self::assertSame($nameService->getPlaceName($firstPlace, false, false), 'A1');
             self::assertSame($nameService->getPlaceName($firstPlace, true, false), 'competitor 1');
@@ -199,8 +198,8 @@ class NameServiceTest extends \PHPUnit\Framework\TestCase
                 new Team($competition->getLeague()->getAssociation(), 'competitor 1')
             );
 
-            $placeLocationMap = new PlaceLocationMap([$competitor]);
-            $nameService = new NameService($placeLocationMap);
+            $competitorMap = new CompetitorMap([$competitor]);
+            $nameService = new NameService($competitorMap);
 
             $structureService->addQualifiers($rootRound, QualifyGroup::WINNERS, 4);
 
@@ -267,13 +266,13 @@ class NameServiceTest extends \PHPUnit\Framework\TestCase
                 new Team($competition->getLeague()->getAssociation(), 'competitor 1')
             );
 
-            $placeLocationMap = new PlaceLocationMap([$competitor]);
-            $nameService = new NameService($placeLocationMap);
+            $competitorMap = new CompetitorMap([$competitor]);
+            $nameService = new NameService($competitorMap);
 
             (new GamesCreator())->createStructureGames($structure);
 
             $game = $rootRound->getGames()[0];
-            $gamePlaces = $game->getPlaces();
+            $gamePlaces = $game->getPlaces()->toArray();
 
             self::assertSame($nameService->getPlacesFromName($gamePlaces, false, false), 'A1 & A2');
         }
@@ -351,8 +350,8 @@ class NameServiceTest extends \PHPUnit\Framework\TestCase
                 new Team($competition->getLeague()->getAssociation(), 'competitor 1')
             );
 
-            $placeLocationMap = new PlaceLocationMap([$competitor]);
-            $nameService = new NameService($placeLocationMap);
+            $competitorMap = new CompetitorMap([$competitor]);
+            $nameService = new NameService($competitorMap);
 
             (new GamesCreator())->createStructureGames($structure);
 

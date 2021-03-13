@@ -8,7 +8,7 @@ use Sports\Competition;
 use Sports\Game\Against as AgainstGame;
 use Sports\Score\Against as AgainstScore;
 use Sports\NameService;
-use Sports\Place\Location\Map as PlaceLocationMap;
+use Sports\Competitor\Map as CompetitorMap;
 use Sports\Competitor\Team as TeamCompetitor;
 use Sports\State;
 use SportsHelpers\Against\Side as AgainstSide;
@@ -25,7 +25,7 @@ class AgainstGames
         $table = new ConsoleTable();
         $table->setHeaders(array('league', 'season', 'batchNr', 'id', 'datetime', 'state', 'home', 'score', 'away' ));
 
-        $nameService = new NameService(new PlaceLocationMap($teamCompetitors));
+        $nameService = new NameService(new CompetitorMap($teamCompetitors));
 
         foreach ($games as $game) {
             $row = array(
@@ -35,9 +35,9 @@ class AgainstGames
                 $game->getId(),
                 $game->getStartDateTime()->format(DateTime::ATOM),
                 (new State($game->getState()))->getDescription(),
-                $nameService->getPlacesFromName($game->getPlaces(AgainstSide::HOME), true, true),
+                $nameService->getPlacesFromName($game->getSidePlaces(AgainstSide::HOME), true, true),
                 $this->getScore($game),
-                $nameService->getPlacesFromName($game->getPlaces(AgainstSide::AWAY), true, true),
+                $nameService->getPlacesFromName($game->getSidePlaces(AgainstSide::AWAY), true, true),
             );
             $table->addRow($row);
         }

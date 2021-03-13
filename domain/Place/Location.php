@@ -6,4 +6,5 @@ interface Location
 {
     public function getPouleNr(): int;
     public function getPlaceNr(): int;
+    public function getRoundLocationId(): string;
 }

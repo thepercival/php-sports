@@ -71,4 +71,8 @@ trait Base
     {
         $this->placeNr = $placeNr;
     }
+
+    public function getRoundLocationId(): string {
+        return $this->getPouleNr() . '.' . $this->getPlaceNr();
+    }
 }

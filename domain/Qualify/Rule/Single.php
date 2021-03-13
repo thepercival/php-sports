@@ -4,17 +4,12 @@ namespace Sports\Qualify\Rule;
 
 use Sports\Poule;
 use Sports\Place;
-use Sports\Qualify\Rule as QualifyRule;
+use Sports\Qualify\RuleOld as QualifyRule;
 use Sports\Round;
 use Sports\Qualify\Group as QualifyGroup;
 
 class Single extends QualifyRule
 {
-
-    /**
-     * @var Place
-     */
-    private $fromPlace;
     /**
      * @var Place
      */
@@ -24,9 +19,8 @@ class Single extends QualifyRule
      */
     private $winnersOrLosers;
 
-    public function __construct(Place $fromPlace, QualifyGroup $toQualifyGroup)
+    public function __construct(private Place $fromPlace, QualifyGroup $toQualifyGroup)
     {
-        $this->fromPlace = $fromPlace;
         $this->winnersOrLosers = $toQualifyGroup->getWinnersOrLosers();
         $this->fromPlace->setToQualifyRule($toQualifyGroup->getWinnersOrLosers(), $this);
     }
@@ -34,16 +28,6 @@ class Single extends QualifyRule
     public function getFromRound(): Round
     {
         return $this->fromPlace->getRound();
-    }
-
-    public function isMultiple(): bool
-    {
-        return false;
-    }
-
-    public function isSingle(): bool
-    {
-        return true;
     }
 
     public function getWinnersOrLosers(): int

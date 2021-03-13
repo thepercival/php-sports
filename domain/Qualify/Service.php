@@ -2,56 +2,45 @@
 
 namespace Sports\Qualify;
 
-use Sports\Ranking\Calculator as RankingService;
+use Sports\Ranking\Calculator\Round as RoundRankingCalculator;
 use Sports\Qualify\ReservationService as QualifyReservationService;
 use Sports\Poule;
 use Sports\Place;
 use Sports\Round;
 use Sports\Poule\Horizontal as HorizontalPoule;
 use Sports\State;
-use Sports\Qualify\Rule\Single as QualifyRuleSingle;
-use Sports\Qualify\Rule\Multiple as QualifyRuleMultiple;
+use Sports\Qualify\Rule\Single as SingleQualifyRule;
+use Sports\Qualify\Rule\Multiple as MultipleQualifyRule;
 use Sports\Qualify\Group as QualifyGroup;
 
 class Service
 {
+    private RoundRankingCalculator $rankingCalculator;
     /**
-     * @var Round
+     * @var array<int|string,bool>
      */
-    private $round;
-    /**
-     * @var RankingService
-     */
-    private $rankingService;
-    /**
-     * @var array
-     */
-    private $poulesFinished = [];
-    /**
-     * @var bool
-     */
-    private $roundFinished;
+    private array $poulesFinished = [];
+    private bool|null $roundFinished = null;
     /**
      * @var QualifyReservationService
      */
     private $reservationService;
 
-    public function __construct(Round $round, int $ruleSet)
+    public function __construct(private Round $round)
     {
-        $this->round = $round;
-        $this->rankingService = new RankingService($round, $ruleSet);
+        $this->rankingCalculator = new RoundRankingCalculator();
     }
 
     /**
      * @param Poule|null $filterPoule
-     * @return array | Place[]
+     * @return array<Place>
      */
     public function setQualifiers(Poule $filterPoule = null): array
     {
         $changedPlaces = [];
 
         $setQualifiersForHorizontalPoule = function (HorizontalPoule $horizontalPoule) use ($filterPoule, &$changedPlaces): void {
-            $multipleRule = $horizontalPoule->getQualifyRuleMultiple();
+            $multipleRule = $horizontalPoule->getMultipleQualifyRule();
             if ($multipleRule !== null) {
                 $changedPlaces = array_merge($changedPlaces, $this->setQualifiersForMultipleRuleAndReserve($multipleRule));
             } else {
@@ -60,7 +49,8 @@ class Service
                         continue;
                     }
                     $singleRule = $place->getToQualifyRule($horizontalPoule->getWinnersOrLosers());
-                    $changedPlace = $this->setQualifierForSingleRuleAndReserve($singleRule);;
+                    $changedPlace = $this->setQualifierForSingleRuleAndReserve($singleRule);
+                    ;
                     if ($changedPlace !== null) {
                         $changedPlaces[] = $changedPlace;
                     }
@@ -76,15 +66,15 @@ class Service
         return $changedPlaces;
     }
 
-    protected function setQualifierForSingleRuleAndReserve(QualifyRuleSingle $ruleSingle): ?Place
+    protected function setQualifierForSingleRuleAndReserve(SingleQualifyRule $singleRule): ?Place
     {
-        $fromPlace = $ruleSingle->getFromPlace();
+        $fromPlace = $singleRule->getFromPlace();
         $poule = $fromPlace->getPoule();
         $rank = $fromPlace->getNumber();
-        $this->reservationService->reserve($ruleSingle->getToPlace()->getPoule()->getNumber(), $poule);
+        $this->reservationService->reserve($singleRule->getToPlace()->getPoule()->getNumber(), $poule);
 
         $qualifiedPlace = $this->getQualifiedPlace($poule, $rank);
-        $toPlace = $ruleSingle->getToPlace();
+        $toPlace = $singleRule->getToPlace();
         if ($toPlace->getQualifiedPlace() === $qualifiedPlace) {
             return null;
         }
@@ -93,13 +83,13 @@ class Service
     }
 
     /**
-     * @param QualifyRuleMultiple $ruleMultiple
-     * @return array | Place[]
+     * @param MultipleQualifyRule $multipleRule
+     * @return array<Place>
      */
-    protected function setQualifiersForMultipleRuleAndReserve(QualifyRuleMultiple $ruleMultiple): array
+    protected function setQualifiersForMultipleRuleAndReserve(MultipleQualifyRule $multipleRule): array
     {
         $changedPlaces = [];
-        $toPlaces = $ruleMultiple->getToPlaces();
+        $toPlaces = $multipleRule->getToPlaces();
         if (!$this->isRoundFinished()) {
             foreach ($toPlaces as $toPlace) {
                 $toPlace->setQualifiedPlace(null);
@@ -107,11 +97,11 @@ class Service
             }
             return $changedPlaces;
         }
-        $round = $ruleMultiple->getFromRound();
-        $rankedPlaceLocations = $this->rankingService->getPlaceLocationsForHorizontalPoule($ruleMultiple->getFromHorizontalPoule());
+        $round = $multipleRule->getFromRound();
+        $rankedPlaceLocations = $this->rankingCalculator->getPlaceLocationsForHorizontalPoule($multipleRule->getFromHorizontalPoule());
 
         while (count($rankedPlaceLocations) > count($toPlaces)) {
-            $ruleMultiple->getWinnersOrLosers() === QualifyGroup::WINNERS ? array_pop($rankedPlaceLocations) : array_shift($rankedPlaceLocations);
+            $multipleRule->getWinnersOrLosers() === QualifyGroup::WINNERS ? array_pop($rankedPlaceLocations) : array_shift($rankedPlaceLocations);
         }
         foreach ($toPlaces as $toPlace) {
             $toPouleNumber = $toPlace->getPoule()->getNumber();
@@ -131,9 +121,12 @@ class Service
         if (!$this->isPouleFinished($poule)) {
             return null;
         }
-        $pouleRankingItems = $this->rankingService->getItemsForPoule($poule);
-        $rankingItem = $this->rankingService->getItemByRank($pouleRankingItems, $rank);
-        return $poule->getPlace($rankingItem->getPlaceLocation()->getPlaceNr());
+        $pouleRankingItems = $this->rankingCalculator->getItemsForPoule($poule);
+        $rankingItem = $this->rankingCalculator->getItemByRank($pouleRankingItems, $rank);
+        if ($rankingItem === null) {
+            return null;
+        }
+        return $poule->getPlace($rankingItem->getPlace()->getNumber());
     }
 
     protected function isRoundFinished(): bool

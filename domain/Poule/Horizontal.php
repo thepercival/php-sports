@@ -2,10 +2,11 @@
 
 namespace Sports\Poule;
 
+use Exception;
 use Sports\Round;
 use Sports\Qualify\Group as QualifyGroup;
 use Sports\Place;
-use Sports\Qualify\Rule\Multiple as QualifyRuleMultiple;
+use Sports\Qualify\Rule\Multiple as MultipleQualifyRule;
 
 /**
  * QualifyGroup.WINNERS
@@ -33,17 +34,13 @@ class Horizontal
      */
     protected $number;
     /**
-     * @var array | Place[]
+     * @var array<Place>
      */
-    protected $places = [];
-    /**
-     * @var QualifyRuleMultiple
-     */
-    protected $multipleRule;
+    protected array $places = [];
+    protected MultipleQualifyRule|null $multipleRule = null;
 
     public function __construct(Round $round, int $number)
     {
-        $this->places = [];
         $this->round = $round;
         $this->number = $number;
     }
@@ -78,7 +75,11 @@ class Horizontal
         if ($this->getWinnersOrLosers() !== QualifyGroup::LOSERS) {
             return $this->number;
         }
-        $nrOfPlaceNubers = count($this->getQualifyGroup()->getRound()->getHorizontalPoules(QualifyGroup::WINNERS));
+        $qualifyGroup = $this->getQualifyGroup();
+        if ($qualifyGroup === null) {
+            throw new Exception('kwalificatiegroep kan niet gevonden worden', E_ERROR);
+        }
+        $nrOfPlaceNubers = count($qualifyGroup->getRound()->getHorizontalPoules(QualifyGroup::WINNERS));
         return $nrOfPlaceNubers - ($this->number - 1);
     }
 
@@ -104,12 +105,12 @@ class Horizontal
         }
     }
 
-    public function getQualifyRuleMultiple(): ?QualifyRuleMultiple
+    public function getMultipleQualifyRule(): MultipleQualifyRule|null
     {
         return $this->multipleRule;
     }
 
-    public function setQualifyRuleMultiple(QualifyRuleMultiple $multipleRule = null)
+    public function setMultipleQualifyRule(MultipleQualifyRule|null $multipleRule = null)
     {
         foreach ($this->getPlaces() as $place) {
             $place->setToQualifyRule($this->getWinnersOrLosers(), $multipleRule);
@@ -117,6 +118,9 @@ class Horizontal
         $this->multipleRule = $multipleRule;
     }
 
+    /**
+     * @return array<Place>
+     */
     public function &getPlaces(): array
     {
         return $this->places;
@@ -139,21 +143,23 @@ class Horizontal
 
     public function isBorderPoule(): bool
     {
-        if ($this->getQualifyGroup() === null || !$this->getQualifyGroup()->isBorderGroup()) {
+        $qualifyGroup = $this->getQualifyGroup();
+        if ($qualifyGroup === null || !$qualifyGroup->isBorderGroup()) {
             return false;
         }
-        $horPoules = $this->getQualifyGroup()->getHorizontalPoules();
+        $horPoules = $qualifyGroup->getHorizontalPoules();
         return $horPoules[count($horPoules)-1] === $this;
     }
 
-    public function getNrOfQualifiers()
+    public function getNrOfQualifiers(): int
     {
-        if ($this->getQualifyGroup() === null) {
+        $qualifyGroup = $this->getQualifyGroup();
+        if ($qualifyGroup === null) {
             return 0;
         }
         if (!$this->isBorderPoule()) {
             return count($this->getPlaces());
         }
-        return count($this->getPlaces()) - ($this->getQualifyGroup()->getNrOfToPlacesTooMuch());
+        return count($this->getPlaces()) - ($qualifyGroup->getNrOfToPlacesTooMuch());
     }
 }

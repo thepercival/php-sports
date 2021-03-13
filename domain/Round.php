@@ -152,17 +152,17 @@ class Round extends Identifiable
     }
 
     /**
-     * @param int $winnersOrLosers
-     * @return QualifyGroup[] | ArrayCollection | PersistentCollection
+     * @param int|null $winnersOrLosers
+     * @return ArrayCollection<int|string,QualifyGroup>
      */
-    public function getQualifyGroups(int $winnersOrLosers = null)
+    public function getQualifyGroups(int|null $winnersOrLosers = null): ArrayCollection
     {
         if ($winnersOrLosers === null) {
             return clone $this->qualifyGroups;
         }
-        return new ArrayCollection($this->qualifyGroups->filter(function ($qualifyGroup) use ($winnersOrLosers): bool {
+        return $this->qualifyGroups->filter(function (QualifyGroup $qualifyGroup) use ($winnersOrLosers): bool {
             return $qualifyGroup->getWinnersOrLosers() === $winnersOrLosers;
-        })->toArray());
+        });
     }
 
     public function addQualifyGroup(QualifyGroup $qualifyGroup)
@@ -228,10 +228,12 @@ class Round extends Identifiable
         // return this.nrOfDropoutPlaces;
     }
 
-
+    /**
+     * @return array<int|string,Round>
+     */
     public function getChildren(): array
     {
-        return array_map(function ($qualifyGroup) {
+        return array_map(function (QualifyGroup $qualifyGroup): Round {
             return $qualifyGroup->getChildRound();
         }, $this->getQualifyGroups()->toArray());
     }
@@ -243,61 +245,49 @@ class Round extends Identifiable
     }
 
     /**
-     * @return Poule[] | ArrayCollection
+     * @return ArrayCollection<int|string,Poule>
      */
-    public function getPoules()
+    public function getPoules(): ArrayCollection
     {
         return $this->poules;
     }
 
     /**
-     * @param Poule[] | ArrayCollection $poules
+     * @param ArrayCollection<int|string,Poule> $poules
      */
-    public function setPoules($poules)
+    public function setPoules(ArrayCollection $poules)
     {
         $this->poules = $poules;
     }
 
-    /**
-     * @param int $number
-     * @return Poule|null
-     */
-    public function getPoule(int $number): ?Poule
+    public function getPoule(int $number): Poule
     {
         foreach ($this->getPoules() as $poule) {
             if ($poule->getNumber() === $number) {
                 return $poule;
             }
         }
-        return null;
+        throw new \Exception("poule kan niet gevonden worden");
     }
 
-    /**
-     * @return bool
-     */
     public function isRoot(): bool
     {
         return $this->getParentQualifyGroup() === null;
     }
 
-    /**
-     * @return ?Round
-     */
-    public function getParent(): ?Round
+    public function getParent(): Round|null
     {
-        return $this->getParentQualifyGroup() !== null ? $this->getParentQualifyGroup()->getRound() : null;
+        $parent = $this->getParentQualifyGroup();
+        return  $parent!== null ? $parent->getRound() : null;
     }
 
-    /**
-     * @return QualifyGroup
-     */
     public function getParentQualifyGroup(): ?QualifyGroup
     {
         return $this->parentQualifyGroup;
     }
 
     /**
-     * @param QualifyGroup $parentQualifyGroup
+     * @param QualifyGroup|null $parentQualifyGroup
      */
     public function setParentQualifyGroup(QualifyGroup $parentQualifyGroup = null)
     {
@@ -331,14 +321,14 @@ class Round extends Identifiable
 
     /**
      * @param int|null $order
-     * @return array | Place[]
+     * @return array<Place>
      */
     public function getPlaces(int $order = null): array
     {
         $places = [];
         if ($order === Round::ORDER_NUMBER_POULE) {
             foreach ($this->getHorizontalPoules(QualifyGroup::WINNERS) as $horPoule) {
-                $places = array_merge($places, $horPoule->getPlaces()->toArray());
+                $places = array_merge($places, $horPoule->getPlaces());
             }
         } else {
             foreach ($this->getPoules() as $poule) {
@@ -350,6 +340,7 @@ class Round extends Identifiable
 
     public function getPlace(PlaceLocation $placeLocation): Place
     {
+
         return $this->getPoule($placeLocation->getPouleNr())->getPlace($placeLocation->getPlaceNr());
     }
 

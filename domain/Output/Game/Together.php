@@ -4,39 +4,47 @@ declare(strict_types=1);
 namespace Sports\Output\Game;
 
 use Psr\Log\LoggerInterface;
+use Sports\Competitor\Map as CompetitorMap;
 use Sports\Output\Game as OutputGame;
-use Sports\Place\Location\Map as PlaceLocationMap;
-use Sports\Game\Against as AgainstGame;
 use Sports\Game\Together as TogetherGame;
 use Sports\Game\Place\Together as TogetherGamePlace;
 use Sports\State;
 
 class Together extends OutputGame
 {
-    public function __construct(PlaceLocationMap $placeLocationMap = null, LoggerInterface $logger = null)
+    public function __construct(CompetitorMap $competitorMap = null, LoggerInterface $logger = null)
     {
-        parent::__construct($placeLocationMap, $logger);
+        parent::__construct($competitorMap, $logger);
     }
 
-    protected function getDescriptionAsString($game): string
+    public function output(TogetherGame $game, string $prefix = null)
     {
-        return $this->getPlacesAsString($game->getPlaces())  . ' ' . $this->getScoreAsString($game) ;
+        $field = $game->getField();
+
+        $this->logger->info(
+            ($prefix !== null ? $prefix : '') .
+            $game->getStartDateTime()->format("Y-m-d H:i") . " " .
+            $this->getBatchNrAsString($game->getBatchNr()) . " " .
+            'poule ' . $game->getPoule()->getNumber()
+            . ', ' . $this->getDescriptionAsString($game)
+            . ' , ' . $this->getRefereeAsString($game)
+            . ', ' . $this->getFieldAsString($field)
+            . ', ' . $game->getCompetitionSport()->getSport()->getName()
+            . ' ' . $this->getPointsAsString($game) . ' '
+        );
     }
 
-    /**
-     * @param AgainstGame|TogetherGame $game
-     * @return string
-     */
-    protected function getScoreAsString($game): string
+    protected function getDescriptionAsString(TogetherGame $game): string
+    {
+        return $this->getPlacesAsString($game->getPlaces()->toArray())  . ' ' . $this->getScoreAsString($game) ;
+    }
+
+    protected function getScoreAsString(TogetherGame $game): string
     {
         return $this->getPointsAsString($game);
     }
 
-    /**
-     * @param AgainstGame|TogetherGame $game
-     * @return string
-     */
-    protected function getPointsAsString($game): string
+    protected function getPointsAsString(TogetherGame $game): string
     {
         if ($game->getState() !== State::Finished) {
             return '';

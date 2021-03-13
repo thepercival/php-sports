@@ -35,10 +35,6 @@ abstract class Game extends Identifiable
      * @var int
      */
     protected $state;
-    /**
-     * @var GamePlace[] | Collection
-     */
-    protected $places;
 
     public const PHASE_REGULARTIME = 1;
     public const PHASE_EXTRATIME = 2;
@@ -55,7 +51,6 @@ abstract class Game extends Identifiable
     )
     {
         $this->setState(State::Created);
-        $this->places = new ArrayCollection();
     }
 
     public function getPoule(): Poule
@@ -136,7 +131,7 @@ abstract class Game extends Identifiable
 
     public function getRefereePlaceLocId(): ?string
     {
-        return $this->refereePlace !== null ? $this->refereePlace->getLocationId() : $this->refereePlaceLocId;
+        return $this->refereePlace !== null ? $this->refereePlace->getRoundLocationId() : $this->refereePlaceLocId;
     }
 
     public function setRefereePlaceLocId(string $refereePlaceLocId = null)

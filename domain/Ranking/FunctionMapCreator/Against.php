@@ -7,12 +7,13 @@ use Sports\Competition\Sport as CompetitionSport;
 use Sports\Ranking\Rule;
 use Sports\Ranking\FunctionMapCreator as BaseFunctionMapCreator;
 use Sports\Ranking\Calculator\Round\Sport\Against as AgainstSportRoundRankingCalculator;
-use Sports\Ranking\Item\Round\SportRanked as RankedSportRoundItem;
+use Sports\Ranking\Item\Round\Sport as SportRoundRankingItem;
+use Sports\Place\SportPerformance;
+use Sports\Place;
 
 class Against extends BaseFunctionMapCreator
 {
     /**
-     * Against constructor.
      * @param CompetitionSport $competitionSport
      * @param array|int[] $gameStates
      */
@@ -24,86 +25,79 @@ class Against extends BaseFunctionMapCreator
 
     private function initMap()
     {
-        $bestDifference = function (array $items, bool $sub): array {
+        /**
+         * @param array<SportPerformance> $sportPerformances
+         * @return array<SportPerformance>
+         */
+        $bestDifference = function (array $sportPerformances, bool $sub): array {
             $bestDiff = null;
-            $bestItems = [];
-            foreach ($items as $item) {
-                $diff = $sub ? $item->getSubDiff() : $item->getDiff();
+            $bestSportPerformances = [];
+            foreach ($sportPerformances as $sportPerformance) {
+                $diff = $sub ? $sportPerformance->getSubDiff() : $sportPerformance->getDiff();
                 if ($bestDiff === null || $diff === $bestDiff) {
                     $bestDiff = $diff;
-                    $bestItems[] = $item;
+                    $bestSportPerformances[] = $sportPerformance;
                 } elseif ($diff > $bestDiff) {
                     $bestDiff = $diff;
-                    $bestItems = [$item];
+                    $bestSportPerformances = [$sportPerformance];
                 }
             }
-            return $bestItems;
+            return $bestSportPerformances;
         };
-        $this->map[Rule::BestUnitDifference] = function (array $items) use ($bestDifference) : array {
-            return $bestDifference($items, false);
+        /**
+         * @param array<SportPerformance> $sportPerformances
+         * @return array<SportPerformance>
+         */
+        $this->map[Rule::BestUnitDifference] = function (array $sportPerformances) use ($bestDifference) : array {
+            return $bestDifference($sportPerformances, false);
         };
-        $this->map[Rule::BestSubUnitDifference] = function (array $items) use ($bestDifference): array {
-            return $bestDifference($items, true);
+        /**
+         * @param array<SportPerformance> $sportPerformances
+         * @return array<SportPerformance>
+         */
+        $this->map[Rule::BestSubUnitDifference] = function (array $sportPerformances) use ($bestDifference): array {
+            return $bestDifference($sportPerformances, true);
         };
-
-        /*$getGamesBetweenEachOther = function (array $places, array $games): array {
-            $gamesRet = [];
-            foreach ($games as $p_gameIt) {
-                if (($p_gameIt->getState() & $this->gameStates) === 0) {
-                    continue;
-                }
-                $inHome = false;
-                foreach ($places as $place) {
-                    if ($p_gameIt->isParticipating($place, AgainstSide::HOME)) {
-                        $inHome = true;
-                        break;
-                    }
-                }
-                $inAway = false;
-                foreach ($places as $place) {
-                    if ($p_gameIt->isParticipating($place, AgainstSide::AWAY)) {
-                        $inAway = true;
-                        break;
-                    }
-                }
-                if ($inHome && $inAway) {
-                    $gamesRet[] = $p_gameIt;
-                }
-            }
-            return $gamesRet;
-        };*/
-
-        $this->map[Rule::BestAmongEachOther] = function (array $unrankedItems) : array {
+        /**
+         * @param array<SportPerformance> $sportPerformances
+         * @return array<SportPerformance>
+         */
+        $this->map[Rule::BestAmongEachOther] = function (array $sportPerformances) : array {
             $places = array_map(
-                function ($item) {
-                    return $item->getRound()->getPlace($item->getPlaceLocation());
+                function (SportPerformance $sportPerformance): Place {
+                    return $sportPerformance->getPlace();
                 },
-                $unrankedItems
+                $sportPerformances
             );
             $poule = $places[0]->getPoule();
             $rankingCalculator = new AgainstSportRoundRankingCalculator($this->competitionSport, $this->gameStates);
-            $rankedItems = $rankingCalculator->getItemsAmongPlaces($poule, $places);
-            $rankedItems = array_filter($rankedItems, function (RankedSportRoundItem $rankedItem): bool {
-                return $rankedItem->getRank() === 1;
+            $rankingItems = $rankingCalculator->getItemsAmongPlaces($poule, $places);
+            $rankingItems = array_filter($rankingItems, function (SportRoundRankingItem $rankingItem): bool {
+                return $rankingItem->getRank() === 1;
             });
-            if (count($rankedItems) === count($unrankedItems)) {
-                return $unrankedItems;
+            if (count($rankingItems) === count($sportPerformances)) {
+                return $sportPerformances;
             }
+            $performanceMap = $this->getPerformanceMap($sportPerformances);
             return array_map(
-                function ($rankedItem) use ($unrankedItems) {
-                    $foundItems = array_filter(
-                        $unrankedItems,
-                        function ($unrankedItem) use ($rankedItem): bool {
-                            return $unrankedItem->getPlaceLocation()->getPouleNr() === $rankedItem->getPlaceLocation(
-                                )->getPouleNr()
-                                && $unrankedItem->getPlaceLocation()->getPlaceNr() === $rankedItem->getPlaceLocation(
-                                )->getPlaceNr();
-                        }
-                    );
-                    return reset($foundItems);
+                function (SportRoundRankingItem $rankingItem) use ($performanceMap): SportPerformance {
+                    return $performanceMap[$rankingItem->getRoundLocationId()];
                 },
-                $rankedItems
+                $rankingItems
             );
         };
+    }
+
+    /**
+     * @param array<SportPerformance> $performances
+     * @return array<SportPerformance>
+     */
+    private function getPerformanceMap(array $performances): array
+    {
+        $map = [];
+        foreach ($performances as $performance) {
+            $map[$performance->getRoundLocationId()] = $performance;
+        }
+        return $map;
     }
 }

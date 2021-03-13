@@ -4,15 +4,15 @@ namespace Sports\Ranking\Item\Round;
 
 use Sports\Competition\Sport as CompetitionSport;
 use Sports\Place\Location as PlaceLocation;
+use Sports\Place\SportPerformance;
 
-class SportRanked
+class Sport
 {
     public function __construct(
-        private SportUnranked $unranked,
+        private SportPerformance $performance,
         private int $uniqueRank,
         private int $rank
-    )
-    {
+    ) {
     }
 
     public function getUniqueRank(): int
@@ -27,16 +27,16 @@ class SportRanked
 
     public function getCompetitionSport(): CompetitionSport
     {
-        return $this->getUnranked()->getCompetitionSport();
+        return $this->getPerformance()->getCompetitionSport();
     }
 
-    public function getPlaceLocation(): PlaceLocation
+    public function getRoundLocationId(): string
     {
-        return $this->unranked->getPlaceLocation();
+        return $this->getPerformance()->getRoundLocationId();
     }
 
-    public function getUnranked(): SportUnranked
+    public function getPerformance(): SportPerformance
     {
-        return $this->unranked;
+        return $this->performance;
     }
 }

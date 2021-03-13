@@ -22,4 +22,8 @@ class LocationBase implements Location
     {
         return $this->placeNr;
     }
+
+    public function getRoundLocationId(): string {
+        return $this->getPouleNr() . '.' . $this->getPlaceNr();
+    }
 }

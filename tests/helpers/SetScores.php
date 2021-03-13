@@ -17,37 +17,43 @@ trait SetScores
         $homePlace = $poule->getPlace($homePlaceNr);
         $awayPlace = $poule->getPlace($awayPlaceNr);
         $foundGames = array_filter($poule->getGames(), function (AgainstGame $game) use ($homePlace, $awayPlace): bool {
-            $homePlaces = $game->getPlaces(AgainstSide::HOME)->map(
+            $homePlaces = array_map(
                 function (AgainstGamPlace $gamePlace): Place {
                     return $gamePlace->getPlace();
-                }
+                },
+                $game->getSidePlaces(AgainstSide::HOME)
             );
-            $awayPlaces = $game->getPlaces(AgainstSide::AWAY)->map(
+            $awayPlaces = array_map(
                 function (AgainstGamPlace $gamePlace): Place {
                     return $gamePlace->getPlace();
-                }
+                },
+                $game->getSidePlaces(AgainstSide::AWAY)
             );
 
-            $homePlacesHasHomePlace = $homePlaces->filter(
-                function ($homePlaceIt) use ($homePlace): bool {
+            $homePlacesHasHomePlace = count(array_filter(
+                $homePlaces,
+                function (Place $homePlaceIt) use ($homePlace): bool {
                     return $homePlaceIt === $homePlace;
                 }
-            )->count() > 0;
-            $homePlacesHasAwayPlace = $homePlaces->filter(
-                function ($homePlaceIt) use ($awayPlace): bool {
+            )) > 0;
+            $homePlacesHasAwayPlace = count(array_filter(
+                $homePlaces,
+                function (Place $homePlaceIt) use ($awayPlace): bool {
                     return $homePlaceIt === $awayPlace;
                 }
-            )->count() > 0;
-            $awayPlacesHasHomePlace = $awayPlaces->filter(
-                function ($awayPlaceIt) use ($homePlace): bool {
+            )) > 0;
+            $awayPlacesHasHomePlace = count(array_filter(
+                $awayPlaces,
+                function (Place $awayPlaceIt) use ($homePlace): bool {
                     return $awayPlaceIt === $homePlace;
                 }
-            )->count() > 0;
-            $awayPlacesHasAwayPlace = $awayPlaces->filter(
-                function ($awayPlaceIt) use ($awayPlace): bool {
+            )) > 0;
+            $awayPlacesHasAwayPlace = count(array_filter(
+                $awayPlaces,
+                function (Place $awayPlaceIt) use ($awayPlace): bool {
                     return $awayPlaceIt === $awayPlace;
                 }
-            )->count() > 0;
+            )) > 0;
             return ($homePlacesHasHomePlace && $awayPlacesHasAwayPlace) || ($homePlacesHasAwayPlace && $awayPlacesHasHomePlace);
         });
         $foundGame = reset($foundGames);

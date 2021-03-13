@@ -6,22 +6,15 @@ use Sports\Round;
 use Sports\Place;
 use Sports\Qualify\Group as QualifyGroup;
 use Sports\Qualify\Rule\Queue as QualifyRuleQueue;
-use Sports\Qualify\Rule\Multiple as QualifyRuleMultiple;
-use Sports\Qualify\Rule\Single as QualifyRuleSingle;
-use Sports\Qualify\Rule as QualifyRule;
+use Sports\Qualify\Rule\Multiple as MultipleQualifyRule;
+use Sports\Qualify\Rule\Single as SingleQualifyRule;
 
 use Sports\Qualify\ReservationService as QualifyReservationService;
 
 class Service
 {
-    /**
-     * @var Round
-     */
-    private $round;
-
-    public function __construct(Round $round)
+    public function __construct(private Round $round)
     {
-        $this->round = $round;
     }
 
     public function recreateTo()
@@ -46,7 +39,7 @@ class Service
             $toQualifyRules = &$place->getToQualifyRules();
             foreach ($toQualifyRules as $toQualifyRule) {
                 $toPlaces = [];
-                if ($toQualifyRule->isMultiple()) {
+                if ($toQualifyRule instanceof MultipleQualifyRule) {
                     $toPlaces = array_merge($toPlaces, $toQualifyRule->getToPlaces());
                 } else {
                     $toPlaces[] = $toQualifyRule->getToPlace();
@@ -59,7 +52,7 @@ class Service
         }
         foreach ([QualifyGroup::WINNERS, QualifyGroup::LOSERS] as $winnersOrLosers) {
             foreach ($round->getHorizontalPoules($winnersOrLosers) as $horizontalPoule) {
-                $horizontalPoule->setQualifyRuleMultiple(null);
+                $horizontalPoule->setMultipleQualifyRule(null);
             }
         }
     }
@@ -76,10 +69,10 @@ class Service
                 foreach ($qualifyGroup->getHorizontalPoules() as $horizontalPoule) {
                     if ($horizontalPoule->isBorderPoule() && $qualifyGroup->getNrOfToPlacesTooMuch() > 0) {
                         $nrOfToPlacesBorderPoule = $qualifyGroup->getChildRound()->getNrOfPlaces() % $round->getPoules()->count();
-                        $queue->add(QualifyRuleQueue::START, new QualifyRuleMultiple($horizontalPoule, $nrOfToPlacesBorderPoule));
+                        $queue->add(QualifyRuleQueue::START, new MultipleQualifyRule($horizontalPoule, $nrOfToPlacesBorderPoule));
                     } else {
                         foreach ($horizontalPoule->getPlaces() as $place) {
-                            $queue->add(QualifyRuleQueue::START, new QualifyRuleSingle($place, $qualifyGroup));
+                            $queue->add(QualifyRuleQueue::START, new SingleQualifyRule($place, $qualifyGroup));
                         }
                     }
                 }
@@ -101,25 +94,15 @@ class Service
 
     private function connectPlaceWithRule(Place $childPlace, QualifyRuleQueue $queue, int $startEnd, QualifyReservationService $reservationService)
     {
-
-        /**
-         * @param QualifyRuleSingle|QualifyRuleMultiple $qualifyRule
-         */
-        $setToPlacesAndReserve = function ($qualifyRule) use ($childPlace, $queue, $reservationService): void {
-            if ($qualifyRule->isSingle()) {
-                $setToPlacesAndReserveSingle = function (QualifyRuleSingle $qualifyRuleSingle) use ($childPlace, $reservationService): void {
-                    $reservationService->reserve($childPlace->getPoule()->getNumber(), $qualifyRuleSingle->getFromPoule());
-                    $qualifyRuleSingle->setToPlace($childPlace);
-                };
-                $setToPlacesAndReserveSingle($qualifyRule);
+        $setToPlacesAndReserve = function (SingleQualifyRule|MultipleQualifyRule $qualifyRule) use ($childPlace, $queue, $reservationService): void {
+            if ($qualifyRule instanceof SingleQualifyRule) {
+                $reservationService->reserve($childPlace->getPoule()->getNumber(), $qualifyRule->getFromPoule());
+                $qualifyRule->setToPlace($childPlace);
             } else {
-                $setToPlacesAndReserveMultiple = function (QualifyRuleMultiple $qualifyRuleMultiple) use ($childPlace, $queue): void {
-                    $qualifyRuleMultiple->addToPlace($childPlace);
-                    if (!$qualifyRuleMultiple->toPlacesComplete()) {
-                        $queue->add(QualifyRuleQueue::START, $qualifyRuleMultiple);
-                    }
-                };
-                $setToPlacesAndReserveMultiple($qualifyRule);
+                $qualifyRule->addToPlace($childPlace);
+                if (!$qualifyRule->toPlacesComplete()) {
+                    $queue->add(QualifyRuleQueue::START, $qualifyRule);
+                }
             }
         };
 

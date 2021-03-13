@@ -8,36 +8,19 @@ use Sports\Poule\Horizontal as HorizontalPoule;
 use Sports\Qualify\Group as QualifyGroup;
 use Sports\Round;
 use Sports\Structure;
-use Sports\Ranking\Calculator as RankingService;
+use Sports\Ranking\Item\End as EndRankingItem;
+use Sports\Ranking\Calculator\Round as RoundRankingCalculator;
 
 class End
 {
-    /**
-     * @var int
-     */
-    private $currentRank;
-    /**
-     * @var Structure
-     */
-    private $structure;
-    /**
-     * @var int
-     */
-    private $ruleSet;
+    private int $currentRank = 1;
 
-    /**
-     * Service constructor.
-     * @param Structure $structure
-     * @param int $ruleSet
-     */
-    public function __construct(Structure $structure, int $ruleSet)
+    public function __construct(private Structure $structure, private int $ruleSet)
     {
-        $this->structure = $structure;
-        $this->ruleSet = $ruleSet;
     }
 
     /**
-     * @return array | End[]
+     * @return array<EndRankingItem>
      */
     public function getItems(): array
     {
@@ -62,25 +45,24 @@ class End
 
     /**
      * @param Round $round
-     * @return array | End[]
+     * @return array<EndRankingItem>
      */
     protected function getDropoutsNotPlayed(Round $round): array
     {
         $items = [];
         $nrOfDropouts = $round->getNrOfPlaces() - $round->getNrOfPlacesChildren();
         for ($i = 0; $i < $nrOfDropouts; $i++) {
-            $items[] = new End($this->currentRank, $this->currentRank++, null);
+            $items[] = new EndRankingItem($this->currentRank, $this->currentRank++, null);
         }
         return $items;
     }
 
     /**
      * @param Round $round
-     * @return array | End[]
+     * @return array<EndRankingItem>
      */
     protected function getDropouts(Round $round): array
     {
-        $rankingService = new RankingService($round, $this->ruleSet);
         $dropouts = [];
         $nrOfDropouts = $round->getNrOfDropoutPlaces();
         while ($nrOfDropouts > 0) {
@@ -93,9 +75,9 @@ class End
                         }
                         break;
                     }
-                    $dropoutsHorizontalPoule = $this->getDropoutsHorizontalPoule($horizontalPoule, $rankingService);
+                    $dropoutsHorizontalPoule = $this->getDropoutsHorizontalPoule($horizontalPoule);
                     while (($nrOfDropouts - count($dropoutsHorizontalPoule)) < 0) {
-                        array_pop($dropoutsHorizontalPoule );
+                        array_pop($dropoutsHorizontalPoule);
                     }
                     $dropouts = array_merge($dropouts, $dropoutsHorizontalPoule);
                     $nrOfDropouts -= count($dropoutsHorizontalPoule);
@@ -113,15 +95,15 @@ class End
 
     /**
      * @param HorizontalPoule $horizontalPoule
-     * @param RankingService $rankingService
-     * @return array | End[]
+     * @return array<EndRankingItem>
      */
-    protected function getDropoutsHorizontalPoule(HorizontalPoule $horizontalPoule, RankingService $rankingService): array
+    protected function getDropoutsHorizontalPoule(HorizontalPoule $horizontalPoule): array
     {
-        $rankedPlaces = $rankingService->getPlacesForHorizontalPoule($horizontalPoule);
+        $roundRankingCalculator = new RoundRankingCalculator();
+        $rankedPlaces = $roundRankingCalculator->getPlacesForHorizontalPoule($horizontalPoule);
         array_splice($rankedPlaces, 0, $horizontalPoule->getNrOfQualifiers());
-        return array_map(function (Place $rankedPlace): End {
-            return new End($this->currentRank, $this->currentRank++, $rankedPlace->getStartLocation() );
+        return array_map(function (Place $rankedPlace): EndRankingItem {
+            return new EndRankingItem($this->currentRank, $this->currentRank++, $rankedPlace->getStartLocation());
         }, $rankedPlaces);
     }
 }

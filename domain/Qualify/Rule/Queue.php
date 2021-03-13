@@ -2,7 +2,8 @@
 
 namespace Sports\Qualify\Rule;
 
-use Sports\Qualify\Rule as QualifyRule;
+use Sports\Qualify\Rule\Single as SingleQualifyRule;
+use Sports\Qualify\Rule\Multiple as MultipleQualifyRule;
 
 class Queue
 {
@@ -10,16 +11,16 @@ class Queue
     const END = 2;
 
     /**
-     * @var array | QualifyRule[]
+     * @var array<SingleQualifyRule|MultipleQualifyRule>
      */
-    private $qualifyRules;
+    private array $qualifyRules;
 
     public function __construct()
     {
         $this->qualifyRules = [];
     }
 
-    public function add(int $startEnd, QualifyRule $qualifyRule)
+    public function add(int $startEnd, SingleQualifyRule|MultipleQualifyRule $qualifyRule)
     {
         if ($startEnd === Queue::START) {
             $this->qualifyRules[] = $qualifyRule;
@@ -54,14 +55,14 @@ class Queue
             return;
         }
 
-        if ($this->qualifyRules !== null && count($this->qualifyRules) > 0 ) {
+        if (count($this->qualifyRules) > 0) {
             $lastItem = $this->qualifyRules[count($this->qualifyRules)-1];
-            if ($lastItem->isMultiple()) {
+            if ($lastItem instanceof MultipleQualifyRule) {
                 return;
             }
         }
         $index = (count($this->qualifyRules) - 1) - ((($nrOfPoules + 1) / 2) - 1);
-        $x = array_splice($this->qualifyRules, $index, 1);
+        $x = array_splice($this->qualifyRules, (int)$index, 1);
         $this->qualifyRules[] = array_pop($x);
     }
 }

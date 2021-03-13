@@ -2,27 +2,26 @@
 
 namespace Sports;
 
-use \Doctrine\Common\Collections\Collection;
-use Sports\Place\Location\Map as PlaceLocationMap;
+use Sports\Competitor\Map as CompetitorMap;
 use Sports\Poule\Horizontal as HorizontalPoule;
 use Sports\Round\Number as RoundNumber;
 use Sports\Qualify\Group as QualifyGroup;
 use Sports\Game\Place as GamePlace;
-use Sports\Qualify\Rule\Single as QualifyRuleSingle;
-use Sports\Qualify\Rule\Multiple as QualifyRuleMultiple;
-
-use function DeepCopy\deep_copy;
+use Sports\Ranking\Rule\Getter as RankingRuleGetter;
+use Sports\Ranking\Rule as RankingRule;
+use Sports\Qualify\Rule\Single as SingleQualifyRule;
+use Sports\Qualify\Rule\Multiple as MultipleQualifyRule;
 
 class NameService
 {
     /**
-     * @var PlaceLocationMap|null
+     * @var CompetitorMap|null
      */
-    protected $placeLocationMap;
+    protected $competitorMap;
 
-    public function __construct(PlaceLocationMap $placeLocationMap = null)
+    public function __construct(CompetitorMap $competitorMap = null)
     {
-        $this->placeLocationMap = $placeLocationMap;
+        $this->competitorMap = $competitorMap;
     }
 
     public function getWinnersLosersDescription(int $winnersOrLosers, bool $multiple = false): string
@@ -80,10 +79,10 @@ class NameService
 
     public function getPlaceName(Place $place, $competitorName = false, $longName = false): string
     {
-        $competitorName = $competitorName && $this->placeLocationMap !== null;
+        $competitorName = $competitorName && $this->competitorMap !== null;
         if ($competitorName === true) {
-            $competitor = $this->placeLocationMap->getCompetitor( $place->getStartLocation() );
-            if( $competitor !== null ) {
+            $competitor = $this->competitorMap->getCompetitor($place->getStartLocation());
+            if ($competitor !== null) {
                 return $competitor->getName();
             }
         }
@@ -96,10 +95,10 @@ class NameService
 
     public function getPlaceFromName(Place $place, bool $competitorName, bool $longName = false): string
     {
-        $competitorName = $competitorName && $this->placeLocationMap !== null;
-        if ($competitorName === true ) {
-            $competitor = $this->placeLocationMap->getCompetitor( $place->getStartLocation() );
-            if( $competitor !== null ) {
+        $competitorName = $competitorName && $this->competitorMap !== null;
+        if ($competitorName === true) {
+            $competitor = $this->competitorMap->getCompetitor($place->getStartLocation());
+            if ($competitor !== null) {
                 return $competitor->getName();
             }
         }
@@ -110,51 +109,38 @@ class NameService
         }
 
         $fromQualifyRule = $place->getFromQualifyRule();
-        if ($fromQualifyRule->isMultiple()) {
+        if ($fromQualifyRule instanceof MultipleQualifyRule) {
             if ($longName) {
-                /**
-                 * @param QualifyRuleMultiple $multipleRule
-                 * @return HorizontalPoule
-                 */
-                $getHorizontalPoule = function ($multipleRule): HorizontalPoule {
-                    return $multipleRule->getFromHorizontalPoule();
-                };
-                return $this->getHorizontalPouleName($getHorizontalPoule($fromQualifyRule));
+                return $this->getHorizontalPouleName($fromQualifyRule->getFromHorizontalPoule());
             }
             return '?' . $fromQualifyRule->getFromPlaceNumber();
         }
-        /**
-         * @param QualifyRuleSingle $singleRule
-         * @return Place
-         */
-        $getFromPlace = function ($singleRule): Place {
-            return $singleRule->getFromPlace();
-        };
-        $fromPlace = $getFromPlace($fromQualifyRule);
-        if ($longName !== true || $fromPlace->getPoule()->needsRanking()) {
-            return $this->getPlaceName($fromPlace, false, $longName);
+        if ($fromQualifyRule instanceof SingleQualifyRule) {
+            $fromPlace = $fromQualifyRule->getFromPlace();
+            if ($longName !== true || $fromPlace->getPoule()->needsRanking()) {
+                return $this->getPlaceName($fromPlace, false, $longName);
+            }
+            $name = $this->getWinnersLosersDescription(
+                $fromPlace->getNumber() === 1 ? QualifyGroup::WINNERS : QualifyGroup::LOSERS
+            );
+            return $name . ' ' . $this->getPouleName($fromPlace->getPoule(), false);
         }
-        $name = $this->getWinnersLosersDescription(
-            $fromPlace->getNumber() === 1 ? QualifyGroup::WINNERS : QualifyGroup::LOSERS
-        );
-        return $name . ' ' . $this->getPouleName($fromPlace->getPoule(), false);
+        return '?';
     }
 
     /**
-     * @param Collection | GamePlace[] $gamePlaces
+     * @param array<GamePlace> $gamePlaces
      * @param bool $competitorName
      * @param bool $longName
      * @return string
      */
-    public function getPlacesFromName(Collection $gamePlaces, bool $competitorName, bool $longName): string
+    public function getPlacesFromName(array $gamePlaces, bool $competitorName, bool $longName): string
     {
         return implode(
             ' & ',
-            $gamePlaces->map(
-                function ($gamePlace) use ($competitorName, $longName): string {
-                    return $this->getPlaceFromName($gamePlace->getPlace(), $competitorName, $longName);
-                }
-            )->toArray()
+            array_map(function ($gamePlace) use ($competitorName, $longName): string {
+                return $this->getPlaceFromName($gamePlace->getPlace(), $competitorName, $longName);
+            }, $gamePlaces)
         );
     }
 
@@ -201,25 +187,27 @@ class NameService
         return '';
     }
 
-    public function getRulesName(int $ruleSet): array {
+    public function getRulesName(int $ruleSet): array
+    {
         $rankingRuleGetter = new RankingRuleGetter();
-        return array_map( function(int $rule): string {
+        return array_map(function (int $rule): string {
             switch ($rule) {
                 case RankingRule::MostPoints:
                     return 'meeste aantal punten';
                 case RankingRule::FewestGames:
                     return 'minste aantal wedstrijden';
                 case RankingRule::BestUnitDifference:
-                return 'beste saldo';
+                    return 'beste saldo';
                 case RankingRule::MostUnitsScored:
-                return 'meeste aantal eenheden voor';
+                    return 'meeste aantal eenheden voor';
                 case RankingRule::BestAmongEachOther:
-                return 'beste onderling resultaat';
+                    return 'beste onderling resultaat';
                 case RankingRule::BestSubUnitDifference:
-                return 'beste subsaldo';
+                    return 'beste subsaldo';
                 case RankingRule::MostSubUnitsScored:
-                return 'meeste aantal subeenheden voor';
+                    return 'meeste aantal subeenheden voor';
             }
+            return '';
         }, $rankingRuleGetter->getRules($ruleSet, false));
     }
 

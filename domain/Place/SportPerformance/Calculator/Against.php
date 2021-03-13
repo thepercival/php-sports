@@ -1,23 +1,22 @@
 <?php
 declare(strict_types=1);
 
-namespace Sports\Ranking\ItemsGetter;
+namespace Sports\Place\SportPerformance\Calculator;
 
 use Sports\Game;
 use Sports\Competition\Sport as CompetitionSport;
 use Sports\Score\Against as AgainstGameScore;
 use Sports\Score\AgainstHelper as AgainstScoreHelper;
 use Sports\Score\Against as AgainstScore;
-use Sports\Ranking\ItemsGetter as ItemsGetterBase;
 use Sports\Place;
 use Sports\Round;
-use Sports\Ranking\Item\Round\SportUnranked as UnrankedSportRoundItem;
-use Sports\Game\Together as TogetherGame;
+use Sports\Place\SportPerformance;
+use Sports\Place\SportPerformance\Calculator;
 use Sports\Game\Against as AgainstGame;
 use SportsHelpers\Against\Side as AgainstSide;
 use SportsHelpers\Against\Result as AgainstResult;
 
-class Against extends ItemsGetterBase
+class Against extends Calculator
 {
     public function __construct(Round $round, CompetitionSport $competitionSport)
     {
@@ -26,20 +25,14 @@ class Against extends ItemsGetterBase
 
 
     /**
-     * @param array | Place[] $places
-     * @param array | TogetherGame[] | AgainstGame[] $games
-     * @return array | UnrankedSportRoundItem[]
+     * @param array<Place> $places
+     * @param array<AgainstGame> $games
+     * @return array<SportPerformance>
      */
-    public function getUnrankedItems(array $places, array $games): array
+    public function getPerformances(array $places, array $games): array
     {
-        /** @var UnrankedSportRoundItem[]|array $items */
-        $unrankedItems = array_map(
-            function (Place $place): UnrankedSportRoundItem {
-                return new UnrankedSportRoundItem($this->round, $place, $place->getPenaltyPoints());
-            },
-            $places
-        );
-        $unrankedMap = $this->getUnrankedMap($unrankedItems);
+        $performances = $this->createPerformances($places);
+        $performanceMap = $this->getPerformanceMap($performances);
         $useSubScore = $this->round->getValidScoreConfig($this->competitionSport)->useSubScore();
         /** @var AgainstGame $game */
         foreach ($this->getFilteredGames($games) as $game) {
@@ -56,21 +49,18 @@ class Against extends ItemsGetterBase
                     $subReceived = $this->getNrOfUnits($finalSubScore, $side, AgainstGameScore::RECEIVED);
                 }
 
-                foreach ($game->getPlaces($side) as $gamePlace) {
-                    $unrankedItem = $unrankedMap[$gamePlace->getPlace()->getLocationId()];
-                    if ($unrankedItem === null) {
-                        continue;
-                    }
-                    $unrankedItem->addGame();
-                    $unrankedItem->addPoints($points);
-                    $unrankedItem->addScored($scored);
-                    $unrankedItem->addReceived($received);
-                    $unrankedItem->addSubScored($subScored);
-                    $unrankedItem->addSubReceived($subReceived);
+                foreach ($game->getSidePlaces($side) as $gamePlace) {
+                    $performance = $performanceMap[$gamePlace->getPlace()->getRoundLocationId()];
+                    $performance->addGame();
+                    $performance->addPoints($points);
+                    $performance->addScored($scored);
+                    $performance->addReceived($received);
+                    $performance->addSubScored($subScored);
+                    $performance->addSubReceived($subReceived);
                 }
             }
         };
-        return $items;
+        return $performances;
     }
 
     public function getNrOfPoints(?AgainstScoreHelper $finalScore, int $side, AgainstGame $game): float

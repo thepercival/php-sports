@@ -1,6 +1,6 @@
 <?php
 
-namespace Sports\Tests\Ranking\End;
+namespace Sports\Tests\Ranking\Calculator;
 
 use PHPUnit\Framework\TestCase;
 use Sports\TestHelper\CompetitionCreator;
@@ -9,10 +9,10 @@ use Sports\TestHelper\SetScores;
 use Sports\Structure\Service as StructureService;
 use Sports\Qualify\Group as QualifyGroup;
 use Sports\Qualify\Service as QualifyService;
-use Sports\Ranking\End\End as EndRankingService;
-use Sports\Ranking\Calculator\Against as AgainstRankingService;
+use Sports\Ranking\Calculator\End as EndRankingCalculator;
+use Sports\Ranking\RuleSet as RankingRuleSet;
 
-class ServiceTest extends TestCase
+class EndTest extends TestCase
 {
     use CompetitionCreator, SetScores;
 
@@ -32,8 +32,8 @@ class ServiceTest extends TestCase
         $this->setScoreSingle($pouleOne, 1, 3, 3, 1);
         $this->setScoreSingle($pouleOne, 2, 3, 3, 2);
 
-        $endRankingService = new EndRankingService($structure, AgainstRankingService::RULESSET_WC);
-        $items = $endRankingService->getItems();
+        $calculator = new EndRankingCalculator($structure, RankingRuleSet::Against);
+        $items = $calculator->getItems();
 
         for ($rank = 1; $rank <= count($items); $rank++) {
             self::assertSame($items[$rank - 1]->getPlaceLocation()->getPlaceNr(), $rank);
@@ -57,8 +57,8 @@ class ServiceTest extends TestCase
         $this->setScoreSingle($pouleOne, 1, 3, 3, 1);
         // $this->setScoreSingle($pouleOne, 2, 3, 3, 2);
 
-        $endRankingService = new EndRankingService($structure, AgainstRankingService::RULESSET_WC);
-        $items = $endRankingService->getItems();
+        $calculator = new EndRankingCalculator($structure, RankingRuleSet::Against);
+        $items = $calculator->getItems();
 
         for ($rank = 1; $rank <= count($items); $rank++) {
             self::assertNull($items[$rank - 1]->getPlaceLocation());
@@ -96,11 +96,11 @@ class ServiceTest extends TestCase
         $loserssPoule = $rootRound->getChild(QualifyGroup::LOSERS, 1)->getPoule(1);
         $this->setScoreSingle($loserssPoule, 1, 2, 2, 1);
 
-        $qualifyService = new QualifyService($rootRound, AgainstRankingService::RULESSET_WC);
+        $qualifyService = new QualifyService($rootRound);
         $qualifyService->setQualifiers();
 
-        $endRankingService = new EndRankingService($structure, AgainstRankingService::RULESSET_WC);
-        $items = $endRankingService->getItems();
+        $calculator = new EndRankingCalculator($structure, RankingRuleSet::Against);
+        $items = $calculator->getItems();
 
         for ($rank = 1; $rank <= count($items); $rank++) {
             self::assertSame($items[$rank - 1]->getPlaceLocation()->getPlaceNr(), $rank);

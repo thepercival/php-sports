@@ -4,7 +4,6 @@ namespace Sports;
 
 use \Doctrine\Common\Collections\ArrayCollection;
 use InvalidArgumentException;
-use SportsHelpers\GameMode;
 use SportsHelpers\SportConfig as SportConfig;
 use SportsHelpers\Identifiable;
 use Sports\Game\Against as AgainstGame;
@@ -19,15 +18,15 @@ class Poule extends Identifiable
      */
     protected $name;
     /**
-     * @var Place[] | ArrayCollection
+     * @var ArrayCollection<int|string,Place>
      */
     protected $places;
     /**
-     * @var AgainstGame[] | ArrayCollection
+     * @var ArrayCollection<int|string,AgainstGame>
      */
     protected $againstGames;
     /**
-     * @var TogetherGame[] | ArrayCollection
+     * @var ArrayCollection<int|string,TogetherGame>
      */
     protected $togetherGames;
     protected int $structureNumber = 0;
@@ -46,12 +45,14 @@ class Poule extends Identifiable
         $this->togetherGames = new ArrayCollection();
     }
 
-    /**
-     * @return Round
-     */
-    public function getRound()
+    public function getRound(): Round
     {
         return $this->round;
+    }
+
+    public function getCompetition(): Competition
+    {
+        return $this->getRound()->getCompetition();
     }
 
     /**
@@ -108,17 +109,17 @@ class Poule extends Identifiable
     }
 
     /**
-     * @return Place[] | ArrayCollection
+     * @return ArrayCollection<int|string,Place>
      */
-    public function getPlaces()
+    public function getPlaces(): ArrayCollection
     {
         return $this->places;
     }
 
     /**
-     * @param Place[] | ArrayCollection $places
+     * @param ArrayCollection<int|string,Place> $places
      */
-    public function setPlaces($places)
+    public function setPlaces(ArrayCollection $places)
     {
         $this->places = $places;
     }
@@ -139,7 +140,7 @@ class Poule extends Identifiable
      */
     public function getGames(): array
     {
-        return array_merge( $this->againstGames->toArray(), $this->togetherGames->toArray() );
+        return array_merge($this->againstGames->toArray(), $this->togetherGames->toArray());
     }
 
     /**

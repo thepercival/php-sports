@@ -1,18 +1,19 @@
 <?php
 
-namespace Sports\Ranking\Item\Round;
+namespace Sports\Ranking\Item;
 
 use Exception;
 use Sports\Place;
 use Sports\Competition\Sport as CompetitionSport;
+use Sports\Ranking\Item\Round\Sport as SportRoundRankingItem;
 
-class Ranked
+class Round
 {
     private int $uniqueRank = 1;
     private int $rank = 1;
     private int $cumulativeRank = 0;
     /**
-     * @var SportRanked[]|array
+     * @var array<SportRoundRankingItem>
      */
     private $sportItems = [];
 
@@ -23,6 +24,11 @@ class Ranked
     public function getPlace(): Place
     {
         return $this->place;
+    }
+
+    public function getRoundLocationId(): string
+    {
+        return $this->place->getRoundLocationId();
     }
 
     public function getCumulativeRank(): int
@@ -46,16 +52,16 @@ class Ranked
         $this->uniqueRank = $uniqueRank;
     }
 
-    public function addSportRoundItem(SportRanked $item)
+    public function addSportRoundItem(SportRoundRankingItem $item)
     {
         $this->sportItems[] = $item;
         $this->cumulativeRank += $item->getRank();
     }
 
-    public function getSportItem(CompetitionSport $competitionSport): SportRanked
+    public function getSportItem(CompetitionSport $competitionSport): SportRoundRankingItem
     {
-        $sportItems = array_filter($this->sportItems, function (SportRanked $sportItemIt) use ($competitionSport): bool {
-            return $sportItemIt->getCompetitionSport() === $competitionSport;
+        $sportItems = array_filter($this->sportItems, function (SportRoundRankingItem $rankingItem) use ($competitionSport): bool {
+            return $rankingItem->getCompetitionSport() === $competitionSport;
         });
         if (count($sportItems) === 0) {
             throw new Exception("sportItem could not be found", E_ERROR);
