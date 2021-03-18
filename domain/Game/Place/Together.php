@@ -35,7 +35,7 @@ class Together extends GamePlaceBase
         return $this->game;
     }
 
-    protected function setGame(TogetherGame $game)
+    protected function setGame(TogetherGame $game): void
     {
         if (!$game->getPlaces()->contains($this)) {
             $game->getPlaces()->add($this) ;

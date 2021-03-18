@@ -56,7 +56,7 @@ class PlanningAssigner
         $this->scheduleService = $scheduleService;
     }
 
-    public function createGames(RoundNumber $roundNumber, Planning $planning)
+    public function createGames(RoundNumber $roundNumber, Planning $planning): void
     {
         $this->initResources($roundNumber, $planning);
         $firstBatch = $planning->createFirstBatch();
@@ -69,8 +69,10 @@ class PlanningAssigner
      * @param Batch|SelfRefereeBatch $batch
      * @param PlanningConfig $planningConfig
      * @param DateTimeImmutable $gameStartDateTime
+     *
+     * @return void
      */
-    protected function createBatchGames($batch, PlanningConfig $planningConfig, DateTimeImmutable $gameStartDateTime)
+    protected function createBatchGames($batch, PlanningConfig $planningConfig, DateTimeImmutable $gameStartDateTime): void
     {
         $this->createBatchGamesHelper($batch, $gameStartDateTime);
         if ($batch->hasNext()) {
@@ -82,8 +84,10 @@ class PlanningAssigner
     /**
      * @param Batch|SelfRefereeBatch $batch
      * @param DateTimeImmutable $gameStartDateTime
+     *
+     * @return void
      */
-    protected function createBatchGamesHelper($batch, DateTimeImmutable $gameStartDateTime)
+    protected function createBatchGamesHelper($batch, DateTimeImmutable $gameStartDateTime): void
     {
         /** @var AgainstPlanningGame $planningGame */
         foreach ($batch->getGames() as $planningGame) {
@@ -127,14 +131,14 @@ class PlanningAssigner
         );
     }
 
-    protected function initResources(RoundNumber $roundNumber, Planning $planning)
+    protected function initResources(RoundNumber $roundNumber, Planning $planning): void
     {
         $this->initPoules($roundNumber);
         $this->initCompetitionSports($roundNumber, $planning);
         $this->initReferees($roundNumber, $planning);
     }
 
-    protected function initPoules(RoundNumber $roundNumber)
+    protected function initPoules(RoundNumber $roundNumber): void
     {
         $poules = $roundNumber->getPoules();
         if ($roundNumber->isFirst()) {
@@ -155,7 +159,7 @@ class PlanningAssigner
         $this->poules = array_values($poules);
     }
 
-    protected function initCompetitionSports(RoundNumber $roundNumber, Planning $planning)
+    protected function initCompetitionSports(RoundNumber $roundNumber, Planning $planning): void
     {
         $maxNrOfFields = $planning->getInput()->getMaxNrOfBatchGames();
         $this->competitionSportMap = [];
@@ -176,7 +180,7 @@ class PlanningAssigner
         $this->initFields($planning);
     }
 
-    protected function initFields(Planning $planning)
+    protected function initFields(Planning $planning): void
     {
         $planningFields = $planning->getFields();
         $this->fieldMap = [];
@@ -192,7 +196,7 @@ class PlanningAssigner
         return $planningField->getSport()->getNumber() . '-' . $planningField->getNumber();
     }
 
-    protected function initReferees(RoundNumber $roundNumber, Planning $planning)
+    protected function initReferees(RoundNumber $roundNumber, Planning $planning): void
     {
         $this->refereeMap = [];
         foreach ($planning->getReferees() as $planningReferee) {

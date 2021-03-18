@@ -1,8 +1,10 @@
 <?php
+declare(strict_types=1);
 
 namespace Sports\Tests\Structure;
 
 use Exception;
+use PHPUnit\Framework\TestCase;
 use Sports\Place;
 use Sports\Qualify\Group as QualifyGroup;
 use Sports\Round;
@@ -13,7 +15,7 @@ use Sports\Structure\Service as StructureService;
 use Sports\Structure\Validator as StructureValidator;
 use Sports\TestHelper\GamesCreator;
 
-class ValidatorTest extends \PHPUnit\Framework\TestCase
+final class ValidatorTest extends TestCase
 {
     use CompetitionCreator;
 
@@ -129,7 +131,9 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
 
         (new GamesCreator())->createStructureGames($structure);
 
-        $rootRound->getQualifyGroup(QualifyGroup::WINNERS, 1)->setNumber(0);
+        $winnersQualifyGroup = $rootRound->getQualifyGroup(QualifyGroup::WINNERS, 1);
+        self::assertNotNull($winnersQualifyGroup);
+        $winnersQualifyGroup->setNumber(0);
 
         $structureValidator = new StructureValidator();
         self::expectException(Exception::class);
@@ -148,7 +152,7 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
 
         (new GamesCreator())->createStructureGames($structure);
 
-        $rootRound->getPoules()->first()->setNumber(0);
+        $rootRound->getPoule(1)->setNumber(0);
 
         $structureValidator = new StructureValidator();
         self::expectException(Exception::class);
@@ -167,7 +171,7 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
 
         (new GamesCreator())->createStructureGames($structure);
 
-        $rootRound->getPoule(1)->getPlaces()->first()->setNumber(0);
+        $rootRound->getPoule(1)->getPlace(1)->setNumber(0);
 
         $structureValidator = new StructureValidator();
         self::expectException(Exception::class);

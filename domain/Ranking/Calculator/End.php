@@ -20,7 +20,7 @@ class End
     }
 
     /**
-     * @return array<EndRankingItem>
+     * @return list<EndRankingItem>
      */
     public function getItems(): array
     {
@@ -40,12 +40,12 @@ class End
             }
             return $items;
         };
-        return $getItems($this->structure->getRootRound());
+        return array_values($getItems($this->structure->getRootRound()));
     }
 
     /**
      * @param Round $round
-     * @return array<EndRankingItem>
+     * @return list<EndRankingItem>
      */
     protected function getDropoutsNotPlayed(Round $round): array
     {
@@ -59,7 +59,7 @@ class End
 
     /**
      * @param Round $round
-     * @return array<EndRankingItem>
+     * @return list<EndRankingItem>
      */
     protected function getDropouts(Round $round): array
     {
@@ -95,7 +95,7 @@ class End
 
     /**
      * @param HorizontalPoule $horizontalPoule
-     * @return array<EndRankingItem>
+     * @return list<EndRankingItem>
      */
     protected function getDropoutsHorizontalPoule(HorizontalPoule $horizontalPoule): array
     {

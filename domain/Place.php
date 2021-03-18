@@ -68,7 +68,7 @@ class Place extends Identifiable implements PlaceLocation
         return $this->poule;
     }
 
-    public function setPoule(Poule $poule)
+    public function setPoule(Poule $poule): void
     {
         if (/*$this->poule !== null &&*/ $this->poule->getPlaces()->contains($this)) {
             $this->poule->getPlaces()->removeElement($this);
@@ -89,7 +89,7 @@ class Place extends Identifiable implements PlaceLocation
         return $this->number;
     }
 
-    public function setNumber(int $number)
+    public function setNumber(int $number): void
     {
         $this->number = $number;
     }
@@ -114,8 +114,10 @@ class Place extends Identifiable implements PlaceLocation
 
     /**
      * @param int $penaltyPoints
+     *
+     * @return void
      */
-    public function setPenaltyPoints(int $penaltyPoints)
+    public function setPenaltyPoints(int $penaltyPoints): void
     {
         $this->penaltyPoints = $penaltyPoints;
     }
@@ -125,7 +127,7 @@ class Place extends Identifiable implements PlaceLocation
         return $this->name;
     }
 
-    public function setName(string $name = null)
+    public function setName(string $name = null): void
     {
         if (is_string($name) and strlen($name) === 0) {
             $name = null;
@@ -147,7 +149,7 @@ class Place extends Identifiable implements PlaceLocation
         return $this->fromQualifyRule;
     }
 
-    public function setFromQualifyRule(SingleQualifyRule|MultipleQualifyRule|null $qualifyRule)
+    public function setFromQualifyRule(SingleQualifyRule|MultipleQualifyRule|null $qualifyRule): void
     {
         $this->fromQualifyRule = $qualifyRule;
     }
@@ -160,6 +162,9 @@ class Place extends Identifiable implements PlaceLocation
         return $this->toQualifyRules;
     }
 
+    /**
+     * @return MultipleQualifyRule|SingleQualifyRule|null
+     */
     public function getToQualifyRule(int $winnersOrLosers)
     {
         $filtered = array_filter($this->toQualifyRules, function ($qualifyRule) use ($winnersOrLosers): bool {
@@ -169,7 +174,7 @@ class Place extends Identifiable implements PlaceLocation
         return $toQualifyRule !== false ? $toQualifyRule : null;
     }
 
-    public function setToQualifyRule(int $winnersOrLosers, SingleQualifyRule|MultipleQualifyRule|null $qualifyRule)
+    public function setToQualifyRule(int $winnersOrLosers, SingleQualifyRule|MultipleQualifyRule|null $qualifyRule): void
     {
         $originalToQualifyRule = $this->getToQualifyRule($winnersOrLosers);
         if ($originalToQualifyRule !== null) {
@@ -187,7 +192,7 @@ class Place extends Identifiable implements PlaceLocation
         return ($winnersOrLosers === QualifyGroup::WINNERS) ? $this->horizontalPouleWinners : $this->horizontalPouleLosers;
     }
 
-    public function setHorizontalPoule(int $winnersOrLosers, ?HorizontalPoule $horizontalPoule)
+    public function setHorizontalPoule(int $winnersOrLosers, ?HorizontalPoule $horizontalPoule): void
     {
         if ($winnersOrLosers === QualifyGroup::WINNERS) {
             $this->horizontalPouleWinners = $horizontalPoule;

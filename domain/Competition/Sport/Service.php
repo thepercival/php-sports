@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace Sports\Competition\Sport;
 
-use Sports\Game\CreationStrategy;
 use Sports\Round;
 use Sports\Sport;
 use Sports\Score\Config as ScoreConfig;
@@ -15,7 +14,6 @@ use Sports\Qualify\AgainstConfig\Service as QualifyConfigService;
 use Sports\Competition;
 use Sports\Competition\Sport as CompetitionSport;
 use Sports\Structure;
-use SportsHelpers\GameMode;
 
 class Service
 {
@@ -44,7 +42,7 @@ class Service
         return new CompetitionSport($sport, $newCompetition);
     }
 
-    public function addToStructure(CompetitionSport $competitionSport, Structure $structure)
+    public function addToStructure(CompetitionSport $competitionSport, Structure $structure): void
     {
         $roundNumber = $structure->getFirstRoundNumber();
         while ($roundNumber !== null) {
@@ -55,7 +53,7 @@ class Service
         }
 
         /**
-         * @param array|Round[] $rounds
+         * @param list<Round> $rounds
          */
         $addToRounds = function (array $rounds) use ($competitionSport, &$addToRounds): void {
             foreach ($rounds as $round) {
@@ -71,52 +69,46 @@ class Service
         $addToRounds([$structure->getRootRound()]);
     }
 
-    public function remove(CompetitionSport $competitionSport, Structure $structure)
+    public function remove(CompetitionSport $competitionSport, Structure $structure): void
     {
         $competitionSport->getFields()->clear();
         $competitionSport->getCompetition()->getSports()->removeElement($competitionSport);
 
         $roundNumber = $structure->getFirstRoundNumber();
         while ($roundNumber) {
-            $gameAmountConfigs = $roundNumber->getGameAmountConfigs();
-            $gameAmountConfigs->filter(
+            $gameAmountConfigs = $roundNumber->getGameAmountConfigs()->filter(
                 function (GameAmountConfig $gameAmountConfigIt) use ($competitionSport): bool {
                     return $gameAmountConfigIt->getCompetitionSport() === $competitionSport;
                 }
-            )->forAll(
-                function (GameAmountConfig $gameAmountConfigIt) use ($gameAmountConfigs): bool {
-                    return $gameAmountConfigs->removeElement($gameAmountConfigIt);
-                }
             );
+            while ($gameAmountConfig = $gameAmountConfigs->first()) {
+                $gameAmountConfigs->removeElement($gameAmountConfig);
+            }
             $roundNumber = $roundNumber->getNext();
         }
 
         /**
-         * @param array|Round[] $rounds
+         * @param list<Round> $rounds
          */
         $removeFromRounds = function (array $rounds) use ($competitionSport, &$removeFromRounds): void {
             foreach ($rounds as $round) {
-                $scoreConfigs = $round->getScoreConfigs();
-                $scoreConfigs->filter(
+                $scoreConfigs = $round->getScoreConfigs()->filter(
                     function (ScoreConfig $scoreConfigIt) use ($competitionSport): bool {
                         return $scoreConfigIt->getCompetitionSport() === $competitionSport;
                     }
-                )->forAll(
-                    function (ScoreConfig $scoreConfigIt) use ($scoreConfigs): bool {
-                        return $scoreConfigs->removeElement($scoreConfigIt);
-                    }
                 );
+                while ($scoreConfig = $scoreConfigs->first()) {
+                    $scoreConfigs->removeElement($scoreConfig);
+                }
 
-                $qualifyConfigs = $round->getQualifyAgainstConfigs();
-                $qualifyConfigs->filter(
+                $qualifyConfigs = $round->getQualifyAgainstConfigs()->filter(
                     function (QualifyConfig $qualifyConfigIt) use ($competitionSport): bool {
                         return $qualifyConfigIt->getCompetitionSport() === $competitionSport;
                     }
-                )->forAll(
-                    function (QualifyConfig $qualifyConfigIt) use ($qualifyConfigs): bool {
-                        return $qualifyConfigs->removeElement($qualifyConfigIt);
-                    }
                 );
+                while ($qualifyConfig = $qualifyConfigs->first()) {
+                    $qualifyConfigs->removeElement($qualifyConfig);
+                }
                 $removeFromRounds($round->getChildren());
             }
         };

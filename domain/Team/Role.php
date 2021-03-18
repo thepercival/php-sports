@@ -36,17 +36,17 @@ abstract class Role extends Identifiable
         return $this->team;
     }
 
-    public function setTeam(Team $team)
+    public function setTeam(Team $team): void
     {
         $this->team = $team;
     }
 
-    public function getPerson(): Person
+    public function getPerson(): ?Person
     {
         return $this->person;
     }
 
-    public function setPerson(Person $person)
+    public function setPerson(Person $person): void
     {
         if ($this->person !== null
             && $this->person->getPlayers()->contains($this)) {
@@ -63,7 +63,7 @@ abstract class Role extends Identifiable
         return $this->startDateTime;
     }
 
-    public function setStartDateTime(DateTimeImmutable $startDateTime)
+    public function setStartDateTime(DateTimeImmutable $startDateTime): void
     {
         $this->startDateTime = $startDateTime;
     }
@@ -73,7 +73,7 @@ abstract class Role extends Identifiable
         return $this->endDateTime;
     }
 
-    public function setEndDateTime(DateTimeImmutable $endDateTime)
+    public function setEndDateTime(DateTimeImmutable $endDateTime): void
     {
         $this->endDateTime = $endDateTime;
     }
@@ -82,7 +82,7 @@ abstract class Role extends Identifiable
         return new Period( $this->getStartDateTime(), $this->getEndDateTime() );
     }
 
-    public function setPeriod(Period $period)
+    public function setPeriod(Period $period): void
     {
         $this->setStartDateTime( $period->getStartDate() );
         $this->setEndDateTime( $period->getEndDate() );

@@ -10,6 +10,9 @@ use Sports\Round\Number as RoundNumber;
 
 class Repository extends SportRepository
 {
+    /**
+     * @return void
+     */
     public function addObjects(CompetitionSport $competitionSport, Round $round)
     {
         $qualifyConfig = $round->getQualifyAgainstConfig($competitionSport);
@@ -19,7 +22,7 @@ class Repository extends SportRepository
         $this->save($qualifyConfig);
     }
 
-    public function removeObjects(CompetitionSport $competitionSport)
+    public function removeObjects(CompetitionSport $competitionSport): void
     {
         $qualifyConfigs = $this->findBy(["competitionSport" => $competitionSport]);
         foreach ($qualifyConfigs as $qualifyConfig) {

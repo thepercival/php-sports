@@ -19,8 +19,10 @@ class AgainstGames
      * @param Competition $competition
      * @param array|AgainstGame[] $games
      * @param array|TeamCompetitor[] $teamCompetitors
+     *
+     * @return void
      */
-    public function display(Competition $competition, array $games, array $teamCompetitors)
+    public function display(Competition $competition, array $games, array $teamCompetitors): void
     {
         $table = new ConsoleTable();
         $table->setHeaders(array('league', 'season', 'batchNr', 'id', 'datetime', 'state', 'home', 'score', 'away' ));

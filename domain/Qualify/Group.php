@@ -55,7 +55,7 @@ class Group extends Identifiable
         return $this->winnersOrLosers;
     }
 
-    public function setWinnersOrLosers(int $winnersOrLosers)
+    public function setWinnersOrLosers(int $winnersOrLosers): void
     {
         $this->winnersOrLosers = $winnersOrLosers;
     }
@@ -70,8 +70,10 @@ class Group extends Identifiable
 
     /**
      * @param int $number
+     *
+     * @return void
      */
-    public function setNumber(int $number)
+    public function setNumber(int $number): void
     {
         $this->number = $number;
     }
@@ -84,7 +86,7 @@ class Group extends Identifiable
         return $this->round;
     }
 
-    protected function insertRoundAt(Round $round, int $insertAt)
+    protected function insertRoundAt(Round $round, int $insertAt): void
     {
         $qualifyGroups = $round->getQualifyGroups($this->getWinnersOrLosers());
         if (!$qualifyGroups->contains($this)) {
@@ -96,8 +98,10 @@ class Group extends Identifiable
 
     /**
      * @param Round $round
+     *
+     * @return void
      */
-    public function setRound(Round $round)
+    public function setRound(Round $round): void
     {
         $qualifyGroups = $round->getQualifyGroups($this->getWinnersOrLosers());
         if (!$qualifyGroups->contains($this)) {
@@ -116,8 +120,10 @@ class Group extends Identifiable
 
     /**
      * @param Round $childRound
+     *
+     * @return void
      */
-    public function setChildRound(Round $childRound)
+    public function setChildRound(Round $childRound): void
     {
         $this->childRound = $childRound;
     }
@@ -146,7 +152,7 @@ class Group extends Identifiable
         return $this->horizontalPoules[count($this->horizontalPoules)-1];
     }
 
-    public function getNrOfPlaces()
+    public function getNrOfPlaces(): int
     {
         return count($this->getHorizontalPoules()) * $this->getRound()->getPoules()->count();
     }

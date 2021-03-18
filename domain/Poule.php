@@ -57,8 +57,10 @@ class Poule extends Identifiable
 
     /**
      * @param Round $round
+     *
+     * @return void
      */
-    protected function setRound(Round $round)
+    protected function setRound(Round $round): void
     {
         if (!$round->getPoules()->contains($this)) {
             $round->getPoules()->add($this) ;
@@ -71,7 +73,7 @@ class Poule extends Identifiable
         return $this->number;
     }
 
-    public function setNumber(int $number)
+    public function setNumber(int $number): void
     {
         $this->number = $number;
     }
@@ -81,7 +83,7 @@ class Poule extends Identifiable
         return $this->name;
     }
 
-    public function setName(string $name = null)
+    public function setName(string $name = null): void
     {
         if (is_string($name) and strlen($name) === 0) {
             $name = null;
@@ -118,25 +120,28 @@ class Poule extends Identifiable
 
     /**
      * @param ArrayCollection<int|string,Place> $places
+     *
+     * @return void
      */
-    public function setPlaces(ArrayCollection $places)
+    public function setPlaces(ArrayCollection $places): void
     {
         $this->places = $places;
     }
 
-    /**
-     * @return ?Place
-     */
-    public function getPlace($number): ?Place
+    public function getPlace(int $number): Place
     {
         $places = array_filter($this->getPlaces()->toArray(), function ($place) use ($number): bool {
             return $place->getNumber() === $number;
         });
-        return array_shift($places);
+        $place = reset($places);
+        if ($place === false) {
+            throw new \Exception('de pouleplek kan niet gevonden worden', E_ERROR);
+        }
+        return $place;
     }
 
     /**
-     * @return AgainstGame[] | TogetherGame[] | array
+     * @return array<int|string, AgainstGame|TogetherGame>
      */
     public function getGames(): array
     {
@@ -144,36 +149,33 @@ class Poule extends Identifiable
     }
 
     /**
-     * @return AgainstGame[] |  ArrayCollection
+     * @return ArrayCollection<int|string, AgainstGame>
      */
-    public function getAgainstGames()
+    public function getAgainstGames(): ArrayCollection
     {
         return $this->againstGames;
     }
 
     /**
-     * @return TogetherGame[] |  ArrayCollection
+     * @return ArrayCollection<int|string, TogetherGame>
      */
-    public function getTogetherGames()
+    public function getTogetherGames(): ArrayCollection
     {
         return $this->togetherGames;
     }
 
     /**
      * @param int $state
-     * @return AgainstGame[] |  TogetherGame[] | array
+     * @return array<int|string, AgainstGame|TogetherGame>
      */
-    public function getGamesWithState(int $state)
+    public function getGamesWithState(int $state): array
     {
         return array_filter($this->getGames(), function (AgainstGame|TogetherGame $gameIt) use ($state): bool {
             return $gameIt->getState() === $state;
         });
     }
 
-    /**
-     * @return bool
-     */
-    public function needsRanking()
+    public function needsRanking(): bool
     {
         return ($this->getPlaces()->count() > 2);
     }

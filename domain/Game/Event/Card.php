@@ -41,7 +41,7 @@ class Card extends Identifiable implements GameEvent
         return $this->gameParticipation;
     }
 
-    protected function setGameParticipation(GameParticipation $gameParticipation)
+    protected function setGameParticipation(GameParticipation $gameParticipation): void
     {
         if ($this->gameParticipation === null and !$gameParticipation->getCards()->contains($this)) {
             $gameParticipation->getCards()->add($this) ;

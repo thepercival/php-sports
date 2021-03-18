@@ -26,7 +26,7 @@ class Player extends Role
         return $this->line;
     }
 
-    public function setLine(int $line)
+    public function setLine(int $line): void
     {
         $this->line = $line;
     }
@@ -51,7 +51,7 @@ class Player extends Role
         return $this->shirtNumber;
     }
 
-    public function setShirtNumber(int $shirtNumber = null)
+    public function setShirtNumber(int $shirtNumber = null): void
     {
         $this->shirtNumber = $shirtNumber;
     }

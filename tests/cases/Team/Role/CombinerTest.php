@@ -31,24 +31,24 @@ class CombinerTest extends \PHPUnit\Framework\TestCase
     public function testCombiningWithoutPlayersUpdate()
     {
         $competition = $this->createCompetition();
-        $person = new Person( "Al", null, "Person");
-        $combiner = new RoleCombiner( $person, RoleCombiner::MODE_MULTIPLE_TEAMS_OF_A_TYPE_AT_THE_SAME_TIME );
-        $teamY = new Team( $competition->getLeague()->getAssociation(), "team Y");
-        $teamZ = new Team( $competition->getLeague()->getAssociation(), "team Z");
+        $person = new Person('Al', null, 'Person');
+        $combiner = new RoleCombiner($person, RoleCombiner::MODE_MULTIPLE_TEAMS_OF_A_TYPE_AT_THE_SAME_TIME);
+        $teamY = new Team($competition->getLeague()->getAssociation(), 'team Y');
+        $teamZ = new Team($competition->getLeague()->getAssociation(), 'team Z');
         $now = new \DateTimeImmutable();
-        $fourMinutesBefore = $now->modify("-4 minutes");
-        $twoMinutesBefore = $now->modify("-2 minutes");
-        $twoMinutesAfter = $now->modify("2 minutes");
-        $periodA = new Period( $fourMinutesBefore, $now);
-        $periodX = new Period( $twoMinutesBefore, $twoMinutesAfter );
+        $fourMinutesBefore = $now->modify('-4 minutes');
+        $twoMinutesBefore = $now->modify('-2 minutes');
+        $twoMinutesAfter = $now->modify('2 minutes');
+        $periodA = new Period($fourMinutesBefore, $now);
+        $periodX = new Period($twoMinutesBefore, $twoMinutesAfter);
 
-        $playerA = new Player( $teamY, $person, $periodA, SportCustom::Football_Line_Defense );
-        $combiner->combineWithPast( $teamZ, $periodX, SportCustom::Football_Line_Defense );
+        $playerA = new Player($teamY, $person, $periodA, SportCustom::Football_Line_Defense);
+        $combiner->combineWithPast($teamZ, $periodX, SportCustom::Football_Line_Defense);
 
-        self::assertCount( 2, $person->getPlayers()->toArray() );
+        self::assertCount(2, $person->getPlayers()->toArray());
 
-        self::assertSame( $fourMinutesBefore, $playerA->getPeriod()->getStartDate() );
-        self::assertSame( $now, $playerA->getPeriod()->getEndDate() );
+        self::assertSame($fourMinutesBefore, $playerA->getPeriod()->getStartDate());
+        self::assertSame($now, $playerA->getPeriod()->getEndDate());
     }
 
     /**
@@ -68,21 +68,21 @@ class CombinerTest extends \PHPUnit\Framework\TestCase
     public function testNotMergableByTeam()
     {
         $competition = $this->createCompetition();
-        $person = new Person( "Al", null, "Person");
-        $combiner = new RoleCombiner( $person );
-        $teamY = new Team( $competition->getLeague()->getAssociation(), "team Y");
-        $teamZ = new Team( $competition->getLeague()->getAssociation(), "team Z");
+        $person = new Person('Al', null, 'Person');
+        $combiner = new RoleCombiner($person);
+        $teamY = new Team($competition->getLeague()->getAssociation(), 'team Y');
+        $teamZ = new Team($competition->getLeague()->getAssociation(), 'team Z');
         $now = new \DateTimeImmutable();
-        $fourMinutesBefore = $now->modify("-4 minutes");
-        $twoMinutesBefore = $now->modify("-2 minutes");
-        $twoMinutesAfter = $now->modify("2 minutes");
-        $periodA = new Period( $fourMinutesBefore, $now);
-        $periodX = new Period( $twoMinutesBefore, $twoMinutesAfter );
+        $fourMinutesBefore = $now->modify('-4 minutes');
+        $twoMinutesBefore = $now->modify('-2 minutes');
+        $twoMinutesAfter = $now->modify('2 minutes');
+        $periodA = new Period($fourMinutesBefore, $now);
+        $periodX = new Period($twoMinutesBefore, $twoMinutesAfter);
 
-        $playerA = new Player( $teamY, $person, $periodA, SportCustom::Football_Line_Defense );
-        $combiner->combineWithPast( $teamZ, $periodX, SportCustom::Football_Line_Defense );
+        $playerA = new Player($teamY, $person, $periodA, SportCustom::Football_Line_Defense);
+        $combiner->combineWithPast($teamZ, $periodX, SportCustom::Football_Line_Defense);
 
-        self::assertCount( 2, $person->getPlayers()->toArray() );
+        self::assertCount(2, $person->getPlayers()->toArray());
     }
 
     /**
@@ -102,20 +102,20 @@ class CombinerTest extends \PHPUnit\Framework\TestCase
     public function testNotMergableByLine()
     {
         $competition = $this->createCompetition();
-        $person = new Person( "Al", null, "Person");
-        $combiner = new RoleCombiner( $person );
-        $teamY = new Team( $competition->getLeague()->getAssociation(), "team Y");
+        $person = new Person('Al', null, 'Person');
+        $combiner = new RoleCombiner($person);
+        $teamY = new Team($competition->getLeague()->getAssociation(), 'team Y');
         $now = new \DateTimeImmutable();
-        $fourMinutesBefore = $now->modify("-4 minutes");
-        $twoMinutesBefore = $now->modify("-2 minutes");
-        $twoMinutesAfter = $now->modify("2 minutes");
-        $periodA = new Period( $fourMinutesBefore, $now);
-        $periodX = new Period( $twoMinutesBefore, $twoMinutesAfter );
+        $fourMinutesBefore = $now->modify('-4 minutes');
+        $twoMinutesBefore = $now->modify('-2 minutes');
+        $twoMinutesAfter = $now->modify('2 minutes');
+        $periodA = new Period($fourMinutesBefore, $now);
+        $periodX = new Period($twoMinutesBefore, $twoMinutesAfter);
 
-        $playerA = new Player( $teamY, $person, $periodA, SportCustom::Football_Line_Defense );
-        $combiner->combineWithPast( $teamY, $periodX, SportCustom::Football_Line_Midfield );
+        $playerA = new Player($teamY, $person, $periodA, SportCustom::Football_Line_Defense);
+        $combiner->combineWithPast($teamY, $periodX, SportCustom::Football_Line_Midfield);
 
-        self::assertCount( 2, $person->getPlayers()->toArray() );
+        self::assertCount(2, $person->getPlayers()->toArray());
     }
 
     /**
@@ -135,20 +135,20 @@ class CombinerTest extends \PHPUnit\Framework\TestCase
     public function testNotMergableByPeriod()
     {
         $competition = $this->createCompetition();
-        $person = new Person( "Al", null, "Person");
-        $combiner = new RoleCombiner( $person );
-        $teamY = new Team( $competition->getLeague()->getAssociation(), "team Y");
+        $person = new Person('Al', null, 'Person');
+        $combiner = new RoleCombiner($person);
+        $teamY = new Team($competition->getLeague()->getAssociation(), 'team Y');
         $now = new \DateTimeImmutable();
-        $fourMinutesBefore = $now->modify("-4 minutes");
-        $periodA = new Period( $fourMinutesBefore, $now);
-        $periodX = new Period( $fourMinutesBefore, $now );
+        $fourMinutesBefore = $now->modify('-4 minutes');
+        $periodA = new Period($fourMinutesBefore, $now);
+        $periodX = new Period($fourMinutesBefore, $now);
 
-        $playerA = new Player( $teamY, $person, $periodA, SportCustom::Football_Line_Defense );
-        $combiner->combineWithPast( $teamY, $periodX, SportCustom::Football_Line_Defense );
+        $playerA = new Player($teamY, $person, $periodA, SportCustom::Football_Line_Defense);
+        $combiner->combineWithPast($teamY, $periodX, SportCustom::Football_Line_Defense);
 
-        self::assertCount( 1, $person->getPlayers()->toArray() );
-        self::assertSame( $fourMinutesBefore, $playerA->getPeriod()->getStartDate() );
-        self::assertSame( $now, $playerA->getPeriod()->getEndDate() );
+        self::assertCount(1, $person->getPlayers()->toArray());
+        self::assertSame($fourMinutesBefore, $playerA->getPeriod()->getStartDate());
+        self::assertSame($now, $playerA->getPeriod()->getEndDate());
     }
 
     /**
@@ -168,22 +168,22 @@ class CombinerTest extends \PHPUnit\Framework\TestCase
     public function testNotMergableByPeriodMaxDiff()
     {
         $competition = $this->createCompetition();
-        $person = new Person( "Al", null, "Person");
-        $combiner = new RoleCombiner( $person );
-        $teamY = new Team( $competition->getLeague()->getAssociation(), "team Y");
+        $person = new Person('Al', null, 'Person');
+        $combiner = new RoleCombiner($person);
+        $teamY = new Team($competition->getLeague()->getAssociation(), 'team Y');
         $now = new \DateTimeImmutable();
-        $fourMinutesBefore = $now->modify("-4 minutes");
-        $tooMuchInPastStartDate = $now->modify("-9 months");
-        $tooMuchInPastEndDate = $now->modify("-8 months");
-        $periodA = new Period( $tooMuchInPastStartDate, $tooMuchInPastEndDate );
-        $periodX = new Period( $fourMinutesBefore, $now);
+        $fourMinutesBefore = $now->modify('-4 minutes');
+        $tooMuchInPastStartDate = $now->modify('-9 months');
+        $tooMuchInPastEndDate = $now->modify('-8 months');
+        $periodA = new Period($tooMuchInPastStartDate, $tooMuchInPastEndDate);
+        $periodX = new Period($fourMinutesBefore, $now);
 
-        $playerA = new Player( $teamY, $person, $periodA, SportCustom::Football_Line_Defense );
-        $combiner->combineWithPast( $teamY, $periodX, SportCustom::Football_Line_Defense );
+        $playerA = new Player($teamY, $person, $periodA, SportCustom::Football_Line_Defense);
+        $combiner->combineWithPast($teamY, $periodX, SportCustom::Football_Line_Defense);
 
-        self::assertCount( 2, $person->getPlayers()->toArray() );
-        self::assertSame( $tooMuchInPastStartDate, $playerA->getPeriod()->getStartDate() );
-        self::assertSame( $tooMuchInPastEndDate, $playerA->getPeriod()->getEndDate() );
+        self::assertCount(2, $person->getPlayers()->toArray());
+        self::assertSame($tooMuchInPastStartDate, $playerA->getPeriod()->getStartDate());
+        self::assertSame($tooMuchInPastEndDate, $playerA->getPeriod()->getEndDate());
     }
 
     /**
@@ -203,23 +203,23 @@ class CombinerTest extends \PHPUnit\Framework\TestCase
     public function testNotMergableByPeriodFuture()
     {
         $competition = $this->createCompetition();
-        $person = new Person( "Al", null, "Person");
-        $combiner = new RoleCombiner( $person );
-        $teamY = new Team( $competition->getLeague()->getAssociation(), "team Y");
+        $person = new Person('Al', null, 'Person');
+        $combiner = new RoleCombiner($person);
+        $teamY = new Team($competition->getLeague()->getAssociation(), 'team Y');
         $now = new \DateTimeImmutable();
-        $fourMinutesBefore = $now->modify("-4 minutes");
-        $twoMinutesBefore = $now->modify("-2 minutes");
-        $twoMinutesAfter = $now->modify("2 minutes");
+        $fourMinutesBefore = $now->modify('-4 minutes');
+        $twoMinutesBefore = $now->modify('-2 minutes');
+        $twoMinutesAfter = $now->modify('2 minutes');
 
-        $periodA = new Period( $now, $twoMinutesAfter);
-        $periodX = new Period( $fourMinutesBefore, $twoMinutesBefore );
+        $periodA = new Period($now, $twoMinutesAfter);
+        $periodX = new Period($fourMinutesBefore, $twoMinutesBefore);
 
-        $playerA = new Player( $teamY, $person, $periodA, SportCustom::Football_Line_Defense );
-        $combiner->combineWithPast( $teamY, $periodX, SportCustom::Football_Line_Defense );
+        $playerA = new Player($teamY, $person, $periodA, SportCustom::Football_Line_Defense);
+        $combiner->combineWithPast($teamY, $periodX, SportCustom::Football_Line_Defense);
 
-        self::assertCount( 1, $person->getPlayers()->toArray() );
-        self::assertSame( $now, $playerA->getPeriod()->getStartDate() );
-        self::assertSame( $twoMinutesAfter, $playerA->getPeriod()->getEndDate() );
+        self::assertCount(1, $person->getPlayers()->toArray());
+        self::assertSame($now, $playerA->getPeriod()->getStartDate());
+        self::assertSame($twoMinutesAfter, $playerA->getPeriod()->getEndDate());
     }
 
     /**
@@ -239,24 +239,24 @@ class CombinerTest extends \PHPUnit\Framework\TestCase
     public function testMergableByPeriodFutureMultipleTeams()
     {
         $competition = $this->createCompetition();
-        $person = new Person( "Al", null, "Person");
-        $combiner = new RoleCombiner( $person, RoleCombiner::MODE_MULTIPLE_TEAMS_OF_A_TYPE_AT_THE_SAME_TIME );
-        $teamY = new Team( $competition->getLeague()->getAssociation(), "team Y");
-        $teamZ = new Team( $competition->getLeague()->getAssociation(), "team Z");
+        $person = new Person('Al', null, 'Person');
+        $combiner = new RoleCombiner($person, RoleCombiner::MODE_MULTIPLE_TEAMS_OF_A_TYPE_AT_THE_SAME_TIME);
+        $teamY = new Team($competition->getLeague()->getAssociation(), 'team Y');
+        $teamZ = new Team($competition->getLeague()->getAssociation(), 'team Z');
         $now = new \DateTimeImmutable();
-        $fourMinutesBefore = $now->modify("-4 minutes");
-        $twoMinutesBefore = $now->modify("-2 minutes");
-        $twoMinutesAfter = $now->modify("2 minutes");
+        $fourMinutesBefore = $now->modify('-4 minutes');
+        $twoMinutesBefore = $now->modify('-2 minutes');
+        $twoMinutesAfter = $now->modify('2 minutes');
 
-        $periodA = new Period( $now, $twoMinutesAfter);
-        $periodX = new Period( $fourMinutesBefore, $twoMinutesBefore );
+        $periodA = new Period($now, $twoMinutesAfter);
+        $periodX = new Period($fourMinutesBefore, $twoMinutesBefore);
 
-        $playerA = new Player( $teamZ, $person, $periodA, SportCustom::Football_Line_Defense );
-        $combiner->combineWithPast( $teamY, $periodX, SportCustom::Football_Line_Defense );
+        $playerA = new Player($teamZ, $person, $periodA, SportCustom::Football_Line_Defense);
+        $combiner->combineWithPast($teamY, $periodX, SportCustom::Football_Line_Defense);
 
-        self::assertCount( 2, $person->getPlayers()->toArray() );
-        self::assertSame( $now, $playerA->getPeriod()->getStartDate() );
-        self::assertSame( $twoMinutesAfter, $playerA->getPeriod()->getEndDate() );
+        self::assertCount(2, $person->getPlayers()->toArray());
+        self::assertSame($now, $playerA->getPeriod()->getStartDate());
+        self::assertSame($twoMinutesAfter, $playerA->getPeriod()->getEndDate());
     }
 
     /**
@@ -276,23 +276,23 @@ class CombinerTest extends \PHPUnit\Framework\TestCase
     public function testMergable()
     {
         $competition = $this->createCompetition();
-        $person = new Person( "Al", null, "Person");
-        $combiner = new RoleCombiner( $person );
-        $teamY = new Team( $competition->getLeague()->getAssociation(), "team Y");
+        $person = new Person('Al', null, 'Person');
+        $combiner = new RoleCombiner($person);
+        $teamY = new Team($competition->getLeague()->getAssociation(), 'team Y');
         $now = new \DateTimeImmutable();
-        $fourMinutesBefore = $now->modify("-4 minutes");
-        $twoMinutesBefore = $now->modify("-2 minutes");
-        $twoMinutesAfter = $now->modify("2 minutes");
+        $fourMinutesBefore = $now->modify('-4 minutes');
+        $twoMinutesBefore = $now->modify('-2 minutes');
+        $twoMinutesAfter = $now->modify('2 minutes');
 
-        $periodA = new Period( $fourMinutesBefore, $now);
-        $periodX = new Period( $twoMinutesBefore, $twoMinutesAfter );
+        $periodA = new Period($fourMinutesBefore, $now);
+        $periodX = new Period($twoMinutesBefore, $twoMinutesAfter);
 
-        $playerA = new Player( $teamY, $person, $periodA, SportCustom::Football_Line_Defense );
-        $combiner->combineWithPast( $teamY, $periodX, SportCustom::Football_Line_Defense );
+        $playerA = new Player($teamY, $person, $periodA, SportCustom::Football_Line_Defense);
+        $combiner->combineWithPast($teamY, $periodX, SportCustom::Football_Line_Defense);
 
-        self::assertCount( 1, $person->getPlayers()->toArray() );
-        self::assertSame( $fourMinutesBefore, $playerA->getPeriod()->getStartDate() );
-        self::assertSame( $twoMinutesAfter, $playerA->getPeriod()->getEndDate() );
+        self::assertCount(1, $person->getPlayers()->toArray());
+        self::assertSame($fourMinutesBefore, $playerA->getPeriod()->getStartDate());
+        self::assertSame($twoMinutesAfter, $playerA->getPeriod()->getEndDate());
     }
 
 
@@ -313,22 +313,22 @@ class CombinerTest extends \PHPUnit\Framework\TestCase
     public function testNotUpdatableByFuturePeriod()
     {
         $competition = $this->createCompetition();
-        $person = new Person( "Al", null, "Person");
-        $combiner = new RoleCombiner( $person );
-        $teamY = new Team( $competition->getLeague()->getAssociation(), "team Y");
+        $person = new Person('Al', null, 'Person');
+        $combiner = new RoleCombiner($person);
+        $teamY = new Team($competition->getLeague()->getAssociation(), 'team Y');
         $now = new \DateTimeImmutable();
-        $fourMinutesBefore = $now->modify("-4 minutes");
-        $twoMinutesBefore = $now->modify("-2 minutes");
-        $twoMinutesAfter = $now->modify("2 minutes");
+        $fourMinutesBefore = $now->modify('-4 minutes');
+        $twoMinutesBefore = $now->modify('-2 minutes');
+        $twoMinutesAfter = $now->modify('2 minutes');
 
-        $periodA = new Period( $twoMinutesBefore, $twoMinutesAfter);
-        $periodX = new Period( $fourMinutesBefore, $now );
+        $periodA = new Period($twoMinutesBefore, $twoMinutesAfter);
+        $periodX = new Period($fourMinutesBefore, $now);
 
-        $playerA = new Player( $teamY, $person, $periodA, SportCustom::Football_Line_Defense );
-        $combiner->combineWithPast( $teamY, $periodX, SportCustom::Football_Line_Defense );
+        $playerA = new Player($teamY, $person, $periodA, SportCustom::Football_Line_Defense);
+        $combiner->combineWithPast($teamY, $periodX, SportCustom::Football_Line_Defense);
 
-        self::assertCount( 1, $person->getPlayers()->toArray() );
-        self::assertSame( $twoMinutesBefore, $playerA->getPeriod()->getStartDate() );
-        self::assertSame( $twoMinutesAfter, $playerA->getPeriod()->getEndDate() );
+        self::assertCount(1, $person->getPlayers()->toArray());
+        self::assertSame($twoMinutesBefore, $playerA->getPeriod()->getStartDate());
+        self::assertSame($twoMinutesAfter, $playerA->getPeriod()->getEndDate());
     }
 }

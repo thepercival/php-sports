@@ -6,12 +6,7 @@ use Sports\Place\Location as PlaceLocation;
 
 class End
 {
-    /**
-     * @var PlaceLocation|null
-     */
-    private $placeLocation;
-
-    public function __construct(private int $uniqueRank, private int $rank, PlaceLocation $placeLocation = null)
+    public function __construct(private int $uniqueRank, private int $rank, private PlaceLocation|null $placeLocation = null)
     {
         $this->placeLocation = $placeLocation;
     }
@@ -26,7 +21,7 @@ class End
         return $this->rank;
     }
 
-    public function getPlaceLocation(): ?PlaceLocation
+    public function getPlaceLocation(): PlaceLocation|null
     {
         return $this->placeLocation;
     }

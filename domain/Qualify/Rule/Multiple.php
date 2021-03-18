@@ -35,7 +35,7 @@ class Multiple extends QualifyRule
         return $this->fromHorizontalPoule->getQualifyGroup()->getWinnersOrLosers();
     }
 
-    public function addToPlace(Place $toPlace)
+    public function addToPlace(Place $toPlace): void
     {
         $this->toPlaces[] = $toPlace;
         $toPlace->setFromQualifyRule($this);

@@ -49,13 +49,14 @@ abstract class Sport
 
     /**
      * @param HorizontalPoule $horizontalPoule
-     * @return array<Place>
+     * @return list<Place|null>
      */
     public function getPlacesForHorizontalPoule(HorizontalPoule $horizontalPoule): array
     {
-        return array_map(function (SportRoundRankingItem $rankingSportItem) use ($horizontalPoule): Place {
-            return $horizontalPoule->getRound()->getPlace($rankingSportItem->getPerformance()->getPlace());
-        }, $this->getItemsForHorizontalPoule($horizontalPoule, true));
+        return array_values(
+            array_map(function (SportRoundRankingItem $rankingSportItem) use ($horizontalPoule): Place|null {
+                return $horizontalPoule->getRound()->getPlace($rankingSportItem->getPerformance()->getPlace());
+            }, $this->getItemsForHorizontalPoule($horizontalPoule, true)));
     }
 
     /**

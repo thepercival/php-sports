@@ -61,7 +61,7 @@ class Participation extends Identifiable
         return $this->againstGame;
     }
 
-    protected function setGame(AgainstGame $game)
+    protected function setGame(AgainstGame $game): void
     {
         if (!$game->getParticipations()->contains($this)) {
             $game->getParticipations()->add($this) ;
@@ -74,7 +74,7 @@ class Participation extends Identifiable
         return $this->beginMinute;
     }
 
-    public function setBeginMinute(int $minute)
+    public function setBeginMinute(int $minute): void
     {
         $this->beginMinute = $minute;
     }
@@ -89,7 +89,7 @@ class Participation extends Identifiable
         return $this->endMinute;
     }
 
-    public function setEndMinute(int $minute)
+    public function setEndMinute(int $minute): void
     {
         $this->endMinute = $minute;
     }

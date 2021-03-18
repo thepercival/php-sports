@@ -48,13 +48,19 @@ class StructureTest extends \PHPUnit\Framework\TestCase
 
         $structure->setStructureNumbers();
 
-        self::assertSame($rootRound->getChild(QualifyGroup::WINNERS, 1)->getStructureNumber(), 0);
+        $childWinnersRound = $rootRound->getChild(QualifyGroup::WINNERS, 1);
+        $childLosersRound = $rootRound->getChild(QualifyGroup::LOSERS, 1);
+
+        self::assertNotNull($childWinnersRound);
+        self::assertNotNull($childLosersRound);
+
+        self::assertSame($childWinnersRound->getStructureNumber(), 0);
         self::assertSame($rootRound->getStructureNumber(), 2);
-        self::assertSame($rootRound->getChild(QualifyGroup::LOSERS, 1)->getStructureNumber(), 14);
+        self::assertSame($childLosersRound->getStructureNumber(), 14);
 
         self::assertSame($rootRound->getPoule(1)->getStructureNumber(), 1);
         self::assertSame($rootRound->getPoule(4)->getStructureNumber(), 4);
-        self::assertSame($rootRound->getChild(QualifyGroup::WINNERS, 1)->getPoule(1)->getStructureNumber(), 5);
-        self::assertSame($rootRound->getChild(QualifyGroup::LOSERS, 1)->getPoule(1)->getStructureNumber(), 6);
+        self::assertSame($childWinnersRound->getPoule(1)->getStructureNumber(), 5);
+        self::assertSame($childLosersRound->getPoule(1)->getStructureNumber(), 6);
     }
 }

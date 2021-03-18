@@ -29,7 +29,7 @@ class Against extends Score
         return $this->game;
     }
 
-    protected function setGame(AgainstGame $game)
+    protected function setGame(AgainstGame $game): void
     {
         if (!$game->getScores()->contains($this)) {
             $game->getScores()->add($this) ;

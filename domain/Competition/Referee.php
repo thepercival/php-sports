@@ -52,7 +52,7 @@ class Referee extends Identifiable implements Prioritizable
         $this->setPriority($priority);
     }
 
-    private function setCompetition(Competition $competition)
+    private function setCompetition(Competition $competition): void
     {
         $this->competition = $competition;
         $this->competition->getReferees()->add($this);
@@ -63,6 +63,9 @@ class Referee extends Identifiable implements Prioritizable
         return $this->priority;
     }
 
+    /**
+     * @return void
+     */
     public function setPriority(int $priority)
     {
         $this->priority = $priority;
@@ -78,8 +81,10 @@ class Referee extends Identifiable implements Prioritizable
 
     /**
      * @param string|null $initials
+     *
+     * @return void
      */
-    public function setInitials($initials)
+    public function setInitials($initials): void
     {
         if ($initials === null) {
             throw new \InvalidArgumentException("de initialen moet gezet zijn", E_ERROR);
@@ -100,17 +105,19 @@ class Referee extends Identifiable implements Prioritizable
     }
 
     /**
-     * @return string
+     * @return null|string
      */
-    public function getName()
+    public function getName(): ?string
     {
         return $this->name;
     }
 
     /**
      * @param string|null $name
+     *
+     * @return void
      */
-    public function setName(string $name = null)
+    public function setName(string $name = null): void
     {
         if ($name !== null && (strlen($name) < static::MIN_LENGTH_NAME or strlen($name) > static::MAX_LENGTH_NAME)) {
             throw new \InvalidArgumentException(
@@ -137,8 +144,10 @@ class Referee extends Identifiable implements Prioritizable
 
     /**
      * @param string $emailaddress
+     *
+     * @return void
      */
-    public function setEmailaddress($emailaddress)
+    public function setEmailaddress($emailaddress): void
     {
         if (strlen($emailaddress) > 0) {
             if (strlen($emailaddress) < static::MIN_LENGTH_EMAIL or strlen($emailaddress) > static::MAX_LENGTH_EMAIL) {
@@ -165,8 +174,10 @@ class Referee extends Identifiable implements Prioritizable
 
     /**
      * @param string $info
+     *
+     * @return void
      */
-    public function setInfo($info)
+    public function setInfo($info): void
     {
         if (strlen($info) > static::MAX_LENGTH_INFO) {
             $info = substr($info, 0, static::MAX_LENGTH_INFO);

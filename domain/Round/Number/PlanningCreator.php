@@ -14,36 +14,18 @@ use Psr\Log\LoggerInterface;
 
 class PlanningCreator
 {
-    /**
-     * @var PlanningInputRepository
-     */
-    protected $inputRepos;
-    /**
-     * @var PlanningRepository
-     */
-    protected $planningRepos;
-    /**
-     * @var RoundNumberRepository
-     */
-    protected $roundNumberRepos;
-    /**
-     * @var LoggerInterface
-     */
-    protected $logger;
+    protected LoggerInterface|null $logger;
 
     public function __construct(
-        PlanningInputRepository $inputRepos,
-        PlanningRepository $planningRepos,
-        RoundNumberRepository $roundNumberRepos,
-        LoggerInterface $logger = null
+        protected PlanningInputRepository $inputRepos,
+        protected PlanningRepository $planningRepos,
+        protected RoundNumberRepository $roundNumberRepos,
+        LoggerInterface|null $logger = null
     ) {
-        $this->inputRepos = $inputRepos;
-        $this->planningRepos = $planningRepos;
-        $this->roundNumberRepos = $roundNumberRepos;
         $this->logger = $logger;
     }
 
-    public function removeFrom(RoundNumber $roundNumber)
+    public function removeFrom(RoundNumber $roundNumber): void
     {
         $this->roundNumberRepos->removePlanning($roundNumber);
         if ($roundNumber->hasNext()) {
@@ -51,6 +33,9 @@ class PlanningCreator
         }
     }
 
+    /**
+     * @return void
+     */
     public function addFrom(
         CreatePlanningsEvent $createPlanningEvent,
         RoundNumber $roundNumber,
@@ -74,6 +59,9 @@ class PlanningCreator
         return $this->allPreviousRoundNumbersHavePlanning($previous);
     }
 
+    /**
+     * @return void
+     */
     protected function createFrom(
         CreatePlanningsEvent $createPlanningEvent,
         RoundNumber $roundNumber,
@@ -100,18 +88,12 @@ class PlanningCreator
                 );
                 return;
             }
-            if( $planningInput->getPlannings()->filter( function ( Planning $planning ): bool {
-                    return $planning->getState() === Planning::STATE_TOBEPROCESSED;
-                } )->count() > 0 /* has plannings to be processed,  */) {
+            if ($planningInput->getPlannings()->filter(function (Planning $planning): bool {
+                return $planning->getState() === Planning::STATE_TOBEPROCESSED;
+            })->count() > 0 /* has plannings to be processed,  */) {
                 return;
             }
             $planning = $planningInput->getBestPlanning();
-            if ($planning === null) {
-                if ($this->logger !== null) {
-                    $this->logger->info("DEBUG: no best planning found");
-                }
-                return;
-            }
             $planningAssigner = new PlanningAssigner($scheduler);
             $planningAssigner->createGames($roundNumber, $planning);
         }

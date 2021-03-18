@@ -8,7 +8,7 @@ use Sports\Game\Place\Together as TogetherGamePlace;
 
 class Repository extends \Sports\Repository
 {
-    public function removeScores(TogetherGamePlace $gamePlace)
+    public function removeScores(TogetherGamePlace $gamePlace): void
     {
         while ($gamePlace->getScores()->count() > 0) {
             $score = $gamePlace->getScores()->first();

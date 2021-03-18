@@ -50,7 +50,7 @@ class Single extends QualifyRule
         return $this->toPlace;
     }
 
-    public function setToPlace(Place $toPlace)
+    public function setToPlace(Place $toPlace): void
     {
         $this->toPlace = $toPlace;
         $toPlace->setFromQualifyRule($this);

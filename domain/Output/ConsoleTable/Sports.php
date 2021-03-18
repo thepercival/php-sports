@@ -9,8 +9,10 @@ class Sports
 {
     /**
      * @param array|Sport[] $sports
+     *
+     * @return void
      */
-    public function display( array $sports ) {
+    public function display( array $sports ): void {
         $table = new ConsoleTable();
         $table->setHeaders(array('id', 'name'));
         foreach( $sports as $sport ) {

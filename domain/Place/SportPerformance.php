@@ -46,7 +46,7 @@ class SportPerformance
         return $this->games;
     }
 
-    public function addGame()
+    public function addGame(): void
     {
         $this->games++;
     }
@@ -56,7 +56,7 @@ class SportPerformance
         return $this->points;
     }
 
-    public function addPoints(float $points)
+    public function addPoints(float $points): void
     {
         $this->points += $points;
     }
@@ -66,7 +66,7 @@ class SportPerformance
         return $this->scored;
     }
 
-    public function addScored(int $scored)
+    public function addScored(int $scored): void
     {
         $this->scored += $scored;
     }
@@ -76,7 +76,7 @@ class SportPerformance
         return $this->received;
     }
 
-    public function addReceived(int $received)
+    public function addReceived(int $received): void
     {
         $this->received += $received;
     }
@@ -91,7 +91,7 @@ class SportPerformance
         return $this->subScored;
     }
 
-    public function addSubScored(int $subScored)
+    public function addSubScored(int $subScored): void
     {
         $this->subScored += $subScored;
     }
@@ -101,7 +101,7 @@ class SportPerformance
         return $this->subReceived;
     }
 
-    public function addSubReceived(int $subReceived)
+    public function addSubReceived(int $subReceived): void
     {
         $this->subReceived += $subReceived;
     }

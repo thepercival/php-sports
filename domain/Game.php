@@ -3,13 +3,10 @@
 namespace Sports;
 
 use DateTimeImmutable;
-use \Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 
 use League\Period\Period;
 use Sports\Competition\Field;
 use Sports\Competition\Referee;
-use Sports\Game\Place as GamePlace;
 use Sports\Planning\Config as PlanningConfig;
 use Sports\Score\Config as ScoreConfig;
 use Sports\Competition\Sport as CompetitionSport;
@@ -17,24 +14,12 @@ use SportsHelpers\Identifiable;
 
 abstract class Game extends Identifiable
 {
-    /**
-     * @var Referee
-     */
-    protected $referee;
+    protected Referee|null $referee = null;
     protected $refereePriority; // for serialization, not used
-    /**
-     * @var Place
-     */
-    protected $refereePlace;
+    protected Place|null $refereePlace = null;
     protected $refereePlaceLocId; // for serialization, not used
-    /**
-     * @var ?Field
-     */
-    protected $field;
-    /**
-     * @var int
-     */
-    protected $state;
+    protected Field|null $field = null;
+    protected int $state;
 
     public const PHASE_REGULARTIME = 1;
     public const PHASE_EXTRATIME = 2;
@@ -73,7 +58,7 @@ abstract class Game extends Identifiable
         return $this->startDateTime;
     }
 
-    public function setStartDateTime(DateTimeImmutable $startDateTime)
+    public function setStartDateTime(DateTimeImmutable $startDateTime): void
     {
         $this->startDateTime = $startDateTime;
     }
@@ -94,7 +79,7 @@ abstract class Game extends Identifiable
         return $this->state;
     }
 
-    public function setState(int $state)
+    public function setState(int $state): void
     {
         $this->state = $state;
     }
@@ -104,7 +89,7 @@ abstract class Game extends Identifiable
         return $this->referee;
     }
 
-    public function setReferee(Referee $referee = null)
+    public function setReferee(Referee $referee = null): void
     {
         $this->referee = $referee;
     }
@@ -114,7 +99,7 @@ abstract class Game extends Identifiable
         return $this->referee !== null ? $this->referee->getPriority() : $this->refereePriority;
     }
 
-    public function setRefereePriority(int $refereePriority = null)
+    public function setRefereePriority(int $refereePriority = null): void
     {
         $this->refereePriority = $refereePriority;
     }
@@ -124,7 +109,7 @@ abstract class Game extends Identifiable
         return $this->refereePlace;
     }
 
-    public function setRefereePlace(Place $refereePlace = null)
+    public function setRefereePlace(Place $refereePlace = null): void
     {
         $this->refereePlace = $refereePlace;
     }
@@ -134,14 +119,11 @@ abstract class Game extends Identifiable
         return $this->refereePlace !== null ? $this->refereePlace->getRoundLocationId() : $this->refereePlaceLocId;
     }
 
-    public function setRefereePlaceLocId(string $refereePlaceLocId = null)
+    public function setRefereePlaceLocId(string $refereePlaceLocId = null): void
     {
         $this->refereePlaceLocId = $refereePlaceLocId;
     }
 
-    /**
-     * @return ?Field
-     */
     public function getField(): ?Field
     {
         return $this->field;
@@ -149,8 +131,9 @@ abstract class Game extends Identifiable
 
     /**
      * @param Field|null $field
+     * @return void
      */
-    public function setField(Field $field = null)
+    public function setField(Field $field = null): void
     {
         $this->field = $field;
     }

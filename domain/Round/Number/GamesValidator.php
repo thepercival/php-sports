@@ -35,12 +35,12 @@ class GamesValidator
     {
     }
 
-    public function setBlockedPeriod(Period $period = null)
+    public function setBlockedPeriod(Period $period = null): void
     {
         $this->blockedPeriod = $period;
     }
 
-    public function validateStructure(Structure $structure, int $nrOfReferees)
+    public function validateStructure(Structure $structure, int $nrOfReferees): void
     {
         $roundNumber = $structure->getFirstRoundNumber();
         while ($roundNumber !== null) {
@@ -49,7 +49,7 @@ class GamesValidator
         }
     }
 
-    public function validate(RoundNumber $roundNumber, int $nrOfReferees)
+    public function validate(RoundNumber $roundNumber, int $nrOfReferees): void
     {
         $this->roundNumber = $roundNumber;
         $this->games = $this->roundNumber->getGames(); // no order
@@ -64,7 +64,7 @@ class GamesValidator
         $this->validatePriorityOfFieldsAndReferees();
     }
 
-    protected function validateEnoughTotalNrOfGames()
+    protected function validateEnoughTotalNrOfGames(): void
     {
         if (count($this->games) === 0) {
             throw new Exception("the planning has not enough games", E_ERROR);
@@ -72,7 +72,7 @@ class GamesValidator
     }
 
 
-    protected function validateFields()
+    protected function validateFields(): void
     {
         foreach ($this->games as $game) {
             if ($game->getField() === null) {
@@ -81,7 +81,7 @@ class GamesValidator
         }
     }
 
-    protected function validateGameNotInBlockedPeriod()
+    protected function validateGameNotInBlockedPeriod(): void
     {
         $maxNrOfMinutesPerGame = $this->roundNumber->getValidPlanningConfig()->getMaxNrOfMinutesPerGame();
         foreach ($this->games as $game) {
@@ -95,7 +95,7 @@ class GamesValidator
         }
     }
 
-    protected function validateAllPlacesSameNrOfGames()
+    protected function validateAllPlacesSameNrOfGames(): void
     {
         foreach ($this->roundNumber->getPoules() as $poule) {
             if ($this->allPlacesInPouleSameNrOfGames($poule) === false) {
@@ -141,7 +141,7 @@ class GamesValidator
         )->toArray();
     }
 
-    protected function validateResourcesPerBatch()
+    protected function validateResourcesPerBatch(): void
     {
         if ($this->validateResourcesPerBatchHelper() !== true) {
             throw new Exception("more resources per batch than allowed", E_ERROR);
@@ -187,7 +187,7 @@ class GamesValidator
         return true;
     }
 
-    protected function validateEquallyAssigned(int $nrOfReferees)
+    protected function validateEquallyAssigned(int $nrOfReferees): void
     {
         $fields = [];
         $referees = [];
@@ -249,9 +249,12 @@ class GamesValidator
     /**
      * @param array $items
      * @param string $suffix
+     *
      * @throws Exception
+     *
+     * @return void
      */
-    protected function validateNrOfGamesRange(array $items, string $suffix)
+    protected function validateNrOfGamesRange(array $items, string $suffix): void
     {
         $minNrOfGames = null;
         $maxNrOfGames = null;
@@ -268,7 +271,7 @@ class GamesValidator
         }
     }
 
-    protected function validatePriorityOfFieldsAndReferees()
+    protected function validatePriorityOfFieldsAndReferees(): void
     {
         $orderedGames = $this->roundNumber->getGames(Game::ORDER_BY_BATCH);
         $gamesFirstBatch = $this->getGamesForBatch($orderedGames);

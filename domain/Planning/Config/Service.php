@@ -31,7 +31,7 @@ class Service
         return $config;
     }
 
-    public function copy(PlanningConfig $planningConfig, RoundNumber $roundNumber)
+    public function copy(PlanningConfig $planningConfig, RoundNumber $roundNumber): void
     {
         $newPlanningConfig = new PlanningConfig($roundNumber);
 
@@ -75,7 +75,7 @@ class Service
         if ($competitionSports->count() > 1) {
             return CreationStrategy::StaticManual;
         }
-        $sport = $competition->getSingleSport()->getSport();
+        $sport = $competition->getSingleSport();
         if ($sport->getGameMode() === GameMode::AGAINST) {
             return CreationStrategy::StaticPouleSize;
         }

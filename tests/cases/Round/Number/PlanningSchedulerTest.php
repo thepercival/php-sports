@@ -1,12 +1,12 @@
 <?php
+declare(strict_types=1);
 
 namespace Sports\Tests\Round\Number;
 
 use League\Period\Period;
+use PHPUnit\Framework\TestCase;
 use Sports\Game as GameBase;
 use Sports\Qualify\Group as QualifyGroup;
-use Sports\Round\Number as RoundNumber;
-use Sports\Round\Number\PlanningAssigner;
 use Sports\Round\Number\PlanningScheduler;
 use Sports\TestHelper\CompetitionCreator;
 use Sports\TestHelper\GamesCreator;
@@ -14,9 +14,9 @@ use Sports\Planning\Config\Service as PlanningConfigService;
 use Sports\Structure\Service as StructureService;
 use Sports\Game;
 use \Exception;
-use SportsHelpers\Range;
+use SportsHelpers\SportRange;
 
-class PlanningSchedulerTest extends \PHPUnit\Framework\TestCase
+class PlanningSchedulerTest extends TestCase
 {
     use CompetitionCreator;
 
@@ -30,19 +30,24 @@ class PlanningSchedulerTest extends \PHPUnit\Framework\TestCase
         $structureService->addQualifiers($structure->getRootRound(), QualifyGroup::WINNERS, 2);
         $firstRoundNumber = $structure->getFirstRoundNumber();
         $secondRoundNumber = $firstRoundNumber->getNext();
+        self::assertNotNull($secondRoundNumber);
 
-        (new GamesCreator())->createStructureGames($structure, null, new Range(2,2) );
+        (new GamesCreator())->createStructureGames($structure, null, new SportRange(2, 2));
 
         $competitionStartDateTime = $competition->getStartDateTime();
 
         $planningScheduler = new PlanningScheduler();
         $planningScheduler->rescheduleGames($firstRoundNumber);
 
-        $firstRoundNumberGames = $firstRoundNumber->getGames(GameBase::ORDER_BY_BATCH );
-        self::assertEquals($competitionStartDateTime, reset($firstRoundNumberGames)->getStartDateTime());
+        $firstRoundNumberGames = $firstRoundNumber->getGames(GameBase::ORDER_BY_BATCH);
+        $firstRoundNumberGame = array_shift($firstRoundNumberGames);
+        self::assertNotNull($firstRoundNumberGame);
+        self::assertEquals($competitionStartDateTime, $firstRoundNumberGame->getStartDateTime());
         $secondRoundNumberStartDateTime = $this->getStartSecond($competitionStartDateTime);
-        $secondRoundNumberGames = $secondRoundNumber->getGames(GameBase::ORDER_BY_BATCH );
-        self::assertEquals($secondRoundNumberStartDateTime, reset($secondRoundNumberGames)->getStartDateTime());
+        $secondRoundNumberGames = $secondRoundNumber->getGames(GameBase::ORDER_BY_BATCH);
+        $secondRoundNumberGame = array_shift($secondRoundNumberGames);
+        self::assertNotNull($secondRoundNumberGame);
+        self::assertEquals($secondRoundNumberStartDateTime, $secondRoundNumberGame->getStartDateTime());
     }
 
     public function testBlockedPeriodBeforeFirstGame()
@@ -55,8 +60,9 @@ class PlanningSchedulerTest extends \PHPUnit\Framework\TestCase
         $structureService->addQualifiers($structure->getRootRound(), QualifyGroup::WINNERS, 2);
         $firstRoundNumber = $structure->getFirstRoundNumber();
         $secondRoundNumber = $firstRoundNumber->getNext();
+        self::assertNotNull($secondRoundNumber);
 
-        (new GamesCreator())->createStructureGames($structure, null, new Range(2,2) );
+        (new GamesCreator())->createStructureGames($structure, null, new SportRange(2, 2));
 
         $competitionStartDateTime = $competition->getStartDateTime();
 
@@ -81,8 +87,9 @@ class PlanningSchedulerTest extends \PHPUnit\Framework\TestCase
         $structureService->addQualifiers($structure->getRootRound(), QualifyGroup::WINNERS, 2);
         $firstRoundNumber = $structure->getFirstRoundNumber();
         $secondRoundNumber = $firstRoundNumber->getNext();
+        self::assertNotNull($secondRoundNumber);
 
-        (new GamesCreator())->createStructureGames($structure, null, new Range(2,2) );
+        (new GamesCreator())->createStructureGames($structure, null, new SportRange(2, 2));
 
 //        foreach( $firstRoundNumber->getGames( Game::ORDER_BY_BATCH ) as $game ) {
 //            (new \SportsPlanning\Output\Game())->output($game);
@@ -113,8 +120,9 @@ class PlanningSchedulerTest extends \PHPUnit\Framework\TestCase
         $structureService->addQualifiers($structure->getRootRound(), QualifyGroup::WINNERS, 2);
         $firstRoundNumber = $structure->getFirstRoundNumber();
         $secondRoundNumber = $firstRoundNumber->getNext();
+        self::assertNotNull($secondRoundNumber);
 
-        (new GamesCreator())->createStructureGames($structure, null, new Range(2,2) );
+        (new GamesCreator())->createStructureGames($structure, null, new SportRange(2, 2));
 
 //        foreach( $firstRoundNumber->getGames( Game::ORDER_BY_BATCH ) as $game ) {
 //            (new \SportsPlanning\Output\Game())->output($game);
@@ -145,8 +153,9 @@ class PlanningSchedulerTest extends \PHPUnit\Framework\TestCase
         $structureService->addQualifiers($structure->getRootRound(), QualifyGroup::WINNERS, 2);
         $firstRoundNumber = $structure->getFirstRoundNumber();
         $secondRoundNumber = $firstRoundNumber->getNext();
+        self::assertNotNull($secondRoundNumber);
 
-        (new GamesCreator())->createStructureGames($structure, null, new Range(2,2) );
+        (new GamesCreator())->createStructureGames($structure, null, new SportRange(2, 2));
 
 //        foreach( $firstRoundNumber->getGames( Game::ORDER_BY_BATCH ) as $game ) {
 //            (new \SportsPlanning\Output\Game())->output($game);
@@ -177,8 +186,9 @@ class PlanningSchedulerTest extends \PHPUnit\Framework\TestCase
         $structureService->addQualifiers($structure->getRootRound(), QualifyGroup::WINNERS, 2);
         $firstRoundNumber = $structure->getFirstRoundNumber();
         $secondRoundNumber = $firstRoundNumber->getNext();
+        self::assertNotNull($secondRoundNumber);
 
-        (new GamesCreator())->createStructureGames($structure, null, new Range(2,2) );
+        (new GamesCreator())->createStructureGames($structure, null, new SportRange(2, 2));
 
 //        foreach( $firstRoundNumber->getGames( Game::ORDER_BY_BATCH ) as $game ) {
 //            (new \SportsPlanning\Output\Game())->output($game);
@@ -209,6 +219,7 @@ class PlanningSchedulerTest extends \PHPUnit\Framework\TestCase
         $structureService->addQualifiers($structure->getRootRound(), QualifyGroup::WINNERS, 2);
         $firstRoundNumber = $structure->getFirstRoundNumber();
         $secondRoundNumber = $firstRoundNumber->getNext();
+        self::assertNotNull($secondRoundNumber);
 
         (new GamesCreator())->createStructureGames($structure);
 

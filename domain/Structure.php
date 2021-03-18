@@ -70,7 +70,7 @@ class Structure
         return $roundNumber;
     }
 
-    public function setStructureNumbers()
+    public function setStructureNumbers(): void
     {
         $nrOfDropoutPlaces = 0;
         $setRoundStructureNumbers = function (Round $round) use (&$setRoundStructureNumbers, &$nrOfDropoutPlaces): void {

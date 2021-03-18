@@ -7,34 +7,22 @@ use SportsHelpers\Identifiable;
 
 class Association extends Identifiable
 {
-    /**
-     * @var string
-     */
-    protected $name;
-    /**
-     * @var string
-     */
-    protected $description;
-    /**
-     * @var string
-     */
-    protected $countryCode;
-    /**
-     * @var Association|null
-     */
-    protected $parent;
+    protected string $name;
+    protected string|null $description = null;
+    protected string|null $countryCode = null;
+    protected Association|null $parent = null;
     /**
      * @var ArrayCollection
      */
-    protected $children;
+    protected ArrayCollection $children;
     /**
-     * @var League[] | ArrayCollection
+     * @var ArrayCollection<int|string, League>
      */
-    protected $leagues;
+    protected ArrayCollection $leagues;
     /**
-     * @var Team[] | ArrayCollection
+     * @var ArrayCollection<int|string, Team>
      */
-    protected $teams;
+    protected ArrayCollection $teams;
 
     const MIN_LENGTH_NAME = 2;
     const MAX_LENGTH_NAME = 30;
@@ -53,7 +41,7 @@ class Association extends Identifiable
         return $this->name;
     }
 
-    public function setName(string $name)
+    public function setName(string $name): void
     {
         if (strlen($name) < static::MIN_LENGTH_NAME or strlen($name) > static::MAX_LENGTH_NAME) {
             throw new \InvalidArgumentException(
@@ -65,18 +53,15 @@ class Association extends Identifiable
         $this->name = $name;
     }
 
-    /**
-     * @return string
-     */
-    public function getDescription()
+    public function getDescription(): string|null
     {
         return $this->description;
     }
 
     /**
-     * @param string $description
+     * @param string|null $description
      */
-    public function setDescription($description = null)
+    public function setDescription(string|null $description = null): void
     {
         if (strlen($description) === 0 && $description !== null) {
             $description = null;
@@ -90,12 +75,12 @@ class Association extends Identifiable
         $this->description = $description;
     }
 
-    public function getCountryCode(): string
+    public function getCountryCode(): string|null
     {
         return $this->countryCode;
     }
 
-    public function setCountryCode(string $countryCode)
+    public function setCountryCode(string $countryCode): void
     {
         if (strlen($countryCode) !== 2) {
             throw new \InvalidArgumentException(
@@ -115,8 +100,9 @@ class Association extends Identifiable
     /**
      * @param Association|null $parent
      * @throws \Exception
+     * @return void
      */
-    public function setParent(Association $parent = null)
+    public function setParent(Association $parent = null): void
     {
         if ($parent === $this) {
             throw new \Exception("de parent-bond mag niet zichzelf zijn", E_ERROR);
@@ -130,28 +116,27 @@ class Association extends Identifiable
         }
     }
 
+    // In case the object is not created with the constructor, children can be null
     /**
-     * In case the object is not created with the constructor, children can be null
-     *
-     * @return ArrayCollection|null
+     * @return ArrayCollection<int|string, Association>
      */
-    public function getChildren()
+    public function getChildren(): ArrayCollection
     {
         return $this->children;
     }
 
     /**
-     * @return League[] | ArrayCollection
+     * @return ArrayCollection<int|string, League>
      */
-    public function getLeagues()
+    public function getLeagues(): ArrayCollection
     {
         return $this->leagues;
     }
 
     /**
-     * @return Team[] | ArrayCollection | null
+     * @return ArrayCollection<int|string, Team>
      */
-    public function getTeams()
+    public function getTeams(): ArrayCollection
     {
         return $this->teams;
     }

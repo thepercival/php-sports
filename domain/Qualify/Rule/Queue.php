@@ -20,7 +20,7 @@ class Queue
         $this->qualifyRules = [];
     }
 
-    public function add(int $startEnd, SingleQualifyRule|MultipleQualifyRule $qualifyRule)
+    public function add(int $startEnd, SingleQualifyRule|MultipleQualifyRule $qualifyRule): void
     {
         if ($startEnd === Queue::START) {
             $this->qualifyRules[] = $qualifyRule;
@@ -29,6 +29,9 @@ class Queue
         }
     }
 
+    /**
+     * @return MultipleQualifyRule|SingleQualifyRule|null
+     */
     public function remove(int $startEnd)
     {
         return $startEnd === Queue::START ? array_shift($this->qualifyRules) : array_pop($this->qualifyRules);
@@ -48,6 +51,8 @@ class Queue
      * bij 5 poules, haal 2 na laatste naar achterste plek
      *
      * @param int $nrOfPoules
+     *
+     * @return void
      */
     public function shuffleIfUnevenAndNoMultiple(int $nrOfPoules)
     {

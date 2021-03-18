@@ -27,7 +27,7 @@ class Combiner
         $this->person = $person;
     }
 
-    public function combineWithPast( Team $newTeam, Period $newPeriod, int $newLine ) {
+    public function combineWithPast( Team $newTeam, Period $newPeriod, int $newLine ): void {
 
         $this->mergeWithPast( $newTeam, $newPeriod, $newLine );
         $this->updatePast( $newTeam, $newPeriod );
@@ -36,7 +36,7 @@ class Combiner
         }
     }
 
-    protected function mergeWithPast( Team $newTeam, Period $newPeriod, int $newLine ) {
+    protected function mergeWithPast( Team $newTeam, Period $newPeriod, int $newLine ): void {
         $players = $this->person->getPlayers( $newTeam, null, $newLine );
 
         $sevenMonthsEarlier = $newPeriod->getStartDate()->modify("-". self::MAX_MONTHS_FOR_MERGE ." motnhs");
@@ -54,7 +54,7 @@ class Combiner
         }
     }
 
-    protected function updatePast( Team $newTeam, Period $newPeriod ) {
+    protected function updatePast( Team $newTeam, Period $newPeriod ): void {
 
         $team = null;
         if( $this->mode === self::MODE_MULTIPLE_TEAMS_OF_A_TYPE_AT_THE_SAME_TIME ) {

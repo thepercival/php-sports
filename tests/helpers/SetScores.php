@@ -16,7 +16,7 @@ trait SetScores
     {
         $homePlace = $poule->getPlace($homePlaceNr);
         $awayPlace = $poule->getPlace($awayPlaceNr);
-        $foundGames = array_filter($poule->getGames(), function (AgainstGame $game) use ($homePlace, $awayPlace): bool {
+        $foundGames = array_filter($poule->getAgainstGames()->toArray(), function (AgainstGame $game) use ($homePlace, $awayPlace): bool {
             $homePlaces = array_map(
                 function (AgainstGamPlace $gamePlace): Place {
                     return $gamePlace->getPlace();

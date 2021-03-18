@@ -3,7 +3,6 @@
 namespace Sports\Association;
 
 use Sports\Association;
-use Sports\Association\Repository as AssociationRepository;
 
 class Service
 {
@@ -11,15 +10,14 @@ class Service
     {
     }
 
-    public function changeParent(Association $association, Association $parentAssociation = null)
+    public function changeParent(Association $association, Association $parentAssociation = null): Association
     {
-        $descendants = $this->getDescendants($association);
-        $descendants[$association->getId()] = $association;
+        $descendantMap = $this->getDescendantMap($association);
+        $descendantMap[$association->getId()] = $association;
         if ($parentAssociation !== null) {
-            $ancestors = $this->getAncestors($parentAssociation);
-            $ancestors[$parentAssociation->getId()] = $parentAssociation;
+            $ancestors = $this->getAncestors($parentAssociation, [$parentAssociation]);
             foreach ($ancestors as $ancestor) {
-                if (array_key_exists($ancestor->getId(), $descendants)) {
+                if (array_key_exists($ancestor->getId(), $descendantMap)) {
                     throw new \Exception("er ontstaat een circulaire relatie tussen de bonden", E_ERROR);
                 }
             }
@@ -28,33 +26,37 @@ class Service
         return $association;
     }
 
-    protected function getDescendants(Association $association)
+    /**
+     * @param Association $association
+     * @param array<int|string, Association>|null $descendants
+     * @return array<int|string, Association>
+     */
+    protected function getDescendantMap(Association $association, array|null $descendants = null): array
     {
-        $descendants = [];
-        $this->getDescendantsHelper($association, $descendants);
+        if ($descendants === null) {
+            $descendants = [];
+        }
+        foreach ($association->getChildren() as $child) {
+            $descendants[$association->getId()] = $association;
+            $descendants = array_merge($descendants, $this->getDescendantMap($child, $descendants));
+        }
         return $descendants;
     }
 
-    protected function getDescendantsHelper(Association $association, &$descendants)
+    /**
+     * @param Association $association
+     * @return list<Association>
+     */
+    protected function getAncestors(Association $association, array|null $ancestors = null): array
     {
-        foreach ($association->getChildren() as $child) {
-            $descendants[$association->getId()] = $association;
-            $this->getDescendantsHelper($child, $descendants);
+        if ($ancestors === null) {
+            $ancestors = [];
         }
-    }
-
-    protected function getAncestors(Association $association)
-    {
-        $ancestors = [];
-        $this->getAncestorsHelper($association, $ancestors);
-        return $ancestors;
-    }
-
-    protected function getAncestorsHelper(Association $association, &$ancestors)
-    {
-        if ($association->getParent() !== null) {
-            $ancestors[$association->getParent()->getId()] = $association->getParent();
-            $this->getAncestorsHelper($association->getParent(), $descendants);
+        $parent = $association->getParent();
+        if ($parent === null) {
+            return $ancestors;
         }
+        $ancestors[] = $parent;
+        return $this->getAncestors($parent, $ancestors);
     }
 }

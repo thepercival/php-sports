@@ -54,7 +54,7 @@ class Team extends Identifiable
         return $this->name;
     }
 
-    public function setName(string $name)
+    public function setName(string $name): void
     {
         if (strlen($name) === 0) {
             throw new \InvalidArgumentException("de naam moet gezet zijn", E_ERROR);
@@ -71,7 +71,7 @@ class Team extends Identifiable
         return $this->abbreviation;
     }
 
-    public function setAbbreviation(string $abbreviation = null)
+    public function setAbbreviation(string $abbreviation = null): void
     {
         if (strlen($abbreviation) === 0) {
             $abbreviation = null;
@@ -88,7 +88,7 @@ class Team extends Identifiable
         return $this->imageUrl;
     }
 
-    public function setImageUrl(string $imageUrl = null)
+    public function setImageUrl(string $imageUrl = null): void
     {
         if (strlen($imageUrl) === 0) {
             $imageUrl = null;
@@ -105,7 +105,7 @@ class Team extends Identifiable
         return $this->association;
     }
 
-    public function setAssociation(Association $association)
+    public function setAssociation(Association $association): void
     {
         if ($association->getTeams() !== null and !$association->getTeams()->contains($this)) {
             $association->getTeams()->add($this) ;
@@ -118,7 +118,7 @@ class Team extends Identifiable
         return $this->countryCode;
     }
 
-    public function setCountryCode(string $countryCode)
+    public function setCountryCode(string $countryCode): void
     {
         if (strlen($countryCode) !== 2) {
             throw new \InvalidArgumentException(

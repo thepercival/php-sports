@@ -25,19 +25,12 @@ use SportsHelpers\PouleStructure;
 class Service
 {
     private PlanningConfigService $planningConfigService;
-    /**
-     * @var array|PlaceRange[]
-     */
-    private array $placeRanges;
-
-    public const DEFAULTNROFPLACES = 5;
 
     /**
-     * @param array|PlaceRange[] $placeRanges
+     * @param list<PlaceRange> $placeRanges
      */
-    public function __construct(array $placeRanges)
+    public function __construct(protected array $placeRanges)
     {
-        $this->placeRanges = $placeRanges;
         $this->planningConfigService = new PlanningConfigService();
     }
 
@@ -57,7 +50,7 @@ class Service
         return $structure;
     }
 
-    public function removePlaceFromRootRound(Round $round)
+    public function removePlaceFromRootRound(Round $round): void
     {
         // console.log('removePoulePlace for round ' + round.getNumberAsValue());
         $nrOfPlaces = $round->getNrOfPlaces();
@@ -98,7 +91,7 @@ class Service
         return $round->getFirstPlace(QualifyGroup::LOSERS);
     }
 
-    public function removePoule(Round $round, bool $modifyNrOfPlaces = null)
+    public function removePoule(Round $round, bool $modifyNrOfPlaces = null): void
     {
         $poules = $round->getPoules();
         if ($poules->count() <= 1) {
@@ -147,7 +140,7 @@ class Service
         return $newPoules[$newPoules->count() - 1];
     }
 
-    public function removeQualifier(Round $round, int $winnersOrLosers)
+    public function removeQualifier(Round $round, int $winnersOrLosers): void
     {
         $nrOfPlaces = $round->getNrOfPlacesChildren($winnersOrLosers);
         $borderQualifyGroup = $round->getBorderQualifyGroup($winnersOrLosers);
@@ -166,7 +159,7 @@ class Service
         $structure->setStructureNumbers();
     }
 
-    public function addQualifiers(Round $round, int $winnersOrLosers, int $nrOfQualifiers)
+    public function addQualifiers(Round $round, int $winnersOrLosers, int $nrOfQualifiers): void
     {
         if ($round->getBorderQualifyGroup($winnersOrLosers) === null) {
             if ($nrOfQualifiers < 2) {
@@ -179,7 +172,7 @@ class Service
         }
     }
 
-    public function addQualifier(Round $round, int $winnersOrLosers)
+    public function addQualifier(Round $round, int $winnersOrLosers): void
     {
         $nrOfPlaces = $round->getNrOfPlacesChildren($winnersOrLosers);
         $placesToAdd = ($nrOfPlaces === 0 ? 2 : 1);
@@ -239,7 +232,7 @@ class Service
         return $this->getNrOfQualifiersRecursive($nextHorPoule, $nrOfQualifiers, $add);
     }
 
-    public function splitQualifyGroup(QualifyGroup $qualifyGroup, HorizontalPoule $pouleOne, HorizontalPoule $pouleTwo)
+    public function splitQualifyGroup(QualifyGroup $qualifyGroup, HorizontalPoule $pouleOne, HorizontalPoule $pouleTwo): void
     {
         if (!$this->isQualifyGroupSplittable($pouleOne, $pouleTwo)) {
             throw new Exception('de kwalificatiegroepen zijn niet splitsbaar', E_ERROR);
@@ -269,7 +262,7 @@ class Service
             && $previous->getWinnersOrLosers() === $current->getWinnersOrLosers() && $previous !== $current);
     }
 
-    public function mergeQualifyGroups(QualifyGroup $qualifyGroupOne, QualifyGroup $qualifyGroupTwo)
+    public function mergeQualifyGroups(QualifyGroup $qualifyGroupOne, QualifyGroup $qualifyGroupTwo): void
     {
         if (!$this->areQualifyGroupsMergable($qualifyGroupOne, $qualifyGroupTwo)) {
             throw new Exception('de kwalificatiegroepen zijn niet te koppelen', E_ERROR);
@@ -295,6 +288,9 @@ class Service
         $structure->setStructureNumbers();
     }
 
+    /**
+     * @return void
+     */
     public function updateRound(Round $round, int $newNrOfPlaces, int $newNrOfPoules)
     {
         if ($round->getNrOfPlaces() === $newNrOfPlaces && $newNrOfPoules === $round->getPoules()->count()) {
@@ -318,7 +314,7 @@ class Service
         $qualifyRuleService->recreateTo();
     }
 
-    protected function updateQualifyGroups(Round $round, int $winnersOrLosers, int $newNrOfPlacesChildren)
+    protected function updateQualifyGroups(Round $round, int $winnersOrLosers, int $newNrOfPlacesChildren): void
     {
         $roundNrOfPlaces = $round->getNrOfPlaces();
         if ($newNrOfPlacesChildren > $roundNrOfPlaces) {
@@ -392,6 +388,8 @@ class Service
      *
      * @param Round $round
      * @param array $removedQualifyGroups
+     *
+     * @return void
      */
     protected function cleanupRemovedQualifyGroups(Round $round, array $removedQualifyGroups)
     {
@@ -431,7 +429,7 @@ class Service
         return $oldNrOfPoules;
     }
 
-    public function createRoundNumber(Round $parentRound): RoundNumber
+    public function createRoundNumber(Round $parentRound): ?RoundNumber
     {
         $roundNumber = $parentRound->getNumber()->createNext();
         return $roundNumber;
@@ -468,31 +466,28 @@ class Service
         return $round;
     }
 
-    protected function checkRanges(int $nrOfPlaces, int $nrOfPoules = null)
+    protected function checkRanges(int $nrOfPlaces, int $nrOfPoules = null): void
     {
-        if (count($this->placeRanges) === 0) {
+        if (count($this->placeRanges) === 0 || $nrOfPoules === null) {
             return;
         }
 
         foreach ($this->placeRanges as $placeRange) {
-            if ($nrOfPlaces >= $placeRange->min && $nrOfPlaces <= $placeRange->max) {
-                if ($nrOfPoules === null) {
-                    return;
-                }
+            if ($placeRange->isWithIn($nrOfPlaces)) {
                 $pouleStructure = new BalancedPouleStructure($nrOfPlaces, $nrOfPoules);
                 $flooredNrOfPlacesPerPoule = $pouleStructure->getRoundedNrOfPlacesPerPoule(true);
-                if ($flooredNrOfPlacesPerPoule < $placeRange->getPlacesPerPouleRange()->min) {
+                if ($flooredNrOfPlacesPerPoule < $placeRange->getPlacesPerPouleRange()->getMin()) {
                     throw new Exception(
                         'er moeten minimaal ' . $placeRange->getPlacesPerPouleRange(
-                        )->min . ' deelnemers per poule zijn',
+                        )->getMin() . ' deelnemers per poule zijn',
                         E_ERROR
                     );
                 }
                 $ceiledNrOfPlacesPerPoule = $pouleStructure->getRoundedNrOfPlacesPerPoule(false);
-                if ($ceiledNrOfPlacesPerPoule > $placeRange->getPlacesPerPouleRange()->max) {
+                if ($ceiledNrOfPlacesPerPoule > $placeRange->getPlacesPerPouleRange()->getMax()) {
                     throw new Exception(
                         'er mogen maximaal ' . $placeRange->getPlacesPerPouleRange(
-                        )->max . ' deelnemers per poule zijn',
+                        )->getMax() . ' deelnemers per poule zijn',
                         E_ERROR
                     );
                 }

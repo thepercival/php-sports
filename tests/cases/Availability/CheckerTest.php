@@ -14,10 +14,9 @@ class CheckerTest extends \PHPUnit\Framework\TestCase
     {
         $checker = new AvailabilityChecker();
 
-        /** @var Competition $competition */
         $competition = $this->createCompetition();
 
-        $competitionSport = $this->getCompetitionSport();
+        $competitionSport = $competition->getSingleSport();
         $checker->checkFieldPriority( $competitionSport, 3);
 
         $checker->checkFieldPriority( $competitionSport, 2, $competitionSport->getField(2));

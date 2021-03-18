@@ -40,8 +40,10 @@ class Qualifier
 
     /**
      * @param Competitor $competitor
+     *
+     * @return void
      */
-    public function setCompetitor(Competitor $competitor)
+    public function setCompetitor(Competitor $competitor): void
     {
         $this->competitor = $competitor;
     }

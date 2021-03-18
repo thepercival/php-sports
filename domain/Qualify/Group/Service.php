@@ -16,7 +16,7 @@ class Service
         $this->structureService = $structureService;
     }
 
-    public function splitFrom(HorizontalPoule $horizontalPoule)
+    public function splitFrom(HorizontalPoule $horizontalPoule): void
     {
         $qualifyGroup = $horizontalPoule->getQualifyGroup();
         $nrOfPlacesChildRound = $qualifyGroup->getChildRound()->getNrOfPlaces();
@@ -51,7 +51,7 @@ class Service
         }
     }
 
-    public function merge(QualifyGroup $firstQualifyGroup, QualifyGroup $secondQualifyGroup)
+    public function merge(QualifyGroup $firstQualifyGroup, QualifyGroup $secondQualifyGroup): void
     {
         $round = $firstQualifyGroup->getRound();
         $qualifyGroups = $round->getQualifyGroups($firstQualifyGroup->getWinnersOrLosers());
@@ -90,7 +90,7 @@ class Service
 //        return $qualifyGroups;
 //    }
 
-    protected function renumber(Round $round, int $winnersOrLosers)
+    protected function renumber(Round $round, int $winnersOrLosers): void
     {
         $number = 1;
         foreach ($round->getQualifyGroups($winnersOrLosers) as $qualifyGroup) {

@@ -13,7 +13,7 @@ use SportsHelpers\GameMode;
 
 class Service
 {
-    public function createDefault(CompetitionSport $competitionSport, Round $round)
+    public function createDefault(CompetitionSport $competitionSport, Round $round): QualifyConfig
     {
         $sport = $competitionSport->getSport();
         $qualifyConfig = new QualifyConfig($competitionSport, $round, $this->getDefaultPointCalculation($competitionSport));
@@ -100,7 +100,7 @@ class Service
 //    }
 //
 
-    public function copy(CompetitionSport $competitionSport, Round $round, QualifyConfig $sourceConfig)
+    public function copy(CompetitionSport $competitionSport, Round $round, QualifyConfig $sourceConfig): void
     {
         $newConfig = new QualifyConfig($competitionSport, $round, $sourceConfig->getPointsCalculation());
         $newConfig->setWinPoints($sourceConfig->getWinPoints());

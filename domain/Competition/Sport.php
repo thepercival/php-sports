@@ -6,23 +6,18 @@ namespace Sports\Competition;
 use Doctrine\Common\Collections\ArrayCollection;
 use Sports\Competition;
 use Sports\Sport as SportsSport;
-use Sports\Competition\Field as CompetitionField;
 use SportsHelpers\Identifiable;
 use SportsHelpers\SportConfig;
 
 class Sport extends Identifiable
 {
-    protected SportsSport $sport;
-    protected Competition $competition;
     /**
-     * @var ArrayCollection|CompetitionField[]
+     * @var ArrayCollection<int|string,Field>
      */
     protected $fields;
 
-    public function __construct(SportsSport $sport, Competition $competition)
+    public function __construct(protected SportsSport $sport, protected Competition $competition)
     {
-        $this->sport = $sport;
-        $this->competition = $competition;
         $this->competition->getSports()->add($this);
         $this->fields = new ArrayCollection();
     }
@@ -38,7 +33,7 @@ class Sport extends Identifiable
     }
 
     /**
-     * @return ArrayCollection | Field[]
+     * @return ArrayCollection<int|string,Field>
      */
     public function getFields()
     {
@@ -59,7 +54,8 @@ class Sport extends Identifiable
     public function createConfig(int $gameAmount): SportConfig
     {
         return new SportConfig(
-            $this->getSport(),
+            $this->getSport()->getGameMode(),
+            $this->getSport()->getNrOfGamePlaces(),
             $this->fields->count(),
             $gameAmount
         );

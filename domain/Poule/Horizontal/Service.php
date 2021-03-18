@@ -29,13 +29,13 @@ class Service
         }
     }
 
-    public function recreate()
+    public function recreate(): void
     {
         $this->remove();
         $this->create();
     }
 
-    protected function remove()
+    protected function remove(): void
     {
         foreach ($this->winnersAndLosers as $winnersOrLosers) {
             $horizontalPoules = &$this->round->getHorizontalPoules($winnersOrLosers);
@@ -51,7 +51,7 @@ class Service
         }
     }
 
-    protected function create()
+    protected function create(): void
     {
         foreach ($this->winnersAndLosers as $winnersOrLosers) {
             $this->createRoundHorizontalPoules($winnersOrLosers);
@@ -129,11 +129,13 @@ class Service
     /**
      * @param array $roundHorizontalPoules | HorizontolPoule[]
      * @param array $horizontalPoulesCreators | HorizontolPoulesCreator[]
+     *
+     * @return void
      */
     public function updateQualifyGroups(
         array $roundHorizontalPoules,
         array $horizontalPoulesCreators
-    ) {
+    ): void {
         foreach ($horizontalPoulesCreators as $creator) {
             $horizontalPoules = &$creator->qualifyGroup->getHorizontalPoules();
             $horizontalPoules = [];

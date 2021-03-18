@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Sports\TestHelper;
 
@@ -9,7 +10,7 @@ use Monolog\Processor\UidProcessor;
 use Psr\Log\LoggerInterface;
 use Sports\Round\Number\PlanningAssigner;
 use Sports\Round\Number\PlanningScheduler;
-use SportsHelpers\Range;
+use SportsHelpers\SportRange;
 use SportsPlanning\Resource\RefereePlace\Service as RefereePlaceService;
 use Sports\Structure;
 use Sports\Round\Number as RoundNumber;
@@ -28,19 +29,19 @@ class GamesCreator
         return $logger;
     }
 
-    public function createStructureGames(Structure $structure, Period $blockedPeriod = null, Range $range = null)
+    public function createStructureGames(Structure $structure, Period $blockedPeriod = null, SportRange $range = null)
     {
         $this->removeGamesHelper($structure->getFirstRoundNumber());
         $this->createGamesHelper($structure->getFirstRoundNumber(), $blockedPeriod, $range);
     }
 
-    public function createGames(RoundNumber $roundNumber, Period $blockedPeriod = null, Range $range = null)
+    public function createGames(RoundNumber $roundNumber, Period $blockedPeriod = null, SportRange $range = null)
     {
         $this->removeGamesHelper($roundNumber);
         $this->createGamesHelper($roundNumber, $blockedPeriod, $range);
     }
 
-    private function createGamesHelper(RoundNumber $roundNumber, Period $blockedPeriod = null, Range $range = null)
+    private function createGamesHelper(RoundNumber $roundNumber, Period $blockedPeriod = null, SportRange $range = null)
     {
         // make trait to do job below!!
         $planningInputCreator = new PlanningInputCreator();

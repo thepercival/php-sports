@@ -9,8 +9,10 @@ class Associations
 {
     /**
      * @param array|Association[] $associations
+     *
+     * @return void
      */
-    public function display( array $associations ) {
+    public function display( array $associations ): void {
         $table = new ConsoleTable();
         $table->setHeaders(array('id', 'name','parent'));
         uasort( $associations, function( Association $a, Association $b ): int {

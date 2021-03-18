@@ -57,8 +57,10 @@ class Config extends Identifiable
 
     /**
      * @param Config $scoreConfig
+     *
+     * @return void
      */
-    public function setPrevious(Config $scoreConfig = null)
+    public function setPrevious(Config $scoreConfig = null): void
     {
         $this->previous = $scoreConfig;
         if ($this->previous !== null) {
@@ -92,8 +94,10 @@ class Config extends Identifiable
 
     /**
      * @param Config $scoreConfig
+     *
+     * @return void
      */
-    public function setNext(Config $scoreConfig = null)
+    public function setNext(Config $scoreConfig = null): void
     {
         $this->next = $scoreConfig;
     }
@@ -128,7 +132,7 @@ class Config extends Identifiable
         return $this->round;
     }
 
-    protected function setRound(Round $round)
+    protected function setRound(Round $round): void
     {
         $this->round = $round;
         $this->round->getScoreConfigs()->add($this);
@@ -144,8 +148,10 @@ class Config extends Identifiable
 
     /**
      * @param int $direction
+     *
+     * @return void
      */
-    public function setDirection(int $direction)
+    public function setDirection(int $direction): void
     {
         if ($direction !== Config::UPWARDS and $direction !== Config::DOWNWARDS) {
             throw new \InvalidArgumentException("de richting heeft een onjuiste waarde", E_ERROR);
@@ -163,8 +169,10 @@ class Config extends Identifiable
 
     /**
      * @param int $maximum
+     *
+     * @return void
      */
-    public function setMaximum(int $maximum)
+    public function setMaximum(int $maximum): void
     {
         $this->maximum = $maximum;
     }
@@ -179,18 +187,20 @@ class Config extends Identifiable
 
     /**
      * @param bool $enabled
+     *
+     * @return void
      */
-    public function setEnabled($enabled)
+    public function setEnabled($enabled): void
     {
         $this->enabled = $enabled;
     }
 
-    public function isLast()
+    public function isLast(): bool
     {
         return !$this->hasNext();
     }
 
-    public function getCalculate(): Config
+    public function getCalculate(): ?static
     {
         $first = $this->getFirst();
         if ($first->hasNext() && $first->getNext()->getEnabled()) {

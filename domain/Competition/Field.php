@@ -44,6 +44,9 @@ class Field extends Identifiable implements Prioritizable
         return $this->priority;
     }
 
+    /**
+     * @return void
+     */
     public function setPriority(int $priority)
     {
         $this->priority = $priority;
@@ -59,8 +62,10 @@ class Field extends Identifiable implements Prioritizable
 
     /**
      * @param string $name
+     *
+     * @return void
      */
-    public function setName(string $name)
+    public function setName(string $name): void
     {
         if (strlen($name) < static::MIN_LENGTH_NAME or strlen($name) > static::MAX_LENGTH_NAME) {
             throw new \InvalidArgumentException("de naam moet minimaal ".static::MIN_LENGTH_NAME." karakters bevatten en mag maximaal ".static::MAX_LENGTH_NAME." karakters bevatten", E_ERROR);

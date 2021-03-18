@@ -23,7 +23,7 @@ class Against extends BaseFunctionMapCreator
         $this->initMap();
     }
 
-    private function initMap()
+    private function initMap(): void
     {
         /**
          * @param array<SportPerformance> $sportPerformances

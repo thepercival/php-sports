@@ -27,7 +27,7 @@ class ReservationService
         return array_search($fromPoule, $this->get($toPouleNumber)->fromPoules, true) === false;
     }
 
-    public function reserve(int $toPouleNumber, Poule $fromPoule)
+    public function reserve(int $toPouleNumber, Poule $fromPoule): void
     {
         $this->get($toPouleNumber)->fromPoules[] = $fromPoule;
     }

@@ -2,6 +2,7 @@
 
 namespace Sports\Game;
 
+use Closure;
 use DateTimeImmutable;
 use \Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -137,16 +138,16 @@ class Against extends GameBase
     /**
      * @param CompetitorMap $competitorMap
      * @param int|null $side
-     * @return array<Competitor>
+     * @return list<Competitor|null>
      */
     public function getCompetitors(CompetitorMap $competitorMap, int $side = null): array
     {
-        return array_map(
-            function (AgainstGamePlace $gamePlace) use ($competitorMap): Competitor {
+        return array_values(array_map(
+            function (AgainstGamePlace $gamePlace) use ($competitorMap): Competitor|null {
                 return $competitorMap->getCompetitor($gamePlace->getPlace());
             },
             $this->getSidePlaces($side)
-        );
+        ));
     }
 
     public function getFinalPhase(): int
@@ -224,17 +225,18 @@ class Against extends GameBase
 
     public function getParticipation(Person $person): ?Participation
     {
-        $filtered = $this->getFilteredParticipations(function (Participation $participation) use ($person): bool {
+        $participations = $this->getFilteredParticipations(function (Participation $participation) use ($person): bool {
             return $participation->getPlayer()->getPerson() === $person;
         });
-        return $filtered->count() === 0 ? null : $filtered->first();
+        $participation = $participations->first();
+        return $participation !== false ? $participation : null;
     }
 
     /**
-     * @param callable $filter
-     * @return ArrayCollection|Collection|Participation[]
+     * @param Closure $filter
+     * @return ArrayCollection<int|string, Participation>
      */
-    protected function getFilteredParticipations(callable $filter)
+    protected function getFilteredParticipations(Closure $filter): ArrayCollection
     {
         return $this->participations->filter($filter);
     }

@@ -39,7 +39,7 @@ class Team extends Identifiable implements PlaceLocation, CompetitorInterface
         return $this->team;
     }
 
-    public function setTeam(TeamBase $team)
+    public function setTeam(TeamBase $team): void
     {
         $this->team = $team;
     }
@@ -49,7 +49,7 @@ class Team extends Identifiable implements PlaceLocation, CompetitorInterface
         return $this->competition;
     }
 
-    public function setCompetition(Competition $competition)
+    public function setCompetition(Competition $competition): void
     {
         if ($this->competition === null and !$competition->getTeamCompetitors()->contains($this)) {
             $competition->getTeamCompetitors()->add($this) ;

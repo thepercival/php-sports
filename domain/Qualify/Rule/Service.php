@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Sports\Qualify\Rule;
 
@@ -17,13 +18,13 @@ class Service
     {
     }
 
-    public function recreateTo()
+    public function recreateTo(): void
     {
         $this->removeTo($this->round);
         $this->createTo($this->round);
     }
 
-    public function recreateFrom()
+    public function recreateFrom(): void
     {
         $parentRound = $this->round->getParent();
         if ($parentRound === null) {
@@ -33,7 +34,7 @@ class Service
         $this->createTo($parentRound);
     }
 
-    protected function removeTo(Round $round)
+    protected function removeTo(Round $round): void
     {
         foreach ($round->getPlaces() as $place) {
             $toQualifyRules = &$place->getToQualifyRules();
@@ -57,7 +58,7 @@ class Service
         }
     }
 
-    protected function createTo(Round $round)
+    protected function createTo(Round $round): void
     {
         foreach ($round->getQualifyGroups() as $qualifyGroup) {
             $queue = new QualifyRuleQueue();
@@ -92,7 +93,7 @@ class Service
         }
     }
 
-    private function connectPlaceWithRule(Place $childPlace, QualifyRuleQueue $queue, int $startEnd, QualifyReservationService $reservationService)
+    private function connectPlaceWithRule(Place $childPlace, QualifyRuleQueue $queue, int $startEnd, QualifyReservationService $reservationService): void
     {
         $setToPlacesAndReserve = function (SingleQualifyRule|MultipleQualifyRule $qualifyRule) use ($childPlace, $queue, $reservationService): void {
             if ($qualifyRule instanceof SingleQualifyRule) {
@@ -110,7 +111,7 @@ class Service
         $oneQualifyRuleConnected = false;
         while (!$oneQualifyRuleConnected && !$queue->isEmpty()) {
             $qualifyRule = $queue->remove($startEnd);
-            if (!$qualifyRule->isMultiple()
+            if (!($qualifyRule instanceof MultipleQualifyRule)
                 && !$reservationService->isFree($childPlace->getPoule()->getNumber(), $qualifyRule->getFromPoule())) {
                 $unfreeQualifyRules[] = $qualifyRule;
                 continue;

@@ -15,7 +15,7 @@ use Sports\Competition\Sport as CompetitionSport;
 
 class Service
 {
-    public function createDefault(CompetitionSport $competitionSport, Round $round)
+    public function createDefault(CompetitionSport $competitionSport, Round $round): ScoreConfig
     {
         $scoreConfig = new ScoreConfig($competitionSport, $round);
         $scoreConfig->setDirection(ScoreConfig::UPWARDS);
@@ -50,7 +50,7 @@ class Service
         return false;
     }
 
-    public function copy(CompetitionSport $competitionSport, Round $round, ScoreConfig $sourceConfig)
+    public function copy(CompetitionSport $competitionSport, Round $round, ScoreConfig $sourceConfig): void
     {
         $newScoreConfig = new ScoreConfig($competitionSport, $round, null);
         $newScoreConfig->setDirection($sourceConfig->getDirection());

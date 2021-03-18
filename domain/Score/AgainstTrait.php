@@ -15,7 +15,7 @@ trait AgainstTrait
         return $this->home;
     }
 
-    public function setHome(int $home)
+    public function setHome(int $home): void
     {
         $this->home = $home;
     }
@@ -25,7 +25,7 @@ trait AgainstTrait
         return $this->away;
     }
 
-    public function setAway(int $away)
+    public function setAway(int $away): void
     {
         $this->away = $away;
     }

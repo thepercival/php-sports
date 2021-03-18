@@ -3,6 +3,9 @@
 namespace Sports\Tests\Ranking\Calculator;
 
 use PHPUnit\Framework\TestCase;
+use Sports\Ranking\Item\End as EndRankingItem;
+use Sports\Place\Location as PlaceLocation;
+use Sports\Round;
 use Sports\TestHelper\CompetitionCreator;
 use Sports\TestHelper\GamesCreator;
 use Sports\TestHelper\SetScores;
@@ -36,8 +39,12 @@ class EndTest extends TestCase
         $items = $calculator->getItems();
 
         for ($rank = 1; $rank <= count($items); $rank++) {
-            self::assertSame($items[$rank - 1]->getPlaceLocation()->getPlaceNr(), $rank);
-            self::assertSame($items[$rank - 1]->getUniqueRank(), $rank);
+            $endRankingItem = array_shift($items);
+            self::assertInstanceOf(EndRankingItem::class, $endRankingItem);
+            $placeLocation = $endRankingItem->getPlaceLocation();
+            self::assertInstanceOf(PlaceLocation::class, $placeLocation);
+            self::assertSame($placeLocation->getPlaceNr(), $rank);
+            self::assertSame($endRankingItem->getUniqueRank(), $rank);
         }
     }
 
@@ -61,7 +68,9 @@ class EndTest extends TestCase
         $items = $calculator->getItems();
 
         for ($rank = 1; $rank <= count($items); $rank++) {
-            self::assertNull($items[$rank - 1]->getPlaceLocation());
+            $endRankingItem = array_shift($items);
+            self::assertInstanceOf(EndRankingItem::class, $endRankingItem);
+            self::assertNull($endRankingItem->getPlaceLocation());
         }
     }
 
@@ -91,9 +100,13 @@ class EndTest extends TestCase
         $this->setScoreSingle($pouleOne, 3, 5, 5, 3);
         $this->setScoreSingle($pouleOne, 4, 5, 5, 4);
 
-        $winnersPoule = $rootRound->getChild(QualifyGroup::WINNERS, 1)->getPoule(1);
+        $winnersChildRound = $rootRound->getChild(QualifyGroup::WINNERS, 1);
+        self::assertInstanceOf(Round::class, $winnersChildRound);
+        $winnersPoule = $winnersChildRound->getPoule(1);
         $this->setScoreSingle($winnersPoule, 1, 2, 2, 1);
-        $loserssPoule = $rootRound->getChild(QualifyGroup::LOSERS, 1)->getPoule(1);
+        $losersChildRound = $rootRound->getChild(QualifyGroup::LOSERS, 1);
+        self::assertInstanceOf(Round::class, $losersChildRound);
+        $loserssPoule = $losersChildRound->getPoule(1);
         $this->setScoreSingle($loserssPoule, 1, 2, 2, 1);
 
         $qualifyService = new QualifyService($rootRound);
@@ -103,7 +116,10 @@ class EndTest extends TestCase
         $items = $calculator->getItems();
 
         for ($rank = 1; $rank <= count($items); $rank++) {
-            self::assertSame($items[$rank - 1]->getPlaceLocation()->getPlaceNr(), $rank);
+            $endRankingItem = array_shift($items);
+            $placeLocation = $endRankingItem->getPlaceLocation();
+            self::assertInstanceOf(PlaceLocation::class, $placeLocation);
+            self::assertSame($placeLocation->getPlaceNr(), $rank);
         }
     }
 }

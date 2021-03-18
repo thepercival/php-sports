@@ -23,7 +23,7 @@ class PostCreateService
         $this->structure = $structure;
     }
 
-    public function create()
+    public function create(): void
     {
         $rootRound = $this->structure->getRootRound();
         $this->createRoundHorizontalPoules($rootRound);
@@ -31,7 +31,7 @@ class PostCreateService
         $this->recreateToQualifyRules($rootRound);
     }
 
-    protected function createRoundHorizontalPoules(Round $round)
+    protected function createRoundHorizontalPoules(Round $round): void
     {
         $horizontalPouleService = new HorizontalPouleService($round);
         $horizontalPouleService->recreate();
@@ -40,7 +40,7 @@ class PostCreateService
         }
     }
 
-    protected function createQualifyGroupHorizontalPoules(Round $round)
+    protected function createQualifyGroupHorizontalPoules(Round $round): void
     {
         $horizontalPouleService = new HorizontalPouleService($round);
         foreach ([QualifyGroup::WINNERS, QualifyGroup::LOSERS] as $winnersOrLosers) {
@@ -57,7 +57,7 @@ class PostCreateService
         }
     }
 
-    protected function recreateToQualifyRules(Round $round)
+    protected function recreateToQualifyRules(Round $round): void
     {
         $qualifyRuleService = new QualifyRuleService($round);
         $qualifyRuleService->recreateTo();

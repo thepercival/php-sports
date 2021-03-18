@@ -46,13 +46,13 @@ class Round
         return $this->rank;
     }
 
-    public function setRank(int $rank, int $uniqueRank)
+    public function setRank(int $rank, int $uniqueRank): void
     {
         $this->rank = $rank;
         $this->uniqueRank = $uniqueRank;
     }
 
-    public function addSportRoundItem(SportRoundRankingItem $item)
+    public function addSportRoundItem(SportRoundRankingItem $item): void
     {
         $this->sportItems[] = $item;
         $this->cumulativeRank += $item->getRank();

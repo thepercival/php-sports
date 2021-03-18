@@ -8,7 +8,7 @@ use Sports\Game\Against as AgainstGame;
 
 class Repository extends \Sports\Repository
 {
-    public function removeScores(AgainstGame $game)
+    public function removeScores(AgainstGame $game): void
     {
         while ($game->getScores()->count() > 0) {
             $gameScore = $game->getScores()->first();

@@ -64,8 +64,9 @@ class PlanningAssignerTest extends \PHPUnit\Framework\TestCase
         $structureService->addQualifiers($rootRound, QualifyGroup::WINNERS, 7);
 
         $firstRoundNumber = $structure->getFirstRoundNumber();
-        $firstRoundNumber->getPlanningConfig()->setSelfReferee(SelfReferee::SAMEPOULE);
+        $firstRoundNumber->getValidPlanningConfig()->setSelfReferee(SelfReferee::SAMEPOULE);
         $secondRoundNumber = $firstRoundNumber->getNext();
+        self::assertNotNull($secondRoundNumber);
 
         (new GamesCreator())->createStructureGames($structure);
 

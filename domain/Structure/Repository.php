@@ -53,7 +53,7 @@ class Repository
         return $roundNumber;
     }
 
-    protected function customPersistHelper(RoundNumber $roundNumber)
+    protected function customPersistHelper(RoundNumber $roundNumber): void
     {
         foreach ($roundNumber->getRounds() as $round) {
             $this->em->persist($round);
@@ -111,6 +111,9 @@ class Repository
         return $structures;
     }
 
+    /**
+     * @return void
+     */
     public function remove(Competition $competition, int $roundNumberAsValue = null)
     {
         if ($roundNumberAsValue === null) {

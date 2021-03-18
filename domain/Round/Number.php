@@ -23,43 +23,24 @@ use SportsHelpers\SportConfig;
 
 class Number extends Identifiable
 {
+    protected int $number;
+    protected RoundNumber|null $next = null;
     /**
-    * @var Competition
-    */
-    protected $competition;
-    /**
-    * @var int
-    */
-    protected $number;
-    /**
-     * @var RoundNumber
+     * @var ArrayCollection<int|string, Round>
      */
-    protected $previous;
+    protected ArrayCollection $rounds;
+    protected bool $hasPlanning;
     /**
-     * @var ?RoundNumber
+     * @var
      */
-    protected $next;
+    protected PlanningConfig|null $planningConfig = null;
     /**
-     * @var Round[] | ArrayCollection
-     */
-    protected $rounds;
-    /**
-     * @var bool
-     */
-    protected $hasPlanning;
-    /**
-     * @var PlanningConfig
-     */
-    protected $planningConfig;
-    /**
-     * @var GameAmountConfig[] | ArrayCollection
+     * @var ArrayCollection<int|string, GameAmountConfig>
      */
     protected $gameAmountConfigs;
 
-    public function __construct(Competition $competition, RoundNumber $previous = null)
+    public function __construct(protected Competition $competition, protected RoundNumber|null $previous = null)
     {
-        $this->competition = $competition;
-        $this->previous = $previous;
         $this->number = $previous === null ? 1 : $previous->getNumber() + 1;
         $this->hasPlanning = false;
         $this->gameAmountConfigs = new ArrayCollection();
@@ -75,13 +56,13 @@ class Number extends Identifiable
         return $this->next;
     }
 
-    public function createNext(): RoundNumber
+    public function createNext(): ?self
     {
         $this->next = new RoundNumber($this->getCompetition(), $this);
         return $this->getNext();
     }
 
-    public function removeNext()
+    public function removeNext(): void
     {
         $this->next = null;
     }
@@ -90,8 +71,9 @@ class Number extends Identifiable
      * voor serialization
      *
      * @param RoundNumber $roundNumber
+     * @return void
      */
-    public function setNext(RoundNumber $roundNumber)
+    public function setNext(RoundNumber $roundNumber): void
     {
         $this->next = $roundNumber;
     }
@@ -101,7 +83,7 @@ class Number extends Identifiable
         return $this->previous !== null;
     }
 
-    public function getPrevious(): ?RoundNumber
+    public function getPrevious(): RoundNumber|null
     {
         return $this->previous;
     }
@@ -111,7 +93,7 @@ class Number extends Identifiable
         return $this->competition;
     }
 
-    public function setCompetition(Competition $competition)
+    public function setCompetition(Competition $competition): void
     {
         $this->competition = $competition;
     }
@@ -125,21 +107,22 @@ class Number extends Identifiable
 //        return $this->getPrevious()->getNumber() + 1;
     }
 
-    public function getFirst()
+    public function getFirst(): RoundNumber
     {
-        if ($this->getPrevious() !== null) {
-            return $this->getPrevious()->getFirst();
+        $previous = $this->getPrevious();
+        if ($previous !== null) {
+            return $previous->getFirst();
         }
         return $this;
     }
 
-    public function isFirst()
+    public function isFirst(): bool
     {
         return ($this->getPrevious() === null);
     }
 
     /**
-     * @return ArrayCollection|Round[]
+     * @return ArrayCollection<int|string, Round>
      */
     public function getRounds()
     {
@@ -197,7 +180,7 @@ class Number extends Identifiable
     }
 
     /**
-     * @return array | Poule[]
+     * @return list<Poule>
      */
     public function getPoules(): array
     {
@@ -210,7 +193,7 @@ class Number extends Identifiable
 
     /**
      * @param int|null $order
-     * @return array|AgainstGame[]|TogetherGame[]
+     * @return list<AgainstGame|TogetherGame>
      */
     public function getGames(int $order = null): array
     {
@@ -235,11 +218,11 @@ class Number extends Identifiable
                 }
             );
         }
-        return $games;
+        return array_values($games);
     }
 
     /**
-     * @return array | \Sports\Place[]
+     * @return list<Place>
      */
     public function getPlaces(): array
     {
@@ -264,7 +247,7 @@ class Number extends Identifiable
         return $this->planningConfig;
     }
 
-    public function setPlanningConfig(PlanningConfig $config = null)
+    public function setPlanningConfig(PlanningConfig|null $config = null): void
     {
         $this->planningConfig = $config;
     }
@@ -282,7 +265,7 @@ class Number extends Identifiable
         return $this->hasPlanning;
     }
 
-    public function setHasPlanning(bool $hasPlanning)
+    public function setHasPlanning(bool $hasPlanning): void
     {
         $this->hasPlanning = $hasPlanning;
     }
@@ -293,9 +276,9 @@ class Number extends Identifiable
     }
 
     /**
-     * @return ArrayCollection | PersistentCollection | CompetitionSport[]
+     * @return ArrayCollection<int|string, CompetitionSport>
      */
-    public function getCompetitionSports()
+    public function getCompetitionSports(): ArrayCollection
     {
         return $this->getCompetition()->getSports();
     }
@@ -315,22 +298,20 @@ class Number extends Identifiable
     }
 
     /**
-     * @return ArrayCollection | GameAmountConfig[]
+     * @return ArrayCollection<int|string, GameAmountConfig>
      */
-    public function getGameAmountConfigs()
+    public function getGameAmountConfigs(): ArrayCollection
     {
         return $this->gameAmountConfigs;
     }
 
-    public function getGameAmountConfig(CompetitionSport $competitionSport): ?GameAmountConfig
+    public function getGameAmountConfig(CompetitionSport $competitionSport): GameAmountConfig|null
     {
         $gameAmountConfigs = $this->gameAmountConfigs->filter(function (GameAmountConfig $gameAmountConfigIt) use ($competitionSport): bool {
             return $gameAmountConfigIt->getCompetitionSport() === $competitionSport;
         });
-        if ($gameAmountConfigs->count() === 1) {
-            return $gameAmountConfigs->first();
-        }
-        return null;
+        $gameAmountConfig = $gameAmountConfigs->first();
+        return $gameAmountConfig !== false ? $gameAmountConfig : null;
     }
 
     public function getValidGameAmountConfig(CompetitionSport $competitionSport): GameAmountConfig
@@ -339,29 +320,33 @@ class Number extends Identifiable
         if ($gameAmountConfig !== null) {
             return $gameAmountConfig;
         }
-        return $this->getPrevious()->getValidGameAmountConfig($competitionSport);
+        $previous = $this->getPrevious();
+        if ($previous === null) {
+            throw new \Exception('het aantal ingestelde wedstrijden kan niet gevonden worden', E_ERROR);
+        }
+        return $previous->getValidGameAmountConfig($competitionSport);
     }
 
     /**
-     * @return array|GameAmountConfig[]
+     * @return list<GameAmountConfig>
      */
     public function getValidGameAmountConfigs(): array
     {
-        return $this->getCompetitionSports()->map(
+        return array_values( $this->getCompetitionSports()->map(
             function (CompetitionSport $competitionSport): GameAmountConfig {
                 return $this->getValidGameAmountConfig($competitionSport);
             }
-        )->toArray();
+        )->toArray());
     }
 
     /**
-     * @return array | SportConfig[]
+     * @return list<SportConfig>
      */
     public function createSportConfigs(): array
     {
-        return $this->getCompetition()->getSports()->map(function (CompetitionSport $competitionSport): SportConfig {
+        return array_values( $this->getCompetition()->getSports()->map(function (CompetitionSport $competitionSport): SportConfig {
             $gameAmountConfig = $this->getValidGameAmountConfig($competitionSport);
             return $competitionSport->createConfig($gameAmountConfig->getAmount());
-        })->toArray();
+        })->toArray());
     }
 }

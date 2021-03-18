@@ -24,7 +24,7 @@ class Repository extends \Sports\Repository
         return $this->_em->find($this->_entityName, $id, $lockMode, $lockVersion);
     }
 
-    public function customAdd(CompetitionSport $competitionSport, Structure $structure)
+    public function customAdd(CompetitionSport $competitionSport, Structure $structure): void
     {
         $conn = $this->_em->getConnection();
         $conn->beginTransaction();
@@ -52,18 +52,14 @@ class Repository extends \Sports\Repository
         }
     }
 
-    public function customRemove(CompetitionSport $competitionSport, SportRepository $sportRepos)
+    public function customRemove(CompetitionSport $competitionSport, SportRepository $sportRepos): void
     {
         $conn = $this->_em->getConnection();
         $conn->beginTransaction();
         try {
             $fieldRepos = new FieldRepository($this->_em, $this->_em->getClassMetadata(Field::class));
-            $fields = $competitionSport->getFields()->filter(
-                function ($field) use ($competitionSport): bool {
-                    return $field->getSport() === $competitionSport->getSport();
-                }
-            );
-            foreach ($fields as $field) {
+            while ($field = $competitionSport->getFields()->first()) {
+                $competitionSport->getFields()->removeElement($field);
                 $fieldRepos->remove($field);
             }
 

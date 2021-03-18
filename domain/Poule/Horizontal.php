@@ -50,7 +50,7 @@ class Horizontal
         return $this->round;
     }
 
-    public function setRound(Round $round)
+    public function setRound(Round $round): void
     {
         $this->round = $round;
     }
@@ -65,7 +65,7 @@ class Horizontal
         return $this->number;
     }
 
-    public function setNumber(int $number)
+    public function setNumber(int $number): void
     {
         $this->number = $number;
     }
@@ -88,7 +88,7 @@ class Horizontal
         return $this->qualifyGroup;
     }
 
-    public function setQualifyGroup(?QualifyGroup $qualifyGroup)
+    public function setQualifyGroup(?QualifyGroup $qualifyGroup): void
     {
 
         // this is done in horizontalpouleservice
@@ -110,7 +110,7 @@ class Horizontal
         return $this->multipleRule;
     }
 
-    public function setMultipleQualifyRule(MultipleQualifyRule|null $multipleRule = null)
+    public function setMultipleQualifyRule(MultipleQualifyRule|null $multipleRule = null): void
     {
         foreach ($this->getPlaces() as $place) {
             $place->setToQualifyRule($this->getWinnersOrLosers(), $multipleRule);

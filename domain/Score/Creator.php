@@ -24,8 +24,10 @@ class Creator
     /**
      * @param AgainstGame $game
      * @param array|AgainstScore[] $newGameScores
+     *
+     * @return void
      */
-    public function addAgainstScores(AgainstGame $game, array $newGameScores)
+    public function addAgainstScores(AgainstGame $game, array $newGameScores): void
     {
         foreach ($newGameScores as $newGameScore) {
             new AgainstScore($game, $newGameScore->getHome(), $newGameScore->getAway(), $newGameScore->getPhase());
@@ -35,8 +37,10 @@ class Creator
     /**
      * @param TogetherGamePlace $gamePlace
      * @param array|TogetherScore[] $newScores
+     *
+     * @return void
      */
-    public function addTogetherScores(TogetherGamePlace $gamePlace, array $newScores)
+    public function addTogetherScores(TogetherGamePlace $gamePlace, array $newScores): void
     {
         foreach ($newScores as $newScore) {
             new TogetherScore($gamePlace, $newScore->getScore(), $newScore->getPhase());

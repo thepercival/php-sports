@@ -45,8 +45,10 @@ class Season extends Identifiable
 
     /**
      * @param string $name
+     *
+     * @return void
      */
-    public function setName(string $name)
+    public function setName(string $name): void
     {
         if (strlen($name) < static::MIN_LENGTH_NAME or strlen($name) > static::MAX_LENGTH_NAME) {
             throw new \InvalidArgumentException("de naam moet minimaal ".static::MIN_LENGTH_NAME." karakters bevatten en mag maximaal ".static::MAX_LENGTH_NAME." karakters bevatten", E_ERROR);
@@ -67,7 +69,7 @@ class Season extends Identifiable
         return $this->startDateTime;
     }
 
-    public function setStartDateTime(\DateTimeImmutable $startDateTime)
+    public function setStartDateTime(\DateTimeImmutable $startDateTime): void
     {
         $this->startDateTime = $startDateTime;
     }
@@ -80,17 +82,17 @@ class Season extends Identifiable
         return $this->endDateTime;
     }
 
-    public function setEndDateTime(\DateTimeImmutable $endDateTime)
+    public function setEndDateTime(\DateTimeImmutable $endDateTime): void
     {
         $this->endDateTime = $endDateTime;
     }
 
-    public function getPeriod()
+    public function getPeriod(): Period
     {
         return new Period($this->getStartDateTime(), $this->getEndDateTime());
     }
 
-    public function setPeriod(Period $period)
+    public function setPeriod(Period $period): void
     {
         $this->setStartDateTime($period->getStartDate());
         $this->setEndDateTime($period->getEndDate());

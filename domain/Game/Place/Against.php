@@ -23,7 +23,7 @@ class Against extends GamePlaceBase
         return $this->game;
     }
 
-    protected function setGame(AgainstGame $game)
+    protected function setGame(AgainstGame $game): void
     {
         if (!$game->getPlaces()->contains($this)) {
             $game->getPlaces()->add($this) ;

@@ -25,7 +25,7 @@ class Validator
         $this->nameService = new NameService();
     }
 
-    public function checkValidity(Competition $competition, Structure $structure = null)
+    public function checkValidity(Competition $competition, Structure $structure = null): void
     {
         $prefix = "de structuur(competition-id:" . $competition->getId() . ")";
 
@@ -44,7 +44,7 @@ class Validator
     public function checkRoundNumberValidity(
         RoundNumber $roundNumber,
         Competition $competition
-    ) {
+    ): void {
         $prefix = "rondenummer " . $roundNumber->getNumber() . $this->getIdOutput($roundNumber->getId());
         if ($roundNumber->getRounds()->count() === 0) {
             throw new Exception($prefix . " bevat geen ronden", E_ERROR);
@@ -62,6 +62,9 @@ class Validator
         }
     }
 
+    /**
+     * @param int|null|string $id
+     */
     protected function getIdOutput($id = null): string
     {
         return $id !== null ? " (" . $id . ")" : '';
@@ -69,8 +72,10 @@ class Validator
 
     /**
      * @param Round $round
+     *
+     * @return void
      */
-    public function checkRoundValidity(Round $round)
+    public function checkRoundValidity(Round $round): void
     {
         $prefix = "ronde " . $this->getIdOutput($round->getId());
         if ($round->getPoules()->count() === 0) {
@@ -108,7 +113,7 @@ class Validator
         }
     }
 
-    public function checkPoulesNumberGap(Collection $poules)
+    public function checkPoulesNumberGap(Collection $poules): void
     {
         $startNumber = 1;
         foreach ($poules as $poule) {
@@ -118,7 +123,7 @@ class Validator
         }
     }
 
-    public function checkQualifyGroupsNumberGap(Collection $qualifyGroups)
+    public function checkQualifyGroupsNumberGap(Collection $qualifyGroups): void
     {
         $startNumber = 1;
         foreach ($qualifyGroups as $qualifyGroup) {
@@ -128,7 +133,7 @@ class Validator
         }
     }
 
-    protected function checkRoundNrOfPlaces(Round $round)
+    protected function checkRoundNrOfPlaces(Round $round): void
     {
         $minNrOfPlaces = null;
         $maxNrOfPlaces = null;
@@ -150,9 +155,12 @@ class Validator
 
     /**
      * @param Poule $poule
+     *
      * @throws \Exception
+     *
+     * @return void
      */
-    public function checkPouleValidity(Poule $poule)
+    public function checkPouleValidity(Poule $poule): void
     {
         $this->checkPlacesNumberGap($poule->getPlaces());
         if ($poule->getPlaces()->count() === 0) {
@@ -164,7 +172,7 @@ class Validator
         }
     }
 
-    public function checkPlacesNumberGap(Collection $places)
+    public function checkPlacesNumberGap(Collection $places): void
     {
         $startNumber = 1;
         foreach ($places as $place) {

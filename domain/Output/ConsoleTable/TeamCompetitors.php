@@ -9,8 +9,10 @@ class TeamCompetitors
 {
     /**
      * @param array|TeamCompetitor[] $teamCompetitors
+     *
+     * @return void
      */
-    public function display( array $teamCompetitors ) {
+    public function display( array $teamCompetitors ): void {
         $table = new ConsoleTable();
         $table->setHeaders(array('id', 'league', 'season', 'pouleNr', 'placeNr', 'team'));
         uasort( $teamCompetitors, function( TeamCompetitor $a, TeamCompetitor $b ): int {

@@ -29,7 +29,7 @@ class Together extends Score
         return $this->score;
     }
 
-    protected function setGamePlace(TogetherGamePlace $gamePlace)
+    protected function setGamePlace(TogetherGamePlace $gamePlace): void
     {
         if (!$gamePlace->getScores()->contains($this)) {
             $gamePlace->getScores()->add($this) ;

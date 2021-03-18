@@ -30,7 +30,7 @@ trait Base
         return $this->registered;
     }
 
-    public function setRegistered(bool $registered)
+    public function setRegistered(bool $registered): void
     {
         $this->registered = $registered;
     }
@@ -40,7 +40,7 @@ trait Base
         return $this->info;
     }
 
-    public function setInfo(string $info = null)
+    public function setInfo(string $info = null): void
     {
         if (strlen($info) === 0) {
             $info = null;

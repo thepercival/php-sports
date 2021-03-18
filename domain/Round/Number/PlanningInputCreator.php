@@ -39,7 +39,7 @@ class PlanningInputCreator
 
     /**
      * @param PlanningConfig $planningConfig
-     * @param array|SportConfig[] $sportConfigs
+     * @param list<SportConfig> $sportConfigs
      * @param PouleStructure $pouleStructure
      * @return int
      */
@@ -72,9 +72,9 @@ class PlanningInputCreator
 
     /**
      * @param PouleStructure $pouleStructure
-     * @param array|SportConfig[] $sportConfigs
+     * @param list<SportConfig> $sportConfigs
      * @param bool $selfReferee
-     * @return array|SportConfig[]
+     * @return list<SportConfig>
      */
     protected function reduceFields(PouleStructure $pouleStructure, array $sportConfigs, bool $selfReferee): array
     {
@@ -87,7 +87,8 @@ class PlanningInputCreator
                 $reducedNrOfFields = $maxNrOfGamesPerBatch;
             }
             $reducedConfigs[] = new SportConfig(
-                $sportConfig->getSport(),
+                $sportConfig->getGameMode(),
+                $sportConfig->getNrOfGamePlaces(),
                 $reducedNrOfFields,
                 $sportConfig->getGameAmount()
             );

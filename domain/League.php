@@ -41,7 +41,7 @@ class League extends Identifiable
         return $this->name;
     }
 
-    public function setName(string $name = null)
+    public function setName(string $name = null): void
     {
         if (strlen($name) === 0) {
             throw new \InvalidArgumentException("de naam moet gezet zijn", E_ERROR);
@@ -59,7 +59,7 @@ class League extends Identifiable
         return $this->abbreviation;
     }
 
-    public function setAbbreviation(string $abbreviation = null)
+    public function setAbbreviation(string $abbreviation = null): void
     {
         if (strlen($abbreviation) === 0) {
             $abbreviation = null;
@@ -76,7 +76,7 @@ class League extends Identifiable
         return $this->association;
     }
 
-    protected function setAssociation(Association $association)
+    protected function setAssociation(Association $association): void
     {
         $leagues = $association->getLeagues();
         if ( !$leagues->contains($this)) {

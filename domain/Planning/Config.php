@@ -36,7 +36,7 @@ class Config extends Identifiable
         return $this->creationStrategy;
     }
 
-    public function setCreationStrategy(int $creationStrategy)
+    public function setCreationStrategy(int $creationStrategy): void
     {
         $this->creationStrategy = $creationStrategy;
     }
@@ -46,7 +46,7 @@ class Config extends Identifiable
         return $this->extension;
     }
 
-    public function setExtension(bool $extension)
+    public function setExtension(bool $extension): void
     {
         $this->extension = $extension;
     }
@@ -56,7 +56,7 @@ class Config extends Identifiable
         return $this->enableTime;
     }
 
-    public function setEnableTime(bool $enableTime)
+    public function setEnableTime(bool $enableTime): void
     {
         $this->enableTime = $enableTime;
     }
@@ -66,7 +66,7 @@ class Config extends Identifiable
         return $this->minutesBetweenGames;
     }
 
-    public function setMinutesBetweenGames(int $minutesBetweenGames)
+    public function setMinutesBetweenGames(int $minutesBetweenGames): void
     {
         $this->minutesBetweenGames = $minutesBetweenGames;
     }
@@ -76,7 +76,7 @@ class Config extends Identifiable
         return $this->minutesAfter;
     }
 
-    public function setMinutesAfter(int $minutesAfter)
+    public function setMinutesAfter(int $minutesAfter): void
     {
         $this->minutesAfter = $minutesAfter;
     }
@@ -91,7 +91,7 @@ class Config extends Identifiable
         return $this->minutesPerGame;
     }
 
-    public function setMinutesPerGame(int $minutesPerGame)
+    public function setMinutesPerGame(int $minutesPerGame): void
     {
         $this->minutesPerGame = $minutesPerGame;
     }
@@ -101,7 +101,7 @@ class Config extends Identifiable
         return $this->minutesPerGameExt;
     }
 
-    public function setMinutesPerGameExt(int $minutesPerGameExt)
+    public function setMinutesPerGameExt(int $minutesPerGameExt): void
     {
         $this->minutesPerGameExt = $minutesPerGameExt;
     }
@@ -111,7 +111,7 @@ class Config extends Identifiable
         return $this->selfReferee;
     }
 
-    public function setSelfReferee(int $selfReferee)
+    public function setSelfReferee(int $selfReferee): void
     {
         $this->selfReferee = $selfReferee;
     }

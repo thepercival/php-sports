@@ -1,10 +1,10 @@
 <?php
+declare(strict_types=1);
 
 namespace Sports\Game;
 
 use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Sports\Competition\Sport as CompetitionSport;
 use Sports\Game as GameBase;
 use Sports\Game\Place\Together as TogetherGamePlace;
@@ -14,7 +14,7 @@ use Sports\Poule;
 class Together extends GameBase
 {
     /**
-     * @var TogetherGamePlace[] | Collection
+     * @var ArrayCollection<int|string, TogetherGamePlace>
      */
     protected $places;
 
@@ -28,9 +28,9 @@ class Together extends GameBase
     }
 
     /**
-     * @return Collection | TogetherGamePlace[]
+     * @return ArrayCollection<int|string, TogetherGamePlace>
      */
-    public function getPlaces(): Collection
+    public function getPlaces(): ArrayCollection
     {
         return $this->places;
     }

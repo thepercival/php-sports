@@ -55,7 +55,7 @@ class Goal extends Identifiable implements GameEvent
         return $this->gameParticipation;
     }
 
-    protected function setGameParticipation(GameParticipation $gameParticipation)
+    protected function setGameParticipation(GameParticipation $gameParticipation): void
     {
         if ($this->gameParticipation === null and !$gameParticipation->getGoalsAndAssists()->contains($this)) {
             $gameParticipation->getGoalsAndAssists()->add($this) ;
@@ -80,7 +80,7 @@ class Goal extends Identifiable implements GameEvent
         return $this->own;
     }
 
-    public function setOwn( bool $own )
+    public function setOwn( bool $own ): void
     {
         $this->own = $own;
     }
@@ -90,7 +90,7 @@ class Goal extends Identifiable implements GameEvent
         return $this->penalty;
     }
 
-    public function setPenalty( bool $penalty )
+    public function setPenalty( bool $penalty ): void
     {
         $this->penalty = $penalty;
     }
@@ -100,7 +100,7 @@ class Goal extends Identifiable implements GameEvent
         return $this->assistGameParticipation;
     }
 
-    public function setAssistGameParticipation(GameParticipation $assistGameParticipation)
+    public function setAssistGameParticipation(GameParticipation $assistGameParticipation): void
     {
         if ($this->assistGameParticipation === null and !$assistGameParticipation->getGoalsAndAssists()->contains($this)) {
             $assistGameParticipation->getGoalsAndAssists()->add($this) ;

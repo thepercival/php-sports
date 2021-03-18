@@ -133,9 +133,12 @@ class Copier
      * @param Round $round
      * @param int $number
      * @param array|Place[] $places
+     *
      * @throws Exception
+     *
+     * @return void
      */
-    protected function copyPoule(Round $round, int $number, array $places)
+    protected function copyPoule(Round $round, int $number, array $places): void
     {
         $poule = new Poule($round, $number);
         foreach ($places as $place) {

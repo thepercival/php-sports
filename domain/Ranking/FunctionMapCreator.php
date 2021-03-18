@@ -19,7 +19,7 @@ class FunctionMapCreator
         return $this->map;
     }
 
-    private function initMap()
+    private function initMap(): void
     {
         $this->map[Rule::MostPoints] = function (array $items): array {
             $mostPoints = null;

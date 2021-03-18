@@ -15,8 +15,10 @@ class Structure
      * @param StructureBase $structure
      * @param array<TeamCompetitor> $teamCompetitors
      * @param Competition $competition
+     *
+     * @return void
      */
-    public function display(Competition $competition, StructureBase $structure, array $teamCompetitors)
+    public function display(Competition $competition, StructureBase $structure, array $teamCompetitors): void
     {
         $table = new ConsoleTable();
         $table->setHeaders(array('league', 'season', 'pouleNr', 'placeNr', 'team'));

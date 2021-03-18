@@ -9,8 +9,10 @@ class Seasons
 {
     /**
      * @param array|Season[] $seasons
+     *
+     * @return void
      */
-    public function display( array $seasons ) {
+    public function display( array $seasons ): void {
         $table = new ConsoleTable();
         $table->setHeaders(array('id', 'name', 'start', 'end'));
         foreach( $seasons as $season ) {

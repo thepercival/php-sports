@@ -29,12 +29,12 @@ class Service
         return $this->getEntityManager()->getRepository($classname);
     }
 
-    public function getStructureRepository()
+    public function getStructureRepository(): Structure\Repository
     {
         return new Structure\Repository($this->getEntityManager());
     }
 
-    public function getService($classname)
+    public function getService($classname): Competition\Service|Association\Service
     {
         if ($classname === Association::class) {
             return new Association\Service();
@@ -44,7 +44,7 @@ class Service
         throw new \Exception("class " . $classname . " not supported to create service", E_ERROR);
     }
 
-    public function getEntityManager()
+    public function getEntityManager(): EntityManager
     {
         return $this->entitymanager;
     }

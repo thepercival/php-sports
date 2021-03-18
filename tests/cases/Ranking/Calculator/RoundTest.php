@@ -1,9 +1,11 @@
 <?php
+declare(strict_types=1);
 
 namespace Sports\Tests\Ranking\Calculator;
 
 use Exception;
 use PHPUnit\Framework\TestCase;
+use Sports\Poule\Horizontal as HorizontalPoule;
 use Sports\TestHelper\CompetitionCreator;
 use Sports\TestHelper\GamesCreator;
 use Sports\TestHelper\SetScores;
@@ -18,7 +20,7 @@ class RoundTest extends TestCase
 {
     use CompetitionCreator, SetScores;
 
-    public function testMultipleEqualRanked()
+    public function testMultipleEqualRanked(): void
     {
         $competition = $this->createCompetition();
 
@@ -47,7 +49,7 @@ class RoundTest extends TestCase
         }
     }
 
-    public function testSingleRankedStateFinished()
+    public function testSingleRankedStateFinished(): void
     {
         $competition = $this->createCompetition();
 
@@ -70,13 +72,18 @@ class RoundTest extends TestCase
 
         $roundRankingCalculator = new RoundRankingCalculator();
         $items = $roundRankingCalculator->getItemsForPoule($pouleOne);
-
-        self::assertSame($roundRankingCalculator->getItemByRank($items, 1)->getPlace(), $pouleOne->getPlace(1));
-        self::assertSame($roundRankingCalculator->getItemByRank($items, 2)->getPlace(), $pouleOne->getPlace(2));
-        self::assertSame($roundRankingCalculator->getItemByRank($items, 3)->getPlace(), $pouleOne->getPlace(3));
+        $roundRankingItem1 = $roundRankingCalculator->getItemByRank($items, 1);
+        self::assertNotNull($roundRankingItem1);
+        $roundRankingItem2 = $roundRankingCalculator->getItemByRank($items, 2);
+        self::assertNotNull($roundRankingItem2);
+        $roundRankingItem3 = $roundRankingCalculator->getItemByRank($items, 3);
+        self::assertNotNull($roundRankingItem3);
+        self::assertSame($roundRankingItem1->getPlace(), $pouleOne->getPlace(1));
+        self::assertSame($roundRankingItem2->getPlace(), $pouleOne->getPlace(2));
+        self::assertSame($roundRankingItem3->getPlace(), $pouleOne->getPlace(3));
     }
 
-    public function testSingleRankedStateInProgressAndFinished()
+    public function testSingleRankedStateInProgressAndFinished(): void
     {
         $competition = $this->createCompetition();
 
@@ -95,9 +102,15 @@ class RoundTest extends TestCase
         $roundRankingCalculator = new RoundRankingCalculator([State::InProgress,State::Finished]);
         $items = $roundRankingCalculator->getItemsForPoule($pouleOne);
 
-        self::assertSame($roundRankingCalculator->getItemByRank($items, 1)->getPlace(), $pouleOne->getPlace(1));
-        self::assertSame($roundRankingCalculator->getItemByRank($items, 2)->getPlace(), $pouleOne->getPlace(2));
-        self::assertSame($roundRankingCalculator->getItemByRank($items, 3)->getPlace(), $pouleOne->getPlace(3));
+        $roundRankingItem1 = $roundRankingCalculator->getItemByRank($items, 1);
+        self::assertNotNull($roundRankingItem1);
+        $roundRankingItem2 = $roundRankingCalculator->getItemByRank($items, 2);
+        self::assertNotNull($roundRankingItem2);
+        $roundRankingItem3 = $roundRankingCalculator->getItemByRank($items, 3);
+        self::assertNotNull($roundRankingItem3);
+        self::assertSame($roundRankingItem1->getPlace(), $pouleOne->getPlace(1));
+        self::assertSame($roundRankingItem2->getPlace(), $pouleOne->getPlace(2));
+        self::assertSame($roundRankingItem3->getPlace(), $pouleOne->getPlace(3));
 
         $roundRankingCalculator2 = new RoundRankingCalculator();
         $items2 = $roundRankingCalculator2->getItemsForPoule($pouleOne);
@@ -106,7 +119,7 @@ class RoundTest extends TestCase
         }
     }
 
-    public function testHorizontalRankedECWC()
+    public function testHorizontalRankedECWC(): void
     {
         $competition = $this->createCompetition();
 
@@ -129,6 +142,7 @@ class RoundTest extends TestCase
 
         $roundRankingCalculator = new RoundRankingCalculator();
         $firstHorizontalPoule = $rootRound->getHorizontalPoule(QualifyGroup::WINNERS, 1);
+        self::assertInstanceOf(HorizontalPoule::class, $firstHorizontalPoule);
         $placeLocations = $roundRankingCalculator->getPlaceLocationsForHorizontalPoule($firstHorizontalPoule);
 
         self::assertSame($placeLocations[0]->getPouleNr(), 2);
@@ -142,7 +156,7 @@ class RoundTest extends TestCase
         self::assertSame($placeLocations2[1]->getPouleNr(), 1);
     }
 
-    public function testHorizontalRankedNoSingleRule()
+    public function testHorizontalRankedNoSingleRule(): void
     {
         $competition = $this->createCompetition();
 
@@ -167,12 +181,13 @@ class RoundTest extends TestCase
 
         $roundRankingCalculator = new RoundRankingCalculator();
         $firstHorizontalPoule = $rootRound->getHorizontalPoule(QualifyGroup::WINNERS, 1);
+        self::assertInstanceOf(HorizontalPoule::class, $firstHorizontalPoule);
         $placeLocations = $roundRankingCalculator->getPlaceLocationsForHorizontalPoule($firstHorizontalPoule);
 
         self::assertSame(count($placeLocations), 0);
     }
 
-    public function testSingleRankedECWC()
+    public function testSingleRankedECWC(): void
     {
         $competition = $this->createCompetition();
 
@@ -193,19 +208,26 @@ class RoundTest extends TestCase
 
         $roundRankingCalculator = new RoundRankingCalculator();
         $items = $roundRankingCalculator->getItemsForPoule($pouleOne);
-
-        self::assertSame($roundRankingCalculator->getItemByRank($items, 1)->getPlace(), $pouleOne->getPlace(2));
-        self::assertSame($roundRankingCalculator->getItemByRank($items, 2)->getPlace(), $pouleOne->getPlace(1));
+        $roundRankingItem1 = $roundRankingCalculator->getItemByRank($items, 1);
+        self::assertNotNull($roundRankingItem1);
+        $roundRankingItem2 = $roundRankingCalculator->getItemByRank($items, 2);
+        self::assertNotNull($roundRankingItem2);
+        self::assertSame($roundRankingItem1->getPlace(), $pouleOne->getPlace(2));
+        self::assertSame($roundRankingItem2->getPlace(), $pouleOne->getPlace(1));
 
         $competition->setRankingRuleSet(RankingRuleSet::AgainstAmong);
         $roundRankingCalculatorAmong = new RoundRankingCalculator();
         $itemsEC = $roundRankingCalculatorAmong->getItemsForPoule($pouleOne);
 
-        self::assertSame($roundRankingCalculatorAmong->getItemByRank($itemsEC, 1)->getPlace(), $pouleOne->getPlace(1));
-        self::assertSame($roundRankingCalculatorAmong->getItemByRank($itemsEC, 2)->getPlace(), $pouleOne->getPlace(2));
+        $roundRankingItemEC1 = $roundRankingCalculatorAmong->getItemByRank($itemsEC, 1);
+        self::assertNotNull($roundRankingItemEC1);
+        $roundRankingItemEC2 = $roundRankingCalculatorAmong->getItemByRank($itemsEC, 2);
+        self::assertNotNull($roundRankingItemEC2);
+        self::assertSame($roundRankingItemEC1->getPlace(), $pouleOne->getPlace(1));
+        self::assertSame($roundRankingItemEC2->getPlace(), $pouleOne->getPlace(2));
     }
 
-    public function testVariation1MostPoints()
+    public function testVariation1MostPoints(): void
     {
         $competition = $this->createCompetition();
 
@@ -224,12 +246,18 @@ class RoundTest extends TestCase
         $roundRankingCalculator = new RoundRankingCalculator();
         $items = $roundRankingCalculator->getItemsForPoule($pouleOne);
 
-        self::assertSame($roundRankingCalculator->getItemByRank($items, 1)->getPlace(), $pouleOne->getPlace(3));
-        self::assertSame($roundRankingCalculator->getItemByRank($items, 2)->getPlace(), $pouleOne->getPlace(2));
-        self::assertSame($roundRankingCalculator->getItemByRank($items, 3)->getPlace(), $pouleOne->getPlace(1));
+        $roundRankingItem1 = $roundRankingCalculator->getItemByRank($items, 1);
+        self::assertNotNull($roundRankingItem1);
+        $roundRankingItem2 = $roundRankingCalculator->getItemByRank($items, 2);
+        self::assertNotNull($roundRankingItem2);
+        $roundRankingItem3 = $roundRankingCalculator->getItemByRank($items, 3);
+        self::assertNotNull($roundRankingItem3);
+        self::assertSame($roundRankingItem1->getPlace(), $pouleOne->getPlace(3));
+        self::assertSame($roundRankingItem2->getPlace(), $pouleOne->getPlace(2));
+        self::assertSame($roundRankingItem3->getPlace(), $pouleOne->getPlace(1));
     }
 
-    public function testVariation2FewestGames()
+    public function testVariation2FewestGames(): void
     {
         $competition = $this->createCompetition();
 
@@ -251,12 +279,18 @@ class RoundTest extends TestCase
         $roundRankingCalculator = new RoundRankingCalculator();
         $items = $roundRankingCalculator->getItemsForPoule($pouleOne);
 
-        self::assertSame($roundRankingCalculator->getItemByRank($items, 1)->getPlace(), $pouleOne->getPlace(4));
-        self::assertSame($roundRankingCalculator->getItemByRank($items, 2)->getPlace(), $pouleOne->getPlace(1));
-        self::assertSame($roundRankingCalculator->getItemByRank($items, 3)->getPlace(), $pouleOne->getPlace(3));
+        $roundRankingItem1 = $roundRankingCalculator->getItemByRank($items, 1);
+        self::assertNotNull($roundRankingItem1);
+        $roundRankingItem2 = $roundRankingCalculator->getItemByRank($items, 2);
+        self::assertNotNull($roundRankingItem2);
+        $roundRankingItem3 = $roundRankingCalculator->getItemByRank($items, 3);
+        self::assertNotNull($roundRankingItem3);
+        self::assertSame($roundRankingItem1->getPlace(), $pouleOne->getPlace(4));
+        self::assertSame($roundRankingItem2->getPlace(), $pouleOne->getPlace(1));
+        self::assertSame($roundRankingItem3->getPlace(), $pouleOne->getPlace(3));
     }
 
-    public function testVariation3FewestGames()
+    public function testVariation3FewestGames(): void
     {
         $competition = $this->createCompetition();
 
@@ -278,12 +312,18 @@ class RoundTest extends TestCase
         $roundRankingCalculator = new RoundRankingCalculator();
         $items = $roundRankingCalculator->getItemsForPoule($pouleOne);
 
-        self::assertSame($roundRankingCalculator->getItemByRank($items, 1)->getPlace(), $pouleOne->getPlace(1));
-        self::assertSame($roundRankingCalculator->getItemByRank($items, 2)->getPlace(), $pouleOne->getPlace(4));
-        self::assertSame($roundRankingCalculator->getItemByRank($items, 3)->getPlace(), $pouleOne->getPlace(3));
+        $roundRankingItem1 = $roundRankingCalculator->getItemByRank($items, 1);
+        self::assertNotNull($roundRankingItem1);
+        $roundRankingItem2 = $roundRankingCalculator->getItemByRank($items, 2);
+        self::assertNotNull($roundRankingItem2);
+        $roundRankingItem3 = $roundRankingCalculator->getItemByRank($items, 3);
+        self::assertNotNull($roundRankingItem3);
+        self::assertSame($roundRankingItem1->getPlace(), $pouleOne->getPlace(1));
+        self::assertSame($roundRankingItem2->getPlace(), $pouleOne->getPlace(4));
+        self::assertSame($roundRankingItem3->getPlace(), $pouleOne->getPlace(3));
     }
 
-    public function testVariation4MostScored()
+    public function testVariation4MostScored(): void
     {
         $competition = $this->createCompetition();
 
@@ -302,12 +342,18 @@ class RoundTest extends TestCase
         $roundRankingCalculator = new RoundRankingCalculator();
         $items = $roundRankingCalculator->getItemsForPoule($pouleOne);
 
-        self::assertSame($roundRankingCalculator->getItemByRank($items, 1)->getPlace(), $pouleOne->getPlace(1));
-        self::assertSame($roundRankingCalculator->getItemByRank($items, 2)->getPlace(), $pouleOne->getPlace(2));
-        self::assertSame($roundRankingCalculator->getItemByRank($items, 3)->getPlace(), $pouleOne->getPlace(3));
+        $roundRankingItem1 = $roundRankingCalculator->getItemByRank($items, 1);
+        self::assertNotNull($roundRankingItem1);
+        $roundRankingItem2 = $roundRankingCalculator->getItemByRank($items, 2);
+        self::assertNotNull($roundRankingItem2);
+        $roundRankingItem3 = $roundRankingCalculator->getItemByRank($items, 3);
+        self::assertNotNull($roundRankingItem3);
+        self::assertSame($roundRankingItem1->getPlace(), $pouleOne->getPlace(1));
+        self::assertSame($roundRankingItem2->getPlace(), $pouleOne->getPlace(2));
+        self::assertSame($roundRankingItem3->getPlace(), $pouleOne->getPlace(3));
     }
 
-    public function testVariation5AgainstEachOtherNoGames()
+    public function testVariation5AgainstEachOtherNoGames(): void
     {
         $competition = $this->createCompetition();
 
@@ -330,10 +376,12 @@ class RoundTest extends TestCase
         $roundRankingCalculator = new RoundRankingCalculator();
         $items = $roundRankingCalculator->getItemsForPoule($pouleOne);
 
-        self::assertSame($roundRankingCalculator->getItemByRank($items, 4)->getPlace(), $pouleOne->getPlace(2));
+        $roundRankingItem = $roundRankingCalculator->getItemByRank($items, 4);
+        self::assertNotNull($roundRankingItem);
+        self::assertSame($roundRankingItem->getPlace(), $pouleOne->getPlace(2));
     }
 
-    public function testVariation5AgainstEachOtherEqual()
+    public function testVariation5AgainstEachOtherEqual(): void
     {
         $competition = $this->createCompetition();
 
@@ -359,6 +407,8 @@ class RoundTest extends TestCase
         self::assertSame($items[0]->getRank(), 1);
         self::assertSame($items[1]->getRank(), 1);
         self::assertSame($items[2]->getRank(), 1);
-        self::assertSame($roundRankingCalculator->getItemByRank($items, 4)->getPlace(), $pouleOne->getPlace(2));
+        $roundRankingItem = $roundRankingCalculator->getItemByRank($items, 4);
+        self::assertNotNull($roundRankingItem);
+        self::assertSame($roundRankingItem->getPlace(), $pouleOne->getPlace(2));
     }
 }

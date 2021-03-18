@@ -1,16 +1,18 @@
 <?php
+declare(strict_types=1);
 
 namespace Sports\Tests\Round\Number;
 
 use \Exception;
 use League\Period\Period;
 use PHPUnit\Framework\TestCase;
+use Sports\Competition\Field;
+use Sports\Competition\Referee;
 use Sports\Output\Against as AgainstGameOutput;
 use SportsHelpers\Against\Side as AgainstSide;
 use Sports\Game\Against as AgainstGame;
 use Sports\Place;
-use Sports\Poule;
-use SportsPlanning\Input as PlanningInput;
+use Sports\Game\Place\Against as AgainstGamePlace;
 use Sports\TestHelper\CompetitionCreator;
 use Sports\TestHelper\GamesCreator;
 use Sports\Round\Number\GamesValidator;
@@ -32,8 +34,9 @@ class GamesValidatorTest extends TestCase
 
         $firstRoundNumber = $structure->getFirstRoundNumber();
 
-        $firstPoule = $firstRoundNumber->getRounds()->first()->getPoule(1);
-        $firstGame = $firstPoule->getGames()->first();
+        $firstPoule = $structure->getRootRound()->getPoule(1);
+        $firstGame = $firstPoule->getAgainstGames()->first();
+        self::assertInstanceOf(AgainstGame::class, $firstGame);
         $firstGame->setField(null);
 
         $gamesValidator = new GamesValidator();
@@ -53,9 +56,10 @@ class GamesValidatorTest extends TestCase
 
         $firstRoundNumber = $structure->getFirstRoundNumber();
 
-        $firstPoule = $firstRoundNumber->getRounds()->first()->getPoule(1);
-        $removedGame = $firstPoule->getGames()->first();
-        $firstPoule->getGames()->removeElement($removedGame);
+        $firstPoule = $structure->getRootRound()->getPoule(1);
+        $removedGame = $firstPoule->getAgainstGames()->first();
+        self::assertInstanceOf(AgainstGame::class, $removedGame);
+        $firstPoule->getAgainstGames()->removeElement($removedGame);
 
         $gamesValidator = new GamesValidator();
         self::expectException(Exception::class);
@@ -74,10 +78,13 @@ class GamesValidatorTest extends TestCase
 
         $firstRoundNumber = $structure->getFirstRoundNumber();
 
-        $firstPoule = $firstRoundNumber->getRounds()->first()->getPoule(1);
-        $game = $firstPoule->getGames()->first();
-        $firstHomePlace = $game->getPlaces(AgainstSide::HOME)->first()->getPlace();
-        $game->setRefereePlace($firstHomePlace);
+        $firstPoule = $structure->getRootRound()->getPoule(1);
+        $game = $firstPoule->getAgainstGames()->first();
+        self::assertInstanceOf(AgainstGame::class, $game);
+        $homeGamePlaces = $game->getSidePlaces(AgainstSide::HOME);
+        $firstHomeGamePlace = array_shift($homeGamePlaces);
+        self::assertInstanceOf(AgainstGamePlace::class, $firstHomeGamePlace);
+        $game->setRefereePlace($firstHomeGamePlace->getPlace());
 
         $gamesValidator = new GamesValidator();
         self::expectException(Exception::class);
@@ -96,9 +103,12 @@ class GamesValidatorTest extends TestCase
 
         $firstRoundNumber = $structure->getFirstRoundNumber();
 
-        $firstPoule = $firstRoundNumber->getRounds()->first()->getPoule(1);
-        $game = $firstPoule->getGames()->first();
-        $newFieldPriority = $game->getField()->getPriority() === 1 ? 2 : 1;
+        $firstPoule = $structure->getRootRound()->getPoule(1);
+        $game = $firstPoule->getAgainstGames()->first();
+        self::assertInstanceOf(AgainstGame::class, $game);
+        $field = $game->getField();
+        self::assertInstanceOf(Field::class, $field);
+        $newFieldPriority = $field->getPriority() === 1 ? 2 : 1;
         $game->setField($competition->getField($newFieldPriority));
 
         $gamesValidator = new GamesValidator();
@@ -118,10 +128,12 @@ class GamesValidatorTest extends TestCase
 
         $firstRoundNumber = $structure->getFirstRoundNumber();
 
-        $firstPoule = $firstRoundNumber->getRounds()->first()->getPoule(1);
-        /** @var AgainstGame $game */
-        $game = $firstPoule->getGames()->first();
-        $newRefereePriority = $game->getReferee()->getPriority() === 1 ? 2 : 1;
+        $firstPoule = $structure->getRootRound()->getPoule(1);
+        $game = $firstPoule->getAgainstGames()->first();
+        self::assertInstanceOf(AgainstGame::class, $game);
+        $referee = $game->getReferee();
+        self::assertInstanceOf(Referee::class, $referee);
+        $newRefereePriority = $referee->getPriority() === 1 ? 2 : 1;
         $game->setReferee($competition->getReferee($newRefereePriority));
 
         $gamesValidator = new GamesValidator();
@@ -141,7 +153,7 @@ class GamesValidatorTest extends TestCase
 
         $firstRoundNumber = $structure->getFirstRoundNumber();
 
-        $firstPoule = $firstRoundNumber->getRounds()->first()->getPoule(1);
+        $firstPoule = $structure->getRootRound()->getPoule(1);
 
 //        $outputGame = new \Sports\Output\Game();
 //        $games = $firstRoundNumber->getGames(Game::ORDER_BY_BATCH);
@@ -149,8 +161,7 @@ class GamesValidatorTest extends TestCase
 //            $outputGame->output( $gameIt );
 //        }
 
-        /** @var AgainstGame $game */
-        foreach ($firstPoule->getGames() as $game) {
+        foreach ($firstPoule->getAgainstGames() as $game) {
             $game->setReferee(null);
         }
 
@@ -171,7 +182,7 @@ class GamesValidatorTest extends TestCase
 
         $firstRoundNumber = $structure->getFirstRoundNumber();
 
-        $firstPoule = $firstRoundNumber->getRounds()->first()->getPoule(1);
+        $firstPoule = $structure->getRootRound()->getPoule(1);
 
 //        $outputGame = new AgainstGameOutput();
 //        $games = $firstRoundNumber->getGames(AgainstGame::ORDER_BY_BATCH);
@@ -179,9 +190,10 @@ class GamesValidatorTest extends TestCase
 //            $outputGame->output( $gameIt );
 //        }
 
-        /** @var AgainstGame $game */
-        foreach ($firstPoule->getGames() as $game) {
-            if ($game->getReferee()->getPriority() === 1 && $game->getBatchNr() <= 3) {
+        foreach ($firstPoule->getAgainstGames() as $game) {
+            $referee = $game->getReferee();
+            self::assertInstanceOf(Referee::class, $referee);
+            if ($referee->getPriority() === 1 && $game->getBatchNr() <= 3) {
                 $game->setReferee(null);
             }
         }
@@ -206,7 +218,7 @@ class GamesValidatorTest extends TestCase
         $structure = $structureService->create($competition, 5);
 
         $firstRoundNumber = $structure->getFirstRoundNumber();
-        $firstRoundNumber->getPlanningConfig()->setSelfReferee(SelfReferee::SAMEPOULE);
+        $firstRoundNumber->getValidPlanningConfig()->setSelfReferee(SelfReferee::SAMEPOULE);
 
         (new GamesCreator())->createStructureGames($structure);
 
@@ -216,15 +228,16 @@ class GamesValidatorTest extends TestCase
 //            $outputGame->output( $gameIt );
 //        }
 
-        /** @var Poule $firstPoule */
-        $firstPoule = $firstRoundNumber->getRounds()->first()->getPoule(1);
+        $firstPoule = $structure->getRootRound()->getPoule(1);
 
-        /** @var AgainstGame $game */
         $game = $firstPoule->getAgainstGames()->first();
+        self::assertInstanceOf(AgainstGame::class, $game);
         $availablePlaces = $firstPoule->getPlaces()->filter(function (Place $place) use ($game): bool {
             return !$game->isParticipating($place) && $place !== $game->getRefereePlace();
         });
-        $game->setRefereePlace($availablePlaces->first());
+        $firstAvailablePlace = $availablePlaces->first();
+        self::assertInstanceOf(Place::class, $firstAvailablePlace);
+        $game->setRefereePlace();
 
 //        $outputGame = new AgainstGameOutput();
 //        $games = $firstRoundNumber->getGames(AgainstGame::ORDER_BY_BATCH);
@@ -246,7 +259,7 @@ class GamesValidatorTest extends TestCase
         $structure = $structureService->create($competition, 9, 2);
 
         $firstRoundNumber = $structure->getFirstRoundNumber();
-        $firstRoundNumber->getPlanningConfig()->setSelfReferee(SelfReferee::OTHERPOULES);
+        $firstRoundNumber->getValidPlanningConfig()->setSelfReferee(SelfReferee::OTHERPOULES);
 
         (new GamesCreator())->createStructureGames($structure);
 
@@ -269,7 +282,7 @@ class GamesValidatorTest extends TestCase
         $structure = $structureService->create($competition, 9, 2);
 
         $firstRoundNumber = $structure->getFirstRoundNumber();
-        $firstRoundNumber->getPlanningConfig()->setSelfReferee(SelfReferee::OTHERPOULES);
+        $firstRoundNumber->getValidPlanningConfig()->setSelfReferee(SelfReferee::OTHERPOULES);
 
         // 2 pak vervolgend een wedstrijd en laatr deze in de pauze zijn
         // 3 en laat de validator de boel opsporen!

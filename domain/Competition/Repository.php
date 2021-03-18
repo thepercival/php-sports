@@ -15,7 +15,7 @@ class Repository extends \Sports\Repository
         return $this->_em->find($this->_entityName, $id, $lockMode, $lockVersion);
     }
 
-    public function customPersist(Competition $competition)
+    public function customPersist(Competition $competition): void
     {
         foreach ($competition->getReferees() as $referee) {
             $this->_em->persist($referee);

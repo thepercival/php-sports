@@ -4,10 +4,8 @@
 namespace Sports;
 
 use \Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
-use Doctrine\ORM\PersistentCollection;
+use Exception;
 use Sports\Competition\Sport as CompetitionSport;
-use Sports\Planning\GameAmountConfig as GameAmountConfig;
 use Sports\Qualify\AgainstConfig as QualifyAgainstConfig;
 use Sports\Qualify\Group as QualifyGroup;
 use Sports\Poule\Horizontal as HorizontalPoule;
@@ -19,40 +17,30 @@ use SportsHelpers\Identifiable;
 
 class Round extends Identifiable
 {
+    protected string|null $name = null;
+    protected QualifyGroup|null $parentQualifyGroup;
     /**
-     * @var string
-     */
-    protected $name;
-    /**
-     * @var Round\Number
-     */
-    protected $number;
-    /**
-     * @var QualifyGroup
-     */
-    protected $parentQualifyGroup;
-    /**
-     * @var Poule[] | ArrayCollection
+     * @var ArrayCollection<int|string, Poule>
      */
     protected $poules;
     /**
-     * @var QualifyGroup[] | ArrayCollection
+     * @var ArrayCollection<int|string,QualifyGroup>
      */
     protected $qualifyGroups;
     /**
-     * @var HorizontalPoule[] | array
+     * @var list<HorizontalPoule>
      */
     protected $losersHorizontalPoules = array();
     /**
-     * @var HorizontalPoule[] | array
+     * @var list<HorizontalPoule>
      */
     protected $winnersHorizontalPoules = array();
     /**
-     * @var QualifyAgainstConfig[] | ArrayCollection
+     * @var ArrayCollection<int|string,QualifyAgainstConfig>
      */
-    protected $qualifyAgainstConfigs;
+    protected ArrayCollection $qualifyAgainstConfigs;
     /**
-     * @var ScoreConfig[] | ArrayCollection
+     * @var ArrayCollection<int|string,ScoreConfig>
      */
     protected $scoreConfigs;
     /**
@@ -78,11 +66,14 @@ class Round extends Identifiable
     const RANK_NUMBER_POULE = 6;
     const RANK_POULE_NUMBER = 7;
 
-    public function __construct(Round\Number $roundNumber, QualifyGroup $parentQualifyGroup = null)
+    public function __construct(protected Round\Number $number, QualifyGroup|null $parentQualifyGroup = null)
     {
 //        $this->winnersHorizontalPoules = array();
 //        $this->losersHorizontalPoules = array();
-        $this->setNumber($roundNumber);
+        if (!$number->getRounds()->contains($this)) {
+            $number->getRounds()->add($this) ;
+        }
+
         $this->poules = new ArrayCollection();
         $this->setParentQualifyGroup($parentQualifyGroup);
         $this->qualifyGroups = new ArrayCollection();
@@ -90,51 +81,28 @@ class Round extends Identifiable
         $this->scoreConfigs = new ArrayCollection();
     }
 
-    /**
-     * @return Round\Number
-     */
-    public function getNumber()
+    public function getNumber(): Round\Number
     {
         return $this->number;
     }
 
-    /**
-     * @param Round\Number $number
-     */
-    private function setNumber(Round\Number $number)
-    {
-        if (!$number->getRounds()->contains($this)) {
-            $number->getRounds()->add($this) ;
-        }
-        $this->number = $number;
-    }
-
-    /**
-     * @return int
-     */
-    public function getNumberAsValue()
+    public function getNumberAsValue(): int
     {
         return $this->number->getNumber();
     }
 
-    /**
-     * @return string
-     */
-    public function getName()
+    public function getName(): string|null
     {
         return $this->name;
     }
 
-    /**
-     * @param string $name
-     */
-    public function setName($name)
+    public function setName(string|null $name): void
     {
-        if (strlen($name) === 0) {
+        if ($name !== null && strlen($name) === 0) {
             $name = null;
         }
 
-        if (strlen($name) > static::MAX_LENGTH_NAME) {
+        if ($name !== null && strlen($name) > static::MAX_LENGTH_NAME) {
             throw new \InvalidArgumentException("de naam mag maximaal ".static::MAX_LENGTH_NAME." karakters bevatten", E_ERROR);
         }
 
@@ -165,19 +133,19 @@ class Round extends Identifiable
         });
     }
 
-    public function addQualifyGroup(QualifyGroup $qualifyGroup)
+    public function addQualifyGroup(QualifyGroup $qualifyGroup): void
     {
         $this->qualifyGroups->add($qualifyGroup);
         // @TODO should automatically sort
         // $this->sortQualifyGroups();
     }
 
-    public function removeQualifyGroup(QualifyGroup $qualifyGroup)
+    public function removeQualifyGroup(QualifyGroup $qualifyGroup): bool
     {
         return $this->qualifyGroups->removeElement($qualifyGroup);
     }
 
-    public function clearQualifyGroups(int $winnersOrLosers)
+    public function clearQualifyGroups(int $winnersOrLosers): void
     {
         $qualifyGroupsToRemove = $this->getQualifyGroups($winnersOrLosers);
         foreach ($qualifyGroupsToRemove as $qualifyGroupToRemove) {
@@ -245,7 +213,7 @@ class Round extends Identifiable
     }
 
     /**
-     * @return ArrayCollection<int|string,Poule>
+     * @return ArrayCollection<int|string, Poule>
      */
     public function getPoules(): ArrayCollection
     {
@@ -254,8 +222,10 @@ class Round extends Identifiable
 
     /**
      * @param ArrayCollection<int|string,Poule> $poules
+     *
+     * @return void
      */
-    public function setPoules(ArrayCollection $poules)
+    public function setPoules(ArrayCollection $poules): void
     {
         $this->poules = $poules;
     }
@@ -286,10 +256,7 @@ class Round extends Identifiable
         return $this->parentQualifyGroup;
     }
 
-    /**
-     * @param QualifyGroup|null $parentQualifyGroup
-     */
-    public function setParentQualifyGroup(QualifyGroup $parentQualifyGroup = null)
+    public function setParentQualifyGroup(QualifyGroup|null $parentQualifyGroup = null): void
     {
         if ($parentQualifyGroup !== null) {
             $parentQualifyGroup->setChildRound($this);
@@ -338,13 +305,12 @@ class Round extends Identifiable
         return $places;
     }
 
-    public function getPlace(PlaceLocation $placeLocation): Place
+    public function getPlace(PlaceLocation $placeLocation): ?Place
     {
-
         return $this->getPoule($placeLocation->getPouleNr())->getPlace($placeLocation->getPlaceNr());
     }
 
-    public function needsRanking()
+    public function needsRanking(): bool
     {
         foreach ($this->getPoules() as $pouleIt) {
             if ($pouleIt->needsRanking()) {
@@ -366,13 +332,17 @@ class Round extends Identifiable
         return $games;
     }
 
-    public function getGamesWithState(int $state)
+    /**
+     * @param int $state
+     * @return list<AgainstGame|TogetherGame>
+     */
+    public function getGamesWithState(int $state): array
     {
         $games = [];
         foreach ($this->getPoules() as $poule) {
             $games = array_merge($games, $poule->getGamesWithState($state));
         }
-        return $games;
+        return array_values($games);
     }
 
     public function getState(): int
@@ -438,49 +408,60 @@ class Round extends Identifiable
     }
 
     /**
-     * @return ArrayCollection | ScoreConfig[]
+     * @return ArrayCollection<int|string, ScoreConfig>
      */
-    public function getScoreConfigs()
+    public function getScoreConfigs(): ArrayCollection
     {
         return $this->scoreConfigs;
     }
 
-    public function getScoreConfig(CompetitionSport $competitionSport): ?ScoreConfig
+    /**
+     * @param CompetitionSport $competitionSport
+     * @return ScoreConfig|null
+     */
+    public function getScoreConfig(CompetitionSport $competitionSport): ScoreConfig|null
     {
         $scoreConfigs = $this->scoreConfigs->filter(function (ScoreConfig $scoreConfigIt) use ($competitionSport): bool {
             return $scoreConfigIt->isFirst() && $scoreConfigIt->getCompetitionSport() === $competitionSport;
         });
-        if ($scoreConfigs->count() === 1) {
-            return $scoreConfigs->first();
-        }
-        return null;
+        $scoreConfig = $scoreConfigs->first();
+        return $scoreConfig !== false ? $scoreConfig : null;
     }
 
+    /**
+     * @param CompetitionSport $competitionSport
+     * @return ScoreConfig
+     * @throws Exception
+     */
     public function getValidScoreConfig(CompetitionSport $competitionSport): ScoreConfig
     {
         $scoreConfig = $this->getScoreConfig($competitionSport);
         if ($scoreConfig !== null) {
             return $scoreConfig;
         }
-        return $this->getParent()->getValidScoreConfig($competitionSport);
+        $parent = $this->getParent();
+        if ($parent === null) {
+            throw new Exception('de score-instellingen kunnen niet gevonden worden', E_ERROR);
+        }
+        return $parent->getValidScoreConfig($competitionSport);
     }
 
     /**
-     * @return array|ScoreConfig[]
+     * @return list<ScoreConfig>
      */
     public function getValidScoreConfigs(): array
     {
-        return $this->number->getCompetitionSports()->map(
+        return array_values($this->number->getCompetitionSports()->map(
             function (CompetitionSport $competitionSport): ScoreConfig {
                 return $this->getValidScoreConfig($competitionSport);
             }
-        )->toArray();
+        )->toArray());
     }
 
     /**
-     * @return Collection|ScoreConfig[]
+     * @return ArrayCollection<int|string, ScoreConfig>
      */
-    public function getFirstScoreConfigs(): Collection
+    public function getFirstScoreConfigs(): ArrayCollection
     {
         return $this->getScoreConfigs()->filter(function (ScoreConfig $config): bool {
             return $config->isFirst();
@@ -488,42 +469,52 @@ class Round extends Identifiable
     }
 
     /**
-     * @return ArrayCollection | QualifyAgainstConfig[]
+     * @return ArrayCollection<int|string,QualifyAgainstConfig>
      */
-    public function getQualifyAgainstConfigs()
+    public function getQualifyAgainstConfigs(): ArrayCollection
     {
         return $this->qualifyAgainstConfigs;
     }
 
-    public function getQualifyAgainstConfig(CompetitionSport $competitionSport): ?QualifyAgainstConfig
+    public function getQualifyAgainstConfig(CompetitionSport $competitionSport): QualifyAgainstConfig|null
     {
         $qualifyConfigs = $this->qualifyAgainstConfigs->filter(function (QualifyAgainstConfig $qualifyConfigIt) use ($competitionSport): bool {
             return $qualifyConfigIt->getCompetitionSport() === $competitionSport;
         });
-        if ($qualifyConfigs->count() === 1) {
-            return $qualifyConfigs->first();
+        $qualifyConfig = $qualifyConfigs->first();
+        if ($qualifyConfig === false) {
+            return null;
         }
-        return null;
+        return $qualifyConfig;
     }
 
+    /**
+     * @param CompetitionSport $competitionSport
+     * @return QualifyAgainstConfig
+     * @throws Exception
+     */
     public function getValidQualifyAgainstConfig(CompetitionSport $competitionSport): QualifyAgainstConfig
     {
         $qualifyConfig = $this->getQualifyAgainstConfig($competitionSport);
         if ($qualifyConfig !== null) {
             return $qualifyConfig;
         }
-        return $this->getParent()->getValidQualifyAgainstConfig($competitionSport);
+        $parent = $this->getParent();
+        if ($parent === null) {
+            throw new Exception('de score-instellingen kunnen niet gevonden worden', E_ERROR);
+        }
+        return $parent->getValidQualifyAgainstConfig($competitionSport);
     }
 
     /**
-     * @return array|QualifyAgainstConfig[]
+     * @return list<QualifyAgainstConfig>
      */
     public function getValidQualifyAgainstConfigs(): array
     {
-        return $this->number->getCompetitionSports()->map(
+        return array_values($this->number->getCompetitionSports()->map(
             function (CompetitionSport $competitionSport): QualifyAgainstConfig {
                 return $this->getValidQualifyAgainstConfig($competitionSport);
             },
-        )->toArray();
+        )->toArray());
     }
 }

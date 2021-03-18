@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Sports\TestHelper;
 
@@ -12,7 +13,6 @@ use Sports\Competition\Referee;
 use Sports\Season;
 use Sports\Sport;
 use Sports\Sport\Custom as SportCustom;
-use Sports\Competition\Sport as CompetitionSport;
 use Sports\Competition\Sport\Service as CompetitionSportService;
 use SportsHelpers\GameMode;
 
@@ -65,13 +65,5 @@ trait CompetitionCreator
         $this->sport = new Sport("voetbal", true, 2, GameMode::AGAINST);
         $this->sport->setCustomId(SportCustom::Football);
         return $this->sport;
-    }
-
-    protected function getCompetitionSport(): ?CompetitionSport
-    {
-        if ($this->competition === null) {
-            return null;
-        }
-        return $this->competition->getSports()->count() > 0 ? $this->competition->getSports()->first() : null;
     }
 }

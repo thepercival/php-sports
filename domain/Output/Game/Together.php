@@ -17,7 +17,7 @@ class Together extends OutputGame
         parent::__construct($competitorMap, $logger);
     }
 
-    public function output(TogetherGame $game, string $prefix = null)
+    public function output(TogetherGame $game, string $prefix = null): void
     {
         $field = $game->getField();
 

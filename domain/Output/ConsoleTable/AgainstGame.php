@@ -27,8 +27,10 @@ class AgainstGame
      * @param Competition $competition
      * @param AgainstGameBase $game
      * @param array<TeamCompetitor> $teamCompetitors
+     *
+     * @return void
      */
-    public function display(Competition $competition, AgainstGameBase $game, array $teamCompetitors)
+    public function display(Competition $competition, AgainstGameBase $game, array $teamCompetitors): void
     {
         $table = new ConsoleTable();
         // $table->setHeaders(array('league', 'season', 'batchNr', 'id', 'datetime', 'state', 'home', 'score', 'away' ) );
@@ -49,7 +51,7 @@ class AgainstGame
         $table->display();
     }
 
-    protected function displayLineups(ConsoleTable $table)
+    protected function displayLineups(ConsoleTable $table): void
     {
         $homeParticipations = $this->getLineup(AgainstSide::HOME);
         $awayParticipations = $this->getLineup(AgainstSide::AWAY);
@@ -71,7 +73,7 @@ class AgainstGame
         }
     }
 
-    protected function displayEvents(ConsoleTable $table)
+    protected function displayEvents(ConsoleTable $table): void
     {
         foreach ($this->game->getEvents() as $event) {
             foreach ($this->getEventRows($event) as $eventRow) {

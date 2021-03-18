@@ -50,7 +50,7 @@ class NameService
 
         $nrOfRoundsToGo = $this->getMaxDepth($round);
         if ($nrOfRoundsToGo >= 1) {
-            return $this->getFractalNumber(pow(2, $nrOfRoundsToGo)) . ' finale';
+            return $this->getFractalNumber((int)pow(2, $nrOfRoundsToGo)) . ' finale';
         }
         // if (round.getNrOfPlaces() > 1) {
         if ($round->getNrOfPlaces() === 2 && $sameName === false) {
@@ -69,15 +69,16 @@ class NameService
         $pouleStructureNumber = $poule->getStructureNumber() - 1;
         $secondLetter = $pouleStructureNumber % 26;
         if ($pouleStructureNumber >= 26) {
-            $firstLetter = ($pouleStructureNumber - $secondLetter) / 26;
+            $firstLetter = (int)(($pouleStructureNumber - $secondLetter) / 26);
             $pouleName .= (chr(ord('A') + ($firstLetter - 1)));
         }
-        $pouleName .= (chr(ord('A') + $secondLetter));
-        ;
-        return $pouleName;
+        return $pouleName . (chr(ord('A') + $secondLetter));
     }
 
-    public function getPlaceName(Place $place, $competitorName = false, $longName = false): string
+    /**
+     * @param bool|null $longName
+     */
+    public function getPlaceName(Place $place, bool $competitorName = false, ?bool $longName = false): string
     {
         $competitorName = $competitorName && $this->competitorMap !== null;
         if ($competitorName === true) {
@@ -176,7 +177,7 @@ class NameService
         return $name;
     }
 
-    public function getRefereeName(Game $game, bool $longName = null): string
+    public function getRefereeName(Game $game, bool $longName = null): ?string
     {
         if ($game->getReferee() !== null) {
             return $longName ? $game->getReferee()->getName() : $game->getReferee()->getInitials();
@@ -275,7 +276,10 @@ class NameService
         return '1/' . $number;
     }
 
-    protected function getHtmlNumber(int $number)
+    /**
+     * @return string
+     */
+    protected function getHtmlNumber(int $number): string
     {
         if ($number === 1) {
             return $number . 'ste';

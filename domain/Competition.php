@@ -7,6 +7,7 @@ namespace Sports;
 use DateTimeImmutable;
 use \Doctrine\Common\Collections\ArrayCollection;
 use \Doctrine\ORM\PersistentCollection;
+use Exception;
 use Sports\Ranking\RuleSet as RankingRuleSet;
 use Sports\Competition\Sport as CompetitionSport;
 use Sports\Competition\Field as CompetitionField;
@@ -16,56 +17,36 @@ use Sports\Competition\Referee;
 
 class Competition extends Identifiable
 {
-    /**
-     * @var League
-     */
-    private $league;
+    private League $league;
+    private DateTimeImmutable $startDateTime;
+    private int $rankingRuleSet;
+    private int $state;
 
     /**
-     * @var Season
+     * @var ArrayCollection<int|string, Round\Number>
      */
-    private $season;
+    private ArrayCollection $roundNumbers;
 
     /**
-     * @var DateTimeImmutable
+     * @var ArrayCollection<int|string, Referee>
      */
-    private $startDateTime;
-
+    private ArrayCollection $referees;
     /**
-     * @var int
+     * @var ArrayCollection<int|string, CompetitionSport>
      */
-    private $rankingRuleSet;
-
+    private ArrayCollection $sports;
     /**
-     * @var int
+     * @var ArrayCollection<int|string, TeamCompetitor>
      */
-    private $state;
-
-    /**
-     * @var ArrayCollection
-     */
-    private $roundNumbers;
-
-    /**
-     * @var ArrayCollection|Referee[]
-     */
-    private $referees;
-    /**
-     * @var ArrayCollection|CompetitionSport[]
-     */
-    private $sports;
-    /**
-     * @var ArrayCollection|TeamCompetitor[]
-     */
-    private $teamCompetitors;
+    private ArrayCollection $teamCompetitors;
 
     const MIN_COMPETITORS = 3;
     const MAX_COMPETITORS = 40;
 
-    public function __construct(League $league, Season $season)
+    public function __construct(League $league, private Season $season)
     {
         $this->setLeague($league);
-        $this->season = $season;
+        $this->setStartDateTime($season->getStartDateTime());
         $this->rankingRuleSet = RankingRuleSet::Against;
         $this->state = State::Created;
         $this->roundNumbers = new ArrayCollection();
@@ -82,7 +63,7 @@ class Competition extends Identifiable
         return $this->league;
     }
 
-    protected function setLeague(League $league)
+    protected function setLeague(League $league): void
     {
         $competitions = $league->getCompetitions();
         if (!$competitions->contains($this)) {
@@ -91,10 +72,7 @@ class Competition extends Identifiable
         $this->league = $league;
     }
 
-    /**
-     * @return Season
-     */
-    public function getSeason()
+    public function getSeason(): Season
     {
         return $this->season;
     }
@@ -104,104 +82,84 @@ class Competition extends Identifiable
         return $this->getLeague()->getName() . ' ' . $this->getSeason()->getName();
     }
 
-    /**
-     * @return DateTimeImmutable
-     */
-    public function getStartDateTime()
+    public function getStartDateTime(): DateTimeImmutable
     {
         return $this->startDateTime;
     }
 
-    /**
-     * @param DateTimeImmutable $datetime
-     */
-    public function setStartDateTime(DateTimeImmutable $datetime)
+    public function setStartDateTime(DateTimeImmutable $datetime): void
     {
         $this->startDateTime = $datetime;
     }
 
-    /**
-     * @return int
-     */
-    public function getRankingRuleSet()
+    public function getRankingRuleSet(): int
     {
         return $this->rankingRuleSet;
     }
 
-    /**
-     * @param int $rankingRuleSet
-     */
-    public function setRankingRuleSet($rankingRuleSet)
+    public function setRankingRuleSet(int $rankingRuleSet): void
     {
         $this->rankingRuleSet = $rankingRuleSet;
     }
 
-    /**
-     * @return int
-     */
-    public function getState()
+    public function getState(): int
     {
         return $this->state;
     }
 
-    /**
-     * @param int $state
-     */
-    public function setState($state)
+    public function setState(int $state): void
     {
         $this->state = $state;
     }
 
     /**
-     * @return ArrayCollection
+     * @return ArrayCollection<int|string, Round\Number>
      */
-    public function getRoundNumbers()
+    public function getRoundNumbers(): ArrayCollection
     {
         return $this->roundNumbers;
     }
 
     /**
-     * @return ArrayCollection | Referee[]
+     * @return ArrayCollection<int|string, Referee>
      */
-    public function getReferees()
+    public function getReferees(): ArrayCollection
     {
         return $this->referees;
     }
 
     /**
-     * @param ArrayCollection | Referee[] $referees
+     * @param ArrayCollection<int|string, Referee>
+     * @return void
      */
-    public function setReferees($referees)
+    public function setReferees(ArrayCollection $referees): void
     {
         $this->referees = $referees;
     }
 
-    /**
-     * @return Referee
-     */
-    public function getReferee(int $priority)
+    public function getReferee(int $priority): Referee
     {
-        $referees = array_filter(
-            $this->getReferees()->toArray(),
-            function (Referee $referee) use ($priority): bool {
-                return $referee->getPriority() === $priority;
+        foreach ($this->getReferees() as $referee) {
+            if ($referee->getPriority() === $priority) {
+                return $referee;
             }
-        );
-        return array_shift($referees);
+        }
+        throw new \Exception('kan de scheidsrechter niet vinden o.b.v. de  prioriteit', E_ERROR);
     }
 
     /**
-     * @return ArrayCollection | TeamCompetitor[]
+     * @return ArrayCollection<int|string, TeamCompetitor>
      */
-    public function getTeamCompetitors()
+    public function getTeamCompetitors(): ArrayCollection
     {
         return $this->teamCompetitors;
     }
 
     /**
-     * @param ArrayCollection | TeamCompetitor[] $teamCompetitors
+     * @param ArrayCollection<int|string, TeamCompetitor> $teamCompetitors
+     * @return void
      */
-    public function setTeamCompetitors($teamCompetitors)
+    public function setTeamCompetitors(ArrayCollection $teamCompetitors): void
     {
         $this->teamCompetitors = $teamCompetitors;
     }
@@ -218,16 +176,20 @@ class Competition extends Identifiable
     }
 
     /**
-     * @return ArrayCollection | PersistentCollection | CompetitionSport[]
+     * @return ArrayCollection<int|string, CompetitionSport>
      */
-    public function getSports()
+    public function getSports(): ArrayCollection
     {
         return $this->sports;
     }
 
     public function getSingleSport(): CompetitionSport
     {
-        return $this->sports->first();
+        $sport = $this->sports->first();
+        if ($sport === false) {
+            throw new Exception('kan geen sport bij de competitie vinden', E_ERROR);
+        }
+        return $sport;
     }
 
     public function getSport(Sport $sport): ?CompetitionSport
@@ -236,7 +198,7 @@ class Competition extends Identifiable
             return $competitionSport->getSport() === $sport;
         });
         $foundConfig = $foundConfigs->first();
-        return $foundConfig ? $foundConfig : null;
+        return $foundConfig !== false ? $foundConfig : null;
     }
 
     public function hasMultipleSports(): bool
@@ -259,7 +221,7 @@ class Competition extends Identifiable
 //    }
 
     /**
-     * @return array | CompetitionField[]
+     * @return list<CompetitionField>
      */
     public function getFields(): array
     {

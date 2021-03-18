@@ -51,7 +51,7 @@ class AgainstConfig extends Identifiable
         return $this->winPoints;
     }
 
-    public function setWinPoints(float $winPoints)
+    public function setWinPoints(float $winPoints): void
     {
         $this->winPoints = $winPoints;
     }
@@ -61,7 +61,7 @@ class AgainstConfig extends Identifiable
         return $this->drawPoints;
     }
 
-    public function setDrawPoints(float $drawPoints)
+    public function setDrawPoints(float $drawPoints): void
     {
         $this->drawPoints = $drawPoints;
     }
@@ -71,7 +71,7 @@ class AgainstConfig extends Identifiable
         return $this->winPointsExt;
     }
 
-    public function setWinPointsExt(float $winPointsExt)
+    public function setWinPointsExt(float $winPointsExt): void
     {
         $this->winPointsExt = $winPointsExt;
     }
@@ -81,7 +81,7 @@ class AgainstConfig extends Identifiable
         return $this->drawPointsExt;
     }
 
-    public function setDrawPointsExt(float $drawPointsExt)
+    public function setDrawPointsExt(float $drawPointsExt): void
     {
         $this->drawPointsExt = $drawPointsExt;
     }
@@ -91,7 +91,7 @@ class AgainstConfig extends Identifiable
         return $this->losePointsExt;
     }
 
-    public function setLosePointsExt(float $losePointsExt)
+    public function setLosePointsExt(float $losePointsExt): void
     {
         $this->losePointsExt = $losePointsExt;
     }

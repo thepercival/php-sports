@@ -7,7 +7,7 @@ use Sports\Round\Number as RoundNumber;
 
 class Repository extends \Sports\Repository
 {
-    public function removePlanning(RoundNumber $roundNumber)
+    public function removePlanning(RoundNumber $roundNumber): void
     {
         foreach ($roundNumber->getPoules() as $poule) {
             $games = $poule->getAgainstGames();
@@ -29,7 +29,7 @@ class Repository extends \Sports\Repository
         $this->_em->flush();
     }
 
-    public function savePlanning(RoundNumber $roundNumber, bool $hasPlanning = null)
+    public function savePlanning(RoundNumber $roundNumber, bool $hasPlanning = null): void
     {
         foreach ($roundNumber->getGames() as $game) {
             $this->_em->persist($game);
