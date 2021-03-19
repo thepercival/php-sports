@@ -11,14 +11,12 @@ class Repository extends \Sports\Repository
     {
         foreach ($roundNumber->getPoules() as $poule) {
             $games = $poule->getAgainstGames();
-            while ($games->count() > 0) {
-                $game = $games->first();
+            while ($game = $games->first()) {
                 $games->removeElement($game);
                 $this->_em->remove($game);
             }
             $games = $poule->getTogetherGames();
-            while ($games->count() > 0) {
-                $game = $games->first();
+            while ($game = $games->first()) {
                 $games->removeElement($game);
                 $this->_em->remove($game);
             }

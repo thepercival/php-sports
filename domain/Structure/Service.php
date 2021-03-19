@@ -333,8 +333,7 @@ class Service
             $nrOfQualifiers = 0;
             if ($qualifyGroup === false) {
                 $qualifyGroup = new QualifyGroup($round, $winnersOrLosers);
-                $nextRoundNumber = $round->getNumber()->hasNext() ? $round->getNumber()->getNext(
-                ) : $this->createRoundNumber($round);
+                $nextRoundNumber = $this->createNextRoundNumber($round);
                 new Round($nextRoundNumber, $qualifyGroup);
                 $nrOfQualifiers = $newNrOfPlacesChildren;
             } else {
@@ -429,10 +428,18 @@ class Service
         return $oldNrOfPoules;
     }
 
-    public function createRoundNumber(Round $parentRound): ?RoundNumber
+    public function createNextRoundNumber(Round $round): RoundNumber
     {
-        $roundNumber = $parentRound->getNumber()->createNext();
-        return $roundNumber;
+        $nextRoundNumber = $round->getNumber()->getNext();
+        if ($nextRoundNumber === null) {
+            return $this->createRoundNumber($round);
+        }
+        return $nextRoundNumber;
+    }
+
+    public function createRoundNumber(Round $parentRound): RoundNumber
+    {
+        return $parentRound->getNumber()->createNext();
     }
 
     private function refillRound(Round $round, int $nrOfPlaces, int $nrOfPoules): ?Round
@@ -447,7 +454,7 @@ class Service
         $round->getPoules()->clear();
 
         $pouleStructure = new BalancedPouleStructure($nrOfPlaces, $nrOfPoules);
-        foreach ( $pouleStructure->toArray() as $nrOfPlacesToAdd) {
+        foreach ($pouleStructure->toArray() as $nrOfPlacesToAdd) {
             $poule = new Poule($round);
             for ($i = 0; $i < $nrOfPlacesToAdd; $i++) {
                 new Place($poule);
@@ -456,14 +463,13 @@ class Service
         return $round;
     }
 
-
-
     protected function getRoot(Round $round): Round
     {
-        if (!$round->isRoot()) {
-            return $this->getRoot($round->getParent());
+        $parent = $round->getParent();
+        if ($parent === null) {
+            return $round;
         }
-        return $round;
+        return $this->getRoot($parent);
     }
 
     protected function checkRanges(int $nrOfPlaces, int $nrOfPoules = null): void
@@ -495,7 +501,8 @@ class Service
             }
         }
         throw new Exception(
-            'het aantal deelnemers is kleiner dan het minimum of groter dan het maximum', E_ERROR
+            'het aantal deelnemers is kleiner dan het minimum of groter dan het maximum',
+            E_ERROR
         );
     }
 

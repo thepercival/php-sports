@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Sports;
 
@@ -8,30 +9,15 @@ use SportsHelpers\Identifiable;
 
 class Team extends Identifiable
 {
+    protected Association $association;
+    protected string $name;
+    protected string|null $abbreviation = null;
+    protected string|null $imageUrl = null;
+    protected string|null $countryCode = null;
     /**
-     * @var string
+     * @var ArrayCollection<int|string, Player>
      */
-    protected $name;
-    /**
-     * @var string
-     */
-    protected $abbreviation;
-    /**
-     * @var string
-     */
-    protected $imageUrl;
-    /**
-     * @var Association
-     */
-    protected $association;
-    /**
-     * @var string
-     */
-    protected $countryCode;
-    /**
-     * @var ArrayCollection|Player[]
-     */
-    protected $players;
+    protected ArrayCollection $players;
 
     const MIN_LENGTH_NAME = 2;
     const MAX_LENGTH_NAME = 30;
@@ -39,9 +25,9 @@ class Team extends Identifiable
     const MAX_LENGTH_IMAGEURL = 150;
 
     // Every team should must have a club, a association or a country
-    CONST TYPE_ASSOCIATION = 1;
-    CONST TYPE_COUNTRY = 2;
-    CONST TYPE_CLUB = 4;
+    const TYPE_ASSOCIATION = 1;
+    const TYPE_COUNTRY = 2;
+    const TYPE_CLUB = 4;
 
     public function __construct(Association $association, string $name)
     {
@@ -73,11 +59,11 @@ class Team extends Identifiable
 
     public function setAbbreviation(string $abbreviation = null): void
     {
-        if (strlen($abbreviation) === 0) {
+        if ($abbreviation !== null && strlen($abbreviation) === 0) {
             $abbreviation = null;
         }
 
-        if (strlen($abbreviation) > static::MAX_LENGTH_ABBREVIATION) {
+        if ($abbreviation !== null && strlen($abbreviation) > static::MAX_LENGTH_ABBREVIATION) {
             throw new \InvalidArgumentException("de afkorting mag maximaal ".static::MAX_LENGTH_ABBREVIATION." karakters bevatten", E_ERROR);
         }
         $this->abbreviation = $abbreviation;
@@ -90,11 +76,11 @@ class Team extends Identifiable
 
     public function setImageUrl(string $imageUrl = null): void
     {
-        if (strlen($imageUrl) === 0) {
+        if ($imageUrl !== null && strlen($imageUrl) === 0) {
             $imageUrl = null;
         }
 
-        if (strlen($imageUrl) > static::MAX_LENGTH_IMAGEURL) {
+        if ($imageUrl !== null &&  strlen($imageUrl) > static::MAX_LENGTH_IMAGEURL) {
             throw new \InvalidArgumentException("de imageUrl mag maximaal ".static::MAX_LENGTH_IMAGEURL." karakters bevatten", E_ERROR);
         }
         $this->imageUrl = $imageUrl;
@@ -107,13 +93,13 @@ class Team extends Identifiable
 
     public function setAssociation(Association $association): void
     {
-        if ($association->getTeams() !== null and !$association->getTeams()->contains($this)) {
+        if (!$association->getTeams()->contains($this)) {
             $association->getTeams()->add($this) ;
         }
         $this->association = $association;
     }
 
-    public function getCountryCode(): string
+    public function getCountryCode(): string|null
     {
         return $this->countryCode;
     }
@@ -131,9 +117,9 @@ class Team extends Identifiable
     }
 
     /**
-     * @return Player[] | ArrayCollection
+     * @return ArrayCollection<int|string, Player>
      */
-    public function getPlayers()
+    public function getPlayers(): ArrayCollection
     {
         return $this->players;
     }

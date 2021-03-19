@@ -8,26 +8,25 @@ use Doctrine\ORM\QueryBuilder;
 use Sports\Game;
 use Sports\Round\Number as RoundNumber;
 use Sports\Game\Against as AgainstGame;
+use Sports\Game\Together as TogetherGame;
 use Sports\Competition;
-use Sports\Game as GameBase;
 use League\Period\Period;
 
 class Repository extends \Sports\Repository
 {
     /**
      * @param Competition $competition
-     * @param null $gameStates
+     * @param int|null $gameStates
      * @param int|null $batchNr
      * @param Period|null $period
-     * @return array|Game[]
+     * @return list<Game>
      */
     public function getCompetitionGames(
         Competition $competition,
-        $gameStates = null,
+        int $gameStates = null,
         int $batchNr = null,
         Period $period = null
-    )
-    {
+    ): array {
         $qb = $this->getCompetitionGamesQuery($competition, $gameStates, $batchNr, $period);
         $qb = $qb->orderBy('g.startDateTime', 'ASC');
         return $qb->getQuery()->getResult();
@@ -38,8 +37,7 @@ class Repository extends \Sports\Repository
         $gameStates = null,
         int $batchNr = null,
         Period $period = null
-    ): bool
-    {
+    ): bool {
         $games = $this->getCompetitionGamesQuery(
             $competition,
             $gameStates,
@@ -54,8 +52,7 @@ class Repository extends \Sports\Repository
         $gameStates = null,
         int $batchNr = null,
         Period $period = null
-    ): int
-    {
+    ): int {
         $gamePlaces = $this->getCompetitionGamePlacessQuery(
             $competition,
             $gameStates,
@@ -70,8 +67,7 @@ class Repository extends \Sports\Repository
         $gameStates = null,
         int $batchNr = null,
         Period $period = null
-    ): QueryBuilder
-    {
+    ): QueryBuilder {
         $query = $this->createQueryBuilder('g')
             ->join("g.poule", "p")
             ->join("p.round", "r")
@@ -87,8 +83,7 @@ class Repository extends \Sports\Repository
         $gameStates = null,
         int $batchNr = null,
         Period $period = null
-    ): QueryBuilder
-    {
+    ): QueryBuilder {
         $query = $this->getEM()->createQueryBuilder()
             ->select('gp')
             ->from('Sports\Game\Place', 'gp')
@@ -104,11 +99,11 @@ class Repository extends \Sports\Repository
 
     /**
      * @param RoundNumber $roundNumber
-     * @param null $gameStates
+     * @param int|null $gameStates
      * @param int|null $batchNr
-     * @return array|Game[]
+     * @return list<Game>
      */
-    public function getRoundNumberGames(RoundNumber $roundNumber, $gameStates = null, int $batchNr = null)
+    public function getRoundNumberGames(RoundNumber $roundNumber, int $gameStates = null, int $batchNr = null): array
     {
         return $this->getRoundNumberGamesQuery($roundNumber, $gameStates, $batchNr)->getQuery()->getResult();
     }
@@ -158,14 +153,14 @@ class Repository extends \Sports\Repository
         return  $query;
     }
 
-    public function customRemove(GameBase $game)
+    public function customRemove(AgainstGame|TogetherGame $game): void
     {
-        if( $game instanceof AgainstGame ) {
+        if ($game instanceof AgainstGame) {
             $game->getPoule()->getAgainstGames()->removeElement($game);
         } else {
             $game->getPoule()->getTogetherGames()->removeElement($game);
         }
 
-        return $this->remove($game);
+        $this->remove($game);
     }
 }

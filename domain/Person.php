@@ -11,9 +11,6 @@ use Sports\Team\Player;
 class Person extends Identifiable
 {
     protected string $firstName;
-    /**
-     * @var
-     */
     protected string|null $nameInsertion;
     protected string $lastName;
     /**

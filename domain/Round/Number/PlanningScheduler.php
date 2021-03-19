@@ -1,5 +1,5 @@
 <?php
-
+declare(strict_types=1);
 
 namespace Sports\Round\Number;
 
@@ -11,19 +11,13 @@ use Sports\Round\Number as RoundNumber;
 
 class PlanningScheduler
 {
-    /**
-     * @var Period
-     */
-    protected $blockedPeriod;
-
-    public function __construct(Period $blockedPeriod = null)
+    public function __construct(protected Period|null $blockedPeriod = null)
     {
-        $this->blockedPeriod = $blockedPeriod;
     }
 
     /**
      * @param RoundNumber $roundNumber
-     * @return array|DateTimeImmutable[]
+     * @return list<DateTimeImmutable>
      */
     public function rescheduleGames(RoundNumber $roundNumber): array
     {
@@ -45,20 +39,22 @@ class PlanningScheduler
             }
             $game->setStartDateTime($gameStartDateTime);
         }
-        if ($roundNumber->hasNext()) {
-            return array_merge($gameDates, $this->rescheduleGames($roundNumber->getNext()));
+        $nextRoundNumber = $roundNumber->getNext();
+        if ($nextRoundNumber !== null) {
+            return array_merge($gameDates, $this->rescheduleGames($nextRoundNumber));
         }
         return $gameDates;
     }
 
     public function getRoundNumberStartDateTime(RoundNumber $roundNumber): DateTimeImmutable
     {
-        if ($roundNumber->isFirst()) {
+        $previousRoundNumber = $roundNumber->getPrevious();
+        if ($previousRoundNumber === null) {
             $startDateTime = $roundNumber->getCompetition()->getStartDateTime();
             return $this->addMinutes($startDateTime, 0, $roundNumber->getValidPlanningConfig());
         }
-        $previousRoundLastStartDateTime = $roundNumber->getPrevious()->getLastStartDateTime();
-        $previousPlanningConfig = $roundNumber->getPrevious()->getValidPlanningConfig();
+        $previousRoundLastStartDateTime = $previousRoundNumber->getLastStartDateTime();
+        $previousPlanningConfig = $previousRoundNumber->getValidPlanningConfig();
         $minutes = $previousPlanningConfig->getMaxNrOfMinutesPerGame() + $previousPlanningConfig->getMinutesAfter();
         return $this->addMinutes($previousRoundLastStartDateTime, $minutes, $previousPlanningConfig);
     }

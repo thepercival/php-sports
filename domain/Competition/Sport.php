@@ -40,7 +40,7 @@ class Sport extends Identifiable
         return $this->fields;
     }
 
-    public function getField(int $priority): ?Field
+    public function getField(int $priority): Field
     {
         $fields = array_filter(
             $this->getFields()->toArray(),
@@ -48,7 +48,11 @@ class Sport extends Identifiable
                 return $field->getPriority() === $priority;
             }
         );
-        return count($fields) > 0 ? array_shift($fields) : null;
+        $field = reset($fields);
+        if ($field === false) {
+            throw new \Exception('het veld kan niet gevonden worden', E_ERROR);
+        }
+        return $field;
     }
 
     public function createConfig(int $gameAmount): SportConfig

@@ -17,16 +17,23 @@ class Service
 {
     public function createDefault(CompetitionSport $competitionSport, Round $round): ScoreConfig
     {
-        $scoreConfig = new ScoreConfig($competitionSport, $round);
-        $scoreConfig->setDirection(ScoreConfig::UPWARDS);
-        $scoreConfig->setMaximum(0);
-        $scoreConfig->setEnabled(true);
+        $scoreConfig = new ScoreConfig(
+            $competitionSport,
+            $round,
+            ScoreConfig::UPWARDS,
+            0,
+            true
+        );
         $sport = $competitionSport->getSport();
-        if ($sport->getCustomId() !== null && $this->hasNext($sport->getCustomId())) {
-            $subScoreConfig = new ScoreConfig($competitionSport, $round, $scoreConfig);
-            $subScoreConfig->setDirection(ScoreConfig::UPWARDS);
-            $subScoreConfig->setMaximum(0);
-            $subScoreConfig->setEnabled(false);
+        if ($this->hasNext($sport->getCustomId())) {
+            new ScoreConfig(
+                $competitionSport,
+                $round,
+                ScoreConfig::UPWARDS,
+                0,
+                false,
+                $scoreConfig
+            );
         }
         return $scoreConfig;
     }
@@ -52,16 +59,25 @@ class Service
 
     public function copy(CompetitionSport $competitionSport, Round $round, ScoreConfig $sourceConfig): void
     {
-        $newScoreConfig = new ScoreConfig($competitionSport, $round, null);
-        $newScoreConfig->setDirection($sourceConfig->getDirection());
-        $newScoreConfig->setMaximum($sourceConfig->getMaximum());
-        $newScoreConfig->setEnabled($sourceConfig->getEnabled());
+        $newScoreConfig = new ScoreConfig(
+            $competitionSport,
+            $round,
+            $sourceConfig->getDirection(),
+            $sourceConfig->getMaximum(),
+            $sourceConfig->getEnabled(),
+            null
+        );
+
         $previousSubScoreConfig = $sourceConfig->getNext();
         if ($previousSubScoreConfig !== null) {
-            $newSubScoreConfig = new ScoreConfig($competitionSport, $round, $newScoreConfig);
-            $newSubScoreConfig->setDirection($previousSubScoreConfig->getDirection());
-            $newSubScoreConfig->setMaximum($previousSubScoreConfig->getMaximum());
-            $newSubScoreConfig->setEnabled($previousSubScoreConfig->getEnabled());
+            new ScoreConfig(
+                $competitionSport,
+                $round,
+                $previousSubScoreConfig->getDirection(),
+                $previousSubScoreConfig->getMaximum(),
+                $previousSubScoreConfig->getEnabled(),
+                $newScoreConfig
+            );
         }
     }
 
@@ -72,10 +88,11 @@ class Service
         ) {
             return false;
         }
-        if ($scoreConfig->getNext() === null) {
+        $nextScoreConfig = $scoreConfig->getNext();
+        if ($nextScoreConfig === null) {
             return true;
         }
-        return $this->isDefault($scoreConfig->getNext());
+        return $this->isDefault($nextScoreConfig);
     }
 
     public function areEqual(ScoreConfig $scoreConfigA, ScoreConfig $scoreConfigB): bool
@@ -85,31 +102,32 @@ class Service
         ) {
             return false;
         }
-        if ($scoreConfigA->getNext() !== null && $scoreConfigB->getNext() !== null) {
-            return $this->areEqual($scoreConfigA->getNext(), $scoreConfigB->getNext());
+        $nextScoreConfigA = $scoreConfigA->getNext();
+        $nextScoreConfigB = $scoreConfigB->getNext();
+        if ($nextScoreConfigA !== null && $nextScoreConfigB !== null) {
+            return $this->areEqual($nextScoreConfigA, $nextScoreConfigB);
         }
-        return $scoreConfigA->getNext() === $scoreConfigB->getNext();
+        return $nextScoreConfigA === $nextScoreConfigB;
     }
 
     public function getFinalAgainstScore(AgainstGame $game): ?AgainstScore
     {
-        if ($game->getScores()->count() === 0) {
+        $firstScore = $game->getScores()->first();
+        if ($firstScore === false) {
             return null;
         }
-        if ($game->getScoreConfig()->useSubScore()) {
-            $home = 0;
-            $away = 0;
-            foreach ($game->getScores() as $score) {
-                if ($score->getHome() > $score->getAway()) {
-                    $home++;
-                } elseif ($score->getHome() < $score->getAway()) {
-                    $away++;
-                }
-            }
-            return new AgainstScore($home, $away);
+        if (!$game->getScoreConfig()->useSubScore()) {
+            return new AgainstScore($firstScore->getHome(), $firstScore->getAway());
         }
-        $home = $game->getScores()->first()->getHome();
-        $away = $game->getScores()->first()->getAway();
+        $home = 0;
+        $away = 0;
+        foreach ($game->getScores() as $score) {
+            if ($score->getHome() > $score->getAway()) {
+                $home++;
+            } elseif ($score->getHome() < $score->getAway()) {
+                $away++;
+            }
+        }
         return new AgainstScore($home, $away);
     }
 
@@ -127,17 +145,17 @@ class Service
     public function getFinalTogetherScore(TogetherGamePlace $gamePlace): int
     {
         $score = 0;
-        if ($gamePlace->getScores()->count() === 0) {
+        $firstScore = $gamePlace->getScores()->first();
+        if ($firstScore === false) {
             return $score;
         }
-        if ($gamePlace->getGame()->getScoreConfig()->useSubScore()) {
-            $score = 0;
-            foreach ($gamePlace->getScores() as $subScore) {
-                $score += $subScore;
-            }
-            return $score;
+        if (!$gamePlace->getGame()->getScoreConfig()->useSubScore()) {
+            return $firstScore->getScore();
         }
-        return $gamePlace->getScores()->first()->getScore();
+        foreach ($gamePlace->getScores() as $subScore) {
+            $score += $subScore->getScore();
+        }
+        return $score;
     }
 
     public function getFinalTogetherSubScore(TogetherGamePlace $gamePlace): int

@@ -272,7 +272,7 @@ class Round extends Identifiable
         return $this->losersHorizontalPoules;
     }
 
-    public function getHorizontalPoule(int $winnersOrLosers, int $number): ?HorizontalPoule
+    public function getHorizontalPoule(int $winnersOrLosers, int $number): HorizontalPoule|null
     {
         $foundHorPoules = array_filter($this->getHorizontalPoules($winnersOrLosers), function ($horPoule) use ($number): bool {
             return $horPoule->getNumber() === $number;
@@ -283,7 +283,11 @@ class Round extends Identifiable
 
     public function getFirstPlace(int $winnersOrLosers): Place
     {
-        return $this->getHorizontalPoule($winnersOrLosers, 1)->getFirstPlace();
+        $horPoule = $this->getHorizontalPoule($winnersOrLosers, 1);
+        if ($horPoule === null) {
+            throw new Exception('de eerste plaats binnen een poule kan niet gevonden worden', E_ERROR);
+        }
+        return $horPoule->getFirstPlace();
     }
 
     /**

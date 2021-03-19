@@ -56,7 +56,8 @@ abstract class Sport
         return array_values(
             array_map(function (SportRoundRankingItem $rankingSportItem) use ($horizontalPoule): Place|null {
                 return $horizontalPoule->getRound()->getPlace($rankingSportItem->getPerformance()->getPlace());
-            }, $this->getItemsForHorizontalPoule($horizontalPoule, true)));
+            }, $this->getItemsForHorizontalPoule($horizontalPoule, true))
+        );
     }
 
     /**
@@ -89,9 +90,9 @@ abstract class Sport
 
 
     /**
-     * @param array<SportPerformance> $originalPerformances
-     * @param array<int> $rankingRules
-     * @return array<SportRoundRankingItem>
+     * @param list<SportPerformance> $originalPerformances
+     * @param list<int> $rankingRules
+     * @return list<SportRoundRankingItem>
      */
     protected function rankItems(array $originalPerformances, array $rankingRules): array
     {
@@ -109,7 +110,11 @@ abstract class Sport
                 return $perfA->getPlace()->getPouleNr() - $perfB->getPlace()->getPouleNr();
             });
             foreach ($bestPerformances as $bestPerformance) {
-                array_splice($performances, array_search($bestPerformance, $performances, true), 1);
+                $idx = array_search($bestPerformance, $performances, true);
+                if ($idx === false) {
+                    continue;
+                }
+                array_splice($performances, $idx, 1);
                 $sportRankingItems[] = new SportRoundRankingItem($bestPerformance, ++$nrOfIterations, $rank);
             }
         }

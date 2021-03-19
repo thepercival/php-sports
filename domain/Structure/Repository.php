@@ -59,8 +59,9 @@ class Repository
             $this->em->persist($round);
         }
         $this->em->persist($roundNumber);
-        if ($roundNumber->hasNext()) {
-            $this->customPersistHelper($roundNumber->getNext());
+        $nextRoundNumber = $roundNumber->getNext();
+        if ($nextRoundNumber !== null) {
+            $this->customPersistHelper($nextRoundNumber);
         }
     }
 

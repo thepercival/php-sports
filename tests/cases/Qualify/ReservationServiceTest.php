@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Sports\Tests\Qualify;
 
@@ -12,7 +13,7 @@ use Sports\Ranking\Calculator\Against as AgainstRankingService;
 use Sports\Qualify\ReservationService as QualifyReservationService;
 use Sports\Qualify\Group as QualifyGroup;
 
-class ReservationServiceTest extends TestCase
+final class ReservationServiceTest extends TestCase
 {
     use CompetitionCreator, SetScores;
 
@@ -25,6 +26,9 @@ class ReservationServiceTest extends TestCase
         $rootRound = $structure->getRootRound();
         $structureService->addQualifier($rootRound, QualifyGroup::WINNERS);
         $structureService->addQualifier($rootRound, QualifyGroup::LOSERS);
+
+        $winnersRound = $rootRound->getChild(QualifyGroup::WINNERS, 1);
+        self::assertNotNull($winnersRound);
 
         (new GamesCreator())->createStructureGames( $structure );
 
@@ -44,7 +48,6 @@ class ReservationServiceTest extends TestCase
         $qualifyService = new QualifyService($rootRound);
         $qualifyService->setQualifiers();
 
-        $winnersRound = $rootRound->getChild(QualifyGroup::WINNERS, 1);
         $resService = new QualifyReservationService($winnersRound);
 
         self::assertTrue($resService->isFree(1, $pouleOne));
@@ -63,7 +66,10 @@ class ReservationServiceTest extends TestCase
 
         $structureService->addQualifiers($rootRound, QualifyGroup::WINNERS, 6);
 
-        $structureService->addPoule($rootRound->getChild(QualifyGroup::WINNERS, 1));
+        $winnersRound = $rootRound->getChild(QualifyGroup::WINNERS, 1);
+        self::assertNotNull($winnersRound);
+
+        $structureService->addPoule($winnersRound);
 
         (new GamesCreator())->createStructureGames( $structure );
 
@@ -88,7 +94,7 @@ class ReservationServiceTest extends TestCase
         $qualifyService = new QualifyService($rootRound);
         $qualifyService->setQualifiers();
 
-        $winnersRound = $rootRound->getChild(QualifyGroup::WINNERS, 1);
+        // $winnersRound = $rootRound->getChild(QualifyGroup::WINNERS, 1);
         $resService = new QualifyReservationService($winnersRound);
 
         $resService->reserve(1, $pouleOne);
@@ -106,6 +112,7 @@ class ReservationServiceTest extends TestCase
 
 
         $horPoule = $rootRound->getHorizontalPoule(QualifyGroup::WINNERS, 1);
+        self::assertNotNull($horPoule);
 
         // none available
         $placeLocationOne = $resService->getFreeAndLeastAvailabe(1, $rootRound, $horPoule->getPlaces());
@@ -125,8 +132,10 @@ class ReservationServiceTest extends TestCase
         $rootRound = $structure->getRootRound();
 
         $structureService->addQualifiers($rootRound, QualifyGroup::WINNERS, 4);
+        $winnersRound = $rootRound->getChild(QualifyGroup::WINNERS, 1);
+        self::assertNotNull($winnersRound);
 
-        $structureService->removePoule($rootRound->getChild(QualifyGroup::WINNERS, 1));
+        $structureService->removePoule($winnersRound);
 
         (new GamesCreator())->createStructureGames( $structure );
 
@@ -147,7 +156,7 @@ class ReservationServiceTest extends TestCase
         $qualifyService = new QualifyService($rootRound);
         $qualifyService->setQualifiers();
 
-        $winnersPoule = $rootRound->getChild(QualifyGroup::WINNERS, 1)->getPoule(1);
+        $winnersPoule = $winnersRound->getPoule(1);
 
         self::assertNull($winnersPoule->getPlace(4)->getQualifiedPlace() );
     }

@@ -68,35 +68,21 @@ class Checker
         }
     }
 
-    /**
-     * @param Competition $competition
-     * @param int $priority
-     * @param Referee|null $referee
-     * @throws Exception
-     */
-    public function checkRefereePriority(Competition $competition, int $priority, Referee $referee = null)
+    public function checkRefereePriority(Competition $competition, int $priority, Referee $referee = null): void
     {
-        return $this->checkPriority($competition->getReferees()->toArray(), $priority, $referee);
+        $this->checkPriority($competition->getReferees()->toArray(), $priority, $referee);
+    }
+
+    public function checkFieldPriority(CompetitionSport $competitionSport, int $priority, Field $field = null): void
+    {
+        $this->checkPriority($competitionSport->getFields()->toArray(), $priority, $field);
     }
 
     /**
-     * @param CompetitionSport $competitionSport
-     * @param int $priority
-     * @param Field|null $field
-     * @throws Exception
-     */
-    public function checkFieldPriority(CompetitionSport $competitionSport, int $priority, Field $field = null)
-    {
-        return $this->checkPriority($competitionSport->getFields()->toArray(), $priority, $field);
-    }
-
-    /**
-     * @param array $prioritizables | Prioritizable[]
+     * @param list<Prioritizable> $prioritizables
      * @param int $priority
      * @param Prioritizable|null $objectToCheck
-     *
      * @throws Exception
-     *
      * @return void
      */
     protected function checkPriority(array $prioritizables, int $priority, Prioritizable $objectToCheck = null): void
@@ -116,12 +102,10 @@ class Checker
     }
 
     /**
-     * @param array|Competitor[] $competitors
+     * @param list<Competitor> $competitors
      * @param string $name
      * @param Competitor|null $competitorToCheck
-     *
      * @throws Exception
-     *
      * @return void
      */
     public function checkCompetitorName(array $competitors, string $name, Competitor $competitorToCheck = null): void
@@ -141,12 +125,10 @@ class Checker
     }
 
     /**
-     * @param array|Competitor[] $competitors
+     * @param list<Competitor> $competitors
      * @param PlaceLocation $placeLocation
      * @param Competitor|null $competitorToCheck
-     *
      * @throws Exception
-     *
      * @return void
      */
     public function checkCompetitorPlaceLocation(array $competitors, PlaceLocation $placeLocation, Competitor $competitorToCheck = null): void

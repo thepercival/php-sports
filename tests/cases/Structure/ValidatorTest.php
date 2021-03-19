@@ -217,6 +217,7 @@ final class ValidatorTest extends TestCase
         (new GamesCreator())->createStructureGames($structure);
 
         $structureValidator = new StructureValidator();
-        self::assertNull($structureValidator->checkValidity($competition, $structure));
+        self::expectNotToPerformAssertions();
+        $structureValidator->checkValidity($competition, $structure);
     }
 }

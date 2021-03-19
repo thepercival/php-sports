@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Sports\Team;
 
@@ -9,16 +10,16 @@ use Sports\Sport\Custom as SportCustom;
 
 class Player extends Role
 {
-    /**
-     * @var int|null
-     */
-    protected $shirtNumber;
+    protected int|null $shirtNumber = null;
     protected int $line;
 
     public function __construct(Team $team, Person $person, Period $period, int $line)
     {
         parent::__construct($team, $person, $period);
         $this->setLine($line);
+        if (!$person->getPlayers()->contains($this)) {
+            $person->getPlayers()->add($this) ;
+        }
     }
 
     public function getLine(): int

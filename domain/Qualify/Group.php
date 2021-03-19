@@ -11,42 +11,26 @@ use SportsHelpers\Identifiable;
 
 class Group extends Identifiable
 {
-    /**
-     * @var int
-     */
-    protected $winnersOrLosers;
+    protected int $number;
+    protected Round $childRound;
 
     /**
-     * @var int
+     * @var list<HorizontalPoule>
      */
-    protected $number;
-
-    /**
-     * @var Round
-     */
-    protected $round;
-
-    /**
-     * @var Round
-     */
-    protected $childRound;
-
-    /**
-     * @var array | HorizontalPoule[]
-     */
-    protected $horizontalPoules = [];
+    protected array $horizontalPoules = [];
 
     const WINNERS = 1;
     const DROPOUTS = 2;
     const LOSERS = 3;
 
-    public function __construct(Round $round, int $winnersOrLosers, int $number = null)
+    public function __construct(protected Round $round, protected int $winnersOrLosers, int $number = null)
     {
         $this->setWinnersOrLosers($winnersOrLosers);
+        $this->number = $number !== null ? $number : $round->getQualifyGroups($winnersOrLosers)->count() + 1;
         if ($number === null) {
-            $this->setRound($round);
+            $this->addQualifyGroup($round);
         } else {
-            $this->insertRoundAt($round, $number);
+            $this->insertQualifyGroupAt($round, $number);
         }
     }
 
@@ -60,76 +44,50 @@ class Group extends Identifiable
         $this->winnersOrLosers = $winnersOrLosers;
     }
 
-    /**
-     * @return int
-     */
-    public function getNumber()
+    public function getNumber(): int
     {
         return $this->number;
     }
 
-    /**
-     * @param int $number
-     *
-     * @return void
-     */
     public function setNumber(int $number): void
     {
         $this->number = $number;
     }
 
-    /**
-     * @return Round
-     */
-    public function getRound()
+    public function getRound(): Round
     {
         return $this->round;
     }
 
-    protected function insertRoundAt(Round $round, int $insertAt): void
+    protected function insertQualifyGroupAt(Round $round, int $insertAt): void
     {
         $qualifyGroups = $round->getQualifyGroups($this->getWinnersOrLosers());
         if (!$qualifyGroups->contains($this)) {
             $round->addQualifyGroup($this);
             // sort auto because of sort-config in db-yml
         }
-        $this->round = $round;
     }
 
-    /**
-     * @param Round $round
-     *
-     * @return void
-     */
-    public function setRound(Round $round): void
+    public function addQualifyGroup(Round $round): void
     {
         $qualifyGroups = $round->getQualifyGroups($this->getWinnersOrLosers());
         if (!$qualifyGroups->contains($this)) {
             $round->addQualifyGroup($this);
         }
-        $this->round = $round;
     }
 
-    /**
-     * @return Round
-     */
     public function getChildRound(): Round
     {
         return $this->childRound;
     }
 
-    /**
-     * @param Round $childRound
-     *
-     * @return void
-     */
     public function setChildRound(Round $childRound): void
     {
         $this->childRound = $childRound;
     }
 
     /**
-     * @return array | HorizontalPoule[]
+     * @return list<HorizontalPoule>
      */
     public function &getHorizontalPoules(): array
     {

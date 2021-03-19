@@ -15,7 +15,7 @@ class Repository extends EntityRepository
         parent::__construct($em, $class);
     }
 
-    public function save(Competition\Sport|Planning\GameAmountConfig|Qualify\AgainstConfig|Score\Config $object): Score\Config|Qualify\AgainstConfig|Planning\GameAmountConfig|Competition\Sport
+    public function save(object $object): object
     {
         try {
             $this->_em->persist($object);
@@ -27,7 +27,7 @@ class Repository extends EntityRepository
         return $object;
     }
 
-    public function remove(bool|Competition\Field|Competition\Sport|Sport|Game|Score\Against $object): void
+    public function remove(object $object): void
     {
         $this->_em->remove($object);
         $this->_em->flush();

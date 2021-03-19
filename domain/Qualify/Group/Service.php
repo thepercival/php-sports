@@ -19,10 +19,13 @@ class Service
     public function splitFrom(HorizontalPoule $horizontalPoule): void
     {
         $qualifyGroup = $horizontalPoule->getQualifyGroup();
+        if ($qualifyGroup === null) {
+            return;
+        }
         $nrOfPlacesChildRound = $qualifyGroup->getChildRound()->getNrOfPlaces();
         $horizontalPoules = $qualifyGroup->getHorizontalPoules();
         $idx = array_search($horizontalPoule, $horizontalPoules, true);
-        if ($idx < 0) {
+        if ($idx === false) {
             throw new \Exception('de horizontale poule kan niet gevonden worden', E_ERROR);
         }
         $splittedPoules = array_slice($horizontalPoules, $idx);
@@ -37,7 +40,7 @@ class Service
 
         $newQualifyGroup = new QualifyGroup($round, $qualifyGroup->getWinnersOrLosers(), $qualifyGroup->getNumber() /*+ 1* is index*/);
         $this->renumber($round, $qualifyGroup->getWinnersOrLosers());
-        $nextRoundNumber = $round->getNumber()->hasNext() ? $round->getNumber()->getNext() : $this->structureService->createRoundNumber($round);
+        $nextRoundNumber = $this->structureService->createNextRoundNumber($round);
         $newChildRound = new Round($nextRoundNumber, $newQualifyGroup);
         $splittedNrOfQualifiers = $nrOfPlacesChildRound - $newNrOfQualifiers;
         $splittedNrOfPoules = $this->structureService->calculateNewNrOfPoules($qualifyGroup, $newNrOfQualifiers);

@@ -109,7 +109,7 @@ class GamesValidatorTest extends TestCase
         $field = $game->getField();
         self::assertInstanceOf(Field::class, $field);
         $newFieldPriority = $field->getPriority() === 1 ? 2 : 1;
-        $game->setField($competition->getField($newFieldPriority));
+        $game->setField($competition->getSingleSport()->getField($newFieldPriority));
 
         $gamesValidator = new GamesValidator();
         self::expectException(Exception::class);
@@ -271,7 +271,8 @@ class GamesValidatorTest extends TestCase
 
         $gamesValidator = new GamesValidator();
         $nrOfReferees = $competition->getReferees()->count();
-        self::assertNull($gamesValidator->validate($firstRoundNumber, $nrOfReferees));
+        self::expectNotToPerformAssertions();
+        $gamesValidator->validate($firstRoundNumber, $nrOfReferees);
     }
 
     public function testGameInBreak()
@@ -301,10 +302,9 @@ class GamesValidatorTest extends TestCase
 //        }
 
         $gamesValidator = new GamesValidator();
-        $gamesValidator->setBlockedPeriod($blockedPeriod);
         self::expectException(Exception::class);
         $nrOfReferees = $competition->getReferees()->count();
-        $gamesValidator->validate($firstRoundNumber, $nrOfReferees);
+        $gamesValidator->validate($firstRoundNumber, $nrOfReferees, $blockedPeriod);
     }
 
     public function testValid()
@@ -318,6 +318,7 @@ class GamesValidatorTest extends TestCase
 
         $gamesValidator = new GamesValidator();
         $nrOfReferees = $competition->getReferees()->count();
-        self::assertNull($gamesValidator->validateStructure($structure, $nrOfReferees));
+        self::expectNotToPerformAssertions();
+        $gamesValidator->validateStructure($structure, $nrOfReferees);
     }
 }

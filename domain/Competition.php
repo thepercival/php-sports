@@ -129,8 +129,7 @@ class Competition extends Identifiable
     }
 
     /**
-     * @param ArrayCollection<int|string, Referee>
-     * @return void
+     * @param ArrayCollection<int|string, Referee> $referees
      */
     public function setReferees(ArrayCollection $referees): void
     {
@@ -144,7 +143,7 @@ class Competition extends Identifiable
                 return $referee;
             }
         }
-        throw new \Exception('kan de scheidsrechter niet vinden o.b.v. de  prioriteit', E_ERROR);
+        throw new Exception('kan de scheidsrechter niet vinden o.b.v. de  prioriteit', E_ERROR);
     }
 
     /**
@@ -162,17 +161,6 @@ class Competition extends Identifiable
     public function setTeamCompetitors(ArrayCollection $teamCompetitors): void
     {
         $this->teamCompetitors = $teamCompetitors;
-    }
-
-    public function getField(int $priority): ?CompetitionField
-    {
-        foreach ($this->getSports() as $competitionSport) {
-            $field = $competitionSport->getField($priority);
-            if ($field !== null) {
-                return $field;
-            }
-        }
-        return null;
     }
 
     /**

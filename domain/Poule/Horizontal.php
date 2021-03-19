@@ -21,28 +21,15 @@ use Sports\Qualify\Rule\Multiple as MultipleQualifyRule;
  **/
 class Horizontal
 {
+    protected QualifyGroup|null $qualifyGroup = null;
     /**
-     * @var Round
-     */
-    protected $round;
-    /**
-     * @var QualifyGroup
-     */
-    protected $qualifyGroup;
-    /**
-     * @var int
-     */
-    protected $number;
-    /**
-     * @var array<Place>
+     * @var list<Place>
      */
     protected array $places = [];
     protected MultipleQualifyRule|null $multipleRule = null;
 
-    public function __construct(Round $round, int $number)
+    public function __construct(protected Round $round, protected int $number)
     {
-        $this->round = $round;
-        $this->number = $number;
     }
 
     public function getRound(): Round
@@ -50,24 +37,14 @@ class Horizontal
         return $this->round;
     }
 
-    public function setRound(Round $round): void
-    {
-        $this->round = $round;
-    }
-
     public function getWinnersOrLosers(): int
     {
-        return $this->getQualifyGroup() !== null ? $this->getQualifyGroup()->getWinnersOrLosers() : QualifyGroup::DROPOUTS;
+        return $this->qualifyGroup !== null ? $this->qualifyGroup->getWinnersOrLosers() : QualifyGroup::DROPOUTS;
     }
 
     public function getNumber(): int
     {
         return $this->number;
-    }
-
-    public function setNumber(int $number): void
-    {
-        $this->number = $number;
     }
 
     public function getPlaceNumber(): int
@@ -83,14 +60,13 @@ class Horizontal
         return $nrOfPlaceNubers - ($this->number - 1);
     }
 
-    public function getQualifyGroup(): ?QualifyGroup
+    public function getQualifyGroup(): QualifyGroup|null
     {
         return $this->qualifyGroup;
     }
 
-    public function setQualifyGroup(?QualifyGroup $qualifyGroup): void
+    public function setQualifyGroup(QualifyGroup|null $qualifyGroup): void
     {
-
         // this is done in horizontalpouleservice
         // if( this.qualifyGroup != null ){ // remove from old round
         //     var index = this.qualifyGroup.getHorizontalPoules().indexOf(this);
@@ -99,7 +75,7 @@ class Horizontal
         //     }
         // }
         $this->qualifyGroup = $qualifyGroup;
-        if ($qualifyGroup !== null) {
+        if ($this->qualifyGroup !== null) {
             $horizontalPoules = &$this->qualifyGroup->getHorizontalPoules();
             $horizontalPoules[] = $this;
         }

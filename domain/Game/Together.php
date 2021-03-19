@@ -18,7 +18,12 @@ class Together extends GameBase
      */
     protected $places;
 
-    public function __construct(Poule $poule, int $batchNr, DateTimeImmutable $startDateTime, CompetitionSport $competitionSport)
+    public function __construct(
+        Poule $poule,
+        int $batchNr,
+        DateTimeImmutable $startDateTime,
+        CompetitionSport $competitionSport
+    )
     {
         parent::__construct($poule, $batchNr, $startDateTime, $competitionSport);
         $this->places = new ArrayCollection();
@@ -35,16 +40,11 @@ class Together extends GameBase
         return $this->places;
     }
 
-    /**
-     * @param Place $place
-     * @return bool
-     */
     public function isParticipating(Place $place): bool
     {
-        $places = $this->getPlaces()->map(function ($gamePlace) {
+        $places = $this->getPlaces()->map(function (TogetherGamePlace $gamePlace): Place {
             return $gamePlace->getPlace();
         });
         return $places->contains($place);
     }
-
 }

@@ -33,7 +33,8 @@ class PlanningAssignerTest extends \PHPUnit\Framework\TestCase
 
         $gamesValidator = new GamesValidator();
         $nrOfReferees = $competition->getReferees()->count();
-        self::assertNull($gamesValidator->validate($firstRoundNumber, $nrOfReferees));
+        self::expectNotToPerformAssertions();
+        $gamesValidator->validate($firstRoundNumber, $nrOfReferees);
     }
 
     public function testWithRefereePlaces()
@@ -50,7 +51,8 @@ class PlanningAssignerTest extends \PHPUnit\Framework\TestCase
 
         $gamesValidator = new GamesValidator();
         $nrOfReferees = $competition->getReferees()->count();
-        self::assertNull($gamesValidator->validate($firstRoundNumber, $nrOfReferees));
+        self::expectNotToPerformAssertions();
+        $gamesValidator->validate($firstRoundNumber, $nrOfReferees);
     }
 
     public function testDifferentPouleSizes()
@@ -72,6 +74,7 @@ class PlanningAssignerTest extends \PHPUnit\Framework\TestCase
 
         $gamesValidator = new GamesValidator();
         $nrOfReferees = $competition->getReferees()->count();
-        self::assertNull($gamesValidator->validate($secondRoundNumber, $nrOfReferees));
+        self::expectNotToPerformAssertions();
+        $gamesValidator->validate($secondRoundNumber, $nrOfReferees);
     }
 }

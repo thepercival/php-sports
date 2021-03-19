@@ -99,13 +99,23 @@ class Round implements SubscribingHandlerInterface
         return $round;
     }
 
+    /**
+     * @param array<string, int|bool|array<string, int|bool>> $arrConfig
+     * @param CompetitionSport $competitionSport
+     * @param RoundBase $round
+     * @param ScoreConfig|null $previous
+     */
     protected function createScoreConfig(array $arrConfig, CompetitionSport $competitionSport, RoundBase $round, ScoreConfig $previous = null)
     {
-        $config = new ScoreConfig($competitionSport, $round, $previous);
-        $config->setDirection($arrConfig["direction"]);
-        $config->setMaximum($arrConfig["maximum"]);
-        $config->setEnabled($arrConfig["enabled"]);
-        if (array_key_exists("next", $arrConfig) && $arrConfig["next"] !== null) {
+        $config = new ScoreConfig(
+            $competitionSport,
+            $round,
+            $arrConfig["direction"],
+            $arrConfig["maximum"],
+            $arrConfig["enabled"],
+            $previous
+        );
+        if (isset($arrConfig["next"])) {
             $this->createScoreConfig($arrConfig["next"], $competitionSport, $round, $config);
         }
     }

@@ -28,19 +28,17 @@ class PlanningCreator
     public function removeFrom(RoundNumber $roundNumber): void
     {
         $this->roundNumberRepos->removePlanning($roundNumber);
-        if ($roundNumber->hasNext()) {
-            $this->removeFrom($roundNumber->getNext());
+        $nextRoundNumber = $roundNumber->getNext();
+        if ($nextRoundNumber !== null) {
+            $this->removeFrom($nextRoundNumber);
         }
     }
 
-    /**
-     * @return void
-     */
     public function addFrom(
         CreatePlanningsEvent $createPlanningEvent,
         RoundNumber $roundNumber,
         Period $blockedPeriod = null
-    ) {
+    ): void {
         if (!$this->allPreviousRoundNumbersHavePlanning($roundNumber)) {
             return;
         }
@@ -49,24 +47,21 @@ class PlanningCreator
 
     public function allPreviousRoundNumbersHavePlanning(RoundNumber $roundNumber): bool
     {
-        if ($roundNumber->hasPrevious() === false) {
+        $previous = $roundNumber->getPrevious();
+        if ($previous === null) {
             return true;
         }
-        $previous = $roundNumber->getPrevious();
         if ($previous->getHasPlanning() === false) {
             return false;
         }
         return $this->allPreviousRoundNumbersHavePlanning($previous);
     }
 
-    /**
-     * @return void
-     */
     protected function createFrom(
         CreatePlanningsEvent $createPlanningEvent,
         RoundNumber $roundNumber,
         Period $blockedPeriod = null
-    ) {
+    ): void {
         $scheduler = new PlanningScheduler($blockedPeriod);
         if ($roundNumber->getHasPlanning()) { // reschedule
             $scheduler->rescheduleGames($roundNumber);
@@ -95,11 +90,12 @@ class PlanningCreator
             }
             $planning = $planningInput->getBestPlanning();
             $planningAssigner = new PlanningAssigner($scheduler);
-            $planningAssigner->createGames($roundNumber, $planning);
+            $planningAssigner->assignPlanningToRoundNumber($roundNumber, $planning);
         }
         $this->roundNumberRepos->savePlanning($roundNumber, true);
-        if ($roundNumber->hasNext()) {
-            $this->createFrom($createPlanningEvent, $roundNumber->getNext(), $blockedPeriod);
+        $nextRoundNumber = $roundNumber->getNext();
+        if ($nextRoundNumber !== null) {
+            $this->createFrom($createPlanningEvent, $nextRoundNumber, $blockedPeriod);
         }
     }
 }

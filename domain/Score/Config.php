@@ -13,107 +13,58 @@ use SportsHelpers\Identifiable;
 class Config extends Identifiable
 {
     protected $sportDep;
-    protected CompetitionSport $competitionSport;
-    protected Round $round;
     protected $roundNumberDep;
-    /**
-     * @var Config|null
-     */
-    protected $previous;
-    /**
-     * @var Config
-     */
-    protected $next;
-    /**
-     * @var int
-     */
-    protected $direction;
-    /**
-     * @var int
-     */
-    protected $maximum;
-    /**
-     * @var bool
-     */
-    protected $enabled;
+    protected Config|null $next = null;
 
     const UPWARDS = 1;
     const DOWNWARDS = 2;
 
-    public function __construct(CompetitionSport $competitionSport, Round $round, Config $previous = null)
+    public function __construct(
+        protected CompetitionSport $competitionSport,
+        protected Round $round,
+        protected int $direction,
+        protected int $maximum,
+        protected bool $enabled,
+        protected Config|null $previous = null
+    )
     {
-        $this->competitionSport = $competitionSport;
-        $this->setRound($round);
-        $this->setPrevious($previous);
-    }
-
-    /**
-     * @return Config
-     */
-    public function getPrevious(): ?Config
-    {
-        return $this->previous;
-    }
-
-    /**
-     * @param Config $scoreConfig
-     *
-     * @return void
-     */
-    public function setPrevious(Config $scoreConfig = null): void
-    {
-        $this->previous = $scoreConfig;
+        $this->round->getScoreConfigs()->add($this);
         if ($this->previous !== null) {
             $this->previous->setNext($this);
         }
     }
 
-    /**
-     * @return bool
-     */
+    public function getPrevious(): Config|null
+    {
+        return $this->previous;
+    }
+
     public function hasPrevious(): bool
     {
         return $this->previous !== null;
     }
 
-    /**
-     * @return bool
-     */
     public function isFirst(): bool
     {
         return !$this->hasPrevious();
     }
 
-    /**
-     * @return Config
-     */
-    public function getNext(): ?Config
+    public function getNext(): Config|null
     {
         return $this->next;
     }
 
-    /**
-     * @param Config $scoreConfig
-     *
-     * @return void
-     */
     public function setNext(Config $scoreConfig = null): void
     {
         $this->next = $scoreConfig;
     }
 
-    /**
-     * @return bool
-     */
     public function hasNext(): bool
     {
         return $this->next !== null;
     }
 
-    /**
-     * @return Config
-     */
-    public function getFirst()
+    public function getFirst(): Config
     {
         $parent = $this->getPrevious();
         if ($parent !== null) {
@@ -132,25 +83,11 @@ class Config extends Identifiable
         return $this->round;
     }
 
-    protected function setRound(Round $round): void
-    {
-        $this->round = $round;
-        $this->round->getScoreConfigs()->add($this);
-    }
-
-    /**
-     * @return int
-     */
-    public function getDirection()
+    public function getDirection(): int
     {
         return $this->direction;
     }
 
-    /**
-     * @param int $direction
-     *
-     * @return void
-     */
     public function setDirection(int $direction): void
     {
         if ($direction !== Config::UPWARDS and $direction !== Config::DOWNWARDS) {
@@ -159,40 +96,14 @@ class Config extends Identifiable
         $this->direction = $direction;
     }
 
-    /**
-     * @return int
-     */
-    public function getMaximum()
+    public function getMaximum(): int
     {
         return $this->maximum;
     }
 
-    /**
-     * @param int $maximum
-     *
-     * @return void
-     */
-    public function setMaximum(int $maximum): void
-    {
-        $this->maximum = $maximum;
-    }
-
-    /**
-     * @return bool
-     */
-    public function getEnabled()
+    public function getEnabled(): bool
     {
         return $this->enabled;
-    }
-
-    /**
-     * @param bool $enabled
-     *
-     * @return void
-     */
-    public function setEnabled($enabled): void
-    {
-        $this->enabled = $enabled;
     }
 
     public function isLast(): bool
@@ -200,11 +111,12 @@ class Config extends Identifiable
         return !$this->hasNext();
     }
 
-    public function getCalculate(): ?static
+    public function getCalculate(): Config|null
     {
         $first = $this->getFirst();
-        if ($first->hasNext() && $first->getNext()->getEnabled()) {
-            return $first->getNext();
+        $nextAfterFirst = $first->getNext();
+        if ($nextAfterFirst !== null && $nextAfterFirst->getEnabled()) {
+            return $nextAfterFirst;
         }
         return $this;
     }

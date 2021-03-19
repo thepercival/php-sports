@@ -1,32 +1,16 @@
 <?php
+declare(strict_types=1);
 
 namespace Sports;
 
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityRepository;
+use Doctrine\Persistence\ObjectRepository;
 
 class Service
 {
-    /**
-     * @var EntityManager
-     */
-    protected $entitymanager;
-
-    /**
-     * Service constructor.
-     * @param EntityManager $entitymanager
-     */
-    public function __construct(EntityManager $entitymanager)
+    public function __construct(protected EntityManager $entitymanager)
     {
-        $this->entitymanager = $entitymanager;
-    }
-
-    /**
-     * @param string $classname
-     * @return mixed
-     */
-    public function getRepository(string $classname)
-    {
-        return $this->getEntityManager()->getRepository($classname);
     }
 
     public function getStructureRepository(): Structure\Repository

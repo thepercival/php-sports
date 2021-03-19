@@ -63,10 +63,10 @@ class Association extends Identifiable
      */
     public function setDescription(string|null $description = null): void
     {
-        if (strlen($description) === 0 && $description !== null) {
+        if ($description !== null && strlen($description) === 0) {
             $description = null;
         }
-        if (strlen($description) > static::MAX_LENGTH_DESCRIPTION) {
+        if ($description !== null && strlen($description) > static::MAX_LENGTH_DESCRIPTION) {
             throw new \InvalidArgumentException(
                 "de omschrijving mag maximaal " . static::MAX_LENGTH_DESCRIPTION . " karakters bevatten",
                 E_ERROR
@@ -111,7 +111,7 @@ class Association extends Identifiable
             $this->parent->getChildren()->removeElement($this);
         }
         $this->parent = $parent;
-        if ($this->parent !== null && $this->parent->getChildren() !== null) {
+        if ($this->parent !== null) {
             $this->parent->getChildren()->add($this);
         }
     }

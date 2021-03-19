@@ -1,9 +1,13 @@
 <?php
+declare(strict_types=1);
 
 namespace Sports\Tests;
 
+use PHPUnit\Framework\TestCase;
+use Sports\Competition\Field;
 use Sports\Competitor\Map as CompetitorMap;
 use Sports\Team;
+use Sports\Game\Against as AgainstGame;
 use Sports\TestHelper\CompetitionCreator;
 use Sports\NameService;
 use Sports\Competitor\Team as TeamCompetitor;
@@ -12,7 +16,7 @@ use Sports\Structure\Service as StructureService;
 use Sports\Qualify\Group as QualifyGroup;
 use Sports\TestHelper\GamesCreator;
 
-class NameServiceTest extends \PHPUnit\Framework\TestCase
+final class NameServiceTest extends TestCase
 {
     use CompetitionCreator;
 
@@ -39,15 +43,19 @@ class NameServiceTest extends \PHPUnit\Framework\TestCase
         $structureService->addQualifiers($rootRound, QualifyGroup::WINNERS, 4);
         $structureService->addQualifiers($rootRound, QualifyGroup::LOSERS, 4);
 
-        $secondRoundNumberName = $nameService->getRoundNumberName($firstRoundNumber->getNext());
+        $secondRoundNumber = $firstRoundNumber->getNext();
+        self::assertNotNull($secondRoundNumber);
+        $secondRoundNumberName = $nameService->getRoundNumberName($secondRoundNumber);
         // all equal
         self::assertSame($secondRoundNumberName, 'finale');
 
-        $losersChildRound = $rootRound->getBorderQualifyGroup(QualifyGroup::LOSERS)->getChildRound();
+        $borderGroup = $rootRound->getBorderQualifyGroup(QualifyGroup::LOSERS);
+        self::assertNotNull($borderGroup);
+        $losersChildRound = $borderGroup->getChildRound();
 
         $structureService->addQualifier($losersChildRound, QualifyGroup::LOSERS);
         // not all equal
-        $newSecondRoundNumberName = $nameService->getRoundNumberName($firstRoundNumber->getNext());
+        $newSecondRoundNumberName = $nameService->getRoundNumberName($secondRoundNumber);
         self::assertSame($newSecondRoundNumberName, '2de ronde'); // '2<sup>de</sup> ronde'
     }
 
@@ -79,7 +87,9 @@ class NameServiceTest extends \PHPUnit\Framework\TestCase
 
             $structureService2->addQualifiers($rootRound2, QualifyGroup::WINNERS, 3);
 
-            self::assertSame($nameService->getRoundName($rootRound2->getChild(QualifyGroup::WINNERS, 1)), '2de ronde'); // '2<sup>de</sup> ronde'
+            $rootRound2Child = $rootRound2->getChild(QualifyGroup::WINNERS, 1);
+            self::assertNotNull($rootRound2Child);
+            self::assertSame($nameService->getRoundName($rootRound2Child), '2de ronde'); // '2<sup>de</sup> ronde'
         }
     }
 
@@ -96,29 +106,37 @@ class NameServiceTest extends \PHPUnit\Framework\TestCase
 
             $structureService->addQualifiers($rootRound, QualifyGroup::WINNERS, 8);
 
-            $winnersChildRound = $rootRound->getBorderQualifyGroup(QualifyGroup::WINNERS)->getChildRound();
-
+            $rootWinnersBorderGroup = $rootRound->getBorderQualifyGroup(QualifyGroup::WINNERS);
+            self::assertNotNull($rootWinnersBorderGroup);
+            $winnersChildRound = $rootWinnersBorderGroup->getChildRound();
             $structureService->addQualifiers($winnersChildRound, QualifyGroup::WINNERS, 4);
 
             $structureService->addQualifiers($rootRound, QualifyGroup::LOSERS, 8);
 
-            $losersChildRound = $rootRound->getBorderQualifyGroup(QualifyGroup::LOSERS)->getChildRound();
-
+            $rootLosersBorderGroup = $winnersChildRound->getBorderQualifyGroup(QualifyGroup::LOSERS);
+            self::assertNotNull($rootLosersBorderGroup);
+            $losersChildRound = $rootLosersBorderGroup->getChildRound();
             $structureService->addQualifiers($losersChildRound, QualifyGroup::LOSERS, 4);
 
             self::assertSame($nameService->getRoundName($rootRound), 'kwart finale'); // '&frac14; finale'
 
-            $doubleWinnersChildRound = $winnersChildRound->getBorderQualifyGroup(QualifyGroup::WINNERS)->getChildRound();
+            $winnersBorderGroup = $winnersChildRound->getBorderQualifyGroup(QualifyGroup::WINNERS);
+            self::assertNotNull($winnersBorderGroup);
+            $doubleWinnersChildRound = $winnersBorderGroup->getChildRound();
             $structureService->addQualifier($doubleWinnersChildRound, QualifyGroup::WINNERS);
 
-            $doubleLosersChildRound = $losersChildRound->getBorderQualifyGroup(QualifyGroup::LOSERS)->getChildRound();
+            $losersBorderGroup = $losersChildRound->getBorderQualifyGroup(QualifyGroup::LOSERS);
+            self::assertNotNull($losersBorderGroup);
+            $doubleLosersChildRound = $losersBorderGroup->getChildRound();
             $structureService->addQualifier($doubleLosersChildRound, QualifyGroup::LOSERS);
 
             $number = 8;
             // '<span style="font-size: 80%"><sup>1</sup>&frasl;<sub>' . $number . '</sub></span> finale'
             self::assertSame($nameService->getRoundName($rootRound), '1/8 finale');
 
-            $losersFinal = $doubleLosersChildRound->getBorderQualifyGroup(QualifyGroup::LOSERS)->getChildRound();
+            $doubleLosersBorderGroup = $doubleLosersChildRound->getBorderQualifyGroup(QualifyGroup::LOSERS);
+            self::assertNotNull($doubleLosersBorderGroup);
+            $losersFinal = $doubleLosersBorderGroup->getChildRound();
             self::assertSame($nameService->getRoundName($losersFinal), '15de/16de' . ' plaats'); // '15<sup>de</sup>/16<sup>de</sup>'
         }
     }
@@ -216,7 +234,9 @@ class NameServiceTest extends \PHPUnit\Framework\TestCase
             self::assertSame($nameService->getPlaceFromName($lastPlace, true, true), 'poule C nr. 3');
 
 
-            $winnersChildRound = $rootRound->getBorderQualifyGroup(QualifyGroup::WINNERS)->getChildRound();
+            $rootWinnersBorderGroup = $rootRound->getBorderQualifyGroup(QualifyGroup::WINNERS);
+            self::assertNotNull($rootWinnersBorderGroup);
+            $winnersChildRound = $rootWinnersBorderGroup->getChildRound();
             $winnersLastPlace = $winnersChildRound->getPoule(1)->getPlace(2);
 
             self::assertSame($nameService->getPlaceFromName($winnersLastPlace, false, false), '?2');
@@ -228,7 +248,9 @@ class NameServiceTest extends \PHPUnit\Framework\TestCase
             self::assertSame($nameService->getPlaceFromName($winnersFirstPlace, false, true), 'poule A nr. 1');
 
             $structureService->addQualifier($winnersChildRound, QualifyGroup::WINNERS);
-            $doubleWinnersChildRound = $winnersChildRound->getBorderQualifyGroup(QualifyGroup::WINNERS)->getChildRound();
+            $winnersBorderGroup = $winnersChildRound->getBorderQualifyGroup(QualifyGroup::WINNERS);
+            self::assertNotNull($winnersBorderGroup);
+            $doubleWinnersChildRound = $winnersBorderGroup->getChildRound();
 
             $doubleWinnersFirstPlace = $doubleWinnersChildRound->getPoule(1)->getPlace(1);
 
@@ -236,8 +258,10 @@ class NameServiceTest extends \PHPUnit\Framework\TestCase
             self::assertSame($nameService->getPlaceFromName($doubleWinnersFirstPlace, false, true), 'winnaar D');
 
             $structureService->addQualifier($winnersChildRound, QualifyGroup::LOSERS);
-            $winnersLosersChildRound = $winnersChildRound->getBorderQualifyGroup(QualifyGroup::LOSERS)->getChildRound();
+            $losersBorderGroup = $winnersChildRound->getBorderQualifyGroup(QualifyGroup::LOSERS);
+            self::assertNotNull($losersBorderGroup);
 
+            $winnersLosersChildRound = $losersBorderGroup->getChildRound();
             $winnersLosersFirstPlace = $winnersLosersChildRound->getPoule(1)->getPlace(1);
 
             self::assertSame($nameService->getPlaceFromName($winnersLosersFirstPlace, false), 'D2');
@@ -249,8 +273,10 @@ class NameServiceTest extends \PHPUnit\Framework\TestCase
     {
         $nameService = new NameService();
         $competition = $this->createCompetition();
-        $competitionSport = $competition->getSports()->first();
-        $competitionSport->getFields()->removeElement($competitionSport->getFields()->last());
+        $competitionSport = $competition->getSingleSport();
+        $field = $competitionSport->getFields()->last();
+        self::assertNotFalse($field);
+        $competitionSport->getFields()->removeElement($field);
 
         // basics
         {
@@ -333,8 +359,10 @@ class NameServiceTest extends \PHPUnit\Framework\TestCase
     public function testRefereeName()
     {
         $competition = $this->createCompetition();
-        $competitionSport = $competition->getSports()->first();
-        $competitionSport->getFields()->removeElement($competitionSport->getFields()->last());
+        $competitionSport = $competition->getSingleSport();
+        $lastField = $competitionSport->getFields()->last();
+        self::assertInstanceOf(Field::class, $lastField);
+        $competitionSport->getFields()->removeElement($lastField);
 
         // basics
         {
@@ -356,6 +384,7 @@ class NameServiceTest extends \PHPUnit\Framework\TestCase
             (new GamesCreator())->createStructureGames($structure);
 
             $game = $firstPlace->getPoule()->getAgainstGames()->first();
+            self::assertInstanceOf(AgainstGame::class, $game);
             self::assertSame($nameService->getRefereeName($game), '111');
 
             $referee = new Referee($competition);

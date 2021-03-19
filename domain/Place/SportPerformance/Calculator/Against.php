@@ -13,6 +13,7 @@ use Sports\Round;
 use Sports\Place\SportPerformance;
 use Sports\Place\SportPerformance\Calculator;
 use Sports\Game\Against as AgainstGame;
+use Sports\Game\Together as TogetherGame;
 use SportsHelpers\Against\Side as AgainstSide;
 use SportsHelpers\Against\Result as AgainstResult;
 
@@ -99,5 +100,16 @@ class Against extends Calculator
     private function getGameScorePart(AgainstScoreHelper $againstGameScore, int $side): int
     {
         return $side === AgainstSide::HOME ? $againstGameScore->getHome() : $againstGameScore->getAway();
+    }
+
+    /**
+     * @param array<TogetherGame|AgainstGame> $games
+     * @return array<AgainstGame>
+     */
+    protected function getFilteredGames(array $games): array
+    {
+        return array_filter(parent::getFilteredGames($games), function (AgainstGame | TogetherGame $game): bool {
+            return $game instanceof AgainstGame;
+        });
     }
 }

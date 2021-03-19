@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Sports\Planning\Config;
 
@@ -6,7 +7,6 @@ use Sports\Competition;
 use Sports\Game\CreationStrategy;
 use Sports\Planning\Config as PlanningConfig;
 use SportsHelpers\GameMode;
-use SportsPlanning\Input as PlanningInput;
 use Sports\Round\Number as RoundNumber;
 use SportsPlanning\SelfReferee;
 
@@ -76,10 +76,10 @@ class Service
             return CreationStrategy::StaticManual;
         }
         $sport = $competition->getSingleSport();
-        if ($sport->getGameMode() === GameMode::AGAINST) {
+        if ($sport->getSport()->getGameMode() === GameMode::AGAINST) {
             return CreationStrategy::StaticPouleSize;
         }
-        if ($sport->getNrOfGamePlaces() > 2) {
+        if ($sport->getSport()->getNrOfGamePlaces() > 2) {
             return CreationStrategy::IncrementalRandom;
         }
         return CreationStrategy::StaticManual;

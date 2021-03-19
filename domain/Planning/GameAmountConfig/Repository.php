@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Sports\Planning\GameAmountConfig;
 
@@ -7,24 +8,22 @@ use Sports\Round\Number as RoundNumber;
 
 class Repository extends \Sports\Repository
 {
-    /**
-     * @return void
-     */
-    public function addObjects(CompetitionSport $competitionSport, RoundNumber $roundNumber)
+    public function addObjects(CompetitionSport $competitionSport, RoundNumber $roundNumber): void
     {
         $gameAmountConfig = $roundNumber->getGameAmountConfig($competitionSport);
         if ($gameAmountConfig === null) {
             return;
         }
         $this->save($gameAmountConfig);
-        if ($roundNumber->hasNext()) {
-            $this->addObjects($competitionSport, $roundNumber->getNext());
+        $nextRoundNumber = $roundNumber->getNext();
+        if ($nextRoundNumber !== null) {
+            $this->addObjects($competitionSport, $nextRoundNumber);
         }
     }
 
     public function removeObjects(CompetitionSport $competitionSport): void
     {
-        $gameAmountConfigs = $this->findBy( ["competitionSport" => $competitionSport ] );
+        $gameAmountConfigs = $this->findBy(["competitionSport" => $competitionSport ]);
         foreach ($gameAmountConfigs as $config) {
             $this->remove($config);
         }

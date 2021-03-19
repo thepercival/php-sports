@@ -109,8 +109,8 @@ class Service
 
         $unfreeQualifyRules = [];
         $oneQualifyRuleConnected = false;
-        while (!$oneQualifyRuleConnected && !$queue->isEmpty()) {
-            $qualifyRule = $queue->remove($startEnd);
+        $qualifyRule = $queue->remove($startEnd);
+        while (!$oneQualifyRuleConnected && $qualifyRule !== null) {
             if (!($qualifyRule instanceof MultipleQualifyRule)
                 && !$reservationService->isFree($childPlace->getPoule()->getNumber(), $qualifyRule->getFromPoule())) {
                 $unfreeQualifyRules[] = $qualifyRule;
@@ -118,6 +118,7 @@ class Service
             }
             $setToPlacesAndReserve($qualifyRule);
             $oneQualifyRuleConnected = true;
+            $qualifyRule = $queue->remove($startEnd);
         }
         if ($startEnd === QualifyRuleQueue::END) {
             $unfreeQualifyRules = array_reverse($unfreeQualifyRules);

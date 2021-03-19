@@ -18,14 +18,12 @@ class Sport extends SportBase
     const SENDOFF = 2;
 
     private string $name;
-    private bool $team;
     private int $customId = 0;
 
-    public function __construct(string $name, bool $team, int $nrOfGamePlaces, int $gameMode)
+    public function __construct(string $name, private bool $team, int $nrOfGamePlaces, int $gameMode)
     {
         parent::__construct($gameMode, $nrOfGamePlaces);
         $this->setName($name);
-        $this->team = $team;
     }
 
     public function getName(): string
@@ -47,7 +45,7 @@ class Sport extends SportBase
         return $this->team;
     }
 
-    public function getCustomId(): ?int
+    public function getCustomId(): int
     {
         return $this->customId;
     }

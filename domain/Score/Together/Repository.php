@@ -10,8 +10,7 @@ class Repository extends \Sports\Repository
 {
     public function removeScores(TogetherGamePlace $gamePlace): void
     {
-        while ($gamePlace->getScores()->count() > 0) {
-            $score = $gamePlace->getScores()->first();
+        while ($score = $gamePlace->getScores()->first()) {
             $gamePlace->getScores()->removeElement($score);
             $this->remove($score);
         }

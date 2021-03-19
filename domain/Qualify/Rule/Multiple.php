@@ -32,7 +32,7 @@ class Multiple extends QualifyRule
 
     public function getWinnersOrLosers(): int
     {
-        return $this->fromHorizontalPoule->getQualifyGroup()->getWinnersOrLosers();
+        return $this->fromHorizontalPoule->getWinnersOrLosers();
     }
 
     public function addToPlace(Place $toPlace): void

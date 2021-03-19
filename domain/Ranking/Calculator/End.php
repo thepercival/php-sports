@@ -68,8 +68,8 @@ class End
         while ($nrOfDropouts > 0) {
             foreach ([QualifyGroup::WINNERS, QualifyGroup::LOSERS] as $winnersOrLosers) {
                 foreach ($round->getHorizontalPoules($winnersOrLosers) as $horizontalPoule) {
-                    /** @var HorizontalPoule $horizontalPoule */
-                    if ($horizontalPoule->getQualifyGroup() !== null && $horizontalPoule->getQualifyGroup()->getNrOfToPlacesTooMuch() === 0) {
+                    $qualifyGroup = $horizontalPoule->getQualifyGroup();
+                    if ($qualifyGroup!== null && $qualifyGroup->getNrOfToPlacesTooMuch() === 0) {
                         if ($nrOfDropouts > 0) {
                             continue;
                         }

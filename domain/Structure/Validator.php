@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Sports\Structure;
 
@@ -15,10 +16,7 @@ use Sports\Structure;
 
 class Validator
 {
-    /**
-     * @var NameService
-     */
-    protected $nameService;
+    protected NameService $nameService;
 
     public function __construct()
     {
@@ -57,8 +55,9 @@ class Validator
                 }
             }
         }
-        if ($roundNumber->hasNext()) {
-            $this->checkRoundNumberValidity($roundNumber->getNext(), $competition);
+        $nextRoundNumber = $roundNumber->getNext();
+        if ($nextRoundNumber !== null) {
+            $this->checkRoundNumberValidity($nextRoundNumber, $competition);
         }
     }
 

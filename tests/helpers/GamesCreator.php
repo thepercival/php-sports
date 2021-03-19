@@ -55,11 +55,11 @@ class GamesCreator
             $refereePlaceService->assign($minIsMaxPlanning->createFirstBatch());
         }
 
-        $convertService = new PlanningAssigner(new PlanningScheduler($blockedPeriod));
-        $convertService->createGames($roundNumber, $minIsMaxPlanning);
-
-        if ($roundNumber->hasNext()) {
-            $this->createGamesHelper($roundNumber->getNext());
+        $planningAssigner = new PlanningAssigner(new PlanningScheduler($blockedPeriod));
+        $planningAssigner->assignPlanningToRoundNumber($roundNumber, $minIsMaxPlanning);
+        $nextRoundNumber = $roundNumber->getNext();
+        if ($nextRoundNumber !== null) {
+            $this->createGamesHelper($nextRoundNumber);
         }
     }
 

@@ -43,4 +43,15 @@ class Together extends Calculator
         };
         return $performances;
     }
+
+    /**
+     * @param array<TogetherGame|AgainstGame> $games
+     * @return array<TogetherGame>
+     */
+    protected function getFilteredGames(array $games): array
+    {
+        return array_filter(parent::getFilteredGames($games), function (AgainstGame | TogetherGame $game): bool {
+            return $game instanceof TogetherGame;
+        });
+    }
 }

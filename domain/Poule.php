@@ -85,18 +85,19 @@ class Poule extends Identifiable
 
     public function setName(string $name = null): void
     {
-        if (is_string($name) and strlen($name) === 0) {
+        if ($name !== null and strlen($name) === 0) {
             $name = null;
         }
-
-        if (strlen($name) > static::MAX_LENGTH_NAME) {
-            throw new InvalidArgumentException("de naam mag maximaal ".static::MAX_LENGTH_NAME." karakters bevatten", E_ERROR);
+        if ($name !== null) {
+            if (strlen($name) > static::MAX_LENGTH_NAME) {
+                throw new InvalidArgumentException(
+                    "de naam mag maximaal " . static::MAX_LENGTH_NAME . " karakters bevatten", E_ERROR
+                );
+            }
+            if (preg_match('/[^a-z0-9 ]/i', $name)) {
+                throw new InvalidArgumentException("de naam mag alleen cijfers, letters en spaties bevatten", E_ERROR);
+            }
         }
-
-        if (preg_match('/[^a-z0-9 ]/i', $name)) {
-            throw new InvalidArgumentException("de naam mag alleen cijfers, letters en spaties bevatten", E_ERROR);
-        }
-
         $this->name = $name;
     }
 
@@ -130,7 +131,7 @@ class Poule extends Identifiable
 
     public function getPlace(int $number): Place
     {
-        $places = array_filter($this->getPlaces()->toArray(), function ($place) use ($number): bool {
+        $places = array_filter($this->getPlaces()->toArray(), function (Place $place) use ($number): bool {
             return $place->getNumber() === $number;
         });
         $place = reset($places);

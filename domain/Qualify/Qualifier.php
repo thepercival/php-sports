@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Sports\Qualify;
 
@@ -7,42 +8,20 @@ use Sports\Competitor as Competitor;
 
 class Qualifier
 {
-    /**
-     * @var Place
-     */
-    private $place;
-    /**
-     * @var Competitor
-     */
-    private $competitor;
-
-    public function __construct(Place $place, Competitor $competitor = null)
+    public function __construct(protected Place $place, protected Competitor|null $competitor = null)
     {
-        $this->place = $place;
-        $this->competitor = $competitor;
     }
 
-    /**
-     * @return Place
-     */
-    public function getPlace()
+    public function getPlace(): Place
     {
         return $this->place;
     }
 
-    /**
-     * @return Competitor
-     */
-    public function getCompetitor()
+    public function getCompetitor(): Competitor|null
     {
         return $this->competitor;
     }
 
-    /**
-     * @param Competitor $competitor
-     *
-     * @return void
-     */
     public function setCompetitor(Competitor $competitor): void
     {
         $this->competitor = $competitor;

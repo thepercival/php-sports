@@ -49,8 +49,10 @@ class Service
                         continue;
                     }
                     $singleRule = $place->getToQualifyRule($horizontalPoule->getWinnersOrLosers());
+                    if (!($singleRule instanceof SingleQualifyRule)) {
+                        continue;
+                    }
                     $changedPlace = $this->setQualifierForSingleRuleAndReserve($singleRule);
-                    ;
                     if ($changedPlace !== null) {
                         $changedPlaces[] = $changedPlace;
                     }

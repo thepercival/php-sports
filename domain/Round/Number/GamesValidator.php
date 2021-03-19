@@ -17,87 +17,66 @@ use Sports\Round\Number as RoundNumber;
 
 class GamesValidator
 {
-    /**
-     * @var RoundNumber
-     */
-    protected $roundNumber;
-    /**
-     * @var Period|null
-     */
-    protected $blockedPeriod;
-
-    /**
-     * @var array | AgainstGame[] | TogetherGame[]
-     */
-    protected $games;
-
     public function __construct()
     {
     }
 
-    public function setBlockedPeriod(Period $period = null): void
-    {
-        $this->blockedPeriod = $period;
-    }
-
-    public function validateStructure(Structure $structure, int $nrOfReferees): void
+    public function validateStructure(Structure $structure, int $nrOfReferees, Period $period = null): void
     {
         $roundNumber = $structure->getFirstRoundNumber();
         while ($roundNumber !== null) {
-            $this->validate($roundNumber, $nrOfReferees);
+            $this->validate($roundNumber, $nrOfReferees, $period);
             $roundNumber = $roundNumber->getNext();
         }
     }
 
-    public function validate(RoundNumber $roundNumber, int $nrOfReferees): void
+    public function validate(RoundNumber $roundNumber, int $nrOfReferees, Period|null $blockedPeriod = null): void
     {
-        $this->roundNumber = $roundNumber;
-        $this->games = $this->roundNumber->getGames(); // no order
-        $this->validateEnoughTotalNrOfGames();
-        $this->validateFields();
-        if ($this->blockedPeriod !== null) {
-            $this->validateGameNotInBlockedPeriod();
+        $this->validateEnoughTotalNrOfGames($roundNumber);
+        $this->validateFields($roundNumber);
+        if ($blockedPeriod !== null) {
+            $this->validateGameNotInBlockedPeriod($roundNumber, $blockedPeriod);
         }
-        $this->validateAllPlacesSameNrOfGames();
-        $this->validateResourcesPerBatch();
-        $this->validateEquallyAssigned($nrOfReferees);
-        $this->validatePriorityOfFieldsAndReferees();
+        $this->validateAllPlacesSameNrOfGames($roundNumber);
+        $this->validateResourcesPerBatch($roundNumber);
+        $this->validateEquallyAssigned($roundNumber, $nrOfReferees);
+        $this->validatePriorityOfFieldsAndReferees($roundNumber);
     }
 
-    protected function validateEnoughTotalNrOfGames(): void
+    protected function validateEnoughTotalNrOfGames(RoundNumber $roundNumber): void
     {
-        if (count($this->games) === 0) {
+        if (count($roundNumber->getGames()) === 0) {
             throw new Exception("the planning has not enough games", E_ERROR);
         }
     }
 
 
-    protected function validateFields(): void
+    protected function validateFields(RoundNumber $roundNumber): void
     {
-        foreach ($this->games as $game) {
+        foreach ($roundNumber->getGames() as $game) {
             if ($game->getField() === null) {
                 throw new Exception("there is at least one game without a field", E_ERROR);
             }
         }
     }
 
-    protected function validateGameNotInBlockedPeriod(): void
+    protected function validateGameNotInBlockedPeriod(RoundNumber $roundNumber, Period $blockedPeriod): void
     {
-        $maxNrOfMinutesPerGame = $this->roundNumber->getValidPlanningConfig()->getMaxNrOfMinutesPerGame();
-        foreach ($this->games as $game) {
+        $maxNrOfMinutesPerGame = $roundNumber->getValidPlanningConfig()->getMaxNrOfMinutesPerGame();
+        foreach ($roundNumber->getGames() as $game) {
             $gamePeriod = new Period(
                 $game->getStartDateTime(),
                 $game->getStartDateTime()->modify("+" . $maxNrOfMinutesPerGame . " minutes")
             );
-            if ($gamePeriod->overlaps($this->blockedPeriod)) {
+            if ($gamePeriod->overlaps($blockedPeriod)) {
                 throw new Exception("a game is during a blocked period", E_ERROR);
             }
         }
     }
 
-    protected function validateAllPlacesSameNrOfGames(): void
+    protected function validateAllPlacesSameNrOfGames(RoundNumber $roundNumber): void
     {
-        foreach ($this->roundNumber->getPoules() as $poule) {
+        foreach ($roundNumber->getPoules() as $poule) {
             if ($this->allPlacesInPouleSameNrOfGames($poule) === false) {
                 throw new Exception("not all places within poule have same number of games", E_ERROR);
             }
@@ -141,17 +120,17 @@ class GamesValidator
         )->toArray();
     }
 
-    protected function validateResourcesPerBatch(): void
+    protected function validateResourcesPerBatch(RoundNumber $roundNumber): void
     {
-        if ($this->validateResourcesPerBatchHelper() !== true) {
+        if ($this->validateResourcesPerBatchHelper($roundNumber) !== true) {
             throw new Exception("more resources per batch than allowed", E_ERROR);
         }
     }
 
-    protected function validateResourcesPerBatchHelper(): bool
+    protected function validateResourcesPerBatchHelper(RoundNumber $roundNumber): bool
     {
         $batchesResources = [];
-        foreach ($this->games as $game) {
+        foreach ($roundNumber->getGames() as $game) {
             if (array_key_exists($game->getBatchNr(), $batchesResources) === false) {
                 $batchesResources[$game->getBatchNr()] = array("fields" => [], "referees" => [], "places" => []);
             }
@@ -187,18 +166,20 @@ class GamesValidator
         return true;
     }
 
-    protected function validateEquallyAssigned(int $nrOfReferees): void
+    protected function validateEquallyAssigned(RoundNumber $roundNumber, int $nrOfReferees): void
     {
         $fields = [];
         $referees = [];
         $refereePlaces = [];
 
-        foreach ($this->games as $game) {
+        foreach ($roundNumber->getGames() as $game) {
             $field = $game->getField();
-            if (array_key_exists($field->getPriority(), $fields) === false) {
-                $fields[$field->getPriority()] = 0;
+            if ($field !== null) {
+                if (array_key_exists($field->getPriority(), $fields) === false) {
+                    $fields[$field->getPriority()] = 0;
+                }
+                $fields[$field->getPriority()]++;
             }
-            $fields[$game->getField()->getPriority()]++;
 
             $refereePlace = $game->getRefereePlace();
             if ($refereePlace !== null) {
@@ -219,7 +200,7 @@ class GamesValidator
             if (array_key_exists($referee->getPriority(), $referees) === false) {
                 $referees[$referee->getPriority()] = 0;
             }
-            $referees[$game->getReferee()->getPriority()]++;
+            $referees[$referee->getPriority()]++;
         }
 
         $this->validateNrOfGamesRange($fields, "fields");
@@ -228,7 +209,7 @@ class GamesValidator
             throw new Exception("no referees have been assigned", E_ERROR);
         }
 
-        if ($this->arePoulesEquallySized()) {
+        if ($this->arePoulesEquallySized($roundNumber)) {
             $refereePlacesMerged = [];
             foreach ($refereePlaces as $refereePlacesPerPoule) {
                 $refereePlacesMerged = array_merge($refereePlacesMerged, $refereePlacesPerPoule);
@@ -241,24 +222,22 @@ class GamesValidator
         }
     }
 
-    protected function arePoulesEquallySized(): bool
+    protected function arePoulesEquallySized(RoundNumber $roundNumber): bool
     {
-        return ($this->roundNumber->getNrOfPlaces() % count($this->roundNumber->getPoules())) === 0;
+        return ($roundNumber->getNrOfPlaces() % count($roundNumber->getPoules())) === 0;
     }
 
     /**
-     * @param array $items
+     * @param array<string|int, int> $gameAmounts
      * @param string $suffix
-     *
      * @throws Exception
-     *
      * @return void
      */
-    protected function validateNrOfGamesRange(array $items, string $suffix): void
+    protected function validateNrOfGamesRange(array $gameAmounts, string $suffix): void
     {
         $minNrOfGames = null;
         $maxNrOfGames = null;
-        foreach ($items as $nr => $nrOfGames) {
+        foreach ($gameAmounts as $nr => $nrOfGames) {
             if ($minNrOfGames === null || $nrOfGames < $minNrOfGames) {
                 $minNrOfGames = $nrOfGames;
             }
@@ -271,16 +250,18 @@ class GamesValidator
         }
     }
 
-    protected function validatePriorityOfFieldsAndReferees(): void
+    protected function validatePriorityOfFieldsAndReferees(RoundNumber $roundNumber): void
     {
-        $orderedGames = $this->roundNumber->getGames(Game::ORDER_BY_BATCH);
-        $gamesFirstBatch = $this->getGamesForBatch($orderedGames);
+        $orderedGames = $roundNumber->getGames(Game::ORDER_BY_BATCH);
+        $gamesFirstBatch = $this->getGamesForBatch($roundNumber, $orderedGames);
         $priority = 1;
         foreach ($gamesFirstBatch as $game) {
-            if ($game->getField()->getPriority() !== $priority) {
+            $field = $game->getField();
+            if ($field !== null && $field->getPriority() !== $priority) {
                 throw new Exception("fields are not prioritized", E_ERROR);
             }
-            if ($game->getReferee() !== null && $game->getReferee()->getPriority() !== $priority) {
+            $referee = $game->getReferee();
+            if ($referee !== null && $referee->getPriority() !== $priority) {
                 throw new Exception("referees are not prioritized", E_ERROR);
             }
             $priority++;
@@ -288,12 +269,12 @@ class GamesValidator
     }
 
     /**
-     * @param array|Game[] $orderedGames
-     * @return array|Game[]
+     * @param list<AgainstGame|TogetherGame> $orderedGames
+     * @return list<AgainstGame|TogetherGame>
      */
-    protected function getGamesForBatch(array $orderedGames): array
+    protected function getGamesForBatch(RoundNumber $roundNumber, array $orderedGames): array
     {
-        $gamesOrderedByRoundNumber = $this->roundNumber->isFirst() ? $orderedGames : array_reverse($orderedGames);
+        $gamesOrderedByRoundNumber = $roundNumber->isFirst() ? $orderedGames : array_reverse($orderedGames);
 
         $game = array_shift($gamesOrderedByRoundNumber);
         $gamesBatch = [];

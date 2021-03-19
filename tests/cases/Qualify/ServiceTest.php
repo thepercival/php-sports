@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Sports\Tests\Qualify;
 
@@ -45,7 +46,9 @@ class ServiceTest extends TestCase
         $qualifyService = new QualifyService($rootRound);
         $qualifyService->setQualifiers();
 
-        $winnersPoule = $rootRound->getChild(QualifyGroup::WINNERS, 1)->getPoule(1);
+        $winnersRound = $rootRound->getChild(QualifyGroup::WINNERS, 1);
+        self::assertNotNull($winnersRound);
+        $winnersPoule = $winnersRound->getPoule(1);
 
         self::assertNotNull($winnersPoule->getPlace(1)->getQualifiedPlace());
         self::assertSame($pouleOne->getPlace(1), $winnersPoule->getPlace(1)->getQualifiedPlace() );
@@ -53,7 +56,9 @@ class ServiceTest extends TestCase
         self::assertSame($pouleOne->getPlace(2), $winnersPoule->getPlace(2)->getQualifiedPlace() );
 
 
-        $loserssPoule = $rootRound->getChild(QualifyGroup::LOSERS, 1)->getPoule(1);
+        $losersRound = $rootRound->getChild(QualifyGroup::LOSERS, 1);
+        self::assertNotNull($losersRound);
+        $loserssPoule = $losersRound->getPoule(1);
 
         self::assertNotNull($loserssPoule->getPlace(1)->getQualifiedPlace());
         self::assertSame($pouleOne->getPlace(4), $loserssPoule->getPlace(1)->getQualifiedPlace());
@@ -89,13 +94,17 @@ class ServiceTest extends TestCase
         $qualifyService = new QualifyService($rootRound);
         $qualifyService->setQualifiers($pouleOne);
 
-        $winnersPoule = $rootRound->getChild(QualifyGroup::WINNERS, 1)->getPoule(1);
+        $winnersRound = $rootRound->getChild(QualifyGroup::WINNERS, 1);
+        self::assertNotNull($winnersRound);
+        $winnersPoule = $winnersRound->getPoule(1);
 
         self::assertNotSame($winnersPoule->getPlace(1)->getQualifiedPlace(), null);
         self::assertSame($pouleOne->getPlace(1), $winnersPoule->getPlace(1)->getQualifiedPlace() );
         self::assertSame($winnersPoule->getPlace(2)->getQualifiedPlace(), null);
 
-        $loserssPoule = $rootRound->getChild(QualifyGroup::LOSERS, 1)->getPoule(1);
+        $losersRound = $rootRound->getChild(QualifyGroup::LOSERS, 1);
+        self::assertNotNull($losersRound);
+        $loserssPoule = $losersRound->getPoule(1);
 
         self::assertSame($loserssPoule->getPlace(2)->getQualifiedPlace(), null);
         self::assertNotSame($loserssPoule->getPlace(1)->getQualifiedPlace(), null);
@@ -112,8 +121,13 @@ class ServiceTest extends TestCase
         $structureService->addQualifiers($rootRound, QualifyGroup::WINNERS, 4);
         $structureService->addQualifiers($rootRound, QualifyGroup::LOSERS, 4);
 
-        $structureService->removePoule($rootRound->getChild(QualifyGroup::WINNERS, 1));
-        $structureService->removePoule($rootRound->getChild(QualifyGroup::LOSERS, 1));
+        $winnersRound = $rootRound->getChild(QualifyGroup::WINNERS, 1);
+        self::assertNotNull($winnersRound);
+        $losersRound = $rootRound->getChild(QualifyGroup::LOSERS, 1);
+        self::assertNotNull($losersRound);
+
+        $structureService->removePoule($winnersRound);
+        $structureService->removePoule($losersRound);
 
         (new GamesCreator())->createStructureGames( $structure );
 
@@ -135,7 +149,7 @@ class ServiceTest extends TestCase
         $changedPlaces = $qualifyService->setQualifiers();
         self::assertSame(count($changedPlaces), 8);
 
-        $winnersPoule = $rootRound->getChild(QualifyGroup::WINNERS, 1)->getPoule(1);
+        $winnersPoule = $winnersRound->getPoule(1);
 
         self::assertTrue($winnersPoule->getPlace(1)->getFromQualifyRule() instanceof SingleQualifyRule);
         self::assertNotNull($winnersPoule->getPlace(1)->getQualifiedPlace());
@@ -146,7 +160,7 @@ class ServiceTest extends TestCase
         self::assertTrue($winnersPoule->getPlace(4)->getFromQualifyRule() instanceof MultipleQualifyRule);
         self::assertSame($pouleThree->getPlace(2), $winnersPoule->getPlace(4)->getQualifiedPlace());
 
-        $losersPoule = $rootRound->getChild(QualifyGroup::LOSERS, 1)->getPoule(1);
+        $losersPoule = $losersRound->getPoule(1);
 
         self::assertTrue($losersPoule->getPlace(1)->getFromQualifyRule() instanceof MultipleQualifyRule);
         self::assertNotNull($losersPoule->getPlace(1)->getQualifiedPlace());
@@ -167,7 +181,9 @@ class ServiceTest extends TestCase
         $rootRound = $structure->getRootRound();
 
         $structureService->addQualifiers($rootRound, QualifyGroup::WINNERS, 4);
-        $structureService->removePoule($rootRound->getChild(QualifyGroup::WINNERS, 1));
+        $winnersRound = $rootRound->getChild(QualifyGroup::WINNERS, 1);
+        self::assertNotNull($winnersRound);
+        $structureService->removePoule($winnersRound);
 
         (new GamesCreator())->createStructureGames( $structure );
 
@@ -188,7 +204,7 @@ class ServiceTest extends TestCase
         $qualifyService = new QualifyService($rootRound);
         $qualifyService->setQualifiers();
 
-        $winnersPoule = $rootRound->getChild(QualifyGroup::WINNERS, 1)->getPoule(1);
+        $winnersPoule = $winnersRound->getPoule(1);
 
         self::assertNull($winnersPoule->getPlace(4)->getQualifiedPlace() );
     }
@@ -222,12 +238,16 @@ class ServiceTest extends TestCase
         $qualifyService = new QualifyService($rootRound);
         $qualifyService->setQualifiers();
 
-        $winnersPoule = $rootRound->getChild(QualifyGroup::WINNERS, 1)->getPoule(1);
+        $winnersRound = $rootRound->getChild(QualifyGroup::WINNERS, 1);
+        self::assertNotNull($winnersRound);
+        $winnersPoule = $winnersRound->getPoule(1);
 
         self::assertNotNull($winnersPoule->getPlace(3)->getQualifiedPlace());
         self::assertSame($pouleOne->getPlace(2), $winnersPoule->getPlace(3)->getQualifiedPlace());
 
-        $loserssPoule = $rootRound->getChild(QualifyGroup::LOSERS, 1)->getPoule(1);
+        $losersRound = $rootRound->getChild(QualifyGroup::LOSERS, 1);
+        self::assertNotNull($losersRound);
+        $loserssPoule = $losersRound->getPoule(1);
         self::assertNotNull($loserssPoule->getPlace(1)->getQualifiedPlace() );
         self::assertSame($pouleTwo->getPlace(2), $loserssPoule->getPlace(1)->getQualifiedPlace());
     }

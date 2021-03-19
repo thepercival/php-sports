@@ -9,6 +9,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\PersistentCollection;
 use Sports\Competition;
 use Sports\Game as GameBase;
+use Sports\Place;
 use Sports\Poule;
 use Sports\Competition\Sport as CompetitionSport;
 use Sports\Planning\GameAmountConfig as GameAmountConfig;
@@ -30,9 +31,6 @@ class Number extends Identifiable
      */
     protected ArrayCollection $rounds;
     protected bool $hasPlanning;
-    /**
-     * @var
-     */
     protected PlanningConfig|null $planningConfig = null;
     /**
      * @var ArrayCollection<int|string, GameAmountConfig>
@@ -51,15 +49,16 @@ class Number extends Identifiable
         return $this->getNext() !== null;
     }
 
-    public function getNext(): ?RoundNumber
+    public function getNext(): RoundNumber|null
     {
         return $this->next;
     }
 
-    public function createNext(): ?self
+    public function createNext(): RoundNumber
     {
-        $this->next = new RoundNumber($this->getCompetition(), $this);
-        return $this->getNext();
+        $next = new RoundNumber($this->getCompetition(), $this);
+        $this->next = $next;
+        return $next;
     }
 
     public function removeNext(): void
@@ -67,12 +66,6 @@ class Number extends Identifiable
         $this->next = null;
     }
 
-    /**
-     * voor serialization
-     *
-     * @param RoundNumber $roundNumber
-     * @return void
-     */
     public function setNext(RoundNumber $roundNumber): void
     {
         $this->next = $roundNumber;
@@ -126,9 +119,6 @@ class Number extends Identifiable
      */
     public function getRounds()
     {
-        if ($this->rounds === null) {
-            $this->rounds = new ArrayCollection();
-        }
         return $this->rounds;
     }
 
@@ -188,7 +178,7 @@ class Number extends Identifiable
         foreach ($this->getRounds() as $round) {
             $poules = array_merge($poules, $round->getPoules()->toArray());
         }
-        return $poules;
+        return array_values($poules);
     }
 
     /**
@@ -230,7 +220,7 @@ class Number extends Identifiable
         foreach ($this->getPoules() as $poule) {
             $places = array_merge($places, $poule->getPlaces()->toArray());
         }
-        return $places;
+        return array_values($places);
     }
 
     public function getNrOfPlaces(): int
@@ -242,7 +232,7 @@ class Number extends Identifiable
         return $nrOfPlaces;
     }
 
-    public function getPlanningConfig(): ?PlanningConfig
+    public function getPlanningConfig(): PlanningConfig|null
     {
         return $this->planningConfig;
     }
@@ -257,7 +247,11 @@ class Number extends Identifiable
         if ($this->planningConfig !== null) {
             return $this->planningConfig;
         }
-        return $this->getPrevious()->getValidPlanningConfig();
+        $previous = $this->getPrevious();
+        if ($previous === null) {
+            throw new \Exception('de plannings-instellingen kunnen niet gevonden worden', E_ERROR);
+        }
+        return $previous->getValidPlanningConfig();
     }
 
     public function getHasPlanning(): bool
