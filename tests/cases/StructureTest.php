@@ -1,17 +1,18 @@
 <?php
+declare(strict_types=1);
 
 namespace Sports\Tests;
 
+use PHPUnit\Framework\TestCase;
 use Sports\Structure\Service as StructureService;
 use Sports\Qualify\Group as QualifyGroup;
 use Sports\TestHelper\CompetitionCreator;
-use Sports\TestHelper\GamesCreator;
 
-class StructureTest extends \PHPUnit\Framework\TestCase
+class StructureTest extends TestCase
 {
     use CompetitionCreator;
 
-    public function testBasics()
+    public function testBasics(): void
     {
         $competition = $this->createCompetition();
         $structureService = new StructureService([]);
@@ -33,7 +34,7 @@ class StructureTest extends \PHPUnit\Framework\TestCase
         self::assertSame($structure->getRoundNumber(0), null);
     }
 
-    public function testSetStructureNumbers()
+    public function testSetStructureNumbers(): void
     {
         $competition = $this->createCompetition();
         $structureService = new StructureService([]);

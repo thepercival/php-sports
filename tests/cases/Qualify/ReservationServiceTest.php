@@ -17,7 +17,7 @@ final class ReservationServiceTest extends TestCase
 {
     use CompetitionCreator, SetScores;
 
-    public function testFreeAndReserve()
+    public function testFreeAndReserve(): void
     {
         $competition = $this->createCompetition();
 
@@ -56,7 +56,7 @@ final class ReservationServiceTest extends TestCase
         self::assertFalse($resService->isFree(1, $pouleOne));
     }
 
-    public function testFreeAndLeastAvailabe()
+    public function testFreeAndLeastAvailabe(): void
     {
         $competition = $this->createCompetition();
 
@@ -123,7 +123,7 @@ final class ReservationServiceTest extends TestCase
         self::assertSame($placeLocationThree->getPouleNr(), $pouleTwo->getNumber());
     }
 
-    public function testTwoRoundNumbersMultipleRuleNotPlayed333()
+    public function testTwoRoundNumbersMultipleRuleNotPlayed333(): void
     {
         $competition = $this->createCompetition();
 

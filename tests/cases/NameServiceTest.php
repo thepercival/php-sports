@@ -20,7 +20,7 @@ final class NameServiceTest extends TestCase
 {
     use CompetitionCreator;
 
-    public function testWinnersOrLosersDescription()
+    public function testWinnersOrLosersDescription(): void
     {
         $nameService = new NameService();
 
@@ -31,7 +31,7 @@ final class NameServiceTest extends TestCase
         self::assertSame($nameService->getWinnersLosersDescription(QualifyGroup::DROPOUTS), '');
     }
 
-    public function testRoundNumberName()
+    public function testRoundNumberName(): void
     {
         $nameService = new NameService();
         $competition = $this->createCompetition();
@@ -59,7 +59,7 @@ final class NameServiceTest extends TestCase
         self::assertSame($newSecondRoundNumberName, '2de ronde'); // '2<sup>de</sup> ronde'
     }
 
-    public function testRoundName()
+    public function testRoundName(): void
     {
         $nameService = new NameService();
         $competition = $this->createCompetition();
@@ -93,7 +93,7 @@ final class NameServiceTest extends TestCase
         }
     }
 
-    public function testRoundNameHtmlFractialNumber()
+    public function testRoundNameHtmlFractialNumber(): void
     {
         $nameService = new NameService();
         $competition = $this->createCompetition();
@@ -141,7 +141,7 @@ final class NameServiceTest extends TestCase
         }
     }
 
-    public function testPouleName()
+    public function testPouleName(): void
     {
         $nameService = new NameService();
         $competition = $this->createCompetition();
@@ -163,7 +163,7 @@ final class NameServiceTest extends TestCase
         }
     }
 
-    public function testPlaceName()
+    public function testPlaceName(): void
     {
         $competition = $this->createCompetition();
 
@@ -198,7 +198,7 @@ final class NameServiceTest extends TestCase
         }
     }
 
-    public function testPlaceFromName()
+    public function testPlaceFromName(): void
     {
         $competition = $this->createCompetition();
 
@@ -269,7 +269,7 @@ final class NameServiceTest extends TestCase
         }
     }
 
-    public function testPlacesFromName()
+    public function testPlacesFromName(): void
     {
         $nameService = new NameService();
         $competition = $this->createCompetition();
@@ -304,7 +304,7 @@ final class NameServiceTest extends TestCase
         }
     }
 
-    public function testHourizontalPouleName()
+    public function testHourizontalPouleName(): void
     {
         $nameService = new NameService();
         $competition = $this->createCompetition();
@@ -356,7 +356,7 @@ final class NameServiceTest extends TestCase
         }
     }
 
-    public function testRefereeName()
+    public function testRefereeName(): void
     {
         $competition = $this->createCompetition();
         $competitionSport = $competition->getSingleSport();

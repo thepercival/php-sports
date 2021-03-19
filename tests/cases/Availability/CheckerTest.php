@@ -12,7 +12,7 @@ class CheckerTest extends TestCase
 {
     use CompetitionCreator;
 
-    public function testFieldPriority()
+    public function testFieldPriority(): void
     {
         $checker = new AvailabilityChecker();
 
@@ -26,7 +26,7 @@ class CheckerTest extends TestCase
         $checker->checkFieldPriority($competitionSport, 2);
     }
 
-    public function testRefereePriority()
+    public function testRefereePriority(): void
     {
         $checker = new AvailabilityChecker();
 
@@ -40,7 +40,7 @@ class CheckerTest extends TestCase
         $checker->checkRefereePriority($competition, 2);
     }
 
-    public function testRefereeEmailaddress()
+    public function testRefereeEmailaddress(): void
     {
         $checker = new AvailabilityChecker();
 
@@ -60,7 +60,7 @@ class CheckerTest extends TestCase
     }
 
 
-    public function testRefereeInitials()
+    public function testRefereeInitials(): void
     {
         $checker = new AvailabilityChecker();
 
@@ -76,7 +76,7 @@ class CheckerTest extends TestCase
         $checker->checkRefereeInitials($competition, "111");
     }
 
-    public function testFieldInitials()
+    public function testFieldInitials(): void
     {
         $checker = new AvailabilityChecker();
 

@@ -12,7 +12,7 @@ use Sports\State;
 
 trait SetScores
 {
-    protected function setScoreSingle(Poule $poule, int $homePlaceNr, int $awayPlaceNr, int $homeGoals, int $awayGoals, int $state = null)
+    protected function setScoreSingle(Poule $poule, int $homePlaceNr, int $awayPlaceNr, int $homeGoals, int $awayGoals, int $state = null): void
     {
         $homePlace = $poule->getPlace($homePlaceNr);
         $awayPlace = $poule->getPlace($awayPlaceNr);

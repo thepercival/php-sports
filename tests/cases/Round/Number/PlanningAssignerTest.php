@@ -1,25 +1,21 @@
 <?php
+declare(strict_types=1);
 
 namespace Sports\Tests\Round\Number;
 
-use Sports\Round\Number\PlanningAssigner;
-use Sports\Round\Number\PlanningScheduler;
-use Sports\TestHelper\PlanningCreator;
-use SportsPlanning\Input;
-use SportsPlanning\Resource\RefereePlace\Service as RefereePlaceService;
+use PHPUnit\Framework\TestCase;
 use Sports\Qualify\Group as QualifyGroup;
 use Sports\Round\Number\GamesValidator;
-use Sports\Round\Number as RoundNumber;
 use Sports\TestHelper\CompetitionCreator;
 use Sports\TestHelper\GamesCreator;
 use Sports\Structure\Service as StructureService;
 use SportsPlanning\SelfReferee;
 
-class PlanningAssignerTest extends \PHPUnit\Framework\TestCase
+final class PlanningAssignerTest extends TestCase
 {
     use CompetitionCreator;
 
-    public function testValid()
+    public function testValid(): void
     {
         $competition = $this->createCompetition();
 
@@ -37,7 +33,7 @@ class PlanningAssignerTest extends \PHPUnit\Framework\TestCase
         $gamesValidator->validate($firstRoundNumber, $nrOfReferees);
     }
 
-    public function testWithRefereePlaces()
+    public function testWithRefereePlaces(): void
     {
         $competition = $this->createCompetition();
         $competition->getReferees()->clear();
@@ -55,7 +51,7 @@ class PlanningAssignerTest extends \PHPUnit\Framework\TestCase
         $gamesValidator->validate($firstRoundNumber, $nrOfReferees);
     }
 
-    public function testDifferentPouleSizes()
+    public function testDifferentPouleSizes(): void
     {
         $competition = $this->createCompetition();
 

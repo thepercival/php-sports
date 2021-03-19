@@ -16,11 +16,11 @@ use Sports\Game;
 use \Exception;
 use SportsHelpers\SportRange;
 
-class PlanningSchedulerTest extends TestCase
+final class PlanningSchedulerTest extends TestCase
 {
     use CompetitionCreator;
 
-    public function testValidDateTimes()
+    public function testValidDateTimes(): void
     {
         $competition = $this->createCompetition();
 
@@ -50,7 +50,7 @@ class PlanningSchedulerTest extends TestCase
         self::assertEquals($secondRoundNumberStartDateTime, $secondRoundNumberGame->getStartDateTime());
     }
 
-    public function testBlockedPeriodBeforeFirstGame()
+    public function testBlockedPeriodBeforeFirstGame(): void
     {
         $competition = $this->createCompetition();
 
@@ -77,7 +77,7 @@ class PlanningSchedulerTest extends TestCase
         self::assertEquals($secondRoundNumberStartDateTime, $secondRoundNumber->getGames()[0]->getStartDateTime());
     }
 
-    public function testBlockedPeriodBeforeSecondBatchGame()
+    public function testBlockedPeriodBeforeSecondBatchGame(): void
     {
         $competition = $this->createCompetition();
 
@@ -110,7 +110,7 @@ class PlanningSchedulerTest extends TestCase
         self::assertEquals($secondRoundNumberStartDateTime, $secondRoundNumber->getGames()[0]->getStartDateTime());
     }
 
-    public function testBlockedPeriodDuringSecondBatchGame()
+    public function testBlockedPeriodDuringSecondBatchGame(): void
     {
         $competition = $this->createCompetition();
 
@@ -143,7 +143,7 @@ class PlanningSchedulerTest extends TestCase
         self::assertEquals($secondRoundNumberStartDateTime, $secondRoundNumber->getGames()[0]->getStartDateTime());
     }
 
-    public function testBlockedPeriodAtStartSecondBatchGame()
+    public function testBlockedPeriodAtStartSecondBatchGame(): void
     {
         $competition = $this->createCompetition();
 
@@ -176,7 +176,7 @@ class PlanningSchedulerTest extends TestCase
         self::assertEquals($secondRoundNumberStartDateTime, $secondRoundNumber->getGames()[0]->getStartDateTime());
     }
 
-    public function testBlockedPeriodBetweenRounds()
+    public function testBlockedPeriodBetweenRounds(): void
     {
         $competition = $this->createCompetition();
 
@@ -209,7 +209,7 @@ class PlanningSchedulerTest extends TestCase
         self::assertEquals($secondRoundNumberStartDateTime, $secondRoundNumber->getGames()[0]->getStartDateTime());
     }
 
-    public function testRoundNumberNoGames()
+    public function testRoundNumberNoGames(): void
     {
         $competition = $this->createCompetition();
 

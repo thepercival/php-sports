@@ -17,7 +17,7 @@ class ServiceTest extends TestCase
 {
     use CompetitionCreator, SetScores;
 
-    public function test2RoundNumbers5()
+    public function test2RoundNumbers5(): void
     {
         $competition = $this->createCompetition();
 
@@ -66,7 +66,7 @@ class ServiceTest extends TestCase
         self::assertSame($pouleOne->getPlace(5), $loserssPoule->getPlace(2)->getQualifiedPlace());
     }
 
-    public function test2RoundNumbers5PouleFilter()
+    public function test2RoundNumbers5PouleFilter(): void
     {
         $competition = $this->createCompetition();
 
@@ -110,7 +110,7 @@ class ServiceTest extends TestCase
         self::assertNotSame($loserssPoule->getPlace(1)->getQualifiedPlace(), null);
     }
 
-    public function test2RoundNumbers9Multiple()
+    public function test2RoundNumbers9Multiple(): void
     {
         $competition = $this->createCompetition();
 
@@ -172,7 +172,7 @@ class ServiceTest extends TestCase
         self::assertNotNull($losersPoule->getPlace(4)->getQualifiedPlace());
     }
 
-    public function test2RoundNumbers9MultipleNotFinished()
+    public function test2RoundNumbers9MultipleNotFinished(): void
     {
         $competition = $this->createCompetition();
 
@@ -212,7 +212,7 @@ class ServiceTest extends TestCase
     /**
      * When second place is multiple and both second places are ranked completely equal
      */
-    public function testSameWinnersLosers()
+    public function testSameWinnersLosers(): void
     {
         $competition = $this->createCompetition();
 

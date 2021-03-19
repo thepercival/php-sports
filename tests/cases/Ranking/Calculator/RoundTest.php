@@ -11,7 +11,6 @@ use Sports\TestHelper\GamesCreator;
 use Sports\TestHelper\SetScores;
 use Sports\Structure\Service as StructureService;
 use Sports\Qualify\Group as QualifyGroup;
-use Sports\Ranking\Calculator as RankingService;
 use Sports\Ranking\Calculator\Round as RoundRankingCalculator;
 use Sports\State;
 use Sports\Ranking\RuleSet as RankingRuleSet;

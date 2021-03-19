@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Sports\Tests\Ranking\Rule;
 
@@ -8,7 +9,7 @@ use Sports\Ranking\RuleSet as RankingRuleSet;
 
 class GetterTest extends TestCase
 {
-    public function testAgainstRuleWithSubScore()
+    public function testAgainstRuleWithSubScore(): void
     {
         $ruleGetter = new RankingRuleGetter();
         $useSubScore = true;
@@ -16,7 +17,7 @@ class GetterTest extends TestCase
         self::assertCount(7, $rules);
     }
 
-    public function testAgainstRuleWithoutSubScore()
+    public function testAgainstRuleWithoutSubScore(): void
     {
         $ruleGetter = new RankingRuleGetter();
         $useSubScore = false;
@@ -24,7 +25,7 @@ class GetterTest extends TestCase
         self::assertCount(5, $rules);
     }
 
-    public function testAgainstAmongRuleWithSubScore()
+    public function testAgainstAmongRuleWithSubScore(): void
     {
         $ruleGetter = new RankingRuleGetter();
         $useSubScore = true;
@@ -32,7 +33,7 @@ class GetterTest extends TestCase
         self::assertCount(7, $rules);
     }
 
-    public function testAgainstAmongRuleWithoutSubScore()
+    public function testAgainstAmongRuleWithoutSubScore(): void
     {
         $ruleGetter = new RankingRuleGetter();
         $useSubScore = false;
@@ -40,7 +41,7 @@ class GetterTest extends TestCase
         self::assertCount(5, $rules);
     }
 
-    public function testTogetherRuleWithSubScore()
+    public function testTogetherRuleWithSubScore(): void
     {
         $ruleGetter = new RankingRuleGetter();
         $useSubScore = true;
@@ -48,7 +49,7 @@ class GetterTest extends TestCase
         self::assertCount(3, $rules);
     }
 
-    public function testTogetherRuleWithoutSubScore()
+    public function testTogetherRuleWithoutSubScore(): void
     {
         $ruleGetter = new RankingRuleGetter();
         $useSubScore = false;

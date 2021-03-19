@@ -23,7 +23,7 @@ class GamesValidatorTest extends TestCase
 {
     use CompetitionCreator;
 
-    public function testGameWithoutField()
+    public function testGameWithoutField(): void
     {
         $competition = $this->createCompetition();
 
@@ -45,7 +45,7 @@ class GamesValidatorTest extends TestCase
         $gamesValidator->validate($firstRoundNumber, $nrOfReferees);
     }
 
-    public function testAllPlacesSameNrOfGames()
+    public function testAllPlacesSameNrOfGames(): void
     {
         $competition = $this->createCompetition();
 
@@ -67,7 +67,7 @@ class GamesValidatorTest extends TestCase
         $gamesValidator->validate($firstRoundNumber, $nrOfReferees);
     }
 
-    public function testResourcesPerBatchMultiplePlaces()
+    public function testResourcesPerBatchMultiplePlaces(): void
     {
         $competition = $this->createCompetition();
 
@@ -92,7 +92,7 @@ class GamesValidatorTest extends TestCase
         $gamesValidator->validate($firstRoundNumber, $nrOfReferees);
     }
 
-    public function testResourcesPerBatchMultipleFields()
+    public function testResourcesPerBatchMultipleFields(): void
     {
         $competition = $this->createCompetition();
 
@@ -117,7 +117,7 @@ class GamesValidatorTest extends TestCase
         $gamesValidator->validate($firstRoundNumber, $nrOfReferees);
     }
 
-    public function testResourcesPerBatchMultipleReferees()
+    public function testResourcesPerBatchMultipleReferees(): void
     {
         $competition = $this->createCompetition();
 
@@ -142,7 +142,7 @@ class GamesValidatorTest extends TestCase
         $gamesValidator->validate($firstRoundNumber, $nrOfReferees);
     }
 
-    public function testNrOfGamesPerRefereeAndFieldNoRefereesAssigned()
+    public function testNrOfGamesPerRefereeAndFieldNoRefereesAssigned(): void
     {
         $competition = $this->createCompetition();
 
@@ -171,7 +171,7 @@ class GamesValidatorTest extends TestCase
         $gamesValidator->validate($firstRoundNumber, $nrOfReferees);
     }
 
-    public function testNrOfGamesRange()
+    public function testNrOfGamesRange(): void
     {
         $competition = $this->createCompetition();
 
@@ -210,7 +210,7 @@ class GamesValidatorTest extends TestCase
         $gamesValidator->validate($firstRoundNumber, $nrOfReferees);
     }
 
-    public function testNrOfGamesRangeRefereePlace()
+    public function testNrOfGamesRangeRefereePlace(): void
     {
         $competition = $this->createCompetition();
 
@@ -251,7 +251,7 @@ class GamesValidatorTest extends TestCase
         $gamesValidator->validate($firstRoundNumber, $nrOfReferees);
     }
 
-    public function testNrOfGamesRangeRefereePlaceDifferentPouleSizes()
+    public function testNrOfGamesRangeRefereePlaceDifferentPouleSizes(): void
     {
         $competition = $this->createCompetition();
 
@@ -275,7 +275,7 @@ class GamesValidatorTest extends TestCase
         $gamesValidator->validate($firstRoundNumber, $nrOfReferees);
     }
 
-    public function testGameInBreak()
+    public function testGameInBreak(): void
     {
         $competition = $this->createCompetition();
 
@@ -307,7 +307,7 @@ class GamesValidatorTest extends TestCase
         $gamesValidator->validate($firstRoundNumber, $nrOfReferees, $blockedPeriod);
     }
 
-    public function testValid()
+    public function testValid(): void
     {
         $competition = $this->createCompetition();
 

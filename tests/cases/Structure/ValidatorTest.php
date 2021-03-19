@@ -19,7 +19,7 @@ final class ValidatorTest extends TestCase
 {
     use CompetitionCreator;
 
-    public function testNoStructure()
+    public function testNoStructure(): void
     {
         $competition = $this->createCompetition();
 
@@ -29,7 +29,7 @@ final class ValidatorTest extends TestCase
         $structureValidator->checkValidity($competition, null);
     }
 
-    public function testRoundNumberNoRounds()
+    public function testRoundNumberNoRounds(): void
     {
         $competition = $this->createCompetition();
 
@@ -45,7 +45,7 @@ final class ValidatorTest extends TestCase
         $structureValidator->checkValidity($competition, $structure);
     }
 
-    public function testRoundNumberNoValidScoreConfig()
+    public function testRoundNumberNoValidScoreConfig(): void
     {
         $competition = $this->createCompetition();
 
@@ -60,7 +60,7 @@ final class ValidatorTest extends TestCase
         $structureValidator->checkValidity($competition, $structure);
     }
 
-    public function testRoundNoPoules()
+    public function testRoundNoPoules(): void
     {
         $competition = $this->createCompetition();
 
@@ -78,7 +78,7 @@ final class ValidatorTest extends TestCase
         $structureValidator->checkValidity($competition, $structure);
     }
 
-    public function testPouleNoPlaces()
+    public function testPouleNoPlaces(): void
     {
         $competition = $this->createCompetition();
 
@@ -96,7 +96,7 @@ final class ValidatorTest extends TestCase
         $structureValidator->checkValidity($competition, $structure);
     }
 
-    public function testRoundNrOfPlaces()
+    public function testRoundNrOfPlaces(): void
     {
         $competition = $this->createCompetition();
 
@@ -118,7 +118,7 @@ final class ValidatorTest extends TestCase
         $structureValidator->checkValidity($competition, $structure);
     }
 
-    public function testQualifyGroupsNumberGap()
+    public function testQualifyGroupsNumberGap(): void
     {
         $competition = $this->createCompetition();
 
@@ -140,7 +140,7 @@ final class ValidatorTest extends TestCase
         $structureValidator->checkValidity($competition, $structure);
     }
 
-    public function testPoulesNumberGap()
+    public function testPoulesNumberGap(): void
     {
         $competition = $this->createCompetition();
 
@@ -159,7 +159,7 @@ final class ValidatorTest extends TestCase
         $structureValidator->checkValidity($competition, $structure);
     }
 
-    public function testPlacesNumberGap()
+    public function testPlacesNumberGap(): void
     {
         $competition = $this->createCompetition();
 
@@ -178,7 +178,7 @@ final class ValidatorTest extends TestCase
         $structureValidator->checkValidity($competition, $structure);
     }
 
-    public function testNextRoundNumberExists()
+    public function testNextRoundNumberExists(): void
     {
         $competition = $this->createCompetition();
 
@@ -201,7 +201,7 @@ final class ValidatorTest extends TestCase
         $structureValidator->checkValidity($competition, $structure);
     }
 
-    public function testValid()
+    public function testValid(): void
     {
         $competition = $this->createCompetition();
 

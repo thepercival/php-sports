@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Sports\Tests\Ranking\Calculator;
 
@@ -19,7 +20,7 @@ class EndTest extends TestCase
 {
     use CompetitionCreator, SetScores;
 
-    public function testOnePouleOfThreePlaces()
+    public function testOnePouleOfThreePlaces(): void
     {
         $competition = $this->createCompetition();
 
@@ -48,7 +49,7 @@ class EndTest extends TestCase
         }
     }
 
-    public function testOnePouleOfThreePlacesNotPlayed()
+    public function testOnePouleOfThreePlacesNotPlayed(): void
     {
         $competition = $this->createCompetition();
 
@@ -74,7 +75,7 @@ class EndTest extends TestCase
         }
     }
 
-    public function testTwoRoundNumbers5()
+    public function testTwoRoundNumbers5(): void
     {
         $competition = $this->createCompetition();
 

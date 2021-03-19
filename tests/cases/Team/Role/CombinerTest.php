@@ -1,8 +1,10 @@
 <?php
+declare(strict_types=1);
 
 namespace Sports\Tests\Team\Role;
 
 use League\Period\Period;
+use PHPUnit\Framework\TestCase;
 use Sports\Person;
 use Sports\Sport\Custom as SportCustom;
 use Sports\Team;
@@ -10,7 +12,7 @@ use Sports\Team\Player;
 use Sports\TestHelper\CompetitionCreator;
 use Sports\Team\Role\Combiner as RoleCombiner;
 
-class CombinerTest extends \PHPUnit\Framework\TestCase
+final class CombinerTest extends TestCase
 {
     use CompetitionCreator;
 
@@ -28,7 +30,7 @@ class CombinerTest extends \PHPUnit\Framework\TestCase
      *     |   A   |
      *         |       X       |
      */
-    public function testCombiningWithoutPlayersUpdate()
+    public function testCombiningWithoutPlayersUpdate(): void
     {
         $competition = $this->createCompetition();
         $person = new Person('Al', null, 'Person');
@@ -65,7 +67,7 @@ class CombinerTest extends \PHPUnit\Framework\TestCase
      *     |   A   |
      *         |       X       |
      */
-    public function testNotMergableByTeam()
+    public function testNotMergableByTeam(): void
     {
         $competition = $this->createCompetition();
         $person = new Person('Al', null, 'Person');
@@ -99,7 +101,7 @@ class CombinerTest extends \PHPUnit\Framework\TestCase
      *     |   A   |
      *         |       X       |
      */
-    public function testNotMergableByLine()
+    public function testNotMergableByLine(): void
     {
         $competition = $this->createCompetition();
         $person = new Person('Al', null, 'Person');
@@ -132,7 +134,7 @@ class CombinerTest extends \PHPUnit\Framework\TestCase
      *     |   A   |
      *     |   X   |
      */
-    public function testNotMergableByPeriod()
+    public function testNotMergableByPeriod(): void
     {
         $competition = $this->createCompetition();
         $person = new Person('Al', null, 'Person');
@@ -165,7 +167,7 @@ class CombinerTest extends \PHPUnit\Framework\TestCase
      *     |   A   |
      *                          |   X   |
      */
-    public function testNotMergableByPeriodMaxDiff()
+    public function testNotMergableByPeriodMaxDiff(): void
     {
         $competition = $this->createCompetition();
         $person = new Person('Al', null, 'Person');
@@ -200,7 +202,7 @@ class CombinerTest extends \PHPUnit\Framework\TestCase
      *                  |   A   |
      *     |   X   |
      */
-    public function testNotMergableByPeriodFuture()
+    public function testNotMergableByPeriodFuture(): void
     {
         $competition = $this->createCompetition();
         $person = new Person('Al', null, 'Person');
@@ -236,7 +238,7 @@ class CombinerTest extends \PHPUnit\Framework\TestCase
      *                  |   A   |
      *     |   X   |
      */
-    public function testMergableByPeriodFutureMultipleTeams()
+    public function testMergableByPeriodFutureMultipleTeams(): void
     {
         $competition = $this->createCompetition();
         $person = new Person('Al', null, 'Person');
@@ -273,7 +275,7 @@ class CombinerTest extends \PHPUnit\Framework\TestCase
      *     |   A   |
      *         |       X       |
      */
-    public function testMergable()
+    public function testMergable(): void
     {
         $competition = $this->createCompetition();
         $person = new Person('Al', null, 'Person');
@@ -310,7 +312,7 @@ class CombinerTest extends \PHPUnit\Framework\TestCase
      *         |   A   |
      *     |   X   |
      */
-    public function testNotUpdatableByFuturePeriod()
+    public function testNotUpdatableByFuturePeriod(): void
     {
         $competition = $this->createCompetition();
         $person = new Person('Al', null, 'Person');

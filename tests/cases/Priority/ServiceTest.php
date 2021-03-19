@@ -1,16 +1,18 @@
 <?php
+declare(strict_types=1);
 
 namespace Sports\Tests\Priority;
 
+use PHPUnit\Framework\TestCase;
 use Sports\Competition\Referee;
 use Sports\TestHelper\CompetitionCreator;
 use Sports\Priority\Service as PriorityService;
 
-class ServiceTest extends \PHPUnit\Framework\TestCase
+class ServiceTest extends TestCase
 {
     use CompetitionCreator;
 
-    public function testGap()
+    public function testGap(): void
     {
         $competition = $this->createCompetition();
 
@@ -26,7 +28,7 @@ class ServiceTest extends \PHPUnit\Framework\TestCase
         self::assertSame($referee2, $changed[1]);
     }
 
-    public function testAlreadyHighest()
+    public function testAlreadyHighest(): void
     {
         $competition = $this->createCompetition();
 
@@ -38,7 +40,7 @@ class ServiceTest extends \PHPUnit\Framework\TestCase
         self::assertCount(0, $changed);
     }
 
-    public function testNormal()
+    public function testNormal(): void
     {
         $competition = $this->createCompetition();
 
