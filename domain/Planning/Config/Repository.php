@@ -1,10 +1,17 @@
 <?php
+declare(strict_types=1);
 
 namespace Sports\Planning\Config;
 
-class Repository extends \Sports\Repository
-{
+use Doctrine\ORM\EntityRepository;
+use Sports\Planning\Config as PlanningConfig;
 
+/**
+ * @template-extends EntityRepository<PlanningConfig>
+ */
+class Repository extends EntityRepository
+{
+    use \Sports\Repository;
 //    public function customSave()
 //    {
 //        doe transactie en sla op

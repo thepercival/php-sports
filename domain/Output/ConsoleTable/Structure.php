@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Sports\Output\ConsoleTable;
 
@@ -13,10 +14,8 @@ class Structure
 {
     /**
      * @param StructureBase $structure
-     * @param array<TeamCompetitor> $teamCompetitors
+     * @param list<TeamCompetitor> $teamCompetitors
      * @param Competition $competition
-     *
-     * @return void
      */
     public function display(Competition $competition, StructureBase $structure, array $teamCompetitors): void
     {

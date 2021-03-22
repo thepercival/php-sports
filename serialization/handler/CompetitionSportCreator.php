@@ -11,7 +11,7 @@ use SportsHelpers\GameMode;
 class CompetitionSportCreator
 {
     /**
-     * @var array | CompetitionSport[]
+     * @var array<string|int, CompetitionSport>
      */
     private static $competitionSports  = [];
 

@@ -57,6 +57,9 @@ trait SetScores
             return ($homePlacesHasHomePlace && $awayPlacesHasAwayPlace) || ($homePlacesHasAwayPlace && $awayPlacesHasHomePlace);
         });
         $foundGame = reset($foundGames);
+        if ($foundGame === false) {
+            throw new \Exception('de wedstrijd kan niet gevonden worden', E_ERROR);
+        }
         $newHomeGoals = $foundGame->getSide($homePlace) === AgainstSide::HOME ? $homeGoals : $awayGoals;
         $newAwayGoals = $foundGame->getSide($awayPlace) === AgainstSide::AWAY ? $awayGoals : $homeGoals;
 

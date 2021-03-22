@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Sports\Poule\Horizontal;
 
@@ -6,22 +7,17 @@ use Sports\Qualify\Group as QualifyGroup;
 use Sports\Round;
 use Sports\Place;
 use Sports\Poule\Horizontal as HorizontalPoule;
+use Sports\Poule\Horizontal\Creator as HorizontalPouleCreator;
 
 class Service
 {
     /**
-     * @var Round
+     * @var list<int>
      */
-    private $round;
-    /**
-     * @var array | int[]
-     */
-    private $winnersAndLosers;
+    private array $winnersAndLosers;
 
-    public function __construct(Round $round, int $winnersOrLosers = null)
+    public function __construct(private Round $round, int|null $winnersOrLosers = null)
     {
-        $this->round = $round;
-
         if ($winnersOrLosers === null) {
             $this->winnersAndLosers = [QualifyGroup::WINNERS, QualifyGroup::LOSERS];
         } else {
@@ -60,7 +56,7 @@ class Service
 
     /**
      * @param int $winnersOrLosers
-     * @return array | HorizontalPoule[]
+     * @return list<HorizontalPoule>
      */
     protected function createRoundHorizontalPoules(int $winnersOrLosers): array
     {
@@ -100,7 +96,7 @@ class Service
     }
 
     /**
-     * @return array | Place[]
+     * @return list<Place>
      */
     protected function getPlacesHorizontal(): array
     {
@@ -108,7 +104,7 @@ class Service
         foreach ($this->round->getPoules() as $poule) {
             $places = array_merge($places, $poule->getPlaces()->toArray());
         }
-        uasort($places, function ($placeA, $placeB) {
+        uasort($places, function (Place $placeA, Place $placeB) {
             if ($placeA->getNumber() > $placeB->getNumber()) {
                 return 1;
             }
@@ -123,26 +119,28 @@ class Service
             }
             return 0;
         });
-        return $places;
+        return array_values($places);
     }
 
     /**
-     * @param array $roundHorizontalPoules | HorizontolPoule[]
-     * @param array $horizontalPoulesCreators | HorizontolPoulesCreator[]
-     *
+     * @param list<HorizontalPoule> $roundHorizontalPoules
+     * @param list<HorizontalPouleCreator> $horizontalPouleCreators
      * @return void
      */
     public function updateQualifyGroups(
         array $roundHorizontalPoules,
-        array $horizontalPoulesCreators
+        array $horizontalPouleCreators
     ): void {
-        foreach ($horizontalPoulesCreators as $creator) {
-            $horizontalPoules = &$creator->qualifyGroup->getHorizontalPoules();
+        foreach ($horizontalPouleCreators as $creator) {
+            $horizontalPoules = &$creator->getQualifyGroup()->getHorizontalPoules();
             $horizontalPoules = [];
             $qualifiersAdded = 0;
-            while ($qualifiersAdded < $creator->nrOfQualifiers) {
+            while ($qualifiersAdded < $creator->getNrOfQualifiers()) {
                 $roundHorizontalPoule = array_shift($roundHorizontalPoules);
-                $roundHorizontalPoule->setQualifyGroup($creator->qualifyGroup);
+                if ($roundHorizontalPoule === null) {
+                    throw new \Exception('no horizontalpoules found', E_ERROR);
+                }
+                $roundHorizontalPoule->setQualifyGroup($creator->getQualifyGroup());
                 $qualifiersAdded += count($roundHorizontalPoule->getPlaces());
             }
         }

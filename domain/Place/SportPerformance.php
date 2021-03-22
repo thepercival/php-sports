@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Sports\Place;
 
@@ -8,18 +9,18 @@ use Sports\Place\Location as PlaceLocation;
 
 class SportPerformance
 {
-    private int $penaltyPoints = 0;
     private int $games = 0;
-    /**
-     * @var float
-     */
-    private $points = 0;
+    private float $points = 0.0;
     private int $scored = 0;
     private int $received = 0;
     private int $subScored = 0;
     private int $subReceived = 0;
 
-    public function __construct(private $competitionSport, private Place $place, ?int $penaltyPoints)
+    public function __construct(
+        private CompetitionSport $competitionSport,
+        private Place $place,
+        int|null $penaltyPoints = null
+    )
     {
         if ($penaltyPoints !== null) {
             $this->addPoints(-$penaltyPoints);

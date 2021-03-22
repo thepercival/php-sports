@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Sports;
 
@@ -15,9 +16,7 @@ use SportsHelpers\Identifiable;
 abstract class Game extends Identifiable
 {
     protected Referee|null $referee = null;
-    protected $refereePriority; // for serialization, not used
     protected Place|null $refereePlace = null;
-    protected $refereePlaceLocId; // for serialization, not used
     protected Field|null $field = null;
     protected int $state;
 
@@ -94,16 +93,6 @@ abstract class Game extends Identifiable
         $this->referee = $referee;
     }
 
-    public function getRefereePriority(): ?int
-    {
-        return $this->referee !== null ? $this->referee->getPriority() : $this->refereePriority;
-    }
-
-    public function setRefereePriority(int $refereePriority = null): void
-    {
-        $this->refereePriority = $refereePriority;
-    }
-
     public function getRefereePlace(): ?Place
     {
         return $this->refereePlace;
@@ -114,14 +103,9 @@ abstract class Game extends Identifiable
         $this->refereePlace = $refereePlace;
     }
 
-    public function getRefereePlaceLocId(): ?string
+    public function getRefereePlaceLocId(): string|null
     {
-        return $this->refereePlace !== null ? $this->refereePlace->getRoundLocationId() : $this->refereePlaceLocId;
-    }
-
-    public function setRefereePlaceLocId(string $refereePlaceLocId = null): void
-    {
-        $this->refereePlaceLocId = $refereePlaceLocId;
+        return $this->refereePlace !== null ? $this->refereePlace->getRoundLocationId() : null;
     }
 
     public function getField(): ?Field

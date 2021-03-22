@@ -3,18 +3,19 @@ declare(strict_types=1);
 
 namespace Sports\Score\Config;
 
+use Doctrine\ORM\EntityRepository;
 use Sports\Competition\Sport as CompetitionSport;
 use Sports\Round;
-use Sports\Sport;
-use Sports\Sport\ConfigDep as SportConfig;
-use Sports\Round\Number as RoundNumber;
+use Sports\Score\Config as ScoreConfig;
 
-class Repository extends \Sports\Repository
+/**
+ * @template-extends EntityRepository<ScoreConfig>
+ */
+class Repository extends EntityRepository
 {
-    /**
-     * @return void
-     */
-    public function addObjects(CompetitionSport $competitionSport, Round $round)
+    use \Sports\Repository;
+
+    public function addObjects(CompetitionSport $competitionSport, Round $round): void
     {
         $scoreConfig = $round->getScoreConfig($competitionSport);
         if ($scoreConfig === null) {

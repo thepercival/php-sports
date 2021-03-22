@@ -18,9 +18,9 @@ class ServiceTest extends TestCase
 
         $referee2 = $competition->getReferee(2);
 
-        $referee4 = new Referee($competition, 4);
+        $referee4 = new Referee($competition, 'RF4', 4);
 
-        $priorityService = new PriorityService($competition->getReferees()->toArray());
+        $priorityService = new PriorityService(array_values($competition->getReferees()->toArray()));
         $changed = $priorityService->upgrade($referee4);
 
         self::assertCount(2, $changed);
@@ -34,7 +34,7 @@ class ServiceTest extends TestCase
 
         $referee1 = $competition->getReferee(1);
 
-        $priorityService = new PriorityService($competition->getReferees()->toArray());
+        $priorityService = new PriorityService(array_values($competition->getReferees()->toArray()));
         $changed = $priorityService->upgrade($referee1);
 
         self::assertCount(0, $changed);
@@ -47,7 +47,7 @@ class ServiceTest extends TestCase
         $referee1 = $competition->getReferee(1);
         $referee2 = $competition->getReferee(2);
 
-        $priorityService = new PriorityService($competition->getReferees()->toArray());
+        $priorityService = new PriorityService(array_values($competition->getReferees()->toArray()));
         $changed = $priorityService->upgrade($referee2);
 
         self::assertCount(2, $changed);

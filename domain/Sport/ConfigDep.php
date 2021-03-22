@@ -3,44 +3,25 @@
 namespace Sports\Sport;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Sports\Competition;
+use Sports\Competition\Field;
 use Sports\Sport as SportBase;
-use Sports\Round\Number as RoundNumber;
 use SportsHelpers\Identifiable;
 
 class ConfigDep extends Identifiable
 {
+    protected float $winPoints = 0.0;
+    protected float $drawPoints = 0.0;
+    protected float $winPointsExt = 0.0;
+    protected float $drawPointsExt = 0.0;
+    protected float $losePointsExt = 0.0;
     /**
-     * @var SportBase
+     * @var ArrayCollection<int|string, Field>
      */
-    protected $sport;
-    protected $competition;
-    /**
-     * @var double
-     */
-    protected $winPoints;
-    /**
-     * @var double
-     */
-    protected $drawPoints;
-    /**
-     * @var double
-     */
-    protected $winPointsExt;
-    /**
-     * @var double
-     */
-    protected $drawPointsExt;
-    /**
-     * @var double
-     */
-    protected $losePointsExt;
-    /**
-     * @var int
-     */
-    protected $pointsCalculation;
+    protected ArrayCollection $fieldsDep;
 
-    /**
-     * @var ArrayCollection
-     */
-    protected $fieldsDep;
+    public function __construct(protected SportBase $sport, protected Competition $competition)
+    {
+        $this->fieldsDep = new ArrayCollection();
+    }
 }

@@ -38,10 +38,11 @@ class Service
         }
         $this->structureService->updateRound($qualifyGroup->getChildRound(), $newNrOfQualifiers, $newNrOfPoules);
 
-        $newQualifyGroup = new QualifyGroup($round, $qualifyGroup->getWinnersOrLosers(), $qualifyGroup->getNumber() /*+ 1* is index*/);
-        $this->renumber($round, $qualifyGroup->getWinnersOrLosers());
         $nextRoundNumber = $this->structureService->createNextRoundNumber($round);
-        $newChildRound = new Round($nextRoundNumber, $newQualifyGroup);
+        $newQualifyGroup = new QualifyGroup($round, $qualifyGroup->getWinnersOrLosers(), $nextRoundNumber);
+        $this->renumberQualifyGroups($round, $qualifyGroup->getWinnersOrLosers());
+
+        $newChildRound = $newQualifyGroup->getChildRound();
         $splittedNrOfQualifiers = $nrOfPlacesChildRound - $newNrOfQualifiers;
         $splittedNrOfPoules = $this->structureService->calculateNewNrOfPoules($qualifyGroup, $newNrOfQualifiers);
         while (($splittedNrOfQualifiers / $splittedNrOfPoules) < 2) {
@@ -60,7 +61,7 @@ class Service
         $qualifyGroups = $round->getQualifyGroups($firstQualifyGroup->getWinnersOrLosers());
         $index = $qualifyGroups->indexOf($secondQualifyGroup);
         $round->removeQualifyGroup($secondQualifyGroup);
-        $this->renumber($round, $firstQualifyGroup->getWinnersOrLosers());
+        $this->renumberQualifyGroups($round, $firstQualifyGroup->getWinnersOrLosers());
 
         $horizontalPoules = $secondQualifyGroup->getHorizontalPoules();
         if ($index !== false) {
@@ -93,7 +94,7 @@ class Service
 //        return $qualifyGroups;
 //    }
 
-    protected function renumber(Round $round, int $winnersOrLosers): void
+    protected function renumberQualifyGroups(Round $round, int $winnersOrLosers): void
     {
         $number = 1;
         foreach ($round->getQualifyGroups($winnersOrLosers) as $qualifyGroup) {

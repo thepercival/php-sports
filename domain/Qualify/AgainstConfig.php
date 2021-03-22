@@ -5,6 +5,7 @@ namespace Sports\Qualify;
 
 use Sports\Competition\Sport as CompetitionSport;
 use Sports\Round;
+use Sports\Round\Number as RoundNumber;
 use Sports\Sport;
 use SportsHelpers\Identifiable;
 
@@ -12,7 +13,7 @@ class AgainstConfig extends Identifiable
 {
     protected CompetitionSport $competitionSport;
     protected Round $round;
-    protected $roundNumberDep;
+    protected RoundNumber|null $roundNumberDep = null;
     protected float $winPoints = 0.0;
     protected float $drawPoints = 0.0;
     protected float $winPointsExt = 0.0;

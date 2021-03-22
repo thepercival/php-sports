@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Sports\Score;
 
@@ -23,8 +24,7 @@ class Creator
 
     /**
      * @param AgainstGame $game
-     * @param array|AgainstScore[] $newGameScores
-     *
+     * @param list<AgainstScore> $newGameScores
      * @return void
      */
     public function addAgainstScores(AgainstGame $game, array $newGameScores): void
@@ -36,8 +36,7 @@ class Creator
 
     /**
      * @param TogetherGamePlace $gamePlace
-     * @param array|TogetherScore[] $newScores
-     *
+     * @param list<TogetherScore> $newScores
      * @return void
      */
     public function addTogetherScores(TogetherGamePlace $gamePlace, array $newScores): void

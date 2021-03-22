@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Sports\Availability;
 
@@ -70,12 +71,14 @@ class Checker
 
     public function checkRefereePriority(Competition $competition, int $priority, Referee $referee = null): void
     {
-        $this->checkPriority($competition->getReferees()->toArray(), $priority, $referee);
+        $referees = array_values($competition->getReferees()->toArray());
+        $this->checkPriority($referees, $priority, $referee);
     }
 
     public function checkFieldPriority(CompetitionSport $competitionSport, int $priority, Field $field = null): void
     {
-        $this->checkPriority($competitionSport->getFields()->toArray(), $priority, $field);
+        $fields = array_values($competitionSport->getFields()->toArray());
+        $this->checkPriority($fields, $priority, $field);
     }
 
     /**

@@ -1,5 +1,4 @@
 <?php
-
 declare(strict_types=1);
 
 namespace Sports\Score;
@@ -12,8 +11,6 @@ use SportsHelpers\Identifiable;
 
 class Config extends Identifiable
 {
-    protected $sportDep;
-    protected $roundNumberDep;
     protected Config|null $next = null;
 
     const UPWARDS = 1;
@@ -26,8 +23,7 @@ class Config extends Identifiable
         protected int $maximum,
         protected bool $enabled,
         protected Config|null $previous = null
-    )
-    {
+    ) {
         $this->round->getScoreConfigs()->add($this);
         if ($this->previous !== null) {
             $this->previous->setNext($this);

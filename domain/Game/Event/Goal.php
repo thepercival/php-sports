@@ -3,12 +3,10 @@ declare(strict_types=1);
 
 namespace Sports\Game\Event;
 
-use Sports\Game\Event\Goal as GoalEvent;
 use Sports\Game\Participation as GameParticipation;
 use Sports\Team;
 use Sports\Game\Event as GameEvent;
 use SportsHelpers\Identifiable;
-use SuperElf\PersonStats as PersonStatsBase;
 
 class Goal extends Identifiable implements GameEvent
 {
@@ -16,31 +14,15 @@ class Goal extends Identifiable implements GameEvent
     public const PENALTY = 2;
     public const OWN = 4;
 
-    /**
-     * @var int
-     */
-    private $minute;
-    /**
-     * @var GameParticipation
-     */
-    private $gameParticipation;
-    /**
-     * @var bool
-     */
-    private $own;
-    /**
-     * @var bool
-     */
-    private $penalty;
-    /**
-     * @var GameParticipation
-     */
-    private $assistGameParticipation;
+    private bool $own;
+    private bool $penalty;
+    private GameParticipation|null $assistGameParticipation = null;
     
-    public function __construct(int $minute, GameParticipation $gameParticipation )
+    public function __construct(private int $minute, private GameParticipation $gameParticipation)
     {
-        $this->minute = $minute;
-        $this->setGameParticipation($gameParticipation);
+        if (!$gameParticipation->getGoalsAndAssists()->contains($this)) {
+            $gameParticipation->getGoalsAndAssists()->add($this) ;
+        }
         $this->own = false;
         $this->penalty = false;
     }
@@ -55,21 +37,13 @@ class Goal extends Identifiable implements GameEvent
         return $this->gameParticipation;
     }
 
-    protected function setGameParticipation(GameParticipation $gameParticipation): void
+    public function isType(int $type): bool
     {
-        if ($this->gameParticipation === null and !$gameParticipation->getGoalsAndAssists()->contains($this)) {
-            $gameParticipation->getGoalsAndAssists()->add($this) ;
-        }
-        $this->gameParticipation = $gameParticipation;
-    }
-
-    public function isType( int $type ): bool
-    {
-        if( $type == self::FIELD ) {
+        if ($type == self::FIELD) {
             return !$this->getOwn() && !$this->getPenalty();
-        } elseif( $type == self::PENALTY ) {
+        } elseif ($type == self::PENALTY) {
             return $this->getPenalty();
-        } elseif( $type == self::OWN ) {
+        } elseif ($type == self::OWN) {
             return $this->getOwn();
         }
         return false;
@@ -80,7 +54,7 @@ class Goal extends Identifiable implements GameEvent
         return $this->own;
     }
 
-    public function setOwn( bool $own ): void
+    public function setOwn(bool $own): void
     {
         $this->own = $own;
     }
@@ -90,7 +64,7 @@ class Goal extends Identifiable implements GameEvent
         return $this->penalty;
     }
 
-    public function setPenalty( bool $penalty ): void
+    public function setPenalty(bool $penalty): void
     {
         $this->penalty = $penalty;
     }
@@ -108,7 +82,8 @@ class Goal extends Identifiable implements GameEvent
         $this->assistGameParticipation = $assistGameParticipation;
     }
 
-    public function getTeam(): Team {
+    public function getTeam(): Team
+    {
         return $this->getGameParticipation()->getPlayer()->getTeam();
     }
 }

@@ -1,7 +1,9 @@
 <?php
+declare(strict_types=1);
 
 namespace Sports\Ranking\Calculator;
 
+use Closure;
 use Sports\State;
 use Sports\Place;
 use Sports\Poule\Horizontal as HorizontalPoule;
@@ -26,6 +28,7 @@ class End
     {
         $this->currentRank = 1;
         $getItems = function (Round $round) use (&$getItems) : array {
+            /** @var Closure(Round):list<EndRankingItem> $getItems */
             $items = [];
             foreach ($round->getQualifyGroups(QualifyGroup::WINNERS) as $qualifyGroup) {
                 $items = array_merge($items, $getItems($qualifyGroup->getChildRound()));
@@ -38,9 +41,11 @@ class End
             foreach (array_reverse($round->getQualifyGroups(QualifyGroup::LOSERS)->slice(0)) as $qualifyGroup) {
                 $items = array_merge($items, $getItems($qualifyGroup->getChildRound()));
             }
-            return $items;
+            return array_values($items);
         };
-        return array_values($getItems($this->structure->getRootRound()));
+        /** @var list<EndRankingItem> $endRankingItems */
+        $endRankingItems = $getItems($this->structure->getRootRound());
+        return array_values($endRankingItems);
     }
 
     /**

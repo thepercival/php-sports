@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Sports\Sport;
 
@@ -33,6 +34,9 @@ abstract class Custom
     const Football_Line_Forward = 8;
     const Football_Line_All = 15;
 
+    /**
+     * @return list<int>
+     */
     public static function get(): array
     {
         return [

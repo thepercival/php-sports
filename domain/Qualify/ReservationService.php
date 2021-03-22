@@ -1,18 +1,19 @@
 <?php
+declare(strict_types=1);
 
 namespace Sports\Qualify;
 
+use Sports\Qualify\ReservationService\PouleNumberReservations;
 use Sports\Round;
 use Sports\Poule;
 use Sports\Place\Location as PlaceLocation;
 
 class ReservationService
 {
-
     /**
-     * @var PouleNumberReservations[] | array
+     * @var list<PouleNumberReservations>
      */
-    private $reservations = [];
+    private array $reservations = [];
 
     public function __construct(Round $childRound)
     {
@@ -37,13 +38,17 @@ class ReservationService
         $filtered = array_filter($this->reservations, function ($reservationIt) use ($toPouleNumber): bool {
             return $reservationIt->toPouleNr === $toPouleNumber;
         });
-        return array_shift($filtered);
+        $first = array_shift($filtered);
+        if ($first === null) {
+            throw new \Exception('kan poule-reserveringen niet vinden', E_ERROR);
+        }
+        return $first;
     }
 
     /**
      * @param int $toPouleNumber
      * @param Round $fromRound
-     * @param array|PlaceLocation[] $fromPlaceLocations
+     * @param list<PlaceLocation> $fromPlaceLocations
      * @return PlaceLocation
      */
     public function getFreeAndLeastAvailabe(int $toPouleNumber, Round $fromRound, array $fromPlaceLocations): PlaceLocation
@@ -73,23 +78,5 @@ class ReservationService
             return $reservation->toPouleNr >= $toPouleNumber && $this->isFree($reservation->toPouleNr, $fromPoule);
         });
         return count($filtered);
-    }
-}
-
-class PouleNumberReservations
-{
-    /**
-     * @var int
-     */
-    public $toPouleNr;
-    /**
-     * @var array
-     */
-    public $fromPoules;
-
-    public function __construct(int $toPouleNr, array $fromPoules)
-    {
-        $this->toPouleNr = $toPouleNr;
-        $this->fromPoules = $fromPoules;
     }
 }

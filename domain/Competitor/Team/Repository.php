@@ -1,13 +1,15 @@
 <?php
+declare(strict_types=1);
 
 namespace Sports\Competitor\Team;
 
+use Doctrine\ORM\EntityRepository;
 use Sports\Competitor\Team as TeamCompetitor;
 
-class Repository extends \Sports\Repository
+/**
+ * @template-extends EntityRepository<TeamCompetitor>
+ */
+class Repository extends EntityRepository
 {
-    public function find($id, $lockMode = null, $lockVersion = null): ?TeamCompetitor
-    {
-        return $this->_em->find($this->_entityName, $id, $lockMode, $lockVersion);
-    }
+    use \Sports\Repository;
 }

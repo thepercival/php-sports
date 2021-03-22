@@ -401,12 +401,19 @@ class RoundTest extends TestCase
         $this->setScoreSingle($pouleOne, 3, 4, 1, 0);
 
         $roundRankingCalculator = new RoundRankingCalculator();
-        $items = $roundRankingCalculator->getItemsForPoule($pouleOne);
+        $roundRankingItems = $roundRankingCalculator->getItemsForPoule($pouleOne);
+        $roundRankingItem = array_shift($roundRankingItems);
+        self::assertNotNull($roundRankingItem);
+        self::assertSame($roundRankingItem->getRank(), 1);
+        $roundRankingItem = array_shift($roundRankingItems);
+        self::assertNotNull($roundRankingItem);
+        self::assertSame($roundRankingItem->getRank(), 1);
+        $roundRankingItem = array_shift($roundRankingItems);
+        self::assertNotNull($roundRankingItem);
+        self::assertSame($roundRankingItem->getRank(), 1);
 
-        self::assertSame($items[0]->getRank(), 1);
-        self::assertSame($items[1]->getRank(), 1);
-        self::assertSame($items[2]->getRank(), 1);
-        $roundRankingItem = $roundRankingCalculator->getItemByRank($items, 4);
+        $roundRankingItems = $roundRankingCalculator->getItemsForPoule($pouleOne);
+        $roundRankingItem = $roundRankingCalculator->getItemByRank($roundRankingItems, 4);
         self::assertNotNull($roundRankingItem);
         self::assertSame($roundRankingItem->getPlace(), $pouleOne->getPlace(2));
     }

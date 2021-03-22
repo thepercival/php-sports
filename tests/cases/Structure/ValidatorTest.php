@@ -152,7 +152,12 @@ final class ValidatorTest extends TestCase
 
         (new GamesCreator())->createStructureGames($structure);
 
-        $rootRound->getPoule(1)->setNumber(0);
+        $poule = $rootRound->getPoule(1);
+        $refCl = new \ReflectionClass($poule);
+        $refClPropNumber = $refCl->getProperty("number");
+        $refClPropNumber->setAccessible(true);
+        $refClPropNumber->setValue($poule, 0);
+        $refClPropNumber->setAccessible(false);
 
         $structureValidator = new StructureValidator();
         self::expectException(Exception::class);
@@ -171,7 +176,12 @@ final class ValidatorTest extends TestCase
 
         (new GamesCreator())->createStructureGames($structure);
 
-        $rootRound->getPoule(1)->getPlace(1)->setNumber(0);
+        $place = $rootRound->getPoule(1)->getPlace(1);
+        $refCl = new \ReflectionClass($place);
+        $refClPropNumber = $refCl->getProperty("number");
+        $refClPropNumber->setAccessible(true);
+        $refClPropNumber->setValue($place, 0);
+        $refClPropNumber->setAccessible(false);
 
         $structureValidator = new StructureValidator();
         self::expectException(Exception::class);
@@ -189,10 +199,9 @@ final class ValidatorTest extends TestCase
         $firstRoundNumber = $structure->getFirstRoundNumber();
         $rootRound = $structure->getRootRound();
 
-        $anotherRoundNumber = new RoundNumber($competition);
+        $secondRoundNumber = new RoundNumber($competition);
 
-        $qualifyGroup = new QualifyGroup($rootRound, QualifyGroup::WINNERS);
-        $secondRound = new Round($anotherRoundNumber, $qualifyGroup);
+        new QualifyGroup($rootRound, QualifyGroup::WINNERS, $secondRoundNumber);
 
         (new GamesCreator())->createStructureGames($structure);
 

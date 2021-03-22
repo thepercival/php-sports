@@ -1,19 +1,26 @@
 <?php
+declare(strict_types=1);
 
 namespace Sports\Competition;
 
+use DateTimeImmutable;
+use Doctrine\ORM\EntityRepository;
 use League\Period\Period;
 use Sports\Competition;
 use Sports\League;
 use Sports\Season;
 use Sports\Sport;
 
-class Repository extends \Sports\Repository
+/**
+ * @template-extends EntityRepository<Competition>
+ */
+class Repository extends EntityRepository
 {
-    public function find($id, $lockMode = null, $lockVersion = null): ?Competition
+    use \Sports\Repository;
+    /*public function find($id, $lockMode = null, $lockVersion = null): ?Competition
     {
         return $this->_em->find($this->_entityName, $id, $lockMode, $lockVersion);
-    }
+    }*/
 
     public function customPersist(Competition $competition): void
     {
@@ -31,19 +38,20 @@ class Repository extends \Sports\Repository
         $this->_em->persist($competition);
     }
 
-    public function findOneExt(League $league, Season $season): ?Competition
+    public function findOneExt(League $league, Season $season): Competition|null
     {
         $query = $this->createQueryBuilder('c')
             ->where('c.season = :season')
             ->andWhere('c.league = :league');
         $query = $query->setParameter('season', $season);
         $query = $query->setParameter('league', $league);
+        /** @var list<Competition> $results */
         $results = $query->getQuery()->getResult();
         $result = reset($results);
-        return $result;
+        return $result !== false ? $result : null;
     }
 
-    public function findOneByLeagueAndDate(League $league, \DateTimeImmutable $date)
+    public function findOneByLeagueAndDate(League $league, DateTimeImmutable $date): Competition|null
     {
         $query = $this->createQueryBuilder('c')
             ->join("c.season", "s")
@@ -53,13 +61,17 @@ class Repository extends \Sports\Repository
 
         $query = $query->setParameter('date', $date);
         $query = $query->setParameter('league', $league);
-
+        /** @var list<Competition> $results */
         $results = $query->getQuery()->getResult();
         $result = reset($results);
-        return $result;
+        return $result !== false ? $result : null;
     }
 
-    public function findByDate(\DateTimeImmutable $date)
+    /**
+     * @param DateTimeImmutable $date
+     * @return list<Competition>
+     */
+    public function findByDate(DateTimeImmutable $date): array
     {
         $query = $this->createQueryBuilder('c')
             ->join("c.season", "s")
@@ -67,15 +79,17 @@ class Repository extends \Sports\Repository
             ->andWhere('s.endDateTime >= :date');
 
         $query = $query->setParameter('date', $date);
-        return $query->getQuery()->getResult();
+        /** @var list<Competition> $results */
+        $results = $query->getQuery()->getResult();
+        return $results;
     }
 
     /**
-     * @param Sport $sport
+     * @param Sport|null $sport
      * @param Period|null $period
-     * @return array|Competition[]
+     * @return list<Competition>
      */
-    public function findExt(Sport $sport = null, Period $period = null)
+    public function findExt(Sport $sport = null, Period $period = null): array
     {
         $qb = $this->createQueryBuilder('c')
             ->distinct()
@@ -84,22 +98,24 @@ class Repository extends \Sports\Repository
             ->join('c.season', 'season')
         ;
 
-        if( $sport !== null ) {
+        if ($sport !== null) {
             $qb = $qb->andWhere('sc.sport = :sport');
-            $qb = $qb->setParameter('sport', $sport );
+            $qb = $qb->setParameter('sport', $sport);
         }
-        if( $period !== null ) {
-            $qb = $qb->andWhere('season.startDateTime < :periodEnd' );
-            $qb = $qb->andWhere('season.endDateTime > :periodStart' );
-            $qb = $qb->setParameter('periodEnd', $period->getEndDate() );
-            $qb = $qb->setParameter('periodStart', $period->getStartDate() );
+        if ($period !== null) {
+            $qb = $qb->andWhere('season.startDateTime < :periodEnd');
+            $qb = $qb->andWhere('season.endDateTime > :periodStart');
+            $qb = $qb->setParameter('periodEnd', $period->getEndDate());
+            $qb = $qb->setParameter('periodStart', $period->getStartDate());
         }
-        return $qb->getQuery()->getResult();
+        /** @var list<Competition> $results */
+        $results = $qb->getQuery()->getResult();
+        return $results;
     }
 
-    public function findNrWithoutPlanning()
+    public function findNrWithoutPlanning(): int
     {
-        $queryBuilder = $this->getEM()->createQueryBuilder()
+        $queryBuilder = $this->_em->createQueryBuilder()
             ->select('count(c.id)')
             ->distinct()
             ->from('Sports\Round\Number', 'rn')
@@ -107,8 +123,8 @@ class Repository extends \Sports\Repository
             ->where('rn.hasPlanning = false');
 
         // echo $queryBuilder->getQuery()->getSQL();
-
-        return $queryBuilder->getQuery()->getSingleScalarResult();
+        /** @var int $result */
+        $result = $queryBuilder->getQuery()->getSingleScalarResult();
+        return $result;
     }
-
 }

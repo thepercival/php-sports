@@ -1,7 +1,9 @@
 <?php
+declare(strict_types=1);
 
 namespace Sports;
 
+use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use League\Period\Period;
@@ -13,18 +15,12 @@ class Person extends Identifiable
     protected string $firstName;
     protected string|null $nameInsertion;
     protected string $lastName;
-    /**
-     * @var \DateTimeImmutable|null
-     */
-    protected $dateOfBirth;
+    protected DateTimeImmutable|null $dateOfBirth = null;
     /**
      * @var ArrayCollection<int|string,Player>
      */
     protected $players;
-    /**
-     * @var string|null
-     */
-    protected $imageUrl;
+    protected string|null $imageUrl = null;
     
     const MIN_LENGTH_FIRSTNAME = 2;
     const MAX_LENGTH_FIRSTNAME = 50;
@@ -52,8 +48,8 @@ class Person extends Identifiable
             throw new \InvalidArgumentException("de voornaam moet gezet zijn", E_ERROR);
         }
 
-        if (strlen($firstName) < static::MIN_LENGTH_FIRSTNAME or strlen($firstName) > static::MAX_LENGTH_FIRSTNAME) {
-            throw new \InvalidArgumentException("de voornaam moet minimaal ".static::MIN_LENGTH_FIRSTNAME." karakters bevatten en mag maximaal ".static::MAX_LENGTH_FIRSTNAME." karakters bevatten", E_ERROR);
+        if (strlen($firstName) < self::MIN_LENGTH_FIRSTNAME or strlen($firstName) > self::MAX_LENGTH_FIRSTNAME) {
+            throw new \InvalidArgumentException("de voornaam moet minimaal ".self::MIN_LENGTH_FIRSTNAME." karakters bevatten en mag maximaal ".self::MAX_LENGTH_FIRSTNAME." karakters bevatten", E_ERROR);
         }
         $this->firstName = $firstName;
     }
@@ -69,8 +65,8 @@ class Person extends Identifiable
             $nameInsertion = null;
         }
 
-        if ($nameInsertion !== null && strlen($nameInsertion) > static::MAX_LENGTH_NAMEINSERTION) {
-            throw new \InvalidArgumentException("het tussenvoegsel mag maximaal ".static::MAX_LENGTH_NAMEINSERTION." karakters bevatten", E_ERROR);
+        if ($nameInsertion !== null && strlen($nameInsertion) > self::MAX_LENGTH_NAMEINSERTION) {
+            throw new \InvalidArgumentException("het tussenvoegsel mag maximaal ".self::MAX_LENGTH_NAMEINSERTION." karakters bevatten", E_ERROR);
         }
         $this->nameInsertion = $nameInsertion;
     }
@@ -86,8 +82,8 @@ class Person extends Identifiable
             throw new \InvalidArgumentException("de achternaam moet gezet zijn", E_ERROR);
         }
 
-        if (strlen($lastName) < static::MIN_LENGTH_LASTNAME or strlen($lastName) > static::MAX_LENGTH_LASTNAME) {
-            throw new \InvalidArgumentException("de achternaam moet minimaal ".static::MIN_LENGTH_LASTNAME." karakters bevatten en mag maximaal ".static::MAX_LENGTH_LASTNAME." karakters bevatten", E_ERROR);
+        if (strlen($lastName) < self::MIN_LENGTH_LASTNAME or strlen($lastName) > self::MAX_LENGTH_LASTNAME) {
+            throw new \InvalidArgumentException("de achternaam moet minimaal ".self::MIN_LENGTH_LASTNAME." karakters bevatten en mag maximaal ".self::MAX_LENGTH_LASTNAME." karakters bevatten", E_ERROR);
         }
         $this->lastName = $lastName;
     }
@@ -95,11 +91,12 @@ class Person extends Identifiable
     public function getName(): string
     {
         $name = $this->getFirstName();
-        if (strlen($this->getNameInsertion()) > 0) {
+        $nameInsertion = $this->getNameInsertion();
+        if ($nameInsertion !== null) {
             if (strlen($name) > 0) {
                 $name .= " ";
             }
-            $name .= $this->getNameInsertion();
+            $name .= $nameInsertion;
         }
         if (strlen($this->getLastName()) > 0) {
             if (strlen($name) > 0) {

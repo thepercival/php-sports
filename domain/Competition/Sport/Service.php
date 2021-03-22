@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Sports\Competition\Sport;
 
 use Sports\Round;
+use Closure;
 use Sports\Sport;
 use Sports\Score\Config as ScoreConfig;
 use Sports\Planning\GameAmountConfig as GameAmountConfig;
@@ -52,10 +53,8 @@ class Service
             $roundNumber = $roundNumber->getNext();
         }
 
-        /**
-         * @param list<Round> $rounds
-         */
         $addToRounds = function (array $rounds) use ($competitionSport, &$addToRounds): void {
+            /** @var list<Round> $rounds */
             foreach ($rounds as $round) {
                 if ($round->isRoot() || $round->getScoreConfigs()->count() > 0) {
                     $this->scoreConfigService->createDefault($competitionSport, $round);
@@ -63,6 +62,7 @@ class Service
                 if ($round->isRoot() || $round->getQualifyAgainstConfigs()->count() > 0) {
                     $this->qualifyConfigService->createDefault($competitionSport, $round);
                 }
+                /** @var Closure(list<Round>):void $addToRounds */
                 $addToRounds($round->getChildren());
             }
         };
@@ -87,10 +87,8 @@ class Service
             $roundNumber = $roundNumber->getNext();
         }
 
-        /**
-         * @param list<Round> $rounds
-         */
         $removeFromRounds = function (array $rounds) use ($competitionSport, &$removeFromRounds): void {
+            /** @var list<Round> $rounds */
             foreach ($rounds as $round) {
                 $scoreConfigs = $round->getScoreConfigs()->filter(
                     function (ScoreConfig $scoreConfigIt) use ($competitionSport): bool {
@@ -109,6 +107,7 @@ class Service
                 while ($qualifyConfig = $qualifyConfigs->first()) {
                     $qualifyConfigs->removeElement($qualifyConfig);
                 }
+                /** @var Closure(list<Round>):void $removeFromRounds */
                 $removeFromRounds($round->getChildren());
             }
         };

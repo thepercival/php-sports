@@ -26,25 +26,14 @@ abstract class Calculator
     }*/
 
     /**
-     * @param array<TogetherGame|AgainstGame> $games
-     * @return array<TogetherGame|AgainstGame>
-     */
-    protected function getFilteredGames(array $games): array
-    {
-        return array_filter($games, function (AgainstGame | TogetherGame $game): bool {
-            return $this->competitionSport === $game->getCompetitionSport();
-        });
-    }
-
-    /**
-     * @param array<Place> $places
-     * @return array<SportPerformance>
+     * @param list<Place> $places
+     * @return list<SportPerformance>
      */
     protected function createPerformances(array $places): array
     {
-        return array_map(function (Place $place): SportPerformance {
+        return array_values(array_map(function (Place $place): SportPerformance {
             return new SportPerformance($this->competitionSport, $place, $place->getPenaltyPoints());
-        }, $places);
+        }, $places));
     }
 
     /**

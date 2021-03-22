@@ -1,11 +1,15 @@
 <?php
+declare(strict_types=1);
 
 namespace Sports\Poule;
 
-use Sports\Round;
-use Sports\Poule;
-use Sports\Field;
+use Doctrine\ORM\EntityRepository;
+use Sports\Poule as PouleBase;
 
-class Repository extends \Sports\Repository
+/**
+ * @template-extends EntityRepository<PouleBase>
+ */
+class Repository extends EntityRepository
 {
+    use \Sports\Repository;
 }

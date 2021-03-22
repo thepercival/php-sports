@@ -45,6 +45,7 @@ class Service
 
     /**
      * @param Association $association
+     * @param list<Association>|null $ancestors
      * @return list<Association>
      */
     protected function getAncestors(Association $association, array|null $ancestors = null): array

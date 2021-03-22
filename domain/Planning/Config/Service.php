@@ -14,39 +14,33 @@ class Service
 {
     public function createDefault(RoundNumber $roundNumber): PlanningConfig
     {
-        $config = new PlanningConfig($roundNumber);
         $gameCreationStrategy = $this->getDefaultGameCreationStrategy($roundNumber->getCompetition());
-        $config->setCreationStrategy($gameCreationStrategy);
-        $config->setExtension(PlanningConfig::DEFAULTEXTENSION);
-        $config->setEnableTime(PlanningConfig::DEFAULTENABLETIME);
-        $config->setMinutesPerGame(0);
-        $config->setMinutesPerGameExt(0);
-        $config->setMinutesBetweenGames(0);
-        $config->setMinutesAfter(0);
-        $config->setMinutesPerGame($this->getDefaultMinutesPerGame());
-        $config->setMinutesBetweenGames($this->getDefaultMinutesBetweenGames());
-        $config->setMinutesAfter($this->getDefaultMinutesAfter());
-        $config->setSelfReferee(SelfReferee::DISABLED);
-
-        return $config;
+        return new PlanningConfig(
+            $roundNumber,
+            $gameCreationStrategy,
+            PlanningConfig::DEFAULTEXTENSION,
+            PlanningConfig::DEFAULTENABLETIME,
+            $this->getDefaultMinutesPerGame(),
+            $this->getDefaultMinutesPerGameExt(),
+            $this->getDefaultMinutesBetweenGames(),
+            $this->getDefaultMinutesAfter(),
+            SelfReferee::DISABLED
+        );
     }
 
     public function copy(PlanningConfig $planningConfig, RoundNumber $roundNumber): void
     {
-        $newPlanningConfig = new PlanningConfig($roundNumber);
-
-        $newPlanningConfig->setCreationStrategy($planningConfig->getCreationStrategy());
-        $newPlanningConfig->setExtension($planningConfig->getExtension());
-        $newPlanningConfig->setEnableTime($planningConfig->getEnableTime());
-        $newPlanningConfig->setMinutesPerGame($planningConfig->getMinutesPerGame());
-        $newPlanningConfig->setMinutesPerGameExt($planningConfig->getMinutesPerGameExt());
-        $newPlanningConfig->setMinutesBetweenGames($planningConfig->getMinutesBetweenGames());
-        $newPlanningConfig->setMinutesAfter($planningConfig->getMinutesAfter());
-        $newPlanningConfig->setEnableTime($planningConfig->getEnableTime());
-        $newPlanningConfig->setMinutesPerGame($planningConfig->getMinutesPerGame());
-        $newPlanningConfig->setMinutesBetweenGames($planningConfig->getMinutesBetweenGames());
-        $newPlanningConfig->setMinutesAfter($planningConfig->getMinutesAfter());
-        $newPlanningConfig->setSelfReferee($planningConfig->getSelfReferee());
+        new PlanningConfig(
+            $roundNumber,
+            $planningConfig->getCreationStrategy(),
+            $planningConfig->getExtension(),
+            $planningConfig->getEnableTime(),
+            $planningConfig->getMinutesPerGame(),
+            $planningConfig->getMinutesPerGameExt(),
+            $planningConfig->getMinutesBetweenGames(),
+            $planningConfig->getMinutesAfter(),
+            $planningConfig->getSelfReferee(),
+        );
     }
 
     public function getDefaultMinutesPerGame(): int

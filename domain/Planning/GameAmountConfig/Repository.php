@@ -5,9 +5,16 @@ namespace Sports\Planning\GameAmountConfig;
 
 use Sports\Competition\Sport as CompetitionSport;
 use Sports\Round\Number as RoundNumber;
+use Doctrine\ORM\EntityRepository;
+use Sports\Planning\GameAmountConfig as GameAmountConfigBase;
 
-class Repository extends \Sports\Repository
+/**
+ * @template-extends EntityRepository<GameAmountConfigBase>
+ */
+class Repository extends EntityRepository
 {
+    use \Sports\Repository;
+
     public function addObjects(CompetitionSport $competitionSport, RoundNumber $roundNumber): void
     {
         $gameAmountConfig = $roundNumber->getGameAmountConfig($competitionSport);

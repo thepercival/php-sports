@@ -1,25 +1,32 @@
 <?php
-
 declare(strict_types=1);
 
 namespace Sports\Game;
 
+use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\QueryBuilder;
-use Sports\Game;
+use Sports\Game as GameBase;
 use Sports\Round\Number as RoundNumber;
 use Sports\Game\Against as AgainstGame;
+use Sports\Game\Place as GamePlace;
 use Sports\Game\Together as TogetherGame;
 use Sports\Competition;
 use League\Period\Period;
 
-class Repository extends \Sports\Repository
+/**
+ * @template T
+ * @template-extends EntityRepository<T>
+ */
+class Repository extends EntityRepository
 {
+    use \Sports\Repository;
+
     /**
      * @param Competition $competition
      * @param int|null $gameStates
      * @param int|null $batchNr
      * @param Period|null $period
-     * @return list<Game>
+     * @return list<GameBase>
      */
     public function getCompetitionGames(
         Competition $competition,
@@ -29,15 +36,18 @@ class Repository extends \Sports\Repository
     ): array {
         $qb = $this->getCompetitionGamesQuery($competition, $gameStates, $batchNr, $period);
         $qb = $qb->orderBy('g.startDateTime', 'ASC');
-        return $qb->getQuery()->getResult();
+        /** @var list<GameBase> $games */
+        $games = $qb->getQuery()->getResult();
+        return $games;
     }
 
     public function hasCompetitionGames(
         Competition $competition,
-        $gameStates = null,
+        int $gameStates = null,
         int $batchNr = null,
         Period $period = null
     ): bool {
+        /** @var list<GameBase> $games */
         $games = $this->getCompetitionGamesQuery(
             $competition,
             $gameStates,
@@ -49,10 +59,11 @@ class Repository extends \Sports\Repository
 
     public function getNrOfCompetitionGamePlaces(
         Competition $competition,
-        $gameStates = null,
+        int $gameStates = null,
         int $batchNr = null,
         Period $period = null
     ): int {
+        /** @var list<GamePlace> $gamePlaces */
         $gamePlaces = $this->getCompetitionGamePlacessQuery(
             $competition,
             $gameStates,
@@ -64,7 +75,7 @@ class Repository extends \Sports\Repository
 
     protected function getCompetitionGamesQuery(
         Competition $competition,
-        $gameStates = null,
+        int $gameStates = null,
         int $batchNr = null,
         Period $period = null
     ): QueryBuilder {
@@ -80,11 +91,11 @@ class Repository extends \Sports\Repository
 
     protected function getCompetitionGamePlacessQuery(
         Competition $competition,
-        $gameStates = null,
+        int $gameStates = null,
         int $batchNr = null,
         Period $period = null
     ): QueryBuilder {
-        $query = $this->getEM()->createQueryBuilder()
+        $query = $this->_em->createQueryBuilder()
             ->select('gp')
             ->from('Sports\Game\Place', 'gp')
             ->join("gp.game", "g")
@@ -101,15 +112,19 @@ class Repository extends \Sports\Repository
      * @param RoundNumber $roundNumber
      * @param int|null $gameStates
      * @param int|null $batchNr
-     * @return list<Game>
+     * @return list<GameBase>
      */
     public function getRoundNumberGames(RoundNumber $roundNumber, int $gameStates = null, int $batchNr = null): array
     {
-        return $this->getRoundNumberGamesQuery($roundNumber, $gameStates, $batchNr)->getQuery()->getResult();
+        /** @var list<GameBase> $games */
+        $games = $this->getRoundNumberGamesQuery($roundNumber, $gameStates, $batchNr)->getQuery()->getResult();
+        ;
+        return $games;
     }
 
-    public function hasRoundNumberGames(RoundNumber $roundNumber, $gameStates = null, int $batchNr = null): bool
+    public function hasRoundNumberGames(RoundNumber $roundNumber, int $gameStates = null, int $batchNr = null): bool
     {
+        /** @var list<GameBase> $games */
         $games = $this->getRoundNumberGamesQuery(
             $roundNumber,
             $gameStates,
@@ -118,7 +133,7 @@ class Repository extends \Sports\Repository
         return count($games) === 1;
     }
 
-    protected function getRoundNumberGamesQuery(RoundNumber $roundNumber, $gameStates = null, int $batchNr = null): QueryBuilder
+    protected function getRoundNumberGamesQuery(RoundNumber $roundNumber, int $gameStates = null, int $batchNr = null): QueryBuilder
     {
         $query = $this->createQueryBuilder('g')
             ->join("g.poule", "p")
@@ -130,8 +145,12 @@ class Repository extends \Sports\Repository
         return $this->applyExtraFilters($query, $gameStates, $batchNr);
     }
 
-    protected function applyExtraFilters(QueryBuilder $query, int $gameStates = null, int $batchNr = null, Period $period = null): QueryBuilder
-    {
+    protected function applyExtraFilters(
+        QueryBuilder $query,
+        int $gameStates = null,
+        int $batchNr = null,
+        Period $period = null
+    ): QueryBuilder {
         if ($gameStates !== null) {
             // $query = $query->andWhere('g.state & :gamestates = g.state');
             $query = $query

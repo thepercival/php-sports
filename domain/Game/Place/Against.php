@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Sports\Game\Place;
 
@@ -8,27 +9,17 @@ use Sports\Game\Place as GamePlaceBase;
 
 class Against extends GamePlaceBase
 {
-    private AgainstGame $game;
-    private int $side;
-
-    public function __construct(AgainstGame $game, PlaceBase $place, int $side )
+    public function __construct(private AgainstGame $game, PlaceBase $place, private int $side)
     {
         parent::__construct($place);
-        $this->setGame($game);
-        $this->side = $side;
+        if (!$game->getPlaces()->contains($this)) {
+            $game->getPlaces()->add($this) ;
+        }
     }
 
     public function getGame(): AgainstGame
     {
         return $this->game;
-    }
-
-    protected function setGame(AgainstGame $game): void
-    {
-        if (!$game->getPlaces()->contains($this)) {
-            $game->getPlaces()->add($this) ;
-        }
-        $this->game = $game;
     }
 
     public function getSide(): int

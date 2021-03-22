@@ -33,6 +33,7 @@ class Team extends Identifiable
     {
         $this->setAssociation($association);
         $this->setName($name);
+        $this->players = new ArrayCollection();
     }
 
     public function getName(): string
@@ -46,8 +47,8 @@ class Team extends Identifiable
             throw new \InvalidArgumentException("de naam moet gezet zijn", E_ERROR);
         }
 
-        if (strlen($name) < static::MIN_LENGTH_NAME or strlen($name) > static::MAX_LENGTH_NAME) {
-            throw new \InvalidArgumentException("de naam moet minimaal ".static::MIN_LENGTH_NAME." karakters bevatten en mag maximaal ".static::MAX_LENGTH_NAME." karakters bevatten", E_ERROR);
+        if (strlen($name) < self::MIN_LENGTH_NAME or strlen($name) > self::MAX_LENGTH_NAME) {
+            throw new \InvalidArgumentException("de naam moet minimaal ".self::MIN_LENGTH_NAME." karakters bevatten en mag maximaal ".self::MAX_LENGTH_NAME." karakters bevatten", E_ERROR);
         }
         $this->name = $name;
     }
@@ -63,8 +64,8 @@ class Team extends Identifiable
             $abbreviation = null;
         }
 
-        if ($abbreviation !== null && strlen($abbreviation) > static::MAX_LENGTH_ABBREVIATION) {
-            throw new \InvalidArgumentException("de afkorting mag maximaal ".static::MAX_LENGTH_ABBREVIATION." karakters bevatten", E_ERROR);
+        if ($abbreviation !== null && strlen($abbreviation) > self::MAX_LENGTH_ABBREVIATION) {
+            throw new \InvalidArgumentException("de afkorting mag maximaal ".self::MAX_LENGTH_ABBREVIATION." karakters bevatten", E_ERROR);
         }
         $this->abbreviation = $abbreviation;
     }
@@ -80,8 +81,8 @@ class Team extends Identifiable
             $imageUrl = null;
         }
 
-        if ($imageUrl !== null &&  strlen($imageUrl) > static::MAX_LENGTH_IMAGEURL) {
-            throw new \InvalidArgumentException("de imageUrl mag maximaal ".static::MAX_LENGTH_IMAGEURL." karakters bevatten", E_ERROR);
+        if ($imageUrl !== null &&  strlen($imageUrl) > self::MAX_LENGTH_IMAGEURL) {
+            throw new \InvalidArgumentException("de imageUrl mag maximaal ".self::MAX_LENGTH_IMAGEURL." karakters bevatten", E_ERROR);
         }
         $this->imageUrl = $imageUrl;
     }

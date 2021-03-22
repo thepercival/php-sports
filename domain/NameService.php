@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Sports;
 
@@ -37,7 +38,10 @@ class NameService
     public function getRoundNumberName(RoundNumber $roundNumber): string
     {
         if ($this->roundsHaveSameName($roundNumber)) {
-            return $this->getRoundName($roundNumber->getRounds()->first(), true);
+            $firstRound = $roundNumber->getRounds()->first();
+            if ($firstRound !== false) {
+                return $this->getRoundName($firstRound, true);
+            }
         }
         return $this->getHtmlNumber($roundNumber->getNumber()) . ' ronde';
     }
@@ -75,13 +79,9 @@ class NameService
         return $pouleName . (chr(ord('A') + $secondLetter));
     }
 
-    /**
-     * @param bool|null $longName
-     */
     public function getPlaceName(Place $place, bool $competitorName = false, ?bool $longName = false): string
     {
-        $competitorName = $competitorName && $this->competitorMap !== null;
-        if ($competitorName === true) {
+        if ($competitorName && $this->competitorMap !== null) {
             $competitor = $this->competitorMap->getCompetitor($place->getStartLocation());
             if ($competitor !== null) {
                 return $competitor->getName();
@@ -96,8 +96,7 @@ class NameService
 
     public function getPlaceFromName(Place $place, bool $competitorName, bool $longName = false): string
     {
-        $competitorName = $competitorName && $this->competitorMap !== null;
-        if ($competitorName === true) {
+        if ($competitorName && $this->competitorMap !== null) {
             $competitor = $this->competitorMap->getCompetitor($place->getStartLocation());
             if ($competitor !== null) {
                 return $competitor->getName();
@@ -177,21 +176,31 @@ class NameService
         return $name;
     }
 
-    public function getRefereeName(Game $game, bool $longName = null): ?string
+    public function getRefereeName(Game $game, bool $longName = null): string
     {
-        if ($game->getReferee() !== null) {
-            return $longName ? $game->getReferee()->getName() : $game->getReferee()->getInitials();
+        $referee = $game->getReferee();
+        if ($referee !== null) {
+            if ($longName !== true) {
+                return $referee->getInitials();
+            }
+            $refereeName = $referee->getName();
+            return $refereeName !== null ? $refereeName : '';
         }
-        if ($game->getRefereePlace() !== null) {
-            return $this->getPlaceName($game->getRefereePlace(), true, $longName);
+        $refereePlace = $game->getRefereePlace();
+        if ($refereePlace !== null) {
+            return $this->getPlaceName($refereePlace, true, $longName);
         }
         return '';
     }
 
+    /**
+     * @param int $ruleSet
+     * @return list<string>
+     */
     public function getRulesName(int $ruleSet): array
     {
         $rankingRuleGetter = new RankingRuleGetter();
-        return array_map(function (int $rule): string {
+        return array_values(array_map(function (int $rule): string {
             switch ($rule) {
                 case RankingRule::MostPoints:
                     return 'meeste aantal punten';
@@ -209,7 +218,7 @@ class NameService
                     return 'meeste aantal subeenheden voor';
             }
             return '';
-        }, $rankingRuleGetter->getRules($ruleSet, false));
+        }, $rankingRuleGetter->getRules($ruleSet, false)));
     }
 
     protected function childRoundsHaveEqualDepth(Round $round): bool
@@ -249,8 +258,9 @@ class NameService
         if (!$round->needsRanking()) {
             return false;
         }
-        if (!$round->isRoot()) {
-            return $this->roundAndParentsNeedsRanking($round->getParent());
+        $parent = $round->getParent();
+        if ($parent !== null) {
+            return $this->roundAndParentsNeedsRanking($parent);
         }
         return true;
     }

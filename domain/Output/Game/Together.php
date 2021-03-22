@@ -36,7 +36,8 @@ class Together extends OutputGame
 
     protected function getDescriptionAsString(TogetherGame $game): string
     {
-        return $this->getPlacesAsString($game->getPlaces()->toArray())  . ' ' . $this->getScoreAsString($game) ;
+        $places = array_values($game->getPlaces()->toArray());
+        return $this->getPlacesAsString($places)  . ' ' . $this->getScoreAsString($game) ;
     }
 
     protected function getScoreAsString(TogetherGame $game): string

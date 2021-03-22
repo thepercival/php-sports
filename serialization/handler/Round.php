@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Sports\SerializationHandler;
 
@@ -18,6 +19,9 @@ use Sports\Qualify\AgainstConfig as QualifyAgainstConfig;
 
 class Round implements SubscribingHandlerInterface
 {
+    /**
+     * @psalm-return list<array<string, int|string>>
+     */
     public static function getSubscribingMethods()
     {
         return [
@@ -36,7 +40,19 @@ class Round implements SubscribingHandlerInterface
         ];
     }
 
-    public function deserializeFromJson(JsonDeserializationVisitor $visitor, $arrRound, array $type, Context $context)
+    /**
+     * @param JsonDeserializationVisitor $visitor
+     * @param array<string, int|string|array> $arrRound
+     * @param array<string, int|string|array|null> $type
+     * @param Context $context
+     * @return RoundBase
+     */
+    public function deserializeFromJson(
+        JsonDeserializationVisitor $visitor,
+        array $arrRound,
+        array $type,
+        Context $context
+    ): RoundBase
     {
         $parentQualifyGroup = null;
         if (array_key_exists("parentqualifygroup", $type["params"]) && $type["params"]["parentqualifygroup"] !== null) {
@@ -104,8 +120,14 @@ class Round implements SubscribingHandlerInterface
      * @param CompetitionSport $competitionSport
      * @param RoundBase $round
      * @param ScoreConfig|null $previous
+     * @return ScoreConfig
      */
-    protected function createScoreConfig(array $arrConfig, CompetitionSport $competitionSport, RoundBase $round, ScoreConfig $previous = null)
+    protected function createScoreConfig(
+        array $arrConfig,
+        CompetitionSport $competitionSport,
+        RoundBase $round,
+        ScoreConfig $previous = null
+    ): ScoreConfig
     {
         $config = new ScoreConfig(
             $competitionSport,
@@ -118,9 +140,20 @@ class Round implements SubscribingHandlerInterface
         if (isset($arrConfig["next"])) {
             $this->createScoreConfig($arrConfig["next"], $competitionSport, $round, $config);
         }
+        return $config;
     }
 
-    protected function createQualifyAgainstConfig(array $arrConfig, CompetitionSport $competitionSport, RoundBase $round)
+    /**
+     * @param array<string, int|bool|array<string, int|bool>> $arrConfig
+     * @param CompetitionSport $competitionSport
+     * @param RoundBase $round
+     * @return QualifyAgainstConfig
+     */
+    protected function createQualifyAgainstConfig(
+        array $arrConfig,
+        CompetitionSport $competitionSport,
+        RoundBase $round
+    ): QualifyAgainstConfig
     {
         $config = new QualifyAgainstConfig($competitionSport, $round, $arrConfig["pointsCalculation"]);
         $config->setWinPoints($arrConfig["winPoints"]);
@@ -128,5 +161,6 @@ class Round implements SubscribingHandlerInterface
         $config->setDrawPoints($arrConfig["drawPoints"]);
         $config->setDrawPointsExt($arrConfig["drawPointsExt"]);
         $config->setLosePointsExt($arrConfig["losePointsExt"]);
+        return $config;
     }
 }

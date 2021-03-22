@@ -8,14 +8,12 @@ use Sports\Competitor\Team as TeamCompetitor;
 class TeamCompetitors
 {
     /**
-     * @param array|TeamCompetitor[] $teamCompetitors
-     *
-     * @return void
+     * @param list<TeamCompetitor> $teamCompetitors
      */
     public function display( array $teamCompetitors ): void {
         $table = new ConsoleTable();
         $table->setHeaders(array('id', 'league', 'season', 'pouleNr', 'placeNr', 'team'));
-        uasort( $teamCompetitors, function( TeamCompetitor $a, TeamCompetitor $b ): int {
+        usort( $teamCompetitors, function( TeamCompetitor $a, TeamCompetitor $b ): int {
             if( $a->getPouleNr() === $b->getPouleNr() ) {
                 return $a->getPlaceNr() < $b->getPlaceNr() ? -1 : 1;
             }

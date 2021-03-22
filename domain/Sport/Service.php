@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Sports\Sport;
 
@@ -15,26 +16,26 @@ class Service
         $this->math = new SportMath();
     }
 
+    /**
+     * @param list<SportNrFields> $sportsNrFields
+     * @return list<SportNrFieldsGames>
+     */
     protected function convertSportsNrFields(array $sportsNrFields): array
     {
-        $sportsNrFieldsGames = [];
-
-        /** @var SportNrFields $sportNrFields */
-        foreach ($sportsNrFields as $sportNrFields) {
-            $sportsNrFieldsGames[] = new SportNrFieldsGames(
+        return array_values(array_map(function(SportNrFields $sportNrFields): SportNrFieldsGames{
+            return new SportNrFieldsGames(
                 $sportNrFields->getSportNr(),
                 $sportNrFields->getNrOfFields(),
                 $sportNrFields->getNrOfFields(),
                 $sportNrFields->getNrOfGamePlaces()
             );
-        }
-        return $sportsNrFieldsGames;
+        }, $sportsNrFields ));
     }
 
     /**
-     * @param array $sportsNrFieldsGames|SportNrFieldsGames[]
+     * @param list<SportNrFieldsGames> $sportsNrFieldsGames
      * @param float $divisor
-     * @return array|SportNrFieldsGames[]
+     * @return list<SportNrFieldsGames>
      */
     public function modifySportsNrFieldsGames(array $sportsNrFieldsGames, float $divisor): array
     {
@@ -64,14 +65,6 @@ class Service
     //  het aantal poulewedstrijden worden gebleven
     //
 
-    /**
-     * @param array $sportsNrFields |SportNrFields[]
-     * @param int $pouleNrOfPlaces
-     * @param bool $teamup
-     * @param int $selfReferee
-     * @param int $nrOfHeadtohead
-     * @return array
-     */
 //    public function getPlanningMinNrOfGames(
 //        array $sportsNrFields,
 //        int $pouleNrOfPlaces,
@@ -113,16 +106,16 @@ class Service
 //    }
 
     /**
-     * @param array|SportNrFields[] $sportsNrFields
-     * @return array
+     * @param list<SportNrFields> $sportsNrFields
+     * @return list<int>
      */
     protected function getFieldsCommonDivisors(array $sportsNrFields): array
     {
-        /** @var array|int[] $nrOfFieldsPerSport */
-        $nrOfFieldsPerSport = array_map(
+        /** @var list<int> $nrOfFieldsPerSport */
+        $nrOfFieldsPerSport = array_values(array_map(
             function (SportNrFields $sportNrFields): int {
                 return $sportNrFields->getNrOfFields();
-        }, $sportsNrFields);
+        }, $sportsNrFields));
 
         if (count($nrOfFieldsPerSport) === 1) {
             return [];
@@ -138,7 +131,7 @@ class Service
                 });
             }
         }
-        return $commonDivisors;
+        return array_values($commonDivisors);
     }
 
 //    public function getMinNrOfGamesMap(Poule $poule, array $sportPlanningConfigs): array {

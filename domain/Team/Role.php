@@ -40,7 +40,7 @@ abstract class Role extends Identifiable
         return $this->startDateTime;
     }
 
-    public function setStartDateTime(DateTimeImmutable $startDateTime): void
+    final public function setStartDateTime(DateTimeImmutable $startDateTime): void
     {
         $this->startDateTime = $startDateTime;
     }
@@ -50,7 +50,7 @@ abstract class Role extends Identifiable
         return $this->endDateTime;
     }
 
-    public function setEndDateTime(DateTimeImmutable $endDateTime): void
+    final public function setEndDateTime(DateTimeImmutable $endDateTime): void
     {
         $this->endDateTime = $endDateTime;
     }

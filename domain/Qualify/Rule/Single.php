@@ -10,10 +10,7 @@ use Sports\Qualify\Group as QualifyGroup;
 
 class Single extends QualifyRule
 {
-    /**
-     * @var Place
-     */
-    private $toPlace;
+    private Place|null $toPlace = null;
     /**
      * @var int
      */
@@ -47,6 +44,9 @@ class Single extends QualifyRule
 
     public function getToPlace(): Place
     {
+        if ($this->toPlace === null) {
+            throw new \Exception('toPlace should be set, before getting it', E_ERROR);
+        }
         return $this->toPlace;
     }
 

@@ -1,28 +1,24 @@
 <?php
+declare(strict_types=1);
 
 namespace Sports\Priority;
 
 class Service
 {
-
     /**
-     * @var array | Prioritizable[]
+     * @param list<Prioritizable> $prioritizables
      */
-    protected $prioritizables;
-
-    public function __construct(array $prioritizables)
+    public function __construct(protected array $prioritizables)
     {
-        $this->prioritizables = $prioritizables;
     }
 
     /**
-     * @return array | Prioritizable[]
+     * @return list<Prioritizable> $prioritizables
      */
     public function validate(): array
     {
         $changed = [];
-
-        uasort(
+        usort(
             $this->prioritizables,
             function (Prioritizable $prioritizableA, Prioritizable $prioritizableB): int {
                 return $prioritizableA->getPriority() - $prioritizableB->getPriority();
@@ -42,14 +38,14 @@ class Service
 
     /**
      * @param Prioritizable $prioritizable
-     * @return array | Prioritizable[]
+     * @return list<Prioritizable> $prioritizables
      */
     public function upgrade(Prioritizable $prioritizable): array
     {
         $changed = $this->validate();
 
         $upgradePrioritizable = $this->findByPriority($prioritizable->getPriority());
-        $downgradePrioritizable = $this->findByPriority($prioritizable->getPriority() - 1);;
+        $downgradePrioritizable = $this->findByPriority($prioritizable->getPriority() - 1);
         if ($upgradePrioritizable === $prioritizable and $downgradePrioritizable !== null) {
             $upgradePrioritizable->setPriority($upgradePrioritizable->getPriority() - 1);
             if (array_search($upgradePrioritizable, $changed, true) === false) {

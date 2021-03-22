@@ -3,18 +3,10 @@ declare(strict_types=1);
 
 namespace Sports;
 
-use Doctrine\ORM\EntityRepository;
-use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\Mapping\ClassMetadata;
 use Exception;
 
-class Repository extends EntityRepository
+trait Repository
 {
-    public function __construct(EntityManagerInterface $em, ClassMetadata $class)
-    {
-        parent::__construct($em, $class);
-    }
-
     public function save(object $object): object
     {
         try {
@@ -31,10 +23,5 @@ class Repository extends EntityRepository
     {
         $this->_em->remove($object);
         $this->_em->flush();
-    }
-
-    public function getEM(): \Doctrine\ORM\EntityManager
-    {
-        return $this->getEntityManager();
     }
 }

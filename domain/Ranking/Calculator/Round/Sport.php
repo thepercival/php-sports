@@ -1,9 +1,9 @@
 <?php
-
 declare(strict_types=1);
 
 namespace Sports\Ranking\Calculator\Round;
 
+use Closure;
 use Sports\Qualify\Rule\Single as SingleQualifyRule;
 use Sports\Qualify\Rule\Multiple as MultipleQualifyRule;
 use Sports\Poule;
@@ -19,12 +19,19 @@ use Sports\Ranking\Rule as RankingRule;
 abstract class Sport
 {
     /**
-     * @var array<bool>
+     * @var array<int, bool>
      */
     protected array $gameStateMap = [];
+    /**
+     * @var array<int, Closure(list<SportPerformance>):list<SportPerformance>>
+     */
     protected array $rankFunctionMap = [];
     protected RankingRuleGetter $rankingRuleGetter;
 
+    /**
+     * @param CompetitionSport $competitionSport
+     * @param list<int> $gameStates
+     */
     public function __construct(protected CompetitionSport $competitionSport, array $gameStates)
     {
         foreach ($gameStates as $state) {
@@ -35,7 +42,7 @@ abstract class Sport
 
     /**
      * @param Poule $poule
-     * @return array<SportRoundRankingItem>
+     * @return list<SportRoundRankingItem>
      */
     abstract public function getItemsForPoule(Poule $poule): array;
 
@@ -63,17 +70,15 @@ abstract class Sport
     /**
      * @param HorizontalPoule $horizontalPoule
      * @param bool|null $checkOnSingleQualifyRule
-     * @return array<SportRoundRankingItem>
+     * @return list<SportRoundRankingItem>
      */
     public function getItemsForHorizontalPoule(HorizontalPoule $horizontalPoule, bool $checkOnSingleQualifyRule = null): array
     {
-        /** @var array<SportPerformance> $performances */
         $performances = [];
         foreach ($horizontalPoule->getPlaces() as $place) {
-            if ($checkOnSingleQualifyRule && $this->hasPlaceSingleQualifyRule($place)) {
+            if ($checkOnSingleQualifyRule === true && $this->hasPlaceSingleQualifyRule($place)) {
                 continue;
             }
-            /** @var array<SportRoundRankingItem> $sportRankingItems */
             $sportRankingItems = $this->getItemsForPoule($place->getPoule());
             $sportRankingItem = $this->getItemByRank($sportRankingItems, $place->getNumber());
             if ($sportRankingItem === null) {
@@ -97,13 +102,12 @@ abstract class Sport
     protected function rankItems(array $originalPerformances, array $rankingRules): array
     {
         $performances = $originalPerformances;
-        /** @var array<SportRoundRankingItem> $sportRankingItems */
         $sportRankingItems = [];
         $nrOfIterations = 0;
         while (count($performances) > 0) {
             $bestPerformances = $this->findBestPerformances($performances, $rankingRules);
             $rank = $nrOfIterations + 1;
-            uasort($bestPerformances, function (SportPerformance $perfA, SportPerformance $perfB): int {
+            usort($bestPerformances, function (SportPerformance $perfA, SportPerformance $perfB): int {
                 if ($perfA->getPlace()->getPouleNr() === $perfB->getPlace()->getPouleNr()) {
                     return $perfA->getPlace()->getPlaceNr() - $perfB->getPlace()->getPlaceNr();
                 }
@@ -123,8 +127,8 @@ abstract class Sport
 
     /**
      * @param Round $round
-     * @param array<SportPerformance> $performances
-     * @return array<SportRoundRankingItem>
+     * @param list<SportPerformance> $performances
+     * @return list<SportRoundRankingItem>
      */
     protected function getItemsHelper(Round $round, array $performances): array
     {
@@ -135,7 +139,7 @@ abstract class Sport
     }
 
     /**
-     * @param array<SportRoundRankingItem> $rankingItems
+     * @param list<SportRoundRankingItem> $rankingItems
      * @param int $rank
      * @return SportRoundRankingItem|null
      */
@@ -148,9 +152,9 @@ abstract class Sport
     }
 
     /**
-     * @param array<SportPerformance> $originalPerformances
-     * @param array<int> $rankingRules
-     * @return array<SportPerformance>
+     * @param list<SportPerformance> $originalPerformances
+     * @param list<int> $rankingRules
+     * @return list<SportPerformance>
      */
     protected function findBestPerformances(array $originalPerformances, array $rankingRules): array
     {

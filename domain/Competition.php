@@ -1,5 +1,4 @@
 <?php
-
 declare(strict_types=1);
 
 namespace Sports;
@@ -21,7 +20,6 @@ class Competition extends Identifiable
     private DateTimeImmutable $startDateTime;
     private int $rankingRuleSet;
     private int $state;
-
     /**
      * @var ArrayCollection<int|string, Round\Number>
      */
@@ -55,15 +53,12 @@ class Competition extends Identifiable
         $this->teamCompetitors = new ArrayCollection();
     }
 
-    /**
-     * @return League
-     */
-    public function getLeague()
+    public function getLeague(): League
     {
         return $this->league;
     }
 
-    protected function setLeague(League $league): void
+    private function setLeague(League $league): void
     {
         $competitions = $league->getCompetitions();
         if (!$competitions->contains($this)) {
@@ -87,7 +82,7 @@ class Competition extends Identifiable
         return $this->startDateTime;
     }
 
-    public function setStartDateTime(DateTimeImmutable $datetime): void
+    final public function setStartDateTime(DateTimeImmutable $datetime): void
     {
         $this->startDateTime = $datetime;
     }
@@ -217,6 +212,6 @@ class Competition extends Identifiable
         foreach ($this->getSports() as $competitionSport) {
             $fields = array_merge($fields, $competitionSport->getFields()->toArray());
         }
-        return $fields;
+        return array_values($fields);
     }
 }

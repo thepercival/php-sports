@@ -18,14 +18,20 @@ class Service
         return new Structure\Repository($this->getEntityManager());
     }
 
-    public function getService($classname): Competition\Service|Association\Service
+    /**
+     * @template T
+     * @param class-string<T> $className
+     * @return object
+     * @throws \Exception
+     */
+    public function getService(string $className): object
     {
-        if ($classname === Association::class) {
+        if ($className === Association::class) {
             return new Association\Service();
-        } elseif ($classname === Competition::class) {
+        } elseif ($className === Competition::class) {
             return new Competition\Service();
         }
-        throw new \Exception("class " . $classname . " not supported to create service", E_ERROR);
+        throw new \Exception("class " . $className . " not supported to create service", E_ERROR);
     }
 
     public function getEntityManager(): EntityManager

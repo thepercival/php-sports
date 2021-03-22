@@ -10,24 +10,22 @@ use Sports\Game\Against as AgainstGame;
 use League\Period\Period;
 use SportsHelpers\Against\Side as AgainstSide;
 
+/**
+ * @template-extends GameRepository<AgainstGame>
+ */
 class Repository extends GameRepository
 {
-    public function find($id, $lockMode = null, $lockVersion = null): ?AgainstGame
-    {
-        return $this->_em->find($this->_entityName, $id, $lockMode, $lockVersion);
-    }
-
     public function findOneByExt(Competitor $homeCompetitor, Competitor $awayCompetitor, Period $period): ?AgainstGame
     {
-        $exprHome = $this->getEM()->getExpressionBuilder();
-        $exprAway = $this->getEM()->getExpressionBuilder();
+        $exprHome = $this->_em->getExpressionBuilder();
+        $exprAway = $this->_em->getExpressionBuilder();
 
         $query = $this->createQueryBuilder('g')
             ->where('g.startDateTime >= :start')
             ->andWhere('g.startDateTime <= :end')
             ->andWhere(
                 $exprHome->exists(
-                    $this->getEM()->createQueryBuilder()
+                    $this->_em->createQueryBuilder()
                         ->select('gpphome.id')
                         ->from('Sports\Game\Place', 'gpphome')
                         ->join("gpphome.place", "pphome")
@@ -39,7 +37,7 @@ class Repository extends GameRepository
             )
             ->andWhere(
                 $exprAway->exists(
-                    $this->getEM()->createQueryBuilder()
+                    $this->_em->createQueryBuilder()
                         ->select('gppaway.id')
                         ->from('Sports\Game\Place', 'gppaway')
                         ->join("gppaway.place", "ppaway")
@@ -53,11 +51,10 @@ class Repository extends GameRepository
         $query = $query->setParameter('homecompetitor', $homeCompetitor);
         $query = $query->setParameter('away', AgainstSide::AWAY);
         $query = $query->setParameter('awaycompetitor', $awayCompetitor);
-        $query = $this->applyExtraFilters( $query, null, null, $period );
+        $query = $this->applyExtraFilters($query, null, null, $period);
+        /** @var list<AgainstGame> $games */
         $games = $query->getQuery()->getResult();
-        if (count($games) === 0) {
-            return null;
-        }
-        return reset($games);
+        $firstGame = reset($games);
+        return $firstGame !== false ? $firstGame : null;
     }
 }

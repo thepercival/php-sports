@@ -94,13 +94,13 @@ class PlanningInputCreator
             );
         }
 
-        uasort(
+        usort(
             $reducedConfigs,
             function (SportConfig $sportConfigA, SportConfig $sportConfigB): int {
                 return $sportConfigA->getNrOfFields() > $sportConfigB->getNrOfFields() ? -1 : 1;
             }
         );
-        return array_values($reducedConfigs);
+        return $reducedConfigs;
     }
 
 //    public function getSufficientNrOfHeadtoheadByRoundNumber(RoundNumber $roundNumber, array $sportConfig): int

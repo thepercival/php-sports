@@ -7,10 +7,13 @@ use Sports\Competitor;
 
 class Map
 {
+    /**
+     * @var array<string, Competitor>
+     */
     private array $map;
 
     /**
-     * @param array<Competitor> $competitors
+     * @param list<Competitor> $competitors
      */
     public function __construct(array $competitors)
     {

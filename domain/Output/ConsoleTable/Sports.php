@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Sports\Output\ConsoleTable;
 
@@ -8,9 +9,7 @@ use Sports\Sport;
 class Sports
 {
     /**
-     * @param array|Sport[] $sports
-     *
-     * @return void
+     * @param list<Sport> $sports
      */
     public function display( array $sports ): void {
         $table = new ConsoleTable();

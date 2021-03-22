@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Sports\Structure;
 
@@ -10,20 +11,12 @@ use Sports\Round\Number\Repository as RoundNumberRepository;
 
 class Repository
 {
-    /**
-     * @var EntityManager
-     */
-    protected $em;
-    /**
-     * @var RoundNumberRepository
-     */
-    protected $roundNumberRepos;
+    private RoundNumberRepository $roundNumberRepos;
 
-
-    public function __construct(EntityManager $em)
+    public function __construct(protected EntityManager $em)
     {
-        $this->em = $em;
-        $this->roundNumberRepos = new RoundNumberRepository($this->em, $this->em->getClassMetadata(RoundNumber::class));
+        /** @psalm-suppress MixedArgumentTypeCoercion */
+        $this->roundNumberRepos = new RoundNumberRepository($em, $em->getClassMetadata(RoundNumber::class));
     }
 
     public function removeAndAdd(Competition $competition, StructureBase $newStructure, int $roundNumberValue = null): RoundNumber
@@ -47,7 +40,7 @@ class Repository
     {
         $roundNumber = $structure->getRoundNumber($roundNumberValue !== null ? $roundNumberValue : 1);
         if ($roundNumber === null) {
-            throw new \Exception("rondenummer " . $roundNumberValue . " kon niet gevonden worden", E_ERROR);
+            throw new \Exception("rondenummer kon niet gevonden worden", E_ERROR);
         }
         $this->customPersistHelper($roundNumber);
         return $roundNumber;
@@ -85,6 +78,9 @@ class Repository
         $firstRoundNumber = reset($roundNumbers);
 
         $firstRound = $firstRoundNumber->getRounds()->first();
+        if ($firstRound === false) {
+            return null;
+        }
         $structure = new StructureBase($firstRoundNumber, $firstRound);
         $structure->setStructureNumbers();
 
@@ -95,21 +91,25 @@ class Repository
     }
 
     /**
-     * @param array $filter
-     * @return array|StructureBase[]
+     * @param array<string, mixed> $filter
+     * @return array<int|string, StructureBase>
      */
-    public function getStructures(array $filter): array
+    public function getStructureMap(array $filter): array
     {
-        $structures = [];
-
+        /** @var array<int|string, StructureBase> $structureMap */
+        $structureMap = [];
         $roundNumbers = $this->roundNumberRepos->findBy($filter, array("number" => "asc"));
         foreach ($roundNumbers as $roundNumber) {
-            if (array_key_exists($roundNumber->getCompetition()->getId(), $structures)) {
+            if (array_key_exists($roundNumber->getCompetition()->getId(), $structureMap)) {
                 continue;
             }
-            $structures[$roundNumber->getCompetition()->getId()] = $this->getStructure($roundNumber->getCompetition());
+            $structure = $this->getStructure($roundNumber->getCompetition());
+            if ($structure === null) {
+                continue;
+            }
+            $structureMap[$roundNumber->getCompetition()->getId()] = $structure;
         }
-        return $structures;
+        return $structureMap;
     }
 
     /**

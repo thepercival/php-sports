@@ -118,6 +118,7 @@ class EndTest extends TestCase
 
         for ($rank = 1; $rank <= count($items); $rank++) {
             $endRankingItem = array_shift($items);
+            self::assertNotNull($endRankingItem);
             $placeLocation = $endRankingItem->getPlaceLocation();
             self::assertInstanceOf(PlaceLocation::class, $placeLocation);
             self::assertSame($placeLocation->getPlaceNr(), $rank);

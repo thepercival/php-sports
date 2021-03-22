@@ -12,7 +12,7 @@ class Association extends Identifiable
     protected string|null $countryCode = null;
     protected Association|null $parent = null;
     /**
-     * @var ArrayCollection
+     * @var ArrayCollection<int|string, Association>
      */
     protected ArrayCollection $children;
     /**
@@ -43,9 +43,9 @@ class Association extends Identifiable
 
     public function setName(string $name): void
     {
-        if (strlen($name) < static::MIN_LENGTH_NAME or strlen($name) > static::MAX_LENGTH_NAME) {
+        if (strlen($name) < self::MIN_LENGTH_NAME or strlen($name) > self::MAX_LENGTH_NAME) {
             throw new \InvalidArgumentException(
-                "de naam moet minimaal " . static::MIN_LENGTH_NAME . " karakters bevatten en mag maximaal " . static::MAX_LENGTH_NAME . " karakters bevatten",
+                "de naam moet minimaal " . self::MIN_LENGTH_NAME . " karakters bevatten en mag maximaal " . self::MAX_LENGTH_NAME . " karakters bevatten",
                 E_ERROR
             );
         }
@@ -66,9 +66,9 @@ class Association extends Identifiable
         if ($description !== null && strlen($description) === 0) {
             $description = null;
         }
-        if ($description !== null && strlen($description) > static::MAX_LENGTH_DESCRIPTION) {
+        if ($description !== null && strlen($description) > self::MAX_LENGTH_DESCRIPTION) {
             throw new \InvalidArgumentException(
-                "de omschrijving mag maximaal " . static::MAX_LENGTH_DESCRIPTION . " karakters bevatten",
+                "de omschrijving mag maximaal " . self::MAX_LENGTH_DESCRIPTION . " karakters bevatten",
                 E_ERROR
             );
         }

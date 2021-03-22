@@ -10,6 +10,9 @@ use Sports\Score\Config as ScoreConfig;
 
 class NumberEvent implements EventSubscriberInterface
 {
+    /**
+     * @psalm-return list<array<string, int|string>>
+     */
     public static function getSubscribedEvents()
     {
         return array(
@@ -23,7 +26,7 @@ class NumberEvent implements EventSubscriberInterface
         );
     }
 
-    public function onPreSerialize( PreSerializeEvent $event)
+    public function onPreSerialize(PreSerializeEvent $event): void
     {
 //        /** @var RoundNumber $roundNumber */
 //        $roundNumber = $event->getObject();

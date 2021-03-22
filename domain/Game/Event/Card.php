@@ -11,24 +11,11 @@ use SportsHelpers\Identifiable;
 
 class Card extends Identifiable implements GameEvent
 {
-    /**
-     * @var int
-     */
-    private $minute;
-    /**
-     * @var GameParticipation
-     */
-    private $gameParticipation;
-    /**
-     * @var int
-     */
-    private $type;
-
-    public function __construct(int $minute, GameParticipation $gameParticipation, int $type)
+    public function __construct(private int $minute, private GameParticipation $gameParticipation, private int $type)
     {
-        $this->setGameParticipation($gameParticipation);
-        $this->minute = $minute;
-        $this->type = $type;
+        if (!$gameParticipation->getCards()->contains($this)) {
+            $gameParticipation->getCards()->add($this) ;
+        }
     }
 
     public function getMinute(): int
@@ -39,14 +26,6 @@ class Card extends Identifiable implements GameEvent
     public function getGameParticipation(): GameParticipation
     {
         return $this->gameParticipation;
-    }
-
-    protected function setGameParticipation(GameParticipation $gameParticipation): void
-    {
-        if ($this->gameParticipation === null and !$gameParticipation->getCards()->contains($this)) {
-            $gameParticipation->getCards()->add($this) ;
-        }
-        $this->gameParticipation = $gameParticipation;
     }
 
     public function getType(): int

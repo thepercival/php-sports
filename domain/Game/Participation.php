@@ -14,44 +14,27 @@ use SportsHelpers\Identifiable;
 class Participation extends Identifiable
 {
     /**
-     * @var AgainstGame
+     * @var ArrayCollection<int|string, CardEvent>
      */
-    private $againstGame;
+    private ArrayCollection $cards;
     /**
-     * @var Player
+     * @var ArrayCollection<int|string, GoalEvent>
      */
-    private $player;
-    /**
-     * @var int
-     */
-    private $beginMinute;
-    /**
-     * @var int
-     */
-    private $endMinute;
-    /**
-     * @var Collection
-     */
-    private $cards;
-    /**
-     * @var Collection
-     */
-    private $goalsAndAssists;
+    private ArrayCollection $goalsAndAssists;
 
-    public function __construct(AgainstGame $game, Player $player, int $beginMinute, int $endMinute)
+    public function __construct(
+        protected AgainstGame $againstGame,
+        protected Player $player,
+        protected int $beginMinute, protected int $endMinute)
     {
-        $this->setGame($game);
-        $this->player = $player;
-        $this->beginMinute = $beginMinute;
-        $this->endMinute = $endMinute;
+        if (!$againstGame->getParticipations()->contains($this)) {
+            $againstGame->getParticipations()->add($this) ;
+        }
         $this->cards = new ArrayCollection();
         $this->goalsAndAssists = new ArrayCollection();
     }
 
-    /**
-     * @return Player
-     */
-    public function getPlayer()
+    public function getPlayer(): Player
     {
         return $this->player;
     }
@@ -59,14 +42,6 @@ class Participation extends Identifiable
     public function getGame(): AgainstGame
     {
         return $this->againstGame;
-    }
-
-    protected function setGame(AgainstGame $game): void
-    {
-        if (!$game->getParticipations()->contains($this)) {
-            $game->getParticipations()->add($this) ;
-        }
-        $this->againstGame = $game;
     }
 
     public function getBeginMinute(): int
@@ -99,7 +74,11 @@ class Participation extends Identifiable
         return $this->endMinute > 0;
     }
 
-    public function getCards(int $type = null): Collection
+    /**
+     * @param int|null $type
+     * @return ArrayCollection<int|string, CardEvent>
+     */
+    public function getCards(int $type = null): ArrayCollection
     {
         if ($type === null) {
             return $this->cards;
@@ -109,19 +88,28 @@ class Participation extends Identifiable
         });
     }
 
-    public function getGoalsAndAssists(): Collection
+    /**
+     * @return ArrayCollection<int|string, GoalEvent>
+     */
+    public function getGoalsAndAssists(): ArrayCollection
     {
         return $this->goalsAndAssists;
     }
 
-    public function getGoals(int $type = null): Collection
+    /**
+     * @return ArrayCollection<int|string, GoalEvent>
+     */
+    public function getGoals(int $type = null): ArrayCollection
     {
         return $this->goalsAndAssists->filter(function (GoalEvent $goalEvent) use ($type): bool {
             return $goalEvent->getGameParticipation() === $this && ($type === null || $goalEvent->isType($type));
         });
     }
 
-    public function getAssists(): Collection
+    /**
+     * @return ArrayCollection<int|string, GoalEvent>
+     */
+    public function getAssists(): ArrayCollection
     {
         return $this->goalsAndAssists->filter(function (GoalEvent $goalEvent): bool {
             return $goalEvent->getAssistGameParticipation() === $this;

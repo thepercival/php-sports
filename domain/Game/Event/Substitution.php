@@ -10,13 +10,11 @@ use SportsHelpers\Identifiable;
 
 class Substitution extends Identifiable implements GameEvent
 {
-    private int $minute;
     private GameParticipation $out;
     private GameParticipation $in;
     
-    public function __construct(int $minute, GameParticipation $out, GameParticipation $in)
+    public function __construct(private int $minute, GameParticipation $out, GameParticipation $in)
     {
-        $this->minute = $minute;
         $this->out = $out;
         $this->out->setEndMinute($minute);
         $this->in = $in;

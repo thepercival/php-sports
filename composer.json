@@ -59,7 +59,7 @@
     "test": [
       "XDEBUG_MODE=coverage vendor/bin/phpunit --configuration tests/phpunit.xml tests/cases/"
     ],
-    "stan": "XDEBUG_MODE=off vendor/bin/phpstan analyse --level=5 domain/ tests/cases/ tests/helpers/ serialization/",
+    "stan": "XDEBUG_MODE=off vendor/bin/phpstan analyse",
     "cs-fix": "php-cs-fixer fix .",
     "copy-fct": [
       "rm -rf ../fctoernooi-api/vendor/thepercival/php-sports",

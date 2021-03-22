@@ -3,75 +3,87 @@ declare(strict_types=1);
 
 namespace Sports\Ranking;
 
+use Closure;
+use Sports\Place\SportPerformance;
+
 class FunctionMapCreator
 {
     /**
-     * @var array
+     * @var array<int, Closure(list<SportPerformance>):list<SportPerformance>>
      */
-    protected $map = [];
+    protected array $map = [];
 
     public function __construct()
     {
         $this->initMap();
     }
 
-    public function getMap(): array {
+    /**
+     * @return array<int, Closure(list<SportPerformance>):list<SportPerformance>>
+     */
+    public function getMap(): array
+    {
         return $this->map;
     }
 
     private function initMap(): void
     {
-        $this->map[Rule::MostPoints] = function (array $items): array {
+        $this->map[Rule::MostPoints] = function (array $sportPerformances): array {
+            /** @var list<SportPerformance> $sportPerformances */
             $mostPoints = null;
-            $bestItems = [];
-            foreach ($items as $item) {
-                $points = $item->getPoints();
+            $bestSportPerformances = [];
+            foreach ($sportPerformances as $sportPerformance) {
+                $points = $sportPerformance->getPoints();
                 if ($mostPoints === null || $points === $mostPoints) {
                     $mostPoints = $points;
-                    $bestItems[] = $item;
+                    $bestSportPerformances[] = $sportPerformance;
                 } elseif ($points > $mostPoints) {
                     $mostPoints = $points;
-                    $bestItems = [];
-                    $bestItems[] = $item;
+                    $bestSportPerformances = [];
+                    $bestSportPerformances[] = $sportPerformance;
                 }
             }
-            return $bestItems;
+            return $bestSportPerformances;
         };
-        $this->map[Rule::FewestGames] = function (array $items): array {
+        $this->map[Rule::FewestGames] = function (array $sportPerformances): array {
+            /** @var list<SportPerformance> $sportPerformances */
             $fewestGames = null;
-            $bestItems = [];
-            foreach ($items as $item) {
-                $nrOfGames = $item->getGames();
+            $bestSportPerformances = [];
+            foreach ($sportPerformances as $sportPerformance) {
+                $nrOfGames = $sportPerformance->getGames();
                 if ($fewestGames === null || $nrOfGames === $fewestGames) {
                     $fewestGames = $nrOfGames;
-                    $bestItems[] = $item;
+                    $bestSportPerformances[] = $sportPerformance;
                 } elseif ($nrOfGames < $fewestGames) {
                     $fewestGames = $nrOfGames;
-                    $bestItems = [$item];
+                    $bestSportPerformances = [$sportPerformance];
                 }
             }
-            return $bestItems;
+            return $bestSportPerformances;
         };
-        $mostScored = function (array $items, bool $sub): array {
+        $mostScored = function (array $sportPerformances, bool $sub): array {
+            /** @var list<SportPerformance> $sportPerformances */
             $mostScored = null;
-            $bestItems = [];
-            foreach ($items as $item) {
-                $scored = $sub ? $item->getSubScored() : $item->getScored();
+            $bestSportPerformances = [];
+            foreach ($sportPerformances as $sportPerformance) {
+                $scored = $sub ? $sportPerformance->getSubScored() : $sportPerformance->getScored();
                 if ($mostScored === null || $scored === $mostScored) {
                     $mostScored = $scored;
-                    $bestItems[] = $item;
+                    $bestSportPerformances[] = $sportPerformance;
                 } elseif ($scored > $mostScored) {
                     $mostScored = $scored;
-                    $bestItems = [$item];
+                    $bestSportPerformances = [$sportPerformance];
                 }
             }
-            return $bestItems;
+            return $bestSportPerformances;
         };
-        $this->map[Rule::MostUnitsScored] = function (array $items) use ($mostScored): array {
-            return $mostScored($items, false);
+        $this->map[Rule::MostUnitsScored] = function (array $sportPerformances) use ($mostScored): array {
+            /** @var list<SportPerformance> $sportPerformances */
+            return $mostScored($sportPerformances, false);
         };
-        $this->map[Rule::MostSubUnitsScored] = function (array $items) use ($mostScored): array {
-            return $mostScored($items, true);
+        $this->map[Rule::MostSubUnitsScored] = function (array $sportPerformances) use ($mostScored): array {
+            /** @var list<SportPerformance> $sportPerformances */
+            return $mostScored($sportPerformances, true);
         };
     }
 }

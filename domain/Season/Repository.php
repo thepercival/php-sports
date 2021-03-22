@@ -3,17 +3,18 @@ declare(strict_types=1);
 
 namespace Sports\Season;
 
+use Doctrine\ORM\EntityRepository;
 use League\Period\Period;
 use Sports\Season as SeasonBase;
 
-class Repository extends \Sports\Repository
+/**
+ * @template-extends EntityRepository<SeasonBase>
+ */
+class Repository extends EntityRepository
 {
-    /*public function find($id, $lockMode = null, $lockVersion = null): ?SeasonBase
-    {
-        return $this->_em->find($this->_entityName, $id, $lockMode, $lockVersion);
-    }*/
+    use \Sports\Repository;
 
-    public function findOneByPeriod(Period $period): ?SeasonBase
+    public function findOneByPeriod(Period $period): SeasonBase|null
     {
         $query = $this->createQueryBuilder('s')
             ->where('s.startDateTime < :end')
@@ -21,10 +22,9 @@ class Repository extends \Sports\Repository
 
         $query = $query->setParameter('end', $period->getEndDate());
         $query = $query->setParameter('start', $period->getEndDate());
+        /** @var list<SeasonBase> $seasons */
         $seasons = $query->getQuery()->getResult();
-        if (count($seasons) === 0) {
-            return null;
-        }
-        return reset($seasons);
+        $season = reset($seasons);
+        return $season !== false ? $season : null;
     }
 }

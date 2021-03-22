@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Sports\Qualify;
 
@@ -19,12 +20,8 @@ class Service
     /**
      * @var array<int|string,bool>
      */
-    private array $poulesFinished = [];
+    private array $finishedPouleMap = [];
     private bool|null $roundFinished = null;
-    /**
-     * @var QualifyReservationService
-     */
-    private $reservationService;
 
     public function __construct(private Round $round)
     {
@@ -33,16 +30,24 @@ class Service
 
     /**
      * @param Poule|null $filterPoule
-     * @return array<Place>
+     * @return list<Place>
      */
     public function setQualifiers(Poule $filterPoule = null): array
     {
-        $changedPlaces = [];
-
-        $setQualifiersForHorizontalPoule = function (HorizontalPoule $horizontalPoule) use ($filterPoule, &$changedPlaces): void {
+        /**
+         * @param HorizontalPoule $horizontalPoule
+         * @param ReservationService $reservationService
+         * @param list<Place> $changedPlaces
+         */
+        $setQualifiersForHorizontalPoule = function (
+            HorizontalPoule $horizontalPoule,
+            QualifyReservationService $reservationService,
+            array &$changedPlaces
+        ) use ($filterPoule): void {
             $multipleRule = $horizontalPoule->getMultipleQualifyRule();
             if ($multipleRule !== null) {
-                $changedPlaces = array_merge($changedPlaces, $this->setQualifiersForMultipleRuleAndReserve($multipleRule));
+                $ruleChangedPlaces = $this->setQualifiersForMultipleRuleAndReserve($multipleRule, $reservationService);
+                $changedPlaces = array_values(array_merge($changedPlaces, $ruleChangedPlaces));
             } else {
                 foreach ($horizontalPoule->getPlaces() as $place) {
                     if ($filterPoule !== null && $place->getPoule() !== $filterPoule) {
@@ -52,28 +57,32 @@ class Service
                     if (!($singleRule instanceof SingleQualifyRule)) {
                         continue;
                     }
-                    $changedPlace = $this->setQualifierForSingleRuleAndReserve($singleRule);
+                    $changedPlace = $this->setQualifierForSingleRuleAndReserve($singleRule, $reservationService);
                     if ($changedPlace !== null) {
                         $changedPlaces[] = $changedPlace;
                     }
                 }
             }
         };
+        $changedPlaces = [];
         foreach ($this->round->getQualifyGroups() as $qualifyGroup) {
-            $this->reservationService = new QualifyReservationService($qualifyGroup->getChildRound());
+            $reservationService = new QualifyReservationService($qualifyGroup->getChildRound());
             foreach ($qualifyGroup->getHorizontalPoules() as $horizontalPoule) {
-                $setQualifiersForHorizontalPoule($horizontalPoule);
+                $setQualifiersForHorizontalPoule($horizontalPoule, $reservationService, $changedPlaces);
             }
         }
+        /** @var list<Place> $changedPlaces */
         return $changedPlaces;
     }
 
-    protected function setQualifierForSingleRuleAndReserve(SingleQualifyRule $singleRule): ?Place
-    {
+    protected function setQualifierForSingleRuleAndReserve(
+        SingleQualifyRule $singleRule,
+        QualifyReservationService $reservationService
+    ): ?Place {
         $fromPlace = $singleRule->getFromPlace();
         $poule = $fromPlace->getPoule();
         $rank = $fromPlace->getNumber();
-        $this->reservationService->reserve($singleRule->getToPlace()->getPoule()->getNumber(), $poule);
+        $reservationService->reserve($singleRule->getToPlace()->getPoule()->getNumber(), $poule);
 
         $qualifiedPlace = $this->getQualifiedPlace($poule, $rank);
         $toPlace = $singleRule->getToPlace();
@@ -86,10 +95,13 @@ class Service
 
     /**
      * @param MultipleQualifyRule $multipleRule
-     * @return array<Place>
+     * @param QualifyReservationService $reservationService
+     * @return list<Place>
      */
-    protected function setQualifiersForMultipleRuleAndReserve(MultipleQualifyRule $multipleRule): array
-    {
+    protected function setQualifiersForMultipleRuleAndReserve(
+        MultipleQualifyRule $multipleRule,
+        QualifyReservationService $reservationService
+    ): array {
         $changedPlaces = [];
         $toPlaces = $multipleRule->getToPlaces();
         if (!$this->isRoundFinished()) {
@@ -107,12 +119,12 @@ class Service
         }
         foreach ($toPlaces as $toPlace) {
             $toPouleNumber = $toPlace->getPoule()->getNumber();
-            $rankedPlaceLocation = $this->reservationService->getFreeAndLeastAvailabe($toPouleNumber, $round, $rankedPlaceLocations);
+            $rankedPlaceLocation = $reservationService->getFreeAndLeastAvailabe($toPouleNumber, $round, $rankedPlaceLocations);
             $toPlace->setQualifiedPlace($round->getPlace($rankedPlaceLocation));
             $changedPlaces[] = $toPlace;
             $index = array_search($rankedPlaceLocation, $rankedPlaceLocations, true);
             if ($index !== false) {
-                unset($rankedPlaceLocations[$index]);
+                array_splice($rankedPlaceLocations, $index, 1);
             }
         }
         return $changedPlaces;
@@ -147,9 +159,9 @@ class Service
 
     protected function isPouleFinished(Poule $poule): bool
     {
-        if (!array_key_exists($poule->getNumber(), $this->poulesFinished)) {
-            $this->poulesFinished[$poule->getNumber()] = ($poule->getState() === State::Finished);
+        if (!array_key_exists($poule->getNumber(), $this->finishedPouleMap)) {
+            $this->finishedPouleMap[$poule->getNumber()] = ($poule->getState() === State::Finished);
         }
-        return $this->poulesFinished[$poule->getNumber()];
+        return $this->finishedPouleMap[$poule->getNumber()];
     }
 }

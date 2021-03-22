@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Sports\SerializationHandler\Qualify;
 
@@ -11,6 +12,9 @@ use Sports\Qualify\Group as QualifyGroupBase;
 
 class Group implements SubscribingHandlerInterface
 {
+    /**
+     * @psalm-return list<array<string, int|string>>
+     */
     public static function getSubscribingMethods()
     {
         return [
@@ -29,7 +33,19 @@ class Group implements SubscribingHandlerInterface
         ];
     }
 
-    public function deserializeFromJson(JsonDeserializationVisitor $visitor, $arrQualifyGroup, array $type, Context $context)
+    /**
+     * @param JsonDeserializationVisitor $visitor
+     * @param array<string, int|string|array> $arrQualifyGroup
+     * @param array<string, int|string|array|null> $type
+     * @param Context $context
+     * @return QualifyGroupBase
+     */
+    public function deserializeFromJson(
+        JsonDeserializationVisitor $visitor,
+        array $arrQualifyGroup,
+        array $type,
+        Context $context
+    ): QualifyGroupBase
     {
         $qualifyGroup = new QualifyGroupBase($type["params"]["round"], $arrQualifyGroup["winnersOrLosers"], $arrQualifyGroup["number"]);
         return $qualifyGroup;

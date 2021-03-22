@@ -297,8 +297,10 @@ final class NameServiceTest extends TestCase
 
             (new GamesCreator())->createStructureGames($structure);
 
-            $game = $rootRound->getGames()[0];
-            $gamePlaces = $game->getPlaces()->toArray();
+            $roundGames = $rootRound->getGames();
+            $firstGame = reset($roundGames);
+            self::assertNotFalse($firstGame);
+            $gamePlaces = $firstGame->getPlaces()->toArray();
 
             self::assertSame($nameService->getPlacesFromName($gamePlaces, false, false), 'A1 & A2');
         }
@@ -387,8 +389,7 @@ final class NameServiceTest extends TestCase
             self::assertInstanceOf(AgainstGame::class, $game);
             self::assertSame($nameService->getRefereeName($game), '111');
 
-            $referee = new Referee($competition);
-            $referee->setInitials('CDK');
+            $referee = new Referee($competition, 'CDK');
             $referee->setName('Co Du');
 
             $game->setReferee($referee);

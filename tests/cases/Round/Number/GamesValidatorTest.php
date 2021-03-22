@@ -291,9 +291,9 @@ class GamesValidatorTest extends TestCase
         $blockedPeriod = new Period($start, $start->modify("+30 minutes"));
         (new GamesCreator())->createStructureGames($structure);
 
-        /** @var AgainstGame[] $games */
         $games = $firstRoundNumber->getGames(AgainstGame::ORDER_BY_BATCH);
         $game = reset($games);
+        self::assertInstanceOf(AgainstGame::class, $game);
         $game->setStartDateTime($start->modify("+10 minutes"));
 //        $outputGame = new \Sports\Output\Game();
 //        $games = $firstRoundNumber->getGames(Game::ORDER_BY_BATCH);

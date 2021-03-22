@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Sports\Competition;
 
@@ -11,28 +12,16 @@ use SportsHelpers\Identifiable;
 
 class Field extends Identifiable implements Prioritizable
 {
-    /**
-     * @var string
-     */
-    private $name;
-    /**
-     * @var int
-     */
-    protected $priority;
-    /**
-     * @var CompetitionSport
-     */
-    private $competitionSport;
-    private $sportConfigDep;
+    protected int $priority;
+    private string|null $name = null;
+    private object|null $sportConfigDep = null;
 
     const MIN_LENGTH_NAME = 1;
     const MAX_LENGTH_NAME = 3;
 
-    public function __construct(CompetitionSport $competitionSport, int $priority = null)
+    public function __construct(private CompetitionSport $competitionSport, int $priority = null)
     {
-        $this->competitionSport = $competitionSport;
         $this->competitionSport->getFields()->add($this);
-
         if ($priority === null || $priority === 0) {
             $priority = count($this->getCompetition()->getFields());
         }
@@ -44,31 +33,20 @@ class Field extends Identifiable implements Prioritizable
         return $this->priority;
     }
 
-    /**
-     * @return void
-     */
-    public function setPriority(int $priority)
+    public function setPriority(int $priority): void
     {
         $this->priority = $priority;
     }
 
-    /**
-     * @return string
-     */
-    public function getName()
+    public function getName(): string|null
     {
         return $this->name;
     }
 
-    /**
-     * @param string $name
-     *
-     * @return void
-     */
-    public function setName(string $name): void
+    public function setName(string|null $name): void
     {
-        if (strlen($name) < static::MIN_LENGTH_NAME or strlen($name) > static::MAX_LENGTH_NAME) {
-            throw new \InvalidArgumentException("de naam moet minimaal ".static::MIN_LENGTH_NAME." karakters bevatten en mag maximaal ".static::MAX_LENGTH_NAME." karakters bevatten", E_ERROR);
+        if ($name !== null && (strlen($name) < self::MIN_LENGTH_NAME or strlen($name) > self::MAX_LENGTH_NAME)) {
+            throw new \InvalidArgumentException("de naam moet minimaal ".self::MIN_LENGTH_NAME." karakters bevatten en mag maximaal ".self::MAX_LENGTH_NAME." karakters bevatten", E_ERROR);
         }
 
         $this->name = $name;
@@ -83,6 +61,4 @@ class Field extends Identifiable implements Prioritizable
     {
         return $this->competitionSport->getCompetition();
     }
-
-
 }

@@ -1,34 +1,28 @@
 <?php
+declare(strict_types=1);
+
 namespace Sports;
 
 use \Doctrine\Common\Collections\ArrayCollection;
+use InvalidArgumentException;
 use SportsHelpers\Identifiable;
 
 class League extends Identifiable
 {
+    protected string $name;
+    protected string|null $abbreviation;
     /**
-     * @var string
+     * @var ArrayCollection<int|string, Competition>
      */
-    protected $name;
-    /**
-     * @var string
-     */
-    protected $abbreviation;
-    /**
-     * @var ArrayCollection
-     */
-    protected $competitions;
-    /**
-     * @var Association
-     */
-    protected $association;
+    protected ArrayCollection $competitions;
+    protected Association $association;
 
     const MIN_LENGTH_NAME = 3;
     const MAX_LENGTH_NAME = 60;
     const MAX_LENGTH_ABBREVIATION = 7;
     const MAX_LENGTH_SPORT = 30;
 
-    public function __construct(Association $association, $name, $abbreviation = null)
+    public function __construct(Association $association, string $name, string |null $abbreviation = null)
     {
         $this->setAssociation($association);
         $this->setName($name);
@@ -36,21 +30,20 @@ class League extends Identifiable
         $this->competitions = new ArrayCollection();
     }
 
-    public function getName(): ?string
+    public function getName(): string
     {
         return $this->name;
     }
 
-    public function setName(string $name = null): void
+    public function setName(string $name): void
     {
         if (strlen($name) === 0) {
-            throw new \InvalidArgumentException("de naam moet gezet zijn", E_ERROR);
+            throw new InvalidArgumentException("de naam moet gezet zijn", E_ERROR);
         }
 
-        if (strlen($name) < static::MIN_LENGTH_NAME or strlen($name) > static::MAX_LENGTH_NAME) {
-            throw new \InvalidArgumentException("de naam moet minimaal ".static::MIN_LENGTH_NAME." karakters bevatten en mag maximaal ".static::MAX_LENGTH_NAME." karakters bevatten", E_ERROR);
+        if (strlen($name) < self::MIN_LENGTH_NAME or strlen($name) > self::MAX_LENGTH_NAME) {
+            throw new InvalidArgumentException("de naam moet minimaal ".self::MIN_LENGTH_NAME." karakters bevatten en mag maximaal ".self::MAX_LENGTH_NAME." karakters bevatten", E_ERROR);
         }
-
         $this->name = $name;
     }
 
@@ -61,12 +54,11 @@ class League extends Identifiable
 
     public function setAbbreviation(string $abbreviation = null): void
     {
-        if (strlen($abbreviation) === 0) {
+        if ($abbreviation !== null && strlen($abbreviation) === 0) {
             $abbreviation = null;
         }
-
-        if (strlen($abbreviation) > static::MAX_LENGTH_ABBREVIATION) {
-            throw new \InvalidArgumentException("de afkorting mag maximaal ".static::MAX_LENGTH_ABBREVIATION." karakters bevatten", E_ERROR);
+        if ($abbreviation !== null && strlen($abbreviation) > self::MAX_LENGTH_ABBREVIATION) {
+            throw new InvalidArgumentException("de afkorting mag maximaal ".self::MAX_LENGTH_ABBREVIATION." karakters bevatten", E_ERROR);
         }
         $this->abbreviation = $abbreviation;
     }
@@ -79,25 +71,26 @@ class League extends Identifiable
     protected function setAssociation(Association $association): void
     {
         $leagues = $association->getLeagues();
-        if ( !$leagues->contains($this)) {
+        if (!$leagues->contains($this)) {
             $leagues->add($this) ;
         }
         $this->association = $association;
     }
 
     /**
-     * @return ArrayCollection|Competition[]
+     * @return ArrayCollection<int|string, Competition>
      */
-    public function getCompetitions()
+    public function getCompetitions(): ArrayCollection
     {
         return $this->competitions;
     }
 
-    public function getCompetition( Season $season ): ?Competition
+    public function getCompetition(Season $season): Competition|null
     {
-        $filtered =  $this->getCompetitions()->filter( function( Competition $competition) use ($season): bool {
+        $filtered =  $this->getCompetitions()->filter(function (Competition $competition) use ($season): bool {
             return $competition->getSeason() === $season;
         });
-        return $filtered->count() === 0 ? null : $filtered->first();
+        $first = $filtered->first();
+        return $first !== false ? $first : null;
     }
 }

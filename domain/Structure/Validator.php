@@ -3,9 +3,11 @@ declare(strict_types=1);
 
 namespace Sports\Structure;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Exception;
 use Sports\NameService;
+use Sports\Place;
 use Sports\Qualify\Group as QualifyGroup;
 use Sports\Poule;
 use Sports\Round;
@@ -81,7 +83,7 @@ class Validator
             throw new Exception($prefix . " bevat geen poules", E_ERROR);
         }
 
-        $this->checkPoulesNumberGap($round->getPoules());
+        $this->checkPoulesNumberGap(array_values($round->getPoules()->toArray()));
         foreach ($round->getPoules() as $poule) {
             $this->checkPouleValidity($poule);
         }
@@ -105,14 +107,20 @@ class Validator
             }
         }
 
-        $this->checkQualifyGroupsNumberGap($round->getQualifyGroups(QualifyGroup::WINNERS));
-        $this->checkQualifyGroupsNumberGap($round->getQualifyGroups(QualifyGroup::LOSERS));
+        $winners = array_values($round->getQualifyGroups(QualifyGroup::WINNERS)->toArray());
+        $this->checkQualifyGroupsNumberGap($winners);
+        $losers = array_values($round->getQualifyGroups(QualifyGroup::LOSERS)->toArray());
+        $this->checkQualifyGroupsNumberGap($losers);
         foreach ($round->getQualifyGroups() as $qualifyGroup) {
             $this->checkRoundValidity($qualifyGroup->getChildRound());
         }
     }
 
-    public function checkPoulesNumberGap(Collection $poules): void
+    /**
+     * @param list<Poule> $poules
+     * @throws Exception
+     */
+    public function checkPoulesNumberGap(array $poules): void
     {
         $startNumber = 1;
         foreach ($poules as $poule) {
@@ -122,7 +130,11 @@ class Validator
         }
     }
 
-    public function checkQualifyGroupsNumberGap(Collection $qualifyGroups): void
+    /**
+     * @param list<QualifyGroup> $qualifyGroups
+     * @throws Exception
+     */
+    public function checkQualifyGroupsNumberGap(array $qualifyGroups): void
     {
         $startNumber = 1;
         foreach ($qualifyGroups as $qualifyGroup) {
@@ -134,7 +146,9 @@ class Validator
 
     protected function checkRoundNrOfPlaces(Round $round): void
     {
+        /** @var int|null $minNrOfPlaces */
         $minNrOfPlaces = null;
+        /** @var int|null $maxNrOfPlaces */
         $maxNrOfPlaces = null;
         foreach ($round->getPoules() as $poule) {
             if ($minNrOfPlaces === null || $poule->getPlaces()->count() < $minNrOfPlaces) {
@@ -144,7 +158,7 @@ class Validator
                 $maxNrOfPlaces = $poule->getPlaces()->count();
             }
         }
-        if ($maxNrOfPlaces - $minNrOfPlaces > 1) {
+        if ($minNrOfPlaces !== null && $maxNrOfPlaces !== null && $maxNrOfPlaces - $minNrOfPlaces > 1) {
             throw new Exception(
                 "bij ronde " . $this->getIdOutput($round->getId()) . " zijn er poules met meer dan 1 plaats verschil",
                 E_ERROR
@@ -152,16 +166,9 @@ class Validator
         }
     }
 
-    /**
-     * @param Poule $poule
-     *
-     * @throws \Exception
-     *
-     * @return void
-     */
     public function checkPouleValidity(Poule $poule): void
     {
-        $this->checkPlacesNumberGap($poule->getPlaces());
+        $this->checkPlacesNumberGap(array_values($poule->getPlaces()->toArray()));
         if ($poule->getPlaces()->count() === 0) {
             $prefix = "poule " . $this->getIdOutput($poule->getId()) . "(" . $this->nameService->getPouleName(
                 $poule,
@@ -171,7 +178,11 @@ class Validator
         }
     }
 
-    public function checkPlacesNumberGap(Collection $places): void
+    /**
+     * @param list<Place> $places
+     * @throws Exception
+     */
+    public function checkPlacesNumberGap(array $places): void
     {
         $startNumber = 1;
         foreach ($places as $place) {

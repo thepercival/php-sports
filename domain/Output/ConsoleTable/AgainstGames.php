@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Sports\Output\ConsoleTable;
 
@@ -17,10 +18,8 @@ class AgainstGames
 {
     /**
      * @param Competition $competition
-     * @param array|AgainstGame[] $games
-     * @param array|TeamCompetitor[] $teamCompetitors
-     *
-     * @return void
+     * @param list<AgainstGame> $games
+     * @param list<TeamCompetitor> $teamCompetitors
      */
     public function display(Competition $competition, array $games, array $teamCompetitors): void
     {

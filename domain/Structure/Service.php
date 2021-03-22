@@ -93,12 +93,14 @@ class Service
 
     public function removePoule(Round $round, bool $modifyNrOfPlaces = null): void
     {
-        $poules = $round->getPoules();
-        if ($poules->count() <= 1) {
+        $lastPoule = $round->getPoules()->last();
+        if ($lastPoule === false) {
             throw new Exception('er moet minimaal 1 poule overblijven', E_ERROR);
         }
-        $lastPoule = $poules[$poules->count() - 1];
-        $newNrOfPlaces = $round->getNrOfPlaces() - ($modifyNrOfPlaces ? $lastPoule->getPlaces()->count() : 0);
+        $newNrOfPlaces = $round->getNrOfPlaces();
+        if ($modifyNrOfPlaces === true) {
+            $newNrOfPlaces -= $lastPoule->getPlaces()->count();
+        }
 
         if ($newNrOfPlaces < $round->getNrOfPlacesChildren()) {
             throw new Exception(
@@ -107,7 +109,7 @@ class Service
             );
         }
 
-        $this->updateRound($round, $newNrOfPlaces, $poules->count() - 1);
+        $this->updateRound($round, $newNrOfPlaces, $round->getPoules()->count() - 1);
         if (!$round->isRoot()) {
             $qualifyRuleService = new QualifyRuleService($round);
             $qualifyRuleService->recreateFrom();
@@ -121,9 +123,13 @@ class Service
     public function addPoule(Round $round, bool $modifyNrOfPlaces = null): Poule
     {
         $poules = $round->getPoules();
-        $lastPoule = $poules[$poules->count() - 1];
-        $newNrOfPlaces = $round->getNrOfPlaces() + ($modifyNrOfPlaces ? $lastPoule->getPlaces()->count() : 0);
-        if ($modifyNrOfPlaces) {
+        $lastPoule = $poules->last();
+        if ($lastPoule === false) {
+            throw new Exception('er moet minimaal 1 poule zijn', E_ERROR);
+        }
+        $newNrOfPlaces = $round->getNrOfPlaces();
+        if ($modifyNrOfPlaces === true) {
+            $newNrOfPlaces -= $lastPoule->getPlaces()->count();
             $this->checkRanges($newNrOfPlaces, $poules->count());
         }
         $this->updateRound($round, $newNrOfPlaces, $poules->count() + 1);
@@ -136,8 +142,11 @@ class Service
         $structure = new StructureBase($rootRound->getNumber(), $rootRound);
         $structure->setStructureNumbers();
 
-        $newPoules = $round->getPoules();
-        return $newPoules[$newPoules->count() - 1];
+        $lastPoule = $round->getPoules()->last();
+        if ($lastPoule === false) {
+            throw new Exception('er moet minimaal 1 poule zijn', E_ERROR);
+        }
+        return $lastPoule;
     }
 
     public function removeQualifier(Round $round, int $winnersOrLosers): void
@@ -324,73 +333,83 @@ class Service
         if ($roundNrOfPlaces < 4 && $newNrOfPlacesChildren >= 2) {
             $newNrOfPlacesChildren = 0;
         }
-        $getNewQualifyGroup = function (ArrayCollection $removedQualifyGroups) use (
-            $round,
-            $winnersOrLosers,
-            &$newNrOfPlacesChildren
-        ) : HorizontolPouleCreator {
-            $qualifyGroup = $removedQualifyGroups->first();
-            $nrOfQualifiers = 0;
-            if ($qualifyGroup === false) {
-                $qualifyGroup = new QualifyGroup($round, $winnersOrLosers);
-                $nextRoundNumber = $this->createNextRoundNumber($round);
-                new Round($nextRoundNumber, $qualifyGroup);
-                $nrOfQualifiers = $newNrOfPlacesChildren;
-            } else {
-                $removedQualifyGroups->removeElement($qualifyGroup);
-                $round->addQualifyGroup($qualifyGroup);
-                // warning: cannot make use of qualifygroup.horizontalpoules yet!
 
-                // add and remove qualifiers
-                $nrOfQualifiers = $qualifyGroup->getChildRound()->getNrOfPlaces();
-
-                if ($nrOfQualifiers < $round->getPoules()->count() && $newNrOfPlacesChildren > $nrOfQualifiers) {
-                    $nrOfQualifiers = $round->getPoules()->count();
-                }
-                if ($nrOfQualifiers > $newNrOfPlacesChildren) {
-                    $nrOfQualifiers = $newNrOfPlacesChildren;
-                } else {
-                    if ($nrOfQualifiers < $newNrOfPlacesChildren && $removedQualifyGroups->count() === 0) {
-                        $nrOfQualifiers = $newNrOfPlacesChildren;
-                    }
-                }
-                if ($newNrOfPlacesChildren - $nrOfQualifiers === 1) {
-                    $nrOfQualifiers = $newNrOfPlacesChildren;
-                }
-            }
-            return new HorizontolPouleCreator($qualifyGroup, $nrOfQualifiers);
-        };
-
+        /** @var list<HorizontolPouleCreator> $horizontalPoulesCreators */
         $horizontalPoulesCreators = [];
         $removedQualifyGroups = $round->getQualifyGroups($winnersOrLosers);
         $round->clearQualifyGroups($winnersOrLosers);
         $qualifyGroupNumber = 1;
         while ($newNrOfPlacesChildren > 0) {
-            $horizontalPoulesCreator = $getNewQualifyGroup($removedQualifyGroups);
-            $horizontalPoulesCreator->qualifyGroup->setNumber($qualifyGroupNumber++);
+            $horizontalPoulesCreator = $this->getHorizontalPouleCreator($removedQualifyGroups, $round, $winnersOrLosers, $newNrOfPlacesChildren);
+            $horizontalPoulesCreator->getQualifyGroup()->setNumber($qualifyGroupNumber++);
             $horizontalPoulesCreators[] = $horizontalPoulesCreator;
-            $newNrOfPlacesChildren -= $horizontalPoulesCreator->nrOfQualifiers;
+            $newNrOfPlacesChildren -= $horizontalPoulesCreator->getNrOfQualifiers();
         }
         $horizontalPouleService = new HorizontalPouleService($round);
         $horPoules = array_slice($round->getHorizontalPoules($winnersOrLosers), 0);
         $horizontalPouleService->updateQualifyGroups($horPoules, $horizontalPoulesCreators);
 
         foreach ($horizontalPoulesCreators as $creator) {
-            $newNrOfPoules = $this->calculateNewNrOfPoules($creator->qualifyGroup, $creator->nrOfQualifiers);
-            $this->updateRound($creator->qualifyGroup->getChildRound(), $creator->nrOfQualifiers, $newNrOfPoules);
+            $newNrOfPoules = $this->calculateNewNrOfPoules($creator->getQualifyGroup(), $creator->getNrOfQualifiers());
+            $this->updateRound($creator->getQualifyGroup()->getChildRound(), $creator->getNrOfQualifiers(), $newNrOfPoules);
         }
-        $this->cleanupRemovedQualifyGroups($round, $removedQualifyGroups->toArray());
+        $this->cleanupRemovedQualifyGroups($round, array_values($removedQualifyGroups->toArray()));
     }
 
     /**
-     * if roundnumber has no rounds left, also remove round number
-     *
+     * @param ArrayCollection<int|string, QualifyGroup> $removedQualifyGroups
      * @param Round $round
-     * @param array $removedQualifyGroups
-     *
+     * @param int $winnersOrLosers
+     * @param int $newNrOfPlacesChildren
+     * @return HorizontolPouleCreator
+     */
+    private function getHorizontalPouleCreator(
+        ArrayCollection $removedQualifyGroups,
+        Round $round,
+        int $winnersOrLosers,
+        int &$newNrOfPlacesChildren
+        ) : HorizontolPouleCreator
+    {
+        /** @var QualifyGroup|false $qualifyGroup */
+        $qualifyGroup = $removedQualifyGroups->first();
+        $nrOfQualifiers = 0;
+        if ($qualifyGroup === false) {
+            $nextRoundNumber = $this->createNextRoundNumber($round);
+            $qualifyGroup = new QualifyGroup($round, $winnersOrLosers, $nextRoundNumber);
+            new Round($nextRoundNumber, $qualifyGroup);
+            $nrOfQualifiers = $newNrOfPlacesChildren;
+        } else {
+            $removedQualifyGroups->removeElement($qualifyGroup);
+            $round->addQualifyGroup($qualifyGroup);
+            // warning: cannot make use of qualifygroup.horizontalpoules yet!
+
+            // add and remove qualifiers
+            $nrOfQualifiers = $qualifyGroup->getChildRound()->getNrOfPlaces();
+
+            if ($nrOfQualifiers < $round->getPoules()->count() && $newNrOfPlacesChildren > $nrOfQualifiers) {
+                $nrOfQualifiers = $round->getPoules()->count();
+            }
+            if ($nrOfQualifiers > $newNrOfPlacesChildren) {
+                $nrOfQualifiers = $newNrOfPlacesChildren;
+            } else {
+                if ($nrOfQualifiers < $newNrOfPlacesChildren && $removedQualifyGroups->count() === 0) {
+                    $nrOfQualifiers = $newNrOfPlacesChildren;
+                }
+            }
+            if ($newNrOfPlacesChildren - $nrOfQualifiers === 1) {
+                $nrOfQualifiers = $newNrOfPlacesChildren;
+            }
+        }
+        return new HorizontolPouleCreator($qualifyGroup, $nrOfQualifiers);
+    }
+
+    // if roundnumber has no rounds left, also remove round number
+    /**
+     * @param Round $round
+     * @param list<QualifyGroup> $removedQualifyGroups
      * @return void
      */
-    protected function cleanupRemovedQualifyGroups(Round $round, array $removedQualifyGroups)
+    protected function cleanupRemovedQualifyGroups(Round $round, array $removedQualifyGroups): void
     {
         $nextRoundNumber = $round->getNumber()->getNext();
         if ($nextRoundNumber === null) {

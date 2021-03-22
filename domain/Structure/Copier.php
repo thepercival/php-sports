@@ -21,14 +21,8 @@ use Sports\Qualify\AgainstConfig\Service as QualifyAgainstConfigService;
 
 class Copier
 {
-    /**
-     * @var Competition
-     */
-    protected $competition;
-
-    public function __construct(Competition $competition)
+    public function __construct(protected Competition $competition)
     {
-        $this->competition = $competition;
     }
 
     public function copy(Structure $structure): Structure
@@ -87,9 +81,9 @@ class Copier
     {
         $newRound = $this->copyRoundHelper(
             $roundNumber,
-            $round->getPoules()->toArray(),
-            $round->getFirstScoreConfigs()->toArray(),
-            $round->getQualifyAgainstConfigs()->toArray(),
+            array_values($round->getPoules()->toArray()),
+            array_values($round->getFirstScoreConfigs()->toArray()),
+            array_values($round->getQualifyAgainstConfigs()->toArray()),
             $parentQualifyGroup
         );
         $nextRoundNumber = $roundNumber->getNext();
@@ -97,7 +91,7 @@ class Copier
             return $newRound;
         }
         foreach ($round->getQualifyGroups() as $qualifyGroup) {
-            $newQualifyGroup = new QualifyGroup($newRound, $qualifyGroup->getWinnersOrLosers());
+            $newQualifyGroup = new QualifyGroup($newRound, $qualifyGroup->getWinnersOrLosers(), $nextRoundNumber);
             $newQualifyGroup->setNumber($qualifyGroup->getNumber());
             // $qualifyGroup->setNrOfHorizontalPoules( $qualifyGroupSerialized->getNrOfHorizontalPoules() );
             $this->copyRound($nextRoundNumber, $qualifyGroup->getChildRound(), $newQualifyGroup);
@@ -107,9 +101,9 @@ class Copier
 
     /**
      * @param RoundNumber $roundNumber
-     * @param array|Poule[] $poules
-     * @param array|ScoreConfig[] $scoreConfigs
-     * @param array|QualifyAgainstConfig[] $qualifyAgainstConfigs
+     * @param list<Poule> $poules
+     * @param list<ScoreConfig> $scoreConfigs
+     * @param list<QualifyAgainstConfig> $qualifyAgainstConfigs
      * @param QualifyGroup|null $parentQualifyGroup
      * @return Round
      */
@@ -122,7 +116,7 @@ class Copier
     ): Round {
         $round = new Round($roundNumber, $parentQualifyGroup);
         foreach ($poules as $poule) {
-            $this->copyPoule($round, $poule->getNumber(), $poule->getPlaces()->toArray());
+            $this->copyPoule($round, $poule->getNumber(), array_values($poule->getPlaces()->toArray()));
         }
         $scoreConfigService = new ScoreConfigService();
         foreach ($scoreConfigs as $scoreConfig) {
@@ -140,11 +134,7 @@ class Copier
     /**
      * @param Round $round
      * @param int $number
-     * @param array|Place[] $places
-     *
-     * @throws Exception
-     *
-     * @return void
+     * @param list<Place> $places
      */
     protected function copyPoule(Round $round, int $number, array $places): void
     {

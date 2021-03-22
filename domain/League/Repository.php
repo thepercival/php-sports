@@ -1,13 +1,15 @@
 <?php
+declare(strict_types=1);
 
 namespace Sports\League;
 
 use Sports\League as LeagueBase;
+use Doctrine\ORM\EntityRepository;
 
-class Repository extends \Sports\Repository
+/**
+ * @template-extends EntityRepository<LeagueBase>
+ */
+class Repository extends EntityRepository
 {
-    public function find($id, $lockMode = null, $lockVersion = null): ?LeagueBase
-    {
-        return $this->_em->find($this->_entityName, $id, $lockMode, $lockVersion);
-    }
+    use \Sports\Repository;
 }

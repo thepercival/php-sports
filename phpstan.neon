@@ -1,4 +1,9 @@
 parameters:
-    level: 5
+    level: 8
     inferPrivatePropertyTypeFromConstructor:
         true
+    paths:
+        - domain/
+        - tests/cases/
+        - tests/helpers/
+       # - serialization/

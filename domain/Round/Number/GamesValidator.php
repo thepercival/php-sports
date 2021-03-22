@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Sports\Round\Number;
 
@@ -108,16 +109,15 @@ class GamesValidator
 
     /**
      * @param TogetherGame|AgainstGame $game
-     * @return array|Place[]
+     * @return list<Place>
      */
     protected function getPlaces($game): array
     {
-        return $game->getPlaces()->map(
-            /** @var AgainstGamePlace|TogetherGamePlace $gamePlace */
-            function ($gamePlace): Place {
+        return array_values($game->getPlaces()->map(
+            function (AgainstGamePlace|TogetherGamePlace $gamePlace): Place {
                 return $gamePlace->getPlace();
             }
-        )->toArray();
+        )->toArray());
     }
 
     protected function validateResourcesPerBatch(RoundNumber $roundNumber): void
@@ -135,7 +135,6 @@ class GamesValidator
                 $batchesResources[$game->getBatchNr()] = array("fields" => [], "referees" => [], "places" => []);
             }
             $batchResources = &$batchesResources[$game->getBatchNr()];
-            /** @var array|Place[] $places */
             $places = $this->getPlaces($game);
             if ($game->getRefereePlace() !== null) {
                 $places[] = $game->getRefereePlace();
@@ -146,21 +145,24 @@ class GamesValidator
                 }
                 $batchResources["places"][] = $placeIt;
             }
-
-            /** @var bool|int|string $search */
-            $search = array_search($game->getField(), $batchResources["fields"], true);
-            if ($search !== false) {
-                return false;
-            }
-            $batchResources["fields"][] = $game->getField();
-
-            if ($game->getReferee() !== null) {
+            $field = $game->getField();
+            if ($field !== null) {
                 /** @var bool|int|string $search */
-                $search = array_search($game->getReferee(), $batchResources["referees"], true);
+                $search = array_search($field, $batchResources["fields"], true);
                 if ($search !== false) {
                     return false;
                 }
-                $batchResources["referees"][] = $game->getReferee();
+                $batchResources["fields"][] = $field;
+            }
+
+            $referee = $game->getReferee();
+            if ($referee !== null) {
+                /** @var bool|int|string $search */
+                $search = array_search($referee, $batchResources["referees"], true);
+                if ($search !== false) {
+                    return false;
+                }
+                $batchResources["referees"][] = $referee;
             }
         }
         return true;
@@ -235,7 +237,9 @@ class GamesValidator
      */
     protected function validateNrOfGamesRange(array $gameAmounts, string $suffix): void
     {
+        /** @var int|null $minNrOfGames */
         $minNrOfGames = null;
+        /** @var int|null $maxNrOfGames */
         $maxNrOfGames = null;
         foreach ($gameAmounts as $nr => $nrOfGames) {
             if ($minNrOfGames === null || $nrOfGames < $minNrOfGames) {
@@ -245,7 +249,7 @@ class GamesValidator
                 $maxNrOfGames = $nrOfGames;
             }
         }
-        if ($maxNrOfGames - $minNrOfGames > 1) {
+        if ($minNrOfGames !== null && $maxNrOfGames !== null && $maxNrOfGames - $minNrOfGames > 1) {
             throw new Exception("too much difference in number of games for " . $suffix, E_ERROR);
         }
     }

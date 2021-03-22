@@ -2,56 +2,40 @@
 
 namespace Sports;
 
+use DateTimeImmutable;
 use League\Period\Period;
 use \Doctrine\Common\Collections\ArrayCollection;
 use SportsHelpers\Identifiable;
 
 class Season extends Identifiable
 {
+    private string $name;
+    private DateTimeImmutable $startDateTime;
+    private DateTimeImmutable $endDateTime;
     /**
-     * @var string
+     * @var ArrayCollection<int|string, Competition>
      */
-    private $name;
-    /**
-     * @var \DateTimeImmutable
-     */
-    private $startDateTime;
-    /**
-     * @var \DateTimeImmutable
-     */
-    private $endDateTime;
-    /**
-     * @var ArrayCollection
-     */
-    private $competitions;
+    private ArrayCollection $competitions;
 
     const MIN_LENGTH_NAME = 2;
     const MAX_LENGTH_NAME = 9;
 
-    public function __construct($name, Period $period)
+    public function __construct(string $name, Period $period)
     {
         $this->setName($name);
         $this->competitions = new ArrayCollection();
         $this->setPeriod($period);
     }
 
-    /**
-     * @return string
-     */
-    public function getName()
+    public function getName(): string
     {
         return $this->name;
     }
 
-    /**
-     * @param string $name
-     *
-     * @return void
-     */
-    public function setName(string $name): void
+    final public function setName(string $name): void
     {
-        if (strlen($name) < static::MIN_LENGTH_NAME or strlen($name) > static::MAX_LENGTH_NAME) {
-            throw new \InvalidArgumentException("de naam moet minimaal ".static::MIN_LENGTH_NAME." karakters bevatten en mag maximaal ".static::MAX_LENGTH_NAME." karakters bevatten", E_ERROR);
+        if (strlen($name) < self::MIN_LENGTH_NAME or strlen($name) > self::MAX_LENGTH_NAME) {
+            throw new \InvalidArgumentException("de naam moet minimaal ".self::MIN_LENGTH_NAME." karakters bevatten en mag maximaal ".self::MAX_LENGTH_NAME." karakters bevatten", E_ERROR);
         }
 
 //        if(preg_match('/[^0-9\s\/-]/i', $name)){
@@ -61,28 +45,22 @@ class Season extends Identifiable
         $this->name = $name;
     }
 
-    /**
-     * @return \DateTimeImmutable
-     */
-    public function getStartDateTime()
+    public function getStartDateTime(): DateTimeImmutable
     {
         return $this->startDateTime;
     }
 
-    public function setStartDateTime(\DateTimeImmutable $startDateTime): void
+    final public function setStartDateTime(DateTimeImmutable $startDateTime): void
     {
         $this->startDateTime = $startDateTime;
     }
 
-    /**
-     * @return \DateTimeImmutable
-     */
-    public function getEndDateTime()
+    public function getEndDateTime(): DateTimeImmutable
     {
         return $this->endDateTime;
     }
 
-    public function setEndDateTime(\DateTimeImmutable $endDateTime): void
+    final public function setEndDateTime(DateTimeImmutable $endDateTime): void
     {
         $this->endDateTime = $endDateTime;
     }
@@ -92,16 +70,16 @@ class Season extends Identifiable
         return new Period($this->getStartDateTime(), $this->getEndDateTime());
     }
 
-    public function setPeriod(Period $period): void
+    final public function setPeriod(Period $period): void
     {
         $this->setStartDateTime($period->getStartDate());
         $this->setEndDateTime($period->getEndDate());
     }
 
     /**
-     * @return ArrayCollection
+     * @return ArrayCollection<int|string, Competition>
      */
-    public function getCompetitions()
+    public function getCompetitions(): ArrayCollection
     {
         return $this->competitions;
     }

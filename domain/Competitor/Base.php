@@ -1,29 +1,18 @@
 <?php
+declare(strict_types=1);
 
 namespace Sports\Competitor;
 
+use InvalidArgumentException;
+
 trait Base
 {
-    protected $max_length_info = 200;
+    protected int $max_length_info = 200;
 
     protected bool $registered = false;
-    /**
-     * @var string|null
-     */
-    protected $info;
-    /**
-     * @var int
-     */
-    protected $pouleNr;
-    /**
-     * @var int
-     */
-    protected $placeNr;
-
-    public function __construct()
-    {
-        $this->setRegistered(false);
-    }
+    protected string|null $info = null;
+    protected int $pouleNr;
+    protected int $placeNr;
 
     public function getRegistered(): bool
     {
@@ -42,12 +31,11 @@ trait Base
 
     public function setInfo(string $info = null): void
     {
-        if (strlen($info) === 0) {
+        if ($info !== null && strlen($info) === 0) {
             $info = null;
         }
-
-        if (strlen($info) > $this->max_length_info ) {
-            throw new \InvalidArgumentException("de extra-info mag maximaal ".$this->max_length_info." karakters bevatten", E_ERROR);
+        if ($info !== null && strlen($info) > $this->max_length_info) {
+            throw new InvalidArgumentException("de extra-info mag maximaal ".$this->max_length_info." karakters bevatten", E_ERROR);
         }
         $this->info = $info;
     }
@@ -72,7 +60,8 @@ trait Base
         $this->placeNr = $placeNr;
     }
 
-    public function getRoundLocationId(): string {
+    public function getRoundLocationId(): string
+    {
         return $this->getPouleNr() . '.' . $this->getPlaceNr();
     }
 }

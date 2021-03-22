@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Sports;
 
@@ -15,38 +16,19 @@ use Sports\Game\Together as TogetherGame;
 
 class Place extends Identifiable implements PlaceLocation
 {
-    /**
-     * @var string|null
-     */
-    protected $name;
-    /**
-     * @var int
-     */
-    protected $number;
+    protected string|null $name = null;
+    protected int $number;
     protected string|null $roundLocationId = null;
+    protected int $penaltyPoints;
+    protected SingleQualifyRule|MultipleQualifyRule|null $fromQualifyRule = null;
     /**
-     * @var int
-     */
-    protected $penaltyPoints;
-    protected SingleQualifyRule|MultipleQualifyRule|null $fromQualifyRule;
-    /**
-     * @var array<SingleQualifyRule|MultipleQualifyRule>
+     * @var list<SingleQualifyRule|MultipleQualifyRule>
      */
     protected array $toQualifyRules = [];
-    /**
-     * @var HorizontalPoule
-     */
-    protected $horizontalPouleWinners;
-    /**
-     * @var HorizontalPoule
-     */
-    protected $horizontalPouleLosers;
-    /**
-     * @var Place | null
-     */
-    protected $qualifiedPlace;
-
-    protected $competitorDep;
+    protected HorizontalPoule|null $horizontalPouleWinners = null;
+    protected HorizontalPoule|null $horizontalPouleLosers = null;
+    protected Place|null $qualifiedPlace = null;
+    protected Competitor|null $competitorDep = null;
 
     const MAX_LENGTH_NAME = 10;
 
@@ -55,28 +37,16 @@ class Place extends Identifiable implements PlaceLocation
         if ($number === null) {
             $number = $poule->getPlaces()->count() + 1;
         }
-        $this->setPoule($poule);
-        $this->setNumber($number);
-        $this->setPenaltyPoints(0);
-    }
-
-    /**
-     * @return Poule
-     */
-    public function getPoule(): Poule
-    {
-        return $this->poule;
-    }
-
-    public function setPoule(Poule $poule): void
-    {
-        if (/*$this->poule !== null &&*/ $this->poule->getPlaces()->contains($this)) {
-            $this->poule->getPlaces()->removeElement($this);
-        }
+        $this->number = $number;
         if (!$poule->getPlaces()->contains($this)) {
             $poule->getPlaces()->add($this) ;
         }
-        $this->poule = $poule;
+        $this->setPenaltyPoints(0);
+    }
+
+    public function getPoule(): Poule
+    {
+        return $this->poule;
     }
 
     public function getRound(): Round
@@ -89,11 +59,6 @@ class Place extends Identifiable implements PlaceLocation
         return $this->number;
     }
 
-    public function setNumber(int $number): void
-    {
-        $this->number = $number;
-    }
-
     public function getPouleNr(): int
     {
         return $this->getPoule()->getNumber();
@@ -104,19 +69,11 @@ class Place extends Identifiable implements PlaceLocation
         return $this->getNumber();
     }
 
-    /**
-     * @return int
-     */
-    public function getPenaltyPoints()
+    public function getPenaltyPoints(): int
     {
         return $this->penaltyPoints;
     }
 
-    /**
-     * @param int $penaltyPoints
-     *
-     * @return void
-     */
     public function setPenaltyPoints(int $penaltyPoints): void
     {
         $this->penaltyPoints = $penaltyPoints;
@@ -129,18 +86,18 @@ class Place extends Identifiable implements PlaceLocation
 
     public function setName(string $name = null): void
     {
-        if (is_string($name) and strlen($name) === 0) {
+        if ($name !== null and strlen($name) === 0) {
             $name = null;
         }
 
-        if (strlen($name) > static::MAX_LENGTH_NAME) {
-            throw new InvalidArgumentException("de naam mag maximaal ".static::MAX_LENGTH_NAME." karakters bevatten", E_ERROR);
+        if ($name !== null) {
+            if (strlen($name) > self::MAX_LENGTH_NAME) {
+                throw new InvalidArgumentException("de naam mag maximaal ".self::MAX_LENGTH_NAME." karakters bevatten", E_ERROR);
+            }
+            if (preg_match('/[^a-z0-9 ]/i', $name) === 1) {
+                throw new InvalidArgumentException("de naam mag alleen cijfers, letters en spaties bevatten", E_ERROR);
+            }
         }
-
-        if (preg_match('/[^a-z0-9 ]/i', $name)) {
-            throw new InvalidArgumentException("de naam mag alleen cijfers, letters en spaties bevatten", E_ERROR);
-        }
-
         $this->name = $name;
     }
 
@@ -162,10 +119,7 @@ class Place extends Identifiable implements PlaceLocation
         return $this->toQualifyRules;
     }
 
-    /**
-     * @return MultipleQualifyRule|SingleQualifyRule|null
-     */
-    public function getToQualifyRule(int $winnersOrLosers)
+    public function getToQualifyRule(int $winnersOrLosers): MultipleQualifyRule|SingleQualifyRule|null
     {
         $filtered = array_filter($this->toQualifyRules, function ($qualifyRule) use ($winnersOrLosers): bool {
             return ($qualifyRule->getWinnersOrLosers() === $winnersOrLosers);
@@ -178,16 +132,17 @@ class Place extends Identifiable implements PlaceLocation
     {
         $originalToQualifyRule = $this->getToQualifyRule($winnersOrLosers);
         if ($originalToQualifyRule !== null) {
-            if (($key = array_search($originalToQualifyRule, $this->toQualifyRules, true)) !== false) {
-                unset($this->toQualifyRules[$key]);
+            $idx = array_search($originalToQualifyRule, $this->toQualifyRules, true);
+            if ($idx !== false) {
+                array_splice($this->toQualifyRules, $idx, 1);
             }
         }
         if ($qualifyRule !== null) {
-            $this->toQualifyRules[] = $qualifyRule;
+            array_push($this->toQualifyRules, $qualifyRule);
         }
     }
 
-    public function getHorizontalPoule(int $winnersOrLosers): HorizontalPoule
+    public function getHorizontalPoule(int $winnersOrLosers): HorizontalPoule|null
     {
         return ($winnersOrLosers === QualifyGroup::WINNERS) ? $this->horizontalPouleWinners : $this->horizontalPouleLosers;
     }
@@ -219,16 +174,16 @@ class Place extends Identifiable implements PlaceLocation
     }
 
     /**
-     * @return array<AgainstGame|TogetherGame>
+     * @return list<AgainstGame|TogetherGame>
      */
     public function getGames(): array
     {
-        return array_filter(
+        return array_values(array_filter(
             $this->getPoule()->getGames(),
             function (AgainstGame|TogetherGame $game): bool {
                 return $game->isParticipating($this);
             }
-        );
+        ));
     }
 
     public function getQualifiedPlace(): ?Place

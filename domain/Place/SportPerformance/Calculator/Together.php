@@ -19,9 +19,9 @@ class Together extends Calculator
     }
 
     /**
-     * @param array<Place> $places
-     * @param array<TogetherGame|AgainstGame> $games
-     * @return array<SportPerformance>
+     * @param list<Place> $places
+     * @param list<TogetherGame|AgainstGame> $games
+     * @return list<SportPerformance>
      */
     public function getPerformances(array $places, array $games): array
     {
@@ -45,13 +45,15 @@ class Together extends Calculator
     }
 
     /**
-     * @param array<TogetherGame|AgainstGame> $games
-     * @return array<TogetherGame>
+     * @param list<TogetherGame|AgainstGame> $games
+     * @return list<TogetherGame>
      */
     protected function getFilteredGames(array $games): array
     {
-        return array_filter(parent::getFilteredGames($games), function (AgainstGame | TogetherGame $game): bool {
-            return $game instanceof TogetherGame;
+        /** @var list<TogetherGame> $togetherGames */
+        $togetherGames = array_filter($games, function (AgainstGame | TogetherGame $game): bool {
+            return $game instanceof TogetherGame && $this->competitionSport === $game->getCompetitionSport();
         });
+        return array_values($togetherGames);
     }
 }

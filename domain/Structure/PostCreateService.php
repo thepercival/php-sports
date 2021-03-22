@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Sports\Structure;
 
@@ -12,15 +13,8 @@ use Sports\Poule\Horizontal\Creator as HorizontalPoule;
 
 class PostCreateService
 {
-
-    /**
-     * @var Structure
-     */
-    private $structure;
-
-    public function __construct(Structure $structure)
+    public function __construct(private Structure $structure)
     {
-        $this->structure = $structure;
     }
 
     public function create(): void
@@ -46,9 +40,9 @@ class PostCreateService
         foreach ([QualifyGroup::WINNERS, QualifyGroup::LOSERS] as $winnersOrLosers) {
             $horizontalPouleService->updateQualifyGroups(
                 array_slice($round->getHorizontalPoules($winnersOrLosers), 0),
-                array_map(function ($qualifyGroup): HorizontalPoule {
+                array_values(array_map(function (QualifyGroup $qualifyGroup): HorizontalPoule {
                     return new HorizontolPouleCreator($qualifyGroup, $qualifyGroup->getChildRound()->getNrOfPlaces());
-                }, $round->getQualifyGroups($winnersOrLosers)->toArray())
+                }, $round->getQualifyGroups($winnersOrLosers)->toArray()))
             );
         }
 

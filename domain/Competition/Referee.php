@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Sports\Competition;
 
@@ -9,6 +10,12 @@ use SportsHelpers\Identifiable;
 
 class Referee extends Identifiable implements Prioritizable
 {
+    private string $initials;
+    protected int $priority;
+    private string|null $name = null;
+    private string|null $emailaddress = null;
+    private string|null $info = null;
+
     const MIN_LENGTH_INITIALS = 1;
     const MAX_LENGTH_INITIALS = 3;
     const MIN_LENGTH_NAME = 1;
@@ -18,35 +25,11 @@ class Referee extends Identifiable implements Prioritizable
     const MAX_LENGTH_INFO = 200;
     const DEFAULT_PRIORITY = 1;
 
-    /**
-     * @var int
-     */
-    protected $priority;
-    /**
-     * @var string
-     */
-    private $initials;
-    /**
-     * @var string|null
-     */
-    private $name;
-    /**
-     * @var string
-     */
-    private $emailaddress;
-    /**
-     * @var string
-     */
-    private $info;
-    /**
-     * @var Competition
-     */
-    private $competition;
-
-    public function __construct(Competition $competition, int $priority = null)
+    public function __construct(private Competition $competition, string $initials, int $priority = null)
     {
         $this->setCompetition($competition);
-        if ($priority < self::DEFAULT_PRIORITY) {
+        $this->setInitials($initials);
+        if ($priority === null || $priority < self::DEFAULT_PRIORITY) {
             $priority = $competition->getReferees()->count();
         }
         $this->setPriority($priority);
@@ -63,35 +46,21 @@ class Referee extends Identifiable implements Prioritizable
         return $this->priority;
     }
 
-    /**
-     * @return void
-     */
-    public function setPriority(int $priority)
+    final public function setPriority(int $priority): void
     {
         $this->priority = $priority;
     }
 
-    /**
-     * @return string
-     */
-    public function getInitials()
+    public function getInitials(): string
     {
         return $this->initials;
     }
 
-    /**
-     * @param string|null $initials
-     *
-     * @return void
-     */
-    public function setInitials($initials): void
+    final public function setInitials(string $initials): void
     {
-        if ($initials === null) {
-            throw new \InvalidArgumentException("de initialen moet gezet zijn", E_ERROR);
-        }
-        if (strlen($initials) < static::MIN_LENGTH_INITIALS or strlen($initials) > static::MAX_LENGTH_INITIALS) {
+        if (strlen($initials) < self::MIN_LENGTH_INITIALS or strlen($initials) > self::MAX_LENGTH_INITIALS) {
             throw new \InvalidArgumentException(
-                "de initialen moet minimaal " . static::MIN_LENGTH_INITIALS . " karakter bevatten en mag maximaal " . static::MAX_LENGTH_INITIALS . " karakters bevatten",
+                "de initialen moet minimaal " . self::MIN_LENGTH_INITIALS . " karakter bevatten en mag maximaal " . self::MAX_LENGTH_INITIALS . " karakters bevatten",
                 E_ERROR
             );
         }
@@ -104,28 +73,20 @@ class Referee extends Identifiable implements Prioritizable
         $this->initials = $initials;
     }
 
-    /**
-     * @return null|string
-     */
     public function getName(): ?string
     {
         return $this->name;
     }
 
-    /**
-     * @param string|null $name
-     *
-     * @return void
-     */
     public function setName(string $name = null): void
     {
-        if ($name !== null && (strlen($name) < static::MIN_LENGTH_NAME or strlen($name) > static::MAX_LENGTH_NAME)) {
+        if ($name !== null && (strlen($name) < self::MIN_LENGTH_NAME or strlen($name) > self::MAX_LENGTH_NAME)) {
             throw new \InvalidArgumentException(
-                "de naam moet minimaal " . static::MIN_LENGTH_NAME . " karakters bevatten en mag maximaal " . static::MAX_LENGTH_NAME . " karakters bevatten",
+                "de naam moet minimaal " . self::MIN_LENGTH_NAME . " karakters bevatten en mag maximaal " . self::MAX_LENGTH_NAME . " karakters bevatten",
                 E_ERROR
             );
         }
-        if ($name !== null && !preg_match('/^[a-z0-9 .\-]+$/i', $name)) {
+        if ($name !== null && preg_match('/^[a-z0-9 .\-]+$/i', $name) === 0) {
             throw new \InvalidArgumentException(
                 "de naam (" . $name . ") mag alleen cijfers, streeptes, slashes en spaties bevatten",
                 E_ERROR
@@ -134,61 +95,42 @@ class Referee extends Identifiable implements Prioritizable
         $this->name = $name;
     }
 
-    /**
-     * @return string
-     */
-    public function getEmailaddress()
+    public function getEmailaddress(): string|null
     {
         return $this->emailaddress;
     }
 
-    /**
-     * @param string $emailaddress
-     *
-     * @return void
-     */
-    public function setEmailaddress($emailaddress): void
+    public function setEmailaddress(string|null $emailaddress): void
     {
-        if (strlen($emailaddress) > 0) {
-            if (strlen($emailaddress) < static::MIN_LENGTH_EMAIL or strlen($emailaddress) > static::MAX_LENGTH_EMAIL) {
+        if ($emailaddress !== null && strlen($emailaddress) > 0) {
+            if (strlen($emailaddress) < self::MIN_LENGTH_EMAIL or strlen($emailaddress) > self::MAX_LENGTH_EMAIL) {
                 throw new \InvalidArgumentException(
-                    "het emailadres moet minimaal " . static::MIN_LENGTH_EMAIL . " karakters bevatten en mag maximaal " . static::MAX_LENGTH_EMAIL . " karakters bevatten",
+                    "het emailadres moet minimaal " . self::MIN_LENGTH_EMAIL . " karakters bevatten en mag maximaal " . self::MAX_LENGTH_EMAIL . " karakters bevatten",
                     E_ERROR
                 );
             }
 
-            if (!filter_var($emailaddress, FILTER_VALIDATE_EMAIL)) {
+            if (filter_var($emailaddress, FILTER_VALIDATE_EMAIL) === false) {
                 throw new \InvalidArgumentException("het emailadres " . $emailaddress . " is niet valide", E_ERROR);
             }
         }
         $this->emailaddress = $emailaddress;
     }
 
-    /**
-     * @return string
-     */
-    public function getInfo()
+    public function getInfo(): string|null
     {
         return $this->info;
     }
 
-    /**
-     * @param string $info
-     *
-     * @return void
-     */
-    public function setInfo($info): void
+    public function setInfo(string|null $info): void
     {
-        if (strlen($info) > static::MAX_LENGTH_INFO) {
-            $info = substr($info, 0, static::MAX_LENGTH_INFO);
+        if ($info !== null && strlen($info) > self::MAX_LENGTH_INFO) {
+            $info = substr($info, 0, self::MAX_LENGTH_INFO);
         }
         $this->info = $info;
     }
 
-    /**
-     * @return Competition
-     */
-    public function getCompetition()
+    public function getCompetition(): Competition
     {
         return $this->competition;
     }

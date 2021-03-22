@@ -20,7 +20,7 @@ class Against extends SportRoundRankingCalculator
 {
     /**
      * @param CompetitionSport $competitionSport
-     * @param array<int>|null $gameStates
+     * @param list<int>|null $gameStates
      */
     public function __construct(CompetitionSport $competitionSport, array $gameStates = null)
     {
@@ -31,29 +31,32 @@ class Against extends SportRoundRankingCalculator
 
     /**
      * @param Poule $poule
-     * @return array<SportRoundRankingItem>
+     * @return list<SportRoundRankingItem>
      */
     public function getItemsForPoule(Poule $poule): array
     {
-        return $this->getItems($poule->getRound(), $poule->getPlaces()->toArray(), $poule->getAgainstGames()->toArray());
+        return $this->getItems(
+            $poule->getRound(),
+            array_values($poule->getPlaces()->toArray()),
+            array_values($poule->getAgainstGames()->toArray()));
     }
 
     /**
      * @param Poule $poule
-     * @param array<Place> $places
-     * @return array<SportRoundRankingItem>
+     * @param list<Place> $places
+     * @return list<SportRoundRankingItem>
      */
     public function getItemsAmongPlaces(Poule $poule, array $places): array
     {
-        $games = $this->getGamesAmongEachOther($places, $poule->getAgainstGames()->toArray());
+        $games = $this->getGamesAmongEachOther($places, array_values($poule->getAgainstGames()->toArray()));
         return $this->getItems($poule->getRound(), $places, $games);
     }
 
     /**
      * @param Round $round
-     * @param array<Place> $places
-     * @param array<AgainstGame> $games
-     * @return array<SportRoundRankingItem>
+     * @param list<Place> $places
+     * @param list<AgainstGame> $games
+     * @return list<SportRoundRankingItem>
      */
     protected function getItems(Round $round, array $places, array $games): array
     {
@@ -63,20 +66,20 @@ class Against extends SportRoundRankingCalculator
     }
 
     /**
-     * @param array<AgainstGame> $games
-     * @return array<AgainstGame>
+     * @param list<AgainstGame> $games
+     * @return list<AgainstGame>
      */
     protected function getFilteredGames(array $games): array
     {
-        return array_filter($games, function (AgainstGame $game): bool {
+        return array_values(array_filter($games, function (AgainstGame $game): bool {
             return array_key_exists($game->getState(), $this->gameStateMap);
-        });
+        }));
     }
 
     /**
-     * @param array<Place> $places
-     * @param array<AgainstGame> $games
-     * @return array<AgainstGame>
+     * @param list<Place> $places
+     * @param list<AgainstGame> $games
+     * @return list<AgainstGame>
      */
     private function getGamesAmongEachOther(array $places, array $games): array
     {

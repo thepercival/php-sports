@@ -22,78 +22,83 @@ use SportsPlanning\Game\Place\Together as TogetherPlanningGamePlace;
 
 class PlanningAssigner
 {
-    protected PlanningMapper $mapper;
-
     public function __construct(protected PlanningScheduler $scheduler)
     {
     }
 
     public function assignPlanningToRoundNumber(RoundNumber $roundNumber, Planning $planning): void
     {
-        $this->mapper = new PlanningMapper($roundNumber, $planning);
+        $mapper = new PlanningMapper($roundNumber, $planning);
         $firstBatch = $planning->createFirstBatch();
         $gameStartDateTime = $this->scheduler->getRoundNumberStartDateTime($roundNumber);
         $planningConfig = $roundNumber->getValidPlanningConfig();
-        $this->assignPlanningBatch($firstBatch, $planningConfig, $gameStartDateTime);
+        $this->assignPlanningBatch($firstBatch, $planningConfig, $gameStartDateTime, $mapper);
     }
 
     protected function assignPlanningBatch(
         Batch|SelfRefereeBatch $batch,
         PlanningConfig $planningConfig,
-        DateTimeImmutable $gameStartDateTime
+        DateTimeImmutable $gameStartDateTime,
+        PlanningMapper $mapper,
     ): void {
-        $this->assignPlanningBatchGames($batch, $gameStartDateTime);
+        $this->assignPlanningBatchGames($batch, $gameStartDateTime, $mapper);
         $nextBatch = $batch->getNext();
         if ($nextBatch !== null) {
             $nextGameStartDateTime = $this->scheduler->getNextGameStartDateTime($planningConfig, $gameStartDateTime);
-            $this->assignPlanningBatch($nextBatch, $planningConfig, $nextGameStartDateTime);
+            $this->assignPlanningBatch($nextBatch, $planningConfig, $nextGameStartDateTime, $mapper);
         }
     }
 
-    protected function assignPlanningBatchGames(Batch|SelfRefereeBatch $batch, DateTimeImmutable $gameStartDateTime): void
+    protected function assignPlanningBatchGames(
+        Batch|SelfRefereeBatch $batch,
+        DateTimeImmutable $gameStartDateTime,
+        PlanningMapper $mapper): void
     {
         foreach ($batch->getGames() as $planningGame) {
-            $game = $this->createGameFromPlanningGame($planningGame, $gameStartDateTime);
-            $game->setField($this->mapper->getField($planningGame->getField()));
-            $game->setReferee($this->mapper->getReferee($planningGame->getReferee()));
-            $game->setRefereePlace($this->mapper->getRefereePlace($planningGame->getRefereePlace()));
+            $game = $this->createGameFromPlanningGame($planningGame, $gameStartDateTime, $mapper);
+            $game->setField($mapper->getField($planningGame->getField()));
+            $game->setReferee($mapper->getReferee($planningGame->getReferee()));
+            $game->setRefereePlace($mapper->getRefereePlace($planningGame->getRefereePlace()));
         }
     }
 
     protected function createGameFromPlanningGame(
         AgainstPlanningGame|TogetherPlanningGame $planningGame,
-        DateTimeImmutable $gameStartDateTime
+        DateTimeImmutable $gameStartDateTime,
+        PlanningMapper $mapper
     ): AgainstGame|TogetherGame {
-        $poule = $this->mapper->getPoule($planningGame->getPoule());
-        $competitionSport = $this->mapper->getCompetitionSport($planningGame->getSport());
+        $poule = $mapper->getPoule($planningGame->getPoule());
+        $competitionSport = $mapper->getCompetitionSport($planningGame->getSport());
         if ($planningGame instanceof AgainstPlanningGame) {
-            return $this->createAgainstGame($poule, $planningGame, $gameStartDateTime, $competitionSport);
+            return $this->createAgainstGame($poule, $planningGame, $gameStartDateTime, $competitionSport, $mapper);
         }
-        return $this->createTogetherGame($poule, $planningGame, $gameStartDateTime, $competitionSport);
+        return $this->createTogetherGame($poule, $planningGame, $gameStartDateTime, $competitionSport, $mapper);
     }
 
     protected function createAgainstGame(
         Poule $poule,
         AgainstPlanningGame $planningGame,
         DateTimeImmutable $startDateTime,
-        CompetitionSport $competitionSport
+        CompetitionSport $competitionSport,
+        PlanningMapper $mapper
     ): AgainstGame
     {
         $game = new AgainstGame($poule, $planningGame->getBatchNr(), $startDateTime, $competitionSport);
         foreach ($planningGame->getPlaces() as $planningGamePlace) {
-            $this->createAgainstGamePlace($game, $planningGamePlace);
+            $this->createAgainstGamePlace($game, $planningGamePlace, $mapper);
         }
         return $game;
     }
 
     protected function createAgainstGamePlace(
         AgainstGame $game,
-        AgainstPlanningGamePlace $planningGamePlace
+        AgainstPlanningGamePlace $planningGamePlace,
+        PlanningMapper $mapper
     ): void
     {
         new AgainstGamePlace(
             $game,
-            $this->mapper->getPlace($planningGamePlace->getPlace()),
+            $mapper->getPlace($planningGamePlace->getPlace()),
             $planningGamePlace->getSide()
         );
     }
@@ -102,23 +107,25 @@ class PlanningAssigner
         Poule $poule,
         TogetherPlanningGame $planningGame,
         DateTimeImmutable $startDateTime,
-        CompetitionSport $competitionSport
+        CompetitionSport $competitionSport,
+        PlanningMapper $mapper
     ): TogetherGame
     {
         $game = new TogetherGame($poule, $planningGame->getBatchNr(), $startDateTime, $competitionSport);
         foreach ($planningGame->getPlaces() as $planningGamePlace) {
-            $this->createTogetherGamePlace($game, $planningGamePlace);
+            $this->createTogetherGamePlace($game, $planningGamePlace, $mapper);
         }
         return $game;
     }
 
     protected function createTogetherGamePlace(
         TogetherGame $game,
-        TogetherPlanningGamePlace $planningGamePlace
-    ) {
-        new TogetherGamePlace(
+        TogetherPlanningGamePlace $planningGamePlace,
+        PlanningMapper $mapper
+    ): TogetherGamePlace {
+        return new TogetherGamePlace(
             $game,
-            $this->mapper->getPlace($planningGamePlace->getPlace()),
+            $mapper->getPlace($planningGamePlace->getPlace()),
             $planningGamePlace->getGameRoundNumber()
         );
     }

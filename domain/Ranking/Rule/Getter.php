@@ -11,7 +11,7 @@ class Getter
     /**
      * @param int $ruleSet
      * @param bool $useSubScore
-     * @return array|int[]
+     * @return list<int>
      */
     public function getRules(int $ruleSet, bool $useSubScore): array
     {
@@ -24,7 +24,7 @@ class Getter
     /**
      * @param int $ruleSet
      * @param bool $useSubScore
-     * @return array|int[]
+     * @return list<int>
      */
     protected function getAgainstRules(int $ruleSet, bool $useSubScore): array
     {
@@ -46,7 +46,7 @@ class Getter
 
     /**
      * @param bool $useSubScore
-     * @return array|int[]
+     * @return list<int>
      */
     protected function getTogetherRules(bool $useSubScore): array
     {

@@ -4,10 +4,8 @@ Sports\Game:
   properties:
     field:
       type: Sports\Competition\Field
-    refereePriority:
-      type: integer
-    refereePlaceLocId:
-      type: string
+    referee:
+      type: Sports\Competition\Referee
     batchNr:
       type: integer
     state:
@@ -16,3 +14,7 @@ Sports\Game:
       type: DateTimeImmutable<'Y-m-d\TH:i:s.u\Z'>
     competitionSport:
       type: Sports\Competition\Sport
+  virtual_properties:
+    getRefereePlaceLocId:
+      type: integer
+      serialized_name: refereePlaceLocId

@@ -1,5 +1,4 @@
 <?php
-
 declare(strict_types=1);
 
 namespace Sports\Round;
@@ -41,6 +40,7 @@ class Number extends Identifiable
     {
         $this->number = $previous === null ? 1 : $previous->getNumber() + 1;
         $this->hasPlanning = false;
+        $this->rounds = new ArrayCollection();
         $this->gameAmountConfigs = new ArrayCollection();
     }
 
@@ -280,15 +280,21 @@ class Number extends Identifiable
     public function getFirstStartDateTime(): DateTimeImmutable
     {
         $games = $this->getGames(GameBase::ORDER_BY_BATCH);
-        $leastRecentGame = reset($games);
-        return $leastRecentGame->getStartDateTime();
+        $firstGame = reset($games);
+        if ($firstGame === false) {
+            throw new \Exception('er zijn geen wedstrijden voor dit rondenummer', E_ERROR);
+        }
+        return $firstGame->getStartDateTime();
     }
 
     public function getLastStartDateTime(): DateTimeImmutable
     {
         $games = $this->getGames(GameBase::ORDER_BY_BATCH);
-        $mostRecentGame = end($games);
-        return $mostRecentGame->getStartDateTime();
+        $lastRecentGame = end($games);
+        if ($lastRecentGame === false) {
+            throw new \Exception('er zijn geen wedstrijden voor dit rondenummer', E_ERROR);
+        }
+        return $lastRecentGame->getStartDateTime();
     }
 
     /**

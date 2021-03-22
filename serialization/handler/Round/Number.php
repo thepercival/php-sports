@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Sports\SerializationHandler\Round;
 
@@ -15,6 +16,9 @@ use Sports\Competition\Sport as CompetitionSport;
 
 class Number implements SubscribingHandlerInterface
 {
+    /**
+     * @psalm-return list<array<string, int|string>>
+     */
     public static function getSubscribingMethods()
     {
         return [
@@ -39,22 +43,26 @@ class Number implements SubscribingHandlerInterface
 //    }
 
     /**
-     * Previous moet gezet worden, zou ook met slechts 1 reflection-actie gedaan kunnen worden
-     * lijkt me wel makkelijker
+     * Previous moet gezet worden, zou ook met slechts 1 reflection-actie gedaan kunnen worden, lijkt me wel makkelijker
      *
      * @param JsonDeserializationVisitor $visitor
-     * @param array $arrRoundNumber
-     * @param array $type
+     * @param array<string, int|string|array> $arrRoundNumber
+     * @param array<string, int|string|array|null> $type
      * @param Context $context
      * @return RoundNumber
      */
-    public function deserializeFromJson(JsonDeserializationVisitor $visitor, $arrRoundNumber, array $type, Context $context)
-    {
+    public function deserializeFromJson(
+        JsonDeserializationVisitor $visitor,
+        array$arrRoundNumber,
+        array $type,
+        Context $context
+    ): RoundNumber {
         $roundNumber = null;
-        if (array_key_exists("previous", $type["params"]) && $type["params"]["previous"] !== null) {
-            $roundNumber = $type["params"]["previous"]->createNext();
+        $params = $type["params"];
+        if ($params !== null  && isset($params['previous'])) {
+            $roundNumber = $params["previous"]->createNext();
         } else {
-            $roundNumber = new RoundNumber($type["params"]["competition"], null);
+            $roundNumber = new RoundNumber($params["competition"], null);
         }
 
 //        if( array_key_exists( "id", $arrRoundNumber) ) {
@@ -73,13 +81,14 @@ class Number implements SubscribingHandlerInterface
                 $competitionSport = $competitionSportCreator->create(
                     $roundNumber->getCompetition(),
                     (int) $arrGameAmountConfig["competitionSport"]["id"],
-                    (int) $arrGameAmountConfig["competitionSport"]["sport"]["id"]);
+                    (int) $arrGameAmountConfig["competitionSport"]["sport"]["id"]
+                );
                 $this->createGameAmountConfig($arrGameAmountConfig, $competitionSport, $roundNumber);
             }
         }
         // qualifyAgainst en gameAmountConfigs ook toevoegen!!!
 
-        if (array_key_exists("next", $arrRoundNumber) && $arrRoundNumber["next"] !== null) {
+        if (isset($arrRoundNumber["next"])) {
             $arrRoundNumber["next"]["previous"] = $roundNumber;
             $metadataNext = new StaticPropertyMetadata('Sports\Round\Number', "next", $arrRoundNumber["next"]);
             $metadataNext->setType(['name' => 'Sports\Round\Number', "params" => [
@@ -92,8 +101,17 @@ class Number implements SubscribingHandlerInterface
         return $roundNumber;
     }
 
-    protected function createGameAmountConfig(array $arrConfig, CompetitionSport $competitionSport, RoundNumber $roundNumber )
-    {
+    /**
+     * @param array<string, int> $arrConfig
+     * @param CompetitionSport $competitionSport
+     * @param RoundNumber $roundNumber
+     * @return GameAmountConfig
+     */
+    protected function createGameAmountConfig(
+        array $arrConfig,
+        CompetitionSport $competitionSport,
+        RoundNumber $roundNumber
+    ): GameAmountConfig {
         return new GameAmountConfig($competitionSport, $roundNumber, $arrConfig["amount"]);
     }
 

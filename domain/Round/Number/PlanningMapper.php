@@ -47,11 +47,11 @@ class PlanningMapper
     {
         $poules = $roundNumber->getPoules();
         if ($roundNumber->isFirst()) {
-            uasort($poules, function (Poule $pouleA, Poule $pouleB) {
+            usort($poules, function (Poule $pouleA, Poule $pouleB) {
                 return $pouleA->getPlaces()->count() >= $pouleB->getPlaces()->count() ? -1 : 1;
             });
         } else {
-            uasort(
+            usort(
                 $poules,
                 function (Poule $pouleA, Poule $pouleB) {
                     if ($pouleA->getPlaces()->count() === $pouleB->getPlaces()->count()) {
@@ -61,7 +61,7 @@ class PlanningMapper
                 }
             );
         }
-        $this->poules = array_values($poules);
+        $this->poules = $poules;
     }
 
     protected function initCompetitionSports(RoundNumber $roundNumber, Planning $planning): void

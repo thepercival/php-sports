@@ -1,10 +1,9 @@
 <?php
-
 declare(strict_types=1);
 
 namespace Sports\Qualify;
 
-use Doctrine\Common\Collections\ArrayCollection;
+use Sports\Round\Number as RoundNumber;
 use Sports\Round;
 use Sports\Poule\Horizontal as HorizontalPoule;
 use SportsHelpers\Identifiable;
@@ -13,7 +12,6 @@ class Group extends Identifiable
 {
     protected int $number;
     protected Round $childRound;
-
     /**
      * @var list<HorizontalPoule>
      */
@@ -23,8 +21,12 @@ class Group extends Identifiable
     const DROPOUTS = 2;
     const LOSERS = 3;
 
-    public function __construct(protected Round $round, protected int $winnersOrLosers, int $number = null)
-    {
+    public function __construct(
+        protected Round $round,
+        protected int $winnersOrLosers,
+        RoundNumber $nextRoundNumber,
+        int $number = null
+    ) {
         $this->setWinnersOrLosers($winnersOrLosers);
         $this->number = $number !== null ? $number : $round->getQualifyGroups($winnersOrLosers)->count() + 1;
         if ($number === null) {
@@ -32,6 +34,7 @@ class Group extends Identifiable
         } else {
             $this->insertQualifyGroupAt($round, $number);
         }
+        $this->childRound = new Round($nextRoundNumber, $this);
     }
 
     public function getWinnersOrLosers(): int

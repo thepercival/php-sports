@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Sports\SerializationHandler;
 
@@ -16,6 +17,9 @@ use Sports\Round\Number as RoundNumber;
 
 class Structure implements SubscribingHandlerInterface
 {
+    /**
+     * @psalm-return list<array<string, int|string>>
+     */
     public static function getSubscribingMethods()
     {
         return [
@@ -34,8 +38,19 @@ class Structure implements SubscribingHandlerInterface
         ];
     }
 
-    public function deserializeFromJson(JsonDeserializationVisitor $visitor, $arrStructure, array $type, Context $context)
-    {
+    /**
+     * @param JsonDeserializationVisitor $visitor
+     * @param array<string, int|string|array|null> $arrStructure
+     * @param array<string, int|string> $type
+     * @param Context $context
+     * @return StructureBase
+     */
+    public function deserializeFromJson(
+        JsonDeserializationVisitor $visitor,
+        array $arrStructure,
+        array $type,
+        Context $context
+    ): StructureBase {
         $arrStructure["firstRoundNumber"]["previous"] = null;
         $metadataRoundNumber = new StaticPropertyMetadata('Sports\Round\Number', "firstRoundNumber", $arrStructure["firstRoundNumber"]);
         $metadataRoundNumber->setType(['name' => 'Sports\Round\Number', "params" => [ "competition" => $this->createCompetition()]]);

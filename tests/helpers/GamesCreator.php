@@ -11,6 +11,8 @@ use Psr\Log\LoggerInterface;
 use Sports\Round\Number\PlanningAssigner;
 use Sports\Round\Number\PlanningScheduler;
 use SportsHelpers\SportRange;
+use SportsPlanning\Batch\SelfReferee\SamePoule as SelfRefereeBatchSamePoule;
+use SportsPlanning\Batch\SelfReferee\OtherPoule as SelfRefereeBatchOtherPoule;
 use SportsPlanning\Resource\RefereePlace\Service as RefereePlaceService;
 use Sports\Structure;
 use Sports\Round\Number as RoundNumber;
@@ -29,19 +31,19 @@ class GamesCreator
         return $logger;
     }
 
-    public function createStructureGames(Structure $structure, Period $blockedPeriod = null, SportRange $range = null)
+    public function createStructureGames(Structure $structure, Period $blockedPeriod = null, SportRange $range = null): void
     {
         $this->removeGamesHelper($structure->getFirstRoundNumber());
         $this->createGamesHelper($structure->getFirstRoundNumber(), $blockedPeriod, $range);
     }
 
-    public function createGames(RoundNumber $roundNumber, Period $blockedPeriod = null, SportRange $range = null)
+    public function createGames(RoundNumber $roundNumber, Period $blockedPeriod = null, SportRange $range = null): void
     {
         $this->removeGamesHelper($roundNumber);
         $this->createGamesHelper($roundNumber, $blockedPeriod, $range);
     }
 
-    private function createGamesHelper(RoundNumber $roundNumber, Period $blockedPeriod = null, SportRange $range = null)
+    private function createGamesHelper(RoundNumber $roundNumber, Period $blockedPeriod = null, SportRange $range = null): void
     {
         // make trait to do job below!!
         $planningInputCreator = new PlanningInputCreator();
@@ -49,10 +51,11 @@ class GamesCreator
         $planningInput = $planningInputCreator->create($roundNumber, $nrOfReferees);
         $planningCreator = new PlanningCreator();
         $minIsMaxPlanning = $planningCreator->createPlanning($planningInput, $range);
-
-        if ($roundNumber->getValidPlanningConfig()->selfRefereeEnabled()) {
+        $firstBatch = $minIsMaxPlanning->createFirstBatch();
+        if ($firstBatch instanceof SelfRefereeBatchOtherPoule ||
+            $firstBatch instanceof SelfRefereeBatchSamePoule) {
             $refereePlaceService = new RefereePlaceService($minIsMaxPlanning);
-            $refereePlaceService->assign($minIsMaxPlanning->createFirstBatch());
+            $refereePlaceService->assign($firstBatch);
         }
 
         $planningAssigner = new PlanningAssigner(new PlanningScheduler($blockedPeriod));
@@ -63,7 +66,7 @@ class GamesCreator
         }
     }
 
-    private function removeGamesHelper(RoundNumber $roundNumber)
+    private function removeGamesHelper(RoundNumber $roundNumber): void
     {
         foreach ($roundNumber->getRounds() as $round) {
             foreach ($round->getPoules() as $poule) {
@@ -71,8 +74,9 @@ class GamesCreator
                 $poule->getTogetherGames()->clear();
             }
         }
-        if ($roundNumber->hasNext()) {
-            $this->removeGamesHelper($roundNumber->getNext());
+        $nextRoundNumber = $roundNumber->getNext();
+        if ($nextRoundNumber !== null) {
+            $this->removeGamesHelper($nextRoundNumber);
         }
     }
 }

@@ -6,14 +6,17 @@ namespace Sports\Qualify\AgainstConfig;
 use Sports\Competition\Sport as CompetitionSport;
 use Sports\Repository as SportRepository;
 use Sports\Round;
-use Sports\Round\Number as RoundNumber;
+use Doctrine\ORM\EntityRepository;
+use Sports\Qualify\AgainstConfig as QualifyAgainstConfig;
 
-class Repository extends SportRepository
+/**
+ * @template-extends EntityRepository<QualifyAgainstConfig>
+ */
+class Repository extends EntityRepository
 {
-    /**
-     * @return void
-     */
-    public function addObjects(CompetitionSport $competitionSport, Round $round)
+    use SportRepository;
+
+    public function addObjects(CompetitionSport $competitionSport, Round $round): void
     {
         $qualifyConfig = $round->getQualifyAgainstConfig($competitionSport);
         if ($qualifyConfig === null) {

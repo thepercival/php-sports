@@ -7,6 +7,9 @@ use JMS\Serializer\EventDispatcher\PreSerializeEvent;
 
 class Number implements EventSubscriberInterface
 {
+    /**
+     * @psalm-return list<array<string, int|string>>
+     */
     public static function getSubscribedEvents()
     {
         return array(
@@ -20,7 +23,7 @@ class Number implements EventSubscriberInterface
         );
     }
 
-    public function onPreSerialize(PreSerializeEvent $event)
+    public function onPreSerialize(PreSerializeEvent $event): void
     {
         // do something
         $x = $event;

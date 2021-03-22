@@ -13,6 +13,7 @@ use Sports\NameService;
 use Sports\Place;
 use SportsHelpers\Output as OutputBase;
 use Sports\Competitor\Map as CompetitorMap;
+use Sports\Competition\Referee;
 use Sports\Score\Config\Service as ScoreConfigService;
 
 abstract class Game extends OutputBase
@@ -37,14 +38,16 @@ abstract class Game extends OutputBase
     }
 
     /**
-     * @param array<TogetherGamePlace|AgainstGamePlace> $gamePlaces
+     * @param list<TogetherGamePlace|AgainstGamePlace> $gamePlaces
      * @return string
      */
     protected function getPlacesAsString(array $gamePlaces): string
     {
-        return implode(' & ', array_map( function (AgainstGamePlace $gamePlace): string {
+        return implode(' & ', array_map(
+            function (TogetherGamePlace|AgainstGamePlace $gamePlace): string {
                 return $this->getPlaceAsString($gamePlace->getPlace());
-            }, $gamePlaces
+            },
+            $gamePlaces
         ));
     }
 
@@ -81,28 +84,40 @@ abstract class Game extends OutputBase
 
     protected function getRefereeAsString(AgainstGame|TogetherGame $game): string
     {
-        $refereeDescription = '';
-        if ($game->getRefereePlace() !== null) {
-            $refereeDescription = $this->nameService->getPlaceFromName($game->getRefereePlace(), false, false);
-        } elseif ($game->getReferee() !== null) {
-            $refereeDescription = $game->getReferee()->getInitials();
-        } else {
-            return $refereeDescription;
+        $refereePlace = $game->getRefereePlace();
+        $referee = $game->getReferee();
+        if ($referee === null && $refereePlace === null) {
+            return '';
         }
-        while (strlen($refereeDescription) < 3) {
-            $refereeDescription .=  ' ';
-        }
-
+        $refereeDescription = $this->getRefereeDescription($referee, $refereePlace);
         $refNr = -1;
         if ($this->useColors()) {
-            if ($game->getRefereePlace() !== null) {
-                $refNr = $game->getRefereePlace()->getNumber();
-            } else {
-                $refNr = $game->getReferee()->getPriority();
+            if ($refereePlace !== null) {
+                $refNr = $refereePlace->getNumber();
+            } else if ($referee !== null) {
+                $refNr = $referee->getPriority();
             }
         }
 
         $refereeColor = $this->useColors() ? ($refNr % 10) : -1;
         return $this->outputColor($refereeColor, $refereeDescription);
+    }
+
+    protected function getRefereeDescription(Referee|null $referee, Place|null $refPlace): string
+    {
+        if ($referee === null && $refPlace === null) {
+            return '';
+        }
+        $description = '';
+        if ($refPlace !== null) {
+            $description = $this->nameService->getPlaceFromName($refPlace, false, false);
+        } else {
+            /** @phpstan-ignore-next-line  */
+            $description = $referee->getInitials();
+        }
+        while (strlen($description) < 3) {
+            $description .=  ' ';
+        }
+        return $description;
     }
 }

@@ -16,6 +16,10 @@ use Sports\Ranking\Calculator\Round\Sport as SportRoundRankingCalculator;
 
 class Together extends SportRoundRankingCalculator
 {
+    /**
+     * @param CompetitionSport $competitionSport
+     * @param list<int>|null $gameStates
+     */
     public function __construct(CompetitionSport $competitionSport, array $gameStates = null)
     {
         parent::__construct($competitionSport, $gameStates ?? [State::Finished]);
@@ -23,18 +27,21 @@ class Together extends SportRoundRankingCalculator
 
     /**
      * @param Poule $poule
-     * @return array<SportRoundRankingItem>
+     * @return list<SportRoundRankingItem>
      */
     public function getItemsForPoule(Poule $poule): array
     {
-        return $this->getItems($poule->getRound(), $poule->getPlaces()->toArray(), $poule->getTogetherGames()->toArray());
+        return $this->getItems(
+            $poule->getRound(),
+            array_values($poule->getPlaces()->toArray()),
+            array_values($poule->getTogetherGames()->toArray()));
     }
 
     /**
      * @param Round $round
-     * @param array<Place> $places
-     * @param array<TogetherGame> $games
-     * @return array<SportRoundRankingItem>
+     * @param list<Place> $places
+     * @param list<TogetherGame> $games
+     * @return list<SportRoundRankingItem>
      */
     protected function getItems(Round $round, array $places, array $games): array
     {
@@ -44,13 +51,13 @@ class Together extends SportRoundRankingCalculator
     }
 
     /**
-     * @param array<TogetherGame> $games
-     * @return array<TogetherGame>
+     * @param list<TogetherGame> $games
+     * @return list<TogetherGame>
      */
     protected function getFilteredGames(array $games): array
     {
-        return array_filter($games, function (TogetherGame $game): bool {
+        return array_values(array_filter($games, function (TogetherGame $game): bool {
             return array_key_exists($game->getState(), $this->gameStateMap);
-        });
+        }));
     }
 }

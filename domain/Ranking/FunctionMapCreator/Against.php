@@ -15,7 +15,7 @@ class Against extends BaseFunctionMapCreator
 {
     /**
      * @param CompetitionSport $competitionSport
-     * @param array|int[] $gameStates
+     * @param list<int> $gameStates
      */
     public function __construct(private CompetitionSport $competitionSport, private array $gameStates)
     {
@@ -25,11 +25,8 @@ class Against extends BaseFunctionMapCreator
 
     private function initMap(): void
     {
-        /**
-         * @param array<SportPerformance> $sportPerformances
-         * @return array<SportPerformance>
-         */
         $bestDifference = function (array $sportPerformances, bool $sub): array {
+            /** @var list<SportPerformance> $sportPerformances */
             $bestDiff = null;
             $bestSportPerformances = [];
             foreach ($sportPerformances as $sportPerformance) {
@@ -44,32 +41,27 @@ class Against extends BaseFunctionMapCreator
             }
             return $bestSportPerformances;
         };
-        /**
-         * @param array<SportPerformance> $sportPerformances
-         * @return array<SportPerformance>
-         */
         $this->map[Rule::BestUnitDifference] = function (array $sportPerformances) use ($bestDifference) : array {
+            /** @var list<SportPerformance> $sportPerformances */
             return $bestDifference($sportPerformances, false);
         };
-        /**
-         * @param array<SportPerformance> $sportPerformances
-         * @return array<SportPerformance>
-         */
         $this->map[Rule::BestSubUnitDifference] = function (array $sportPerformances) use ($bestDifference): array {
+            /** @var list<SportPerformance> $sportPerformances */
             return $bestDifference($sportPerformances, true);
         };
-        /**
-         * @param array<SportPerformance> $sportPerformances
-         * @return array<SportPerformance>
-         */
         $this->map[Rule::BestAmongEachOther] = function (array $sportPerformances) : array {
-            $places = array_map(
+            /** @var list<SportPerformance> $sportPerformances */
+            $places = array_values(array_map(
                 function (SportPerformance $sportPerformance): Place {
                     return $sportPerformance->getPlace();
                 },
                 $sportPerformances
-            );
-            $poule = $places[0]->getPoule();
+            ));
+            $firstPlace = reset($places);
+            if ($firstPlace === false) {
+                return [];
+            }
+            $poule = $firstPlace->getPoule();
             $rankingCalculator = new AgainstSportRoundRankingCalculator($this->competitionSport, $this->gameStates);
             $rankingItems = $rankingCalculator->getItemsAmongPlaces($poule, $places);
             $rankingItems = array_filter($rankingItems, function (SportRoundRankingItem $rankingItem): bool {
@@ -79,12 +71,12 @@ class Against extends BaseFunctionMapCreator
                 return $sportPerformances;
             }
             $performanceMap = $this->getPerformanceMap($sportPerformances);
-            return array_map(
+            return array_values(array_map(
                 function (SportRoundRankingItem $rankingItem) use ($performanceMap): SportPerformance {
                     return $performanceMap[$rankingItem->getRoundLocationId()];
                 },
                 $rankingItems
-            );
+            ));
         };
     }
 

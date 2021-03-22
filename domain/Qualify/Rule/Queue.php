@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Sports\Qualify\Rule;
 
@@ -11,7 +12,7 @@ class Queue
     const END = 2;
 
     /**
-     * @var array<SingleQualifyRule|MultipleQualifyRule>
+     * @var list<SingleQualifyRule|MultipleQualifyRule>
      */
     private array $qualifyRules;
 
@@ -29,10 +30,7 @@ class Queue
         }
     }
 
-    /**
-     * @return MultipleQualifyRule|SingleQualifyRule|null
-     */
-    public function remove(int $startEnd)
+    public function remove(int $startEnd): MultipleQualifyRule|SingleQualifyRule|null
     {
         return $startEnd === Queue::START ? array_shift($this->qualifyRules) : array_pop($this->qualifyRules);
     }
@@ -47,27 +45,22 @@ class Queue
         return $startEnd === Queue::START ? Queue::END : Queue::START;
     }
 
-    /**
-     * bij 5 poules, haal 2 na laatste naar achterste plek
-     *
-     * @param int $nrOfPoules
-     *
-     * @return void
-     */
-    public function shuffleIfUnevenAndNoMultiple(int $nrOfPoules)
+    // bij 5 poules, haal 2 na laatste naar achterste plek
+    public function shuffleIfUnevenAndNoMultiple(int $nrOfPoules): void
     {
         if (($nrOfPoules % 2) === 0 || $nrOfPoules < 3) {
             return;
         }
-
-        if (count($this->qualifyRules) > 0) {
-            $lastItem = $this->qualifyRules[count($this->qualifyRules)-1];
-            if ($lastItem instanceof MultipleQualifyRule) {
-                return;
-            }
+        $lastItem = end($this->qualifyRules);
+        if ($lastItem instanceof MultipleQualifyRule) {
+            return;
         }
         $index = (count($this->qualifyRules) - 1) - ((($nrOfPoules + 1) / 2) - 1);
-        $x = array_splice($this->qualifyRules, (int)$index, 1);
-        $this->qualifyRules[] = array_pop($x);
+        /** @var list<SingleQualifyRule|MultipleQualifyRule> $removedItems */
+        $removedItems = array_splice($this->qualifyRules, (int)$index, 1);
+        $lastItem2 = end($removedItems);
+        if ($lastItem2 instanceof MultipleQualifyRule || $lastItem2 instanceof SingleQualifyRule) {
+            $this->qualifyRules[] = $lastItem2;
+        }
     }
 }

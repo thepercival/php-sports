@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Sports\Output\ConsoleTable;
 
@@ -8,28 +9,27 @@ use Sports\Competition;
 class Competitions
 {
     /**
-     * @param array|Competition[] $competitions
-     *
-     * @return void
+     * @param list<Competition> $competitions
      */
-    public function display( array $competitions ): void {
+    public function display(array $competitions): void
+    {
         $table = new ConsoleTable();
         $table->setHeaders(array('Id', 'league', 'season', 'startdatetime', 'association'));
-        uasort( $competitions, function( Competition $a, Competition $b ): int {
-            if( $a->getLeague()->getAssociation() === $b->getLeague()->getAssociation() ) {
+        usort($competitions, function (Competition $a, Competition $b): int {
+            if ($a->getLeague()->getAssociation() === $b->getLeague()->getAssociation()) {
                 return $a->getLeague()->getName() < $b->getLeague()->getName() ? -1 : 1;
             }
             return $a->getLeague()->getAssociation()->getName() < $b->getLeague()->getAssociation()->getName() ? -1 : 1;
         });
-        foreach( $competitions as $competition ) {
+        foreach ($competitions as $competition) {
             $row = array(
                 $competition->getId(),
                 $competition->getLeague()->getName(),
                 $competition->getSeason()->getName(),
-                $competition->getStartDateTime()->format( \DateTime::ATOM ),
+                $competition->getStartDateTime()->format(\DateTime::ATOM),
                 $competition->getLeague()->getAssociation()->getName()
             );
-            $table->addRow( $row );
+            $table->addRow($row);
         }
         $table->display();
     }

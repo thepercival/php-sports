@@ -95,7 +95,7 @@ class Horizontal
     }
 
     /**
-     * @return array<Place>
+     * @return list<Place>
      */
     public function &getPlaces(): array
     {

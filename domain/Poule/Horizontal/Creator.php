@@ -6,18 +6,16 @@ use Sports\Qualify\Group as QualifyGroup;
 
 class Creator
 {
-    /**
-     * @var QualifyGroup
-     */
-    public $qualifyGroup;
-    /**
-     * @var int
-     */
-    public $nrOfQualifiers;
-
-    public function __construct(QualifyGroup $qualifyGroup, int $nrOfQualifiers)
+    public function __construct(protected QualifyGroup $qualifyGroup, protected int $nrOfQualifiers)
     {
-        $this->qualifyGroup = $qualifyGroup;
-        $this->nrOfQualifiers = $nrOfQualifiers;
+    }
+
+    public function getQualifyGroup(): QualifyGroup
+    {
+        return $this->qualifyGroup;
+    }
+
+    public function getNrOfQualifiers(): int {
+        return $this->nrOfQualifiers;
     }
 }

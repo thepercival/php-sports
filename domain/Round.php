@@ -1,5 +1,5 @@
 <?php
-
+declare(strict_types=1);
 
 namespace Sports;
 
@@ -22,19 +22,19 @@ class Round extends Identifiable
     /**
      * @var ArrayCollection<int|string, Poule>
      */
-    protected $poules;
+    protected ArrayCollection $poules;
     /**
      * @var ArrayCollection<int|string,QualifyGroup>
      */
-    protected $qualifyGroups;
+    protected ArrayCollection $qualifyGroups;
     /**
      * @var list<HorizontalPoule>
      */
-    protected $losersHorizontalPoules = array();
+    protected array $losersHorizontalPoules = array();
     /**
      * @var list<HorizontalPoule>
      */
-    protected $winnersHorizontalPoules = array();
+    protected array $winnersHorizontalPoules = array();
     /**
      * @var ArrayCollection<int|string,QualifyAgainstConfig>
      */
@@ -42,11 +42,8 @@ class Round extends Identifiable
     /**
      * @var ArrayCollection<int|string,ScoreConfig>
      */
-    protected $scoreConfigs;
-    /**
-     * @var int
-     */
-    protected $structureNumber;
+    protected ArrayCollection $scoreConfigs;
+    protected int $structureNumber = 0;
 
     const WINNERS = 1;
     const DROPOUTS = 2;
@@ -101,11 +98,9 @@ class Round extends Identifiable
         if ($name !== null && strlen($name) === 0) {
             $name = null;
         }
-
-        if ($name !== null && strlen($name) > static::MAX_LENGTH_NAME) {
-            throw new \InvalidArgumentException("de naam mag maximaal ".static::MAX_LENGTH_NAME." karakters bevatten", E_ERROR);
+        if ($name !== null && strlen($name) > self::MAX_LENGTH_NAME) {
+            throw new \InvalidArgumentException("de naam mag maximaal ".self::MAX_LENGTH_NAME." karakters bevatten", E_ERROR);
         }
-
         $this->name = $name;
     }
 
@@ -174,17 +169,17 @@ class Round extends Identifiable
 
     public function getQualifyGroup(int $winnersOrLosers, int $qualifyGroupNumber): ?QualifyGroup
     {
-        $qualifyGroup = $this->getQualifyGroups($winnersOrLosers)->filter(function ($qualifyGroup) use ($qualifyGroupNumber): bool {
+        $qualifyGroup = $this->getQualifyGroups($winnersOrLosers)->filter(function (QualifyGroup $qualifyGroup) use ($qualifyGroupNumber): bool {
             return $qualifyGroup->getNumber() === $qualifyGroupNumber;
         })->last();
         return $qualifyGroup === false ? null : $qualifyGroup;
     }
 
-    public function getBorderQualifyGroup(int $winnersOrLosers): ?QualifyGroup
+    public function getBorderQualifyGroup(int $winnersOrLosers): QualifyGroup|null
     {
         $qualifyGroups = $this->getQualifyGroups($winnersOrLosers);
         $last = $qualifyGroups->last();
-        return $last ? $last : null;
+        return $last !== false ? $last : null;
     }
 
     public function getNrOfDropoutPlaces(): int
@@ -197,13 +192,13 @@ class Round extends Identifiable
     }
 
     /**
-     * @return array<int|string,Round>
+     * @return list<Round>
      */
     public function getChildren(): array
     {
-        return array_map(function (QualifyGroup $qualifyGroup): Round {
+        return array_values(array_map(function (QualifyGroup $qualifyGroup): Round {
             return $qualifyGroup->getChildRound();
-        }, $this->getQualifyGroups()->toArray());
+        }, $this->getQualifyGroups()->toArray()));
     }
 
     public function getChild(int $winnersOrLosers, int $qualifyGroupNumber): ?Round
@@ -264,6 +259,10 @@ class Round extends Identifiable
         $this->parentQualifyGroup = $parentQualifyGroup;
     }
 
+    /**
+     * @param int $winnersOrLosers
+     * @return list<HorizontalPoule>
+     */
     public function &getHorizontalPoules(int $winnersOrLosers): array
     {
         if ($winnersOrLosers === QualifyGroup::WINNERS) {
@@ -278,7 +277,7 @@ class Round extends Identifiable
             return $horPoule->getNumber() === $number;
         });
         $first = reset($foundHorPoules);
-        return $first ? $first : null;
+        return $first !== false ? $first : null;
     }
 
     public function getFirstPlace(int $winnersOrLosers): Place
@@ -325,7 +324,7 @@ class Round extends Identifiable
     }
 
     /**
-     * @return array | AgainstGame[] | TogetherGame[]
+     * @return list<AgainstGame|TogetherGame>
      */
     public function getGames(): array
     {
@@ -333,7 +332,7 @@ class Round extends Identifiable
         foreach ($this->getPoules() as $poule) {
             $games = array_merge($games, $poule->getGames());
         }
-        return $games;
+        return array_values($games);;
     }
 
     /**
@@ -408,7 +407,8 @@ class Round extends Identifiable
         $filtered = $this->number->getCompetitionSports()->filter(function (CompetitionSport $competitionSport) use ($sport): bool {
             return $competitionSport->getSport() === $sport;
         });
-        return $filtered->count() === 1 ? $filtered->first() : null;
+        $first = $filtered->first();
+        return $first !== false ? $first : null;
     }
 
     /**

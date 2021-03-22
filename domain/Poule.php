@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Sports;
 
@@ -11,35 +12,33 @@ use Sports\Game\Together as TogetherGame;
 
 class Poule extends Identifiable
 {
-    protected Round $round;
     protected int $number;
-    /**
-     * @var string|null
-     */
-    protected $name;
+    protected string|null $name = null;
     /**
      * @var ArrayCollection<int|string,Place>
      */
-    protected $places;
+    protected ArrayCollection $places;
     /**
      * @var ArrayCollection<int|string,AgainstGame>
      */
-    protected $againstGames;
+    protected ArrayCollection $againstGames;
     /**
      * @var ArrayCollection<int|string,TogetherGame>
      */
-    protected $togetherGames;
+    protected ArrayCollection $togetherGames;
     protected int $structureNumber = 0;
 
     const MAX_LENGTH_NAME = 10;
 
-    public function __construct(Round $round, int $number = null)
+    public function __construct(protected Round $round, int $number = null)
     {
         if ($number === null) {
             $number = $round->getPoules()->count() + 1;
         }
-        $this->setRound($round);
-        $this->setNumber($number);
+        $this->number = $number;
+        if (!$round->getPoules()->contains($this)) {
+            $round->getPoules()->add($this) ;
+        }
         $this->places = new ArrayCollection();
         $this->againstGames = new ArrayCollection();
         $this->togetherGames = new ArrayCollection();
@@ -55,27 +54,9 @@ class Poule extends Identifiable
         return $this->getRound()->getCompetition();
     }
 
-    /**
-     * @param Round $round
-     *
-     * @return void
-     */
-    protected function setRound(Round $round): void
-    {
-        if (!$round->getPoules()->contains($this)) {
-            $round->getPoules()->add($this) ;
-        }
-        $this->round = $round;
-    }
-
     public function getNumber(): int
     {
         return $this->number;
-    }
-
-    public function setNumber(int $number): void
-    {
-        $this->number = $number;
     }
 
     public function getName(): ?string
@@ -89,12 +70,13 @@ class Poule extends Identifiable
             $name = null;
         }
         if ($name !== null) {
-            if (strlen($name) > static::MAX_LENGTH_NAME) {
+            if (strlen($name) > self::MAX_LENGTH_NAME) {
                 throw new InvalidArgumentException(
-                    "de naam mag maximaal " . static::MAX_LENGTH_NAME . " karakters bevatten", E_ERROR
+                    "de naam mag maximaal " . self::MAX_LENGTH_NAME . " karakters bevatten",
+                    E_ERROR
                 );
             }
-            if (preg_match('/[^a-z0-9 ]/i', $name)) {
+            if (preg_match('/[^a-z0-9 ]/i', $name) === 1) {
                 throw new InvalidArgumentException("de naam mag alleen cijfers, letters en spaties bevatten", E_ERROR);
             }
         }

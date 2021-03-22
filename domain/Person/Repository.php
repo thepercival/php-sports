@@ -3,17 +3,18 @@ declare(strict_types=1);
 
 namespace Sports\Person;
 
+use Doctrine\ORM\EntityRepository;
 use League\Period\Period;
 use Sports\Person;
 use Sports\Person as PersonBase;
 use Sports\Team;
 
-class Repository extends \Sports\Repository
+/**
+ * @template-extends EntityRepository<PersonBase>
+ */
+class Repository extends EntityRepository
 {
-    /*public function find($id, $lockMode = null, $lockVersion = null): ?PersonBase
-    {
-        return $this->_em->find($this->_entityName, $id, $lockMode, $lockVersion);
-    }*/
+    use \Sports\Repository;
 
     /**
      * @param Period $period
@@ -44,6 +45,8 @@ class Repository extends \Sports\Repository
         if ($maxRows !== null) {
             $qb = $qb->setMaxResults($maxRows);
         }
-        return $qb->getQuery()->getResult();
+        /** @var list<PersonBase> $persons */
+        $persons = $qb->getQuery()->getResult();
+        return $persons;
     }
 }

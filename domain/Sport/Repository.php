@@ -4,25 +4,28 @@ declare(strict_types=1);
 namespace Sports\Sport;
 
 use Sports\Sport as SportBase;
+use Doctrine\ORM\EntityRepository;
 
-class Repository extends \Sports\Repository
+/**
+ * @template-extends EntityRepository<SportBase>
+ */
+class Repository extends EntityRepository
 {
-    /*public function find($id, $lockMode = null, $lockVersion = null): ?SportBase
-    {
-        return $this->_em->find($this->_entityName, $id, $lockMode, $lockVersion);
-    }*/
+    use \Sports\Repository;
 
     /**
      * @param bool|null $withCustomId
      * @return list<SportBase>
      */
-    public function findByExt(bool $withCustomId = null)
+    public function findByExt(bool $withCustomId = null): array
     {
         $qb = $this->createQueryBuilder('s');
         if ($withCustomId !== null) {
             $operator = $withCustomId ? '>' : '=';
             $qb = $qb->andWhere('s.customId ' . $operator .' 0');
         }
-        return $qb->getQuery()->getResult();
+        /** @var list<SportBase> $result */
+        $result = $qb->getQuery()->getResult();
+        return $result;
     }
 }

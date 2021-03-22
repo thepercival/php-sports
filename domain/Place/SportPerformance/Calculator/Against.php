@@ -24,11 +24,10 @@ class Against extends Calculator
         parent::__construct($round, $competitionSport);
     }
 
-
     /**
-     * @param array<Place> $places
-     * @param array<AgainstGame> $games
-     * @return array<SportPerformance>
+     * @param list<Place> $places
+     * @param list<AgainstGame> $games
+     * @return list<SportPerformance>
      */
     public function getPerformances(array $places, array $games): array
     {
@@ -103,13 +102,15 @@ class Against extends Calculator
     }
 
     /**
-     * @param array<TogetherGame|AgainstGame> $games
-     * @return array<AgainstGame>
+     * @param list<TogetherGame|AgainstGame> $games
+     * @return list<AgainstGame>
      */
     protected function getFilteredGames(array $games): array
     {
-        return array_filter(parent::getFilteredGames($games), function (AgainstGame | TogetherGame $game): bool {
-            return $game instanceof AgainstGame;
+        /** @var list<AgainstGame> $againstGames */
+        $againstGames = array_filter($games, function (AgainstGame | TogetherGame $game): bool {
+            return $game instanceof AgainstGame && $this->competitionSport === $game->getCompetitionSport();
         });
+        return array_values($againstGames);
     }
 }

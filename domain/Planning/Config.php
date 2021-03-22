@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Sports\Planning;
 
@@ -8,16 +9,6 @@ use SportsPlanning\SelfReferee;
 
 class Config extends Identifiable
 {
-    protected RoundNumber $roundNumber;
-    protected int $creationStrategy;
-    protected bool $extension;
-    protected bool $enableTime;
-    protected int $minutesPerGame;
-    protected int $minutesPerGameExt;
-    protected int $minutesBetweenGames;
-    protected int $minutesAfter;
-    protected int $selfReferee;
-
     protected bool $teamupDep = false;
     protected int $nrOfHeadtoheadDep = 1;
 
@@ -25,9 +16,18 @@ class Config extends Identifiable
     const DEFAULTENABLETIME = true;
     const DEFAULTGAMEAMOUNT = 1;
 
-    public function __construct(RoundNumber $roundNumber)
+    public function __construct(
+        protected RoundNumber $roundNumber,
+        protected int $creationStrategy,
+        protected bool $extension,
+        protected bool $enableTime,
+        protected int $minutesPerGame,
+        protected int $minutesPerGameExt,
+        protected int $minutesBetweenGames,
+        protected int $minutesAfter,
+        protected int $selfReferee
+    )
     {
-        $this->roundNumber = $roundNumber;
         $this->roundNumber->setPlanningConfig($this);
     }
 
