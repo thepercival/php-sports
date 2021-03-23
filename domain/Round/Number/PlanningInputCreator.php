@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Sports\Round\Number;
 
@@ -9,7 +10,7 @@ use SportsPlanning\Input\Service as PlanningInputService;
 use SportsPlanning\Input\Calculator as InputCalculator;
 use SportsHelpers\SportConfig;
 use Sports\Planning\Config as PlanningConfig;
-use SportsPlanning\SelfReferee;
+use SportsHelpers\SelfReferee;
 
 class PlanningInputCreator
 {

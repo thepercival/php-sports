@@ -78,7 +78,9 @@ class Service
                     }
                 }
             }
-            $queue->shuffleIfUnevenAndNoMultiple($childRound->getPoules()->count());
+            if (($childRound->getPoules()->count() % 2) === 1) {
+                $queue->moveCenterSingleRuleBack($childRound->getPoules()->count());
+            }
 
             // update rules with to places
             $toHorPoules = $childRound->getHorizontalPoules($qualifyGroup->getWinnersOrLosers());
@@ -88,7 +90,7 @@ class Service
                 foreach ($toHorPoule->getPlaces() as $place) {
                     $this->connectPlaceWithRule($place, $queue, $startEnd, $qualifyReservationService);
                 }
-                $startEnd = $queue->toggle($startEnd);
+                $startEnd = $queue->getOpposite($startEnd);
             }
         }
     }
@@ -108,22 +110,24 @@ class Service
         };
 
         $unfreeQualifyRules = [];
-        $oneQualifyRuleConnected = false;
-        $qualifyRule = $queue->remove($startEnd);
-        while (!$oneQualifyRuleConnected && $qualifyRule !== null) {
+        $someQualifyRuleConnected = false;
+        while (!$someQualifyRuleConnected && !$queue->isEmpty()) {
+            $qualifyRule = $queue->remove($startEnd);
+            if ($qualifyRule === null) {
+                break;
+            }
             if (!($qualifyRule instanceof MultipleQualifyRule)
                 && !$reservationService->isFree($childPlace->getPoule()->getNumber(), $qualifyRule->getFromPoule())) {
                 $unfreeQualifyRules[] = $qualifyRule;
                 continue;
             }
             $setToPlacesAndReserve($qualifyRule);
-            $oneQualifyRuleConnected = true;
-            $qualifyRule = $queue->remove($startEnd);
+            $someQualifyRuleConnected = true;
         }
         if ($startEnd === QualifyRuleQueue::END) {
             $unfreeQualifyRules = array_reverse($unfreeQualifyRules);
         }
-        if (!$oneQualifyRuleConnected && count($unfreeQualifyRules) > 0) {
+        if (!$someQualifyRuleConnected && count($unfreeQualifyRules) > 0) {
             $setToPlacesAndReserve(array_shift($unfreeQualifyRules));
         }
 

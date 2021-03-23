@@ -12,6 +12,7 @@ use Sports\Qualify\Service as QualifyService;
 use Sports\Ranking\Calculator\Against as AgainstRankingService;
 use Sports\Qualify\ReservationService as QualifyReservationService;
 use Sports\Qualify\Group as QualifyGroup;
+use SportsHelpers\PouleStructure;
 
 final class ReservationServiceTest extends TestCase
 {
@@ -22,7 +23,7 @@ final class ReservationServiceTest extends TestCase
         $competition = $this->createCompetition();
 
         $structureService = new StructureService([]);
-        $structure = $structureService->create($competition, 5);
+        $structure = $structureService->create($competition, new PouleStructure([5]));
         $rootRound = $structure->getRootRound();
         $structureService->addQualifier($rootRound, QualifyGroup::WINNERS);
         $structureService->addQualifier($rootRound, QualifyGroup::LOSERS);
@@ -61,7 +62,7 @@ final class ReservationServiceTest extends TestCase
         $competition = $this->createCompetition();
 
         $structureService = new StructureService([]);
-        $structure = $structureService->create($competition, 12, 4);
+        $structure = $structureService->create($competition, new PouleStructure([3,3,3,3]));
         $rootRound = $structure->getRootRound();
 
         $structureService->addQualifiers($rootRound, QualifyGroup::WINNERS, 6);
@@ -128,7 +129,7 @@ final class ReservationServiceTest extends TestCase
         $competition = $this->createCompetition();
 
         $structureService = new StructureService([]);
-        $structure = $structureService->create($competition, 9);
+        $structure = $structureService->create($competition, new PouleStructure([3,3,3]));
         $rootRound = $structure->getRootRound();
 
         $structureService->addQualifiers($rootRound, QualifyGroup::WINNERS, 4);

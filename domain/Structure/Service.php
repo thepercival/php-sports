@@ -34,14 +34,15 @@ class Service
         $this->planningConfigService = new PlanningConfigService();
     }
 
-    public function create(Competition $competition, int $nrOfPlaces, int $nrOfPoules = null): StructureBase
+    public function create(Competition $competition, PouleStructure $pouleStructure): StructureBase
     {
         $firstRoundNumber = new RoundNumber($competition);
         $competitionSportService = new CompetitionSportService();
         $this->planningConfigService->createDefault($firstRoundNumber);
         $rootRound = new Round($firstRoundNumber, null);
-        $nrOfPoulesToAdd = ($nrOfPoules !== null) ? $nrOfPoules : $this->getDefaultNrOfPoules($nrOfPlaces);
-        $this->updateRound($rootRound, $nrOfPlaces, $nrOfPoulesToAdd);
+        $nrOfPoulesToAdd = $pouleStructure->getNrOfPoules(); // nrOfPoules ? nrOfPoules : this.getDefaultNrOfPoules(nrOfPlaces);
+        // $nrOfPoulesToAdd = ($nrOfPoules !== null) ? $nrOfPoules : $this->getDefaultNrOfPoules($nrOfPlaces);
+        $this->updateRound($rootRound, $pouleStructure->getNrOfPlaces(), $nrOfPoulesToAdd);
         $structure = new StructureBase($firstRoundNumber, $rootRound);
         foreach ($competition->getSports() as $competitionSport) {
             $competitionSportService->addToStructure($competitionSport, $structure);

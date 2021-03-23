@@ -19,6 +19,7 @@ use Sports\State;
 use Sports\Game\Against as AgainstGame;
 use Sports\Game\Together as TogetherGame;
 use SportsHelpers\Identifiable;
+use SportsHelpers\PouleStructure;
 use SportsHelpers\SportConfig;
 
 class Number extends Identifiable
@@ -348,5 +349,13 @@ class Number extends Identifiable
             $gameAmountConfig = $this->getValidGameAmountConfig($competitionSport);
             return $competitionSport->createConfig($gameAmountConfig->getAmount());
         })->toArray());
+    }
+
+    public function createPouleStructure(): PouleStructure {
+        $placesPerPoule = [];
+        foreach( $this->getPoules() as $poule ) {
+            $placesPerPoule[] = $poule->getPlaces()->count();
+        }
+        return new PouleStructure($placesPerPoule);
     }
 }

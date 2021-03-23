@@ -8,7 +8,7 @@ use League\Period\Period;
 use PHPUnit\Framework\TestCase;
 use Sports\Competition\Field;
 use Sports\Competition\Referee;
-use Sports\Output\Against as AgainstGameOutput;
+use Sports\Output\Game\Against as AgainstGameOutput;
 use SportsHelpers\Against\Side as AgainstSide;
 use Sports\Game\Against as AgainstGame;
 use Sports\Place;
@@ -17,7 +17,8 @@ use Sports\TestHelper\CompetitionCreator;
 use Sports\TestHelper\GamesCreator;
 use Sports\Round\Number\GamesValidator;
 use Sports\Structure\Service as StructureService;
-use SportsPlanning\SelfReferee;
+use SportsHelpers\PouleStructure;
+use SportsHelpers\SelfReferee;
 
 class GamesValidatorTest extends TestCase
 {
@@ -28,7 +29,7 @@ class GamesValidatorTest extends TestCase
         $competition = $this->createCompetition();
 
         $structureService = new StructureService([]);
-        $structure = $structureService->create($competition, 5);
+        $structure = $structureService->create($competition, new PouleStructure([5]));
 
         (new GamesCreator())->createStructureGames($structure);
 
@@ -50,7 +51,7 @@ class GamesValidatorTest extends TestCase
         $competition = $this->createCompetition();
 
         $structureService = new StructureService([]);
-        $structure = $structureService->create($competition, 5);
+        $structure = $structureService->create($competition, new PouleStructure([5]));
 
         (new GamesCreator())->createStructureGames($structure);
 
@@ -72,7 +73,7 @@ class GamesValidatorTest extends TestCase
         $competition = $this->createCompetition();
 
         $structureService = new StructureService([]);
-        $structure = $structureService->create($competition, 5);
+        $structure = $structureService->create($competition, new PouleStructure([5]));
 
         (new GamesCreator())->createStructureGames($structure);
 
@@ -97,7 +98,7 @@ class GamesValidatorTest extends TestCase
         $competition = $this->createCompetition();
 
         $structureService = new StructureService([]);
-        $structure = $structureService->create($competition, 5);
+        $structure = $structureService->create($competition, new PouleStructure([5]));
 
         (new GamesCreator())->createStructureGames($structure);
 
@@ -122,7 +123,7 @@ class GamesValidatorTest extends TestCase
         $competition = $this->createCompetition();
 
         $structureService = new StructureService([]);
-        $structure = $structureService->create($competition, 5);
+        $structure = $structureService->create($competition, new PouleStructure([5]));
 
         (new GamesCreator())->createStructureGames($structure);
 
@@ -147,7 +148,7 @@ class GamesValidatorTest extends TestCase
         $competition = $this->createCompetition();
 
         $structureService = new StructureService([]);
-        $structure = $structureService->create($competition, 5);
+        $structure = $structureService->create($competition, new PouleStructure([5]));
 
         (new GamesCreator())->createStructureGames($structure);
 
@@ -176,7 +177,7 @@ class GamesValidatorTest extends TestCase
         $competition = $this->createCompetition();
 
         $structureService = new StructureService([]);
-        $structure = $structureService->create($competition, 5);
+        $structure = $structureService->create($competition, new PouleStructure([5]));
 
         (new GamesCreator())->createStructureGames($structure);
 
@@ -215,7 +216,7 @@ class GamesValidatorTest extends TestCase
         $competition = $this->createCompetition();
 
         $structureService = new StructureService([]);
-        $structure = $structureService->create($competition, 5);
+        $structure = $structureService->create($competition, new PouleStructure([5]));
 
         $firstRoundNumber = $structure->getFirstRoundNumber();
         $firstRoundNumber->getValidPlanningConfig()->setSelfReferee(SelfReferee::SAMEPOULE);
@@ -237,12 +238,14 @@ class GamesValidatorTest extends TestCase
         });
         $firstAvailablePlace = $availablePlaces->first();
         self::assertInstanceOf(Place::class, $firstAvailablePlace);
-        $game->setRefereePlace();
+        $lastAvailablePlace = $availablePlaces->last();
+        self::assertInstanceOf(Place::class, $lastAvailablePlace);
+        $game->setRefereePlace($lastAvailablePlace);
 
 //        $outputGame = new AgainstGameOutput();
 //        $games = $firstRoundNumber->getGames(AgainstGame::ORDER_BY_BATCH);
-//        foreach( $games as $gameIt ) {
-//            $outputGame->output( $gameIt );
+//        foreach ($games as $gameIt) {
+//            $outputGame->output($gameIt);
 //        }
 
         $gamesValidator = new GamesValidator();
@@ -256,7 +259,7 @@ class GamesValidatorTest extends TestCase
         $competition = $this->createCompetition();
 
         $structureService = new StructureService([]);
-        $structure = $structureService->create($competition, 9, 2);
+        $structure = $structureService->create($competition, new PouleStructure([5,4]));
 
         $firstRoundNumber = $structure->getFirstRoundNumber();
         $firstRoundNumber->getValidPlanningConfig()->setSelfReferee(SelfReferee::OTHERPOULES);
@@ -280,7 +283,7 @@ class GamesValidatorTest extends TestCase
         $competition = $this->createCompetition();
 
         $structureService = new StructureService([]);
-        $structure = $structureService->create($competition, 9, 2);
+        $structure = $structureService->create($competition, new PouleStructure([5,4]));
 
         $firstRoundNumber = $structure->getFirstRoundNumber();
         $firstRoundNumber->getValidPlanningConfig()->setSelfReferee(SelfReferee::OTHERPOULES);
@@ -312,7 +315,7 @@ class GamesValidatorTest extends TestCase
         $competition = $this->createCompetition();
 
         $structureService = new StructureService([]);
-        $structure = $structureService->create($competition, 5);
+        $structure = $structureService->create($competition, new PouleStructure([5]));
 
         (new GamesCreator())->createStructureGames($structure);
 

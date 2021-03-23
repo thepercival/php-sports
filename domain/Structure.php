@@ -52,12 +52,12 @@ class Structure
     {
         $roundNumbers = [];
         $roundNumber = $this->getFirstRoundNumber();
-        while ($roundNumber = $roundNumber->getNext()) {
-            $roundNumbers[] = $roundNumber;
+        while ($roundNumber !== null) {
+            array_push($roundNumbers, $roundNumber);
+            $roundNumber = $roundNumber->getNext();
         }
         return $roundNumbers;
     }
-
 
     public function getRoundNumber(int $roundNumberAsValue): ?RoundNumber
     {

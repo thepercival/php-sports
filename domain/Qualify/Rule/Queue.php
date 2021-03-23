@@ -24,7 +24,7 @@ class Queue
     public function add(int $startEnd, SingleQualifyRule|MultipleQualifyRule $qualifyRule): void
     {
         if ($startEnd === Queue::START) {
-            $this->qualifyRules[] = $qualifyRule;
+            array_push($this->qualifyRules, $qualifyRule);
         } else {
             array_unshift($this->qualifyRules, $qualifyRule);
         }
@@ -40,19 +40,19 @@ class Queue
         return count($this->qualifyRules) === 0;
     }
 
-    public function toggle(int $startEnd): int
+    public function getOpposite(int $startEnd): int
     {
         return $startEnd === Queue::START ? Queue::END : Queue::START;
     }
 
     // bij 5 poules, haal 2 na laatste naar achterste plek
-    public function shuffleIfUnevenAndNoMultiple(int $nrOfPoules): void
+    public function moveCenterSingleRuleBack(int $nrOfPoules): void
     {
         if (($nrOfPoules % 2) === 0 || $nrOfPoules < 3) {
             return;
         }
-        $lastItem = end($this->qualifyRules);
-        if ($lastItem instanceof MultipleQualifyRule) {
+        $lastRuleTmp = end($this->qualifyRules);
+        if ($lastRuleTmp instanceof MultipleQualifyRule) {
             return;
         }
         $index = (count($this->qualifyRules) - 1) - ((($nrOfPoules + 1) / 2) - 1);

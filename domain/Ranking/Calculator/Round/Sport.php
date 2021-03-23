@@ -162,10 +162,10 @@ abstract class Sport
         foreach ($rankingRules as $rankingRule) {
             $rankingFunction = $this->rankFunctionMap[$rankingRule];
             if ($rankingRule === RankingRule::BestAmongEachOther && count($originalPerformances) === count($bestPerformances)) {
-                break;
+                continue;
             }
             $bestPerformances = $rankingFunction($bestPerformances);
-            if (count($bestPerformances) >= 2) {
+            if (count($bestPerformances) < 2) {
                 break;
             }
         }

@@ -135,6 +135,8 @@ class Place extends Identifiable implements PlaceLocation
             $idx = array_search($originalToQualifyRule, $this->toQualifyRules, true);
             if ($idx !== false) {
                 array_splice($this->toQualifyRules, $idx, 1);
+            } else {
+                $e = 2;
             }
         }
         if ($qualifyRule !== null) {

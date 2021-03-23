@@ -13,6 +13,7 @@ use Sports\Competition\Field as CompetitionField;
 use SportsHelpers\Identifiable;
 use Sports\Competitor\Team as TeamCompetitor;
 use Sports\Competition\Referee;
+use Sports\Competition\Sport as CompetitonSport;
 
 class Competition extends Identifiable
 {
@@ -187,6 +188,16 @@ class Competition extends Identifiable
     public function hasMultipleSports(): bool
     {
         return $this->sports->count() > 1;
+    }
+
+    /**
+     * @return ArrayCollection<int|string, Sport>
+     */
+    public function getBaseSports(): ArrayCollection
+    {
+        return $this->sports->map(function (CompetitonSport $competitionSport): Sport {
+            return $competitionSport->getSport();
+        });
     }
 
 //    /**

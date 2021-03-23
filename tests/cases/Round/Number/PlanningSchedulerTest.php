@@ -3,9 +3,11 @@ declare(strict_types=1);
 
 namespace Sports\Tests\Round\Number;
 
+use DateTimeImmutable;
 use League\Period\Period;
 use PHPUnit\Framework\TestCase;
 use Sports\Game as GameBase;
+use Sports\Output\Game\Against as AgainstGameOutput;
 use Sports\Qualify\Group as QualifyGroup;
 use Sports\Round\Number\PlanningScheduler;
 use Sports\TestHelper\CompetitionCreator;
@@ -14,6 +16,7 @@ use Sports\Planning\Config\Service as PlanningConfigService;
 use Sports\Structure\Service as StructureService;
 use Sports\Game;
 use \Exception;
+use SportsHelpers\PouleStructure;
 use SportsHelpers\SportRange;
 
 final class PlanningSchedulerTest extends TestCase
@@ -25,7 +28,7 @@ final class PlanningSchedulerTest extends TestCase
         $competition = $this->createCompetition();
 
         $structureService = new StructureService([]);
-        $structure = $structureService->create($competition, 6, 2);
+        $structure = $structureService->create($competition, new PouleStructure([3,3]));
 
         $structureService->addQualifiers($structure->getRootRound(), QualifyGroup::WINNERS, 2);
         $firstRoundNumber = $structure->getFirstRoundNumber();
@@ -55,7 +58,7 @@ final class PlanningSchedulerTest extends TestCase
         $competition = $this->createCompetition();
 
         $structureService = new StructureService([]);
-        $structure = $structureService->create($competition, 6, 2);
+        $structure = $structureService->create($competition, new PouleStructure([3,3]));
 
         $structureService->addQualifiers($structure->getRootRound(), QualifyGroup::WINNERS, 2);
         $firstRoundNumber = $structure->getFirstRoundNumber();
@@ -63,6 +66,14 @@ final class PlanningSchedulerTest extends TestCase
         self::assertNotNull($secondRoundNumber);
 
         (new GamesCreator())->createStructureGames($structure, null, new SportRange(2, 2));
+
+//        foreach( $firstRoundNumber->getGames( Game::ORDER_BY_BATCH ) as $game ) {
+//            (new AgainstGameOutput())->output($game);
+//        }
+//        foreach( $secondRoundNumber->getGames( Game::ORDER_BY_BATCH ) as $game ) {
+//            (new AgainstGameOutput())->output($game);
+//        }
+//        echo PHP_EOL;
 
         $competitionStartDateTime = $competition->getStartDateTime();
 
@@ -73,6 +84,13 @@ final class PlanningSchedulerTest extends TestCase
         $planningScheduler = new PlanningScheduler($blockedPeriod);
         $planningScheduler->rescheduleGames($firstRoundNumber);
 
+//        foreach( $firstRoundNumber->getGames( Game::ORDER_BY_BATCH ) as $game ) {
+//            (new AgainstGameOutput())->output($game);
+//        }
+//        foreach( $secondRoundNumber->getGames( Game::ORDER_BY_BATCH ) as $game ) {
+//            (new AgainstGameOutput())->output($game);
+//        }
+
         $secondRoundNumberStartDateTime = $this->getStartSecond($competitionStartDateTime, 40 - 1);
         self::assertEquals($secondRoundNumberStartDateTime, $secondRoundNumber->getGames()[0]->getStartDateTime());
     }
@@ -82,7 +100,7 @@ final class PlanningSchedulerTest extends TestCase
         $competition = $this->createCompetition();
 
         $structureService = new StructureService([]);
-        $structure = $structureService->create($competition, 6, 2);
+        $structure = $structureService->create($competition, new PouleStructure([3,3]));
 
         $structureService->addQualifiers($structure->getRootRound(), QualifyGroup::WINNERS, 2);
         $firstRoundNumber = $structure->getFirstRoundNumber();
@@ -115,7 +133,7 @@ final class PlanningSchedulerTest extends TestCase
         $competition = $this->createCompetition();
 
         $structureService = new StructureService([]);
-        $structure = $structureService->create($competition, 6, 2);
+        $structure = $structureService->create($competition, new PouleStructure([3,3]));
 
         $structureService->addQualifiers($structure->getRootRound(), QualifyGroup::WINNERS, 2);
         $firstRoundNumber = $structure->getFirstRoundNumber();
@@ -148,7 +166,7 @@ final class PlanningSchedulerTest extends TestCase
         $competition = $this->createCompetition();
 
         $structureService = new StructureService([]);
-        $structure = $structureService->create($competition, 6, 2);
+        $structure = $structureService->create($competition, new PouleStructure([3,3]));
 
         $structureService->addQualifiers($structure->getRootRound(), QualifyGroup::WINNERS, 2);
         $firstRoundNumber = $structure->getFirstRoundNumber();
@@ -181,7 +199,7 @@ final class PlanningSchedulerTest extends TestCase
         $competition = $this->createCompetition();
 
         $structureService = new StructureService([]);
-        $structure = $structureService->create($competition, 6, 2);
+        $structure = $structureService->create($competition, new PouleStructure([3,3]));
 
         $structureService->addQualifiers($structure->getRootRound(), QualifyGroup::WINNERS, 2);
         $firstRoundNumber = $structure->getFirstRoundNumber();
@@ -214,7 +232,7 @@ final class PlanningSchedulerTest extends TestCase
         $competition = $this->createCompetition();
 
         $structureService = new StructureService([]);
-        $structure = $structureService->create($competition, 6, 2);
+        $structure = $structureService->create($competition, new PouleStructure([3,3]));
 
         $structureService->addQualifiers($structure->getRootRound(), QualifyGroup::WINNERS, 2);
         $firstRoundNumber = $structure->getFirstRoundNumber();
@@ -233,7 +251,7 @@ final class PlanningSchedulerTest extends TestCase
         $planningScheduler->rescheduleGames($firstRoundNumber);
     }
 
-    protected function getStartSecond(\DateTimeImmutable $startFirst, int $delta = 0): \DateTimeImmutable
+    protected function getStartSecond(DateTimeImmutable $startFirst, int $delta = 0): DateTimeImmutable
     {
         $planningConfigService = new PlanningConfigService();
         $addMinutes = 3 * $planningConfigService->getDefaultMinutesPerGame();

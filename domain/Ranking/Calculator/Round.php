@@ -126,10 +126,10 @@ class Round
         $map = [];
         foreach ($places as $place) {
             $map[$place->getRoundLocationId()] = new RoundRankingItem($place);
-            foreach ($sportRoundRankings as $sportRoundRanking) {
-                foreach ($sportRoundRanking as $sportRoundItem) {
-                    $map[$sportRoundItem->getRoundLocationId()]->addSportRoundItem($sportRoundItem);
-                }
+        }
+        foreach ($sportRoundRankings as $sportRoundRanking) {
+            foreach ($sportRoundRanking as $sportRoundItem) {
+                $map[$sportRoundItem->getRoundLocationId()]->addSportRoundItem($sportRoundItem);
             }
         }
         return $map;

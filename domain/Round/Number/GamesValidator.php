@@ -15,6 +15,7 @@ use Sports\Place;
 use Sports\Poule;
 use Sports\Structure;
 use Sports\Round\Number as RoundNumber;
+use SportsHelpers\SelfReferee;
 
 class GamesValidator
 {
@@ -35,6 +36,8 @@ class GamesValidator
     {
         $this->validateEnoughTotalNrOfGames($roundNumber);
         $this->validateFields($roundNumber);
+        $this->validateReferee($roundNumber, $nrOfReferees);
+        $this->validateSelfReferee($roundNumber);
         if ($blockedPeriod !== null) {
             $this->validateGameNotInBlockedPeriod($roundNumber, $blockedPeriod);
         }
@@ -57,6 +60,34 @@ class GamesValidator
         foreach ($roundNumber->getGames() as $game) {
             if ($game->getField() === null) {
                 throw new Exception("there is at least one game without a field", E_ERROR);
+            }
+        }
+    }
+
+    protected function validateReferee(RoundNumber $roundNumber, int $nrOfReferees): void
+    {
+        $selfReferee = $roundNumber->getValidPlanningConfig()->getSelfReferee();
+        if ($selfReferee !== SelfReferee::DISABLED || $nrOfReferees === 0) {
+            return;
+        }
+        foreach ($roundNumber->getGames() as $game) {
+            if ($game->getReferee() === null) {
+                throw new Exception("the game should have a referee", E_ERROR);
+            }
+        }
+    }
+
+    protected function validateSelfReferee(RoundNumber $roundNumber): void
+    {
+        $pouleStructure = $roundNumber->createPouleStructure();
+        $selfReferee = $roundNumber->getValidPlanningConfig()->getSelfReferee();
+        $sports = array_values($roundNumber->getCompetition()->getBaseSports()->toArray());
+        if (!$pouleStructure->isSelfRefereeBeAvailable($selfReferee, $sports)) {
+            return;
+        }
+        foreach ($roundNumber->getGames() as $game) {
+            if ($game->getRefereePlace() === null) {
+                throw new Exception("the game should have a refereeplace", E_ERROR);
             }
         }
     }

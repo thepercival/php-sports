@@ -7,6 +7,7 @@ use PHPUnit\Framework\TestCase;
 use Sports\Structure\Service as StructureService;
 use Sports\Qualify\Group as QualifyGroup;
 use Sports\TestHelper\CompetitionCreator;
+use SportsHelpers\PouleStructure;
 
 class StructureTest extends TestCase
 {
@@ -16,7 +17,7 @@ class StructureTest extends TestCase
     {
         $competition = $this->createCompetition();
         $structureService = new StructureService([]);
-        $structure = $structureService->create($competition, 16, 4);
+        $structure = $structureService->create($competition, new PouleStructure([4,4,4,4]));
         $firstRoundNumber = $structure->getFirstRoundNumber();
         $rootRound = $structure->getRootRound();
 
@@ -38,7 +39,7 @@ class StructureTest extends TestCase
     {
         $competition = $this->createCompetition();
         $structureService = new StructureService([]);
-        $structure = $structureService->create($competition, 16, 4);
+        $structure = $structureService->create($competition, new PouleStructure([4,4,4,4]));
         $firstRoundNumber = $structure->getFirstRoundNumber();
         $rootRound = $structure->getRootRound();
 

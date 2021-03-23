@@ -8,7 +8,7 @@ use Sports\Game\CreationStrategy;
 use Sports\Planning\Config as PlanningConfig;
 use SportsHelpers\GameMode;
 use Sports\Round\Number as RoundNumber;
-use SportsPlanning\SelfReferee;
+use SportsHelpers\SelfReferee;
 
 class Service
 {
@@ -28,9 +28,9 @@ class Service
         );
     }
 
-    public function copy(PlanningConfig $planningConfig, RoundNumber $roundNumber): void
+    public function copy(PlanningConfig $planningConfig, RoundNumber $roundNumber): PlanningConfig
     {
-        new PlanningConfig(
+        return new PlanningConfig(
             $roundNumber,
             $planningConfig->getCreationStrategy(),
             $planningConfig->getExtension(),

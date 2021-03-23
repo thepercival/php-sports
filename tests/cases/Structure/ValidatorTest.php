@@ -14,6 +14,7 @@ use Sports\TestHelper\CompetitionCreator;
 use Sports\Structure\Service as StructureService;
 use Sports\Structure\Validator as StructureValidator;
 use Sports\TestHelper\GamesCreator;
+use SportsHelpers\PouleStructure;
 
 final class ValidatorTest extends TestCase
 {
@@ -51,7 +52,7 @@ final class ValidatorTest extends TestCase
 
         $structureService = new StructureService([]);
 
-        $structure = $structureService->create($competition, 4);
+        $structure = $structureService->create($competition, new PouleStructure([4]));
 
         $structure->getRootRound()->getScoreConfigs()->clear();
 
@@ -66,7 +67,7 @@ final class ValidatorTest extends TestCase
 
         $structureService = new StructureService([]);
 
-        $structure = $structureService->create($competition, 4);
+        $structure = $structureService->create($competition, new PouleStructure([4]));
 
         $firstRoundNumber = $structure->getFirstRoundNumber();
         $rootRound = $structure->getRootRound();
@@ -84,7 +85,7 @@ final class ValidatorTest extends TestCase
 
         $structureService = new StructureService([]);
 
-        $structure = $structureService->create($competition, 4);
+        $structure = $structureService->create($competition, new PouleStructure([4]));
 
         $firstRoundNumber = $structure->getFirstRoundNumber();
         $rootRound = $structure->getRootRound();
@@ -102,7 +103,7 @@ final class ValidatorTest extends TestCase
 
         $structureService = new StructureService([]);
 
-        $structure = $structureService->create($competition, 6, 2);
+        $structure = $structureService->create($competition, new PouleStructure([3,3]));
 
         (new GamesCreator())->createStructureGames($structure);
 
@@ -124,7 +125,7 @@ final class ValidatorTest extends TestCase
 
         $structureService = new StructureService([]);
 
-        $structure = $structureService->create($competition, 6, 2);
+        $structure = $structureService->create($competition, new PouleStructure([3,3]));
         $firstRoundNumber = $structure->getFirstRoundNumber();
         $rootRound = $structure->getRootRound();
         $structureService->addQualifiers($rootRound, QualifyGroup::WINNERS, 2);
@@ -146,7 +147,7 @@ final class ValidatorTest extends TestCase
 
         $structureService = new StructureService([]);
 
-        $structure = $structureService->create($competition, 6, 2);
+        $structure = $structureService->create($competition, new PouleStructure([3,3]));
 
         $rootRound = $structure->getRootRound();
 
@@ -170,7 +171,7 @@ final class ValidatorTest extends TestCase
 
         $structureService = new StructureService([]);
 
-        $structure = $structureService->create($competition, 6, 2);
+        $structure = $structureService->create($competition, new PouleStructure([3,3]));
 
         $rootRound = $structure->getRootRound();
 
@@ -194,7 +195,7 @@ final class ValidatorTest extends TestCase
 
         $structureService = new StructureService([]);
 
-        $structure = $structureService->create($competition, 6, 2);
+        $structure = $structureService->create($competition, new PouleStructure([3,3]));
 
         $firstRoundNumber = $structure->getFirstRoundNumber();
         $rootRound = $structure->getRootRound();
@@ -216,7 +217,7 @@ final class ValidatorTest extends TestCase
 
         $structureService = new StructureService([]);
 
-        $structure = $structureService->create($competition, 6, 2);
+        $structure = $structureService->create($competition, new PouleStructure([3,3]));
 
         $firstRoundNumber = $structure->getFirstRoundNumber();
         $rootRound = $structure->getRootRound();

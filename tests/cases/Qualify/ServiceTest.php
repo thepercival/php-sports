@@ -12,6 +12,7 @@ use Sports\Qualify\Service as QualifyService;
 use Sports\Qualify\Rule\Single as SingleQualifyRule;
 use Sports\Qualify\Rule\Multiple as MultipleQualifyRule;
 use Sports\Qualify\Group as QualifyGroup;
+use SportsHelpers\PouleStructure;
 
 class ServiceTest extends TestCase
 {
@@ -22,7 +23,7 @@ class ServiceTest extends TestCase
         $competition = $this->createCompetition();
 
         $structureService = new StructureService([]);
-        $structure = $structureService->create($competition, 5);
+        $structure = $structureService->create($competition, new PouleStructure([5]));
         $rootRound = $structure->getRootRound();
 
         $structureService->addQualifiers($rootRound, QualifyGroup::WINNERS, 2);
@@ -71,7 +72,7 @@ class ServiceTest extends TestCase
         $competition = $this->createCompetition();
 
         $structureService = new StructureService([]);
-        $structure = $structureService->create($competition, 6);
+        $structure = $structureService->create($competition, new PouleStructure([3,3]));
         $rootRound = $structure->getRootRound();
 
         (new GamesCreator())->createStructureGames( $structure );
@@ -115,11 +116,12 @@ class ServiceTest extends TestCase
         $competition = $this->createCompetition();
 
         $structureService = new StructureService([]);
-        $structure = $structureService->create($competition, 9);
+        $structure = $structureService->create($competition, new PouleStructure([3,3,3]));
         $rootRound = $structure->getRootRound();
 
         $structureService->addQualifiers($rootRound, QualifyGroup::WINNERS, 4);
         $structureService->addQualifiers($rootRound, QualifyGroup::LOSERS, 4);
+        // W[2,2], L[2,2]
 
         $winnersRound = $rootRound->getChild(QualifyGroup::WINNERS, 1);
         self::assertNotNull($winnersRound);
@@ -128,6 +130,7 @@ class ServiceTest extends TestCase
 
         $structureService->removePoule($winnersRound);
         $structureService->removePoule($losersRound);
+        // W[4], L[4]
 
         (new GamesCreator())->createStructureGames( $structure );
 
@@ -144,6 +147,9 @@ class ServiceTest extends TestCase
         $this->setScoreSingle($pouleThree, 1, 2, 1, 5);
         $this->setScoreSingle($pouleThree, 1, 3, 1, 3);
         $this->setScoreSingle($pouleThree, 2, 3, 2, 5);
+        // Rank W 3.3, 2.3, 1.3, 3.2
+        // Dropouts  2.2
+        // Rank L 1,2, 3.3, 2.3, 1.3
 
         $qualifyService = new QualifyService($rootRound);
         $changedPlaces = $qualifyService->setQualifiers();
@@ -151,24 +157,27 @@ class ServiceTest extends TestCase
 
         $winnersPoule = $winnersRound->getPoule(1);
 
-        self::assertTrue($winnersPoule->getPlace(1)->getFromQualifyRule() instanceof SingleQualifyRule);
+        self::assertInstanceOf(SingleQualifyRule::class, $winnersPoule->getPlace(1)->getFromQualifyRule());
+        self::assertInstanceOf(SingleQualifyRule::class, $winnersPoule->getPlace(2)->getFromQualifyRule());
+        self::assertInstanceOf(SingleQualifyRule::class, $winnersPoule->getPlace(3)->getFromQualifyRule());
+        self::assertInstanceOf(MultipleQualifyRule::class, $winnersPoule->getPlace(4)->getFromQualifyRule());
+
         self::assertNotNull($winnersPoule->getPlace(1)->getQualifiedPlace());
-        self::assertTrue($winnersPoule->getPlace(2)->getFromQualifyRule()  instanceof SingleQualifyRule);
         self::assertNotNull($winnersPoule->getPlace(2)->getQualifiedPlace());
-        self::assertTrue($winnersPoule->getPlace(3)->getFromQualifyRule() instanceof SingleQualifyRule);
         self::assertNotNull($winnersPoule->getPlace(3)->getQualifiedPlace());
-        self::assertTrue($winnersPoule->getPlace(4)->getFromQualifyRule() instanceof MultipleQualifyRule);
+
         self::assertSame($pouleThree->getPlace(2), $winnersPoule->getPlace(4)->getQualifiedPlace());
 
         $losersPoule = $losersRound->getPoule(1);
 
-        self::assertTrue($losersPoule->getPlace(1)->getFromQualifyRule() instanceof MultipleQualifyRule);
+        self::assertInstanceOf(MultipleQualifyRule::class, $losersPoule->getPlace(1)->getFromQualifyRule());
+        self::assertInstanceOf(SingleQualifyRule::class, $losersPoule->getPlace(2)->getFromQualifyRule());
+        self::assertInstanceOf(SingleQualifyRule::class, $losersPoule->getPlace(3)->getFromQualifyRule());
+        self::assertInstanceOf(SingleQualifyRule::class, $losersPoule->getPlace(4)->getFromQualifyRule());
+
         self::assertNotNull($losersPoule->getPlace(1)->getQualifiedPlace());
-        self::assertTrue($losersPoule->getPlace(2)->getFromQualifyRule() instanceof SingleQualifyRule);
         self::assertNotNull($losersPoule->getPlace(2)->getQualifiedPlace());
-        self::assertTrue($losersPoule->getPlace(3)->getFromQualifyRule() instanceof SingleQualifyRule);
         self::assertNotNull($losersPoule->getPlace(3)->getQualifiedPlace());
-        self::assertTrue($losersPoule->getPlace(4)->getFromQualifyRule() instanceof SingleQualifyRule);
         self::assertNotNull($losersPoule->getPlace(4)->getQualifiedPlace());
     }
 
@@ -177,7 +186,7 @@ class ServiceTest extends TestCase
         $competition = $this->createCompetition();
 
         $structureService = new StructureService([]);
-        $structure = $structureService->create($competition, 9);
+        $structure = $structureService->create($competition, new PouleStructure([3,3,3]));
         $rootRound = $structure->getRootRound();
 
         $structureService->addQualifiers($rootRound, QualifyGroup::WINNERS, 4);
@@ -217,7 +226,7 @@ class ServiceTest extends TestCase
         $competition = $this->createCompetition();
 
         $structureService = new StructureService([]);
-        $structure = $structureService->create($competition, 6,2);
+        $structure = $structureService->create($competition, new PouleStructure([3,3]));
         $rootRound = $structure->getRootRound();
 
         $structureService->addQualifiers($rootRound, QualifyGroup::WINNERS, 3);

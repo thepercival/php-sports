@@ -15,6 +15,7 @@ use Sports\Competition\Referee;
 use Sports\Structure\Service as StructureService;
 use Sports\Qualify\Group as QualifyGroup;
 use Sports\TestHelper\GamesCreator;
+use SportsHelpers\PouleStructure;
 
 final class NameServiceTest extends TestCase
 {
@@ -36,7 +37,7 @@ final class NameServiceTest extends TestCase
         $nameService = new NameService();
         $competition = $this->createCompetition();
         $structureService = new StructureService([]);
-        $structure = $structureService->create($competition, 8, 3);
+        $structure = $structureService->create($competition, new PouleStructure([3,3,2]));
         $firstRoundNumber = $structure->getFirstRoundNumber();
         $rootRound = $structure->getRootRound();
 
@@ -67,7 +68,7 @@ final class NameServiceTest extends TestCase
         // root needs no ranking, unequal depth
         {
             $structureService = new StructureService([]);
-            $structure = $structureService->create($competition, 4, 2);
+            $structure = $structureService->create($competition, new PouleStructure([2,2]));
             $rootRound = $structure->getRootRound();
 
             $structureService->addQualifier($rootRound, QualifyGroup::WINNERS);
@@ -80,7 +81,7 @@ final class NameServiceTest extends TestCase
         // root needs ranking
         {
             $structureService2 = new StructureService([]);
-            $structure2 = $structureService2->create($competition, 16, 4);
+            $structure2 = $structureService2->create($competition, new PouleStructure([4,4,4,4]));
             $rootRound2 = $structure2->getRootRound();
 
             self::assertSame($nameService->getRoundName($rootRound2), '1ste ronde'); // '1<sup>ste</sup> ronde'
@@ -101,24 +102,23 @@ final class NameServiceTest extends TestCase
         // root needs ranking, depth 2
         {
             $structureService = new StructureService([]);
-            $structure = $structureService->create($competition, 16, 8);
+            $structure = $structureService->create($competition, new PouleStructure([2,2,2,2,2,2,2,2]));
             $rootRound = $structure->getRootRound();
 
             $structureService->addQualifiers($rootRound, QualifyGroup::WINNERS, 8);
+            $structureService->addQualifiers($rootRound, QualifyGroup::LOSERS, 8);
 
             $rootWinnersBorderGroup = $rootRound->getBorderQualifyGroup(QualifyGroup::WINNERS);
             self::assertNotNull($rootWinnersBorderGroup);
             $winnersChildRound = $rootWinnersBorderGroup->getChildRound();
             $structureService->addQualifiers($winnersChildRound, QualifyGroup::WINNERS, 4);
 
-            $structureService->addQualifiers($rootRound, QualifyGroup::LOSERS, 8);
-
-            $rootLosersBorderGroup = $winnersChildRound->getBorderQualifyGroup(QualifyGroup::LOSERS);
+            $rootLosersBorderGroup = $rootRound->getBorderQualifyGroup(QualifyGroup::LOSERS);
             self::assertNotNull($rootLosersBorderGroup);
             $losersChildRound = $rootLosersBorderGroup->getChildRound();
             $structureService->addQualifiers($losersChildRound, QualifyGroup::LOSERS, 4);
 
-            self::assertSame($nameService->getRoundName($rootRound), 'kwart finale'); // '&frac14; finale'
+            self::assertSame('kwart finale', $nameService->getRoundName($rootRound)); // '&frac14; finale'
 
             $winnersBorderGroup = $winnersChildRound->getBorderQualifyGroup(QualifyGroup::WINNERS);
             self::assertNotNull($winnersBorderGroup);
@@ -132,12 +132,12 @@ final class NameServiceTest extends TestCase
 
             $number = 8;
             // '<span style="font-size: 80%"><sup>1</sup>&frasl;<sub>' . $number . '</sub></span> finale'
-            self::assertSame($nameService->getRoundName($rootRound), '1/8 finale');
+            self::assertSame('1/8 finale', $nameService->getRoundName($rootRound));
 
             $doubleLosersBorderGroup = $doubleLosersChildRound->getBorderQualifyGroup(QualifyGroup::LOSERS);
             self::assertNotNull($doubleLosersBorderGroup);
             $losersFinal = $doubleLosersBorderGroup->getChildRound();
-            self::assertSame($nameService->getRoundName($losersFinal), '15de/16de' . ' plaats'); // '15<sup>de</sup>/16<sup>de</sup>'
+            self::assertSame('15de/16de' . ' plaats', $nameService->getRoundName($losersFinal)); // '15<sup>de</sup>/16<sup>de</sup>'
         }
     }
 
@@ -149,7 +149,12 @@ final class NameServiceTest extends TestCase
         // basics
         {
             $structureService = new StructureService([]);
-            $structure = $structureService->create($competition, 89, 30);
+            $poules = [];
+            for ($i = 1 ; $i <= 29 ; $i++) {
+                array_push($poules, 3);
+            }
+            array_push($poules, 2);
+            $structure = $structureService->create($competition, new PouleStructure($poules));
             $rootRound = $structure->getRootRound();
 
             self::assertSame($nameService->getPouleName($rootRound->getPoule(1), false), 'A');
@@ -170,7 +175,7 @@ final class NameServiceTest extends TestCase
         // basics
         {
             $structureService = new StructureService([]);
-            $structure = $structureService->create($competition, 3);
+            $structure = $structureService->create($competition, new PouleStructure([3]));
             $rootRound = $structure->getRootRound();
 
             $firstPlace = $rootRound->getFirstPlace(QualifyGroup::WINNERS);
@@ -205,7 +210,7 @@ final class NameServiceTest extends TestCase
         // basics
         {
             $structureService = new StructureService([]);
-            $structure = $structureService->create($competition, 9, 3);
+            $structure = $structureService->create($competition, new PouleStructure([3,3,3]));
             $rootRound = $structure->getRootRound();
 
             $firstPlace = $rootRound->getFirstPlace(QualifyGroup::WINNERS);
@@ -281,7 +286,7 @@ final class NameServiceTest extends TestCase
         // basics
         {
             $structureService = new StructureService([]);
-            $structure = $structureService->create($competition, 2, 1);
+            $structure = $structureService->create($competition, new PouleStructure([2]));
             $rootRound = $structure->getRootRound();
 
             $firstPlace = $rootRound->getFirstPlace(QualifyGroup::WINNERS);
@@ -314,7 +319,7 @@ final class NameServiceTest extends TestCase
         // basics
         {
             $structureService = new StructureService([]);
-            $structure = $structureService->create($competition, 12, 3);
+            $structure = $structureService->create($competition, new PouleStructure([4,4,4]));
             $rootRound = $structure->getRootRound();
 
             $firstWinnersHorPoule = $rootRound->getHorizontalPoules(QualifyGroup::WINNERS)[0];
@@ -369,7 +374,7 @@ final class NameServiceTest extends TestCase
         // basics
         {
             $structureService = new StructureService([]);
-            $structure = $structureService->create($competition, 2);
+            $structure = $structureService->create($competition, new PouleStructure([2]));
             $rootRound = $structure->getRootRound();
 
             $firstPlace = $rootRound->getFirstPlace(QualifyGroup::WINNERS);

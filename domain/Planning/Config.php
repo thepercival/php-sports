@@ -5,7 +5,7 @@ namespace Sports\Planning;
 
 use Sports\Round\Number as RoundNumber;
 use SportsHelpers\Identifiable;
-use SportsPlanning\SelfReferee;
+use SportsHelpers\SelfReferee;
 
 class Config extends Identifiable
 {
@@ -83,7 +83,11 @@ class Config extends Identifiable
 
     public function getMaxNrOfMinutesPerGame(): int
     {
-        return $this->getMinutesPerGame() + $this->getMinutesPerGameExt();
+        $maxNrOfMinutes = $this->getMinutesPerGame();
+        if ($this->getExtension()) {
+            $maxNrOfMinutes += $this->getMinutesPerGameExt();
+        }
+        return $maxNrOfMinutes;
     }
 
     public function getMinutesPerGame(): int

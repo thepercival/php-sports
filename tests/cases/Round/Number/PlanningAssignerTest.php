@@ -9,7 +9,8 @@ use Sports\Round\Number\GamesValidator;
 use Sports\TestHelper\CompetitionCreator;
 use Sports\TestHelper\GamesCreator;
 use Sports\Structure\Service as StructureService;
-use SportsPlanning\SelfReferee;
+use SportsHelpers\PouleStructure;
+use SportsHelpers\SelfReferee;
 
 final class PlanningAssignerTest extends TestCase
 {
@@ -20,7 +21,7 @@ final class PlanningAssignerTest extends TestCase
         $competition = $this->createCompetition();
 
         $structureService = new StructureService([]);
-        $structure = $structureService->create($competition, 4, 2);
+        $structure = $structureService->create($competition, new PouleStructure([2,2]));
 
         $firstRoundNumber = $structure->getFirstRoundNumber();
 
@@ -39,7 +40,7 @@ final class PlanningAssignerTest extends TestCase
         $competition->getReferees()->clear();
 
         $structureService = new StructureService([]);
-        $structure = $structureService->create($competition, 4);
+        $structure = $structureService->create($competition, new PouleStructure([4]));
 
         $firstRoundNumber = $structure->getFirstRoundNumber();
 
@@ -56,7 +57,7 @@ final class PlanningAssignerTest extends TestCase
         $competition = $this->createCompetition();
 
         $structureService = new StructureService([]);
-        $structure = $structureService->create($competition, 11);
+        $structure = $structureService->create($competition, new PouleStructure([6,5]));
 
         $rootRound = $structure->getRootRound();
         $structureService->addQualifiers($rootRound, QualifyGroup::WINNERS, 7);
@@ -70,7 +71,7 @@ final class PlanningAssignerTest extends TestCase
 
         $gamesValidator = new GamesValidator();
         $nrOfReferees = $competition->getReferees()->count();
-        self::expectNotToPerformAssertions();
+        // self::expectNotToPerformAssertions();
         $gamesValidator->validate($secondRoundNumber, $nrOfReferees);
     }
 }

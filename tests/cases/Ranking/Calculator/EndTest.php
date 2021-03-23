@@ -15,6 +15,7 @@ use Sports\Qualify\Group as QualifyGroup;
 use Sports\Qualify\Service as QualifyService;
 use Sports\Ranking\Calculator\End as EndRankingCalculator;
 use Sports\Ranking\RuleSet as RankingRuleSet;
+use SportsHelpers\PouleStructure;
 
 class EndTest extends TestCase
 {
@@ -25,7 +26,7 @@ class EndTest extends TestCase
         $competition = $this->createCompetition();
 
         $structureService = new StructureService([]);
-        $structure = $structureService->create($competition, 3);
+        $structure = $structureService->create($competition, new PouleStructure([3]));
         $rootRound = $structure->getRootRound();
 
         (new GamesCreator())->createStructureGames($structure);
@@ -54,7 +55,7 @@ class EndTest extends TestCase
         $competition = $this->createCompetition();
 
         $structureService = new StructureService([]);
-        $structure = $structureService->create($competition, 3);
+        $structure = $structureService->create($competition, new PouleStructure([3]));
         $rootRound = $structure->getRootRound();
 
         (new GamesCreator())->createStructureGames($structure);
@@ -80,7 +81,7 @@ class EndTest extends TestCase
         $competition = $this->createCompetition();
 
         $structureService = new StructureService([]);
-        $structure = $structureService->create($competition, 5);
+        $structure = $structureService->create($competition, new PouleStructure([5]));
         $rootRound = $structure->getRootRound();
 
         $structureService->addQualifier($rootRound, QualifyGroup::WINNERS);
