@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Sports\TestHelper;
 
@@ -10,11 +11,10 @@ use JMS\Serializer\Naming\IdenticalPropertyNamingStrategy;
 use JMS\Serializer\Handler\HandlerRegistry;
 use JMS\Serializer\SerializerInterface as JMSSerializer;
 
-use Sports\SerializationHandler\Round as RoundSerializationHandler;
-use Sports\SerializationHandler\Qualify\Group as QualifyGroupSerializationHandler;
-use Sports\SerializationHandler\Round\Number as RoundNumberSerializationHandler;
-use Sports\SerializationHandler\Config as ConfigSerializationHandler;
-use Sports\SerializationHandler\Structure as StructureSerializationHandler;
+use Sports\SerializationHandler\DummyCreator;
+use Sports\SerializationHandler\RoundHandler as RoundSerializationHandler;
+use Sports\SerializationHandler\Round\NumberHandler as RoundNumberSerializationHandler;
+use Sports\SerializationHandler\StructureHandler as StructureSerializationHandler;
 
 class Serializer {
     public function getSerializer(): JMSSerializer
@@ -40,12 +40,12 @@ class Serializer {
             }
         );
         $serializerBuilder->addMetadataDir(__DIR__.'/../../serialization/yml', 'Sports');
-
+        $dummyCreator = new DummyCreator();
         $serializerBuilder->configureHandlers(
-            function (HandlerRegistry $registry): void {
-                $registry->registerSubscribingHandler(new StructureSerializationHandler());
-                $registry->registerSubscribingHandler(new RoundNumberSerializationHandler());
-                $registry->registerSubscribingHandler(new RoundSerializationHandler());
+            function (HandlerRegistry $registry) use ($dummyCreator): void {
+                $registry->registerSubscribingHandler(new StructureSerializationHandler($dummyCreator));
+                $registry->registerSubscribingHandler(new RoundNumberSerializationHandler($dummyCreator));
+                $registry->registerSubscribingHandler(new RoundSerializationHandler($dummyCreator));
                 // $registry->registerSubscribingHandler(new QualifyGroupSerializationHandler());
             }
         );

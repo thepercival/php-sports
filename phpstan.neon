@@ -6,4 +6,4 @@ parameters:
         - domain/
         - tests/cases/
         - tests/helpers/
-       # - serialization/
+        - serialization/handler

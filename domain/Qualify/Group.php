@@ -28,7 +28,7 @@ class Group extends Identifiable
         int $number = null
     ) {
         $this->setWinnersOrLosers($winnersOrLosers);
-        $this->number = $number !== null ? $number : $round->getQualifyGroups($winnersOrLosers)->count() + 1;
+        $this->number = $number !== null ? $number : $round->getWinnersOrLosersQualifyGroups($winnersOrLosers)->count() + 1;
         if ($number === null) {
             $this->addQualifyGroup($round);
         } else {
@@ -64,7 +64,7 @@ class Group extends Identifiable
 
     protected function insertQualifyGroupAt(Round $round, int $insertAt): void
     {
-        $qualifyGroups = $round->getQualifyGroups($this->getWinnersOrLosers());
+        $qualifyGroups = $round->getWinnersOrLosersQualifyGroups($this->getWinnersOrLosers());
         if (!$qualifyGroups->contains($this)) {
             $round->addQualifyGroup($this);
             // sort auto because of sort-config in db-yml
@@ -73,7 +73,7 @@ class Group extends Identifiable
 
     public function addQualifyGroup(Round $round): void
     {
-        $qualifyGroups = $round->getQualifyGroups($this->getWinnersOrLosers());
+        $qualifyGroups = $round->getWinnersOrLosersQualifyGroups($this->getWinnersOrLosers());
         if (!$qualifyGroups->contains($this)) {
             $round->addQualifyGroup($this);
         }
@@ -99,7 +99,7 @@ class Group extends Identifiable
 
     public function isBorderGroup(): bool
     {
-        $qualifyGroups = $this->getRound()->getQualifyGroups($this->getWinnersOrLosers());
+        $qualifyGroups = $this->getRound()->getWinnersOrLosersQualifyGroups($this->getWinnersOrLosers());
         return $this === $qualifyGroups->last();
     }
 

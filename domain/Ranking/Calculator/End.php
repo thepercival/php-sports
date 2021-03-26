@@ -30,7 +30,7 @@ class End
         $getItems = function (Round $round) use (&$getItems) : array {
             /** @var Closure(Round):list<EndRankingItem> $getItems */
             $items = [];
-            foreach ($round->getQualifyGroups(QualifyGroup::WINNERS) as $qualifyGroup) {
+            foreach ($round->getWinnersOrLosersQualifyGroups(QualifyGroup::WINNERS) as $qualifyGroup) {
                 $items = array_merge($items, $getItems($qualifyGroup->getChildRound()));
             }
             if ($round->getState() === State::Finished) {
@@ -38,7 +38,7 @@ class End
             } else {
                 $items = array_merge($items, $this->getDropoutsNotPlayed($round));
             }
-            foreach (array_reverse($round->getQualifyGroups(QualifyGroup::LOSERS)->slice(0)) as $qualifyGroup) {
+            foreach (array_reverse($round->getWinnersOrLosersQualifyGroups(QualifyGroup::LOSERS)->slice(0)) as $qualifyGroup) {
                 $items = array_merge($items, $getItems($qualifyGroup->getChildRound()));
             }
             return array_values($items);

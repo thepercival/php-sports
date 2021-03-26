@@ -8,6 +8,7 @@ use DateTimeImmutable;
 use \Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 
+use Doctrine\ORM\PersistentCollection;
 use SportsHelpers\Against\Side as AgainstSide;
 use Sports\Competitor;
 use Sports\Competitor\Team as TeamCompetitor;
@@ -27,17 +28,20 @@ use Sports\Competition\Sport as CompetitionSport;
 class Against extends GameBase
 {
     /**
-     * @var ArrayCollection<int|string,AgainstGamePlace>
+     * @phpstan-var ArrayCollection<int|string, AgainstGamePlace>|PersistentCollection<int|string, AgainstGamePlace>
+     * @psalm-var ArrayCollection<int|string, AgainstGamePlace>
      */
-    protected ArrayCollection $places;
+    protected ArrayCollection|PersistentCollection $places;
     /**
-     * @var ArrayCollection<int|string,AgainstScore>
+     * @phpstan-var ArrayCollection<int|string, AgainstScore>|PersistentCollection<int|string, AgainstScore>
+     * @psalm-var ArrayCollection<int|string, AgainstScore>
      */
-    protected ArrayCollection $scores;
+    protected ArrayCollection|PersistentCollection $scores;
     /**
-     * @var ArrayCollection<int|string,Participation>
+     * @phpstan-var ArrayCollection<int|string, Participation>|PersistentCollection<int|string, Participation>
+     * @psalm-var ArrayCollection<int|string, Participation>
      */
-    protected ArrayCollection $participations;
+    protected ArrayCollection|PersistentCollection $participations;
     protected int $gameRoundNumber = 0;
 
     public function __construct(Poule $poule, int $batchNr, DateTimeImmutable $startDateTime, CompetitionSport $competitionSport)
@@ -62,17 +66,19 @@ class Against extends GameBase
 //    }
 
     /**
-     * @return ArrayCollection<int|string,AgainstScore>
+     * @phpstan-return ArrayCollection<int|string, AgainstScore>|PersistentCollection<int|string, AgainstScore>
+     * @psalm-return ArrayCollection<int|string, AgainstScore>
      */
-    public function getScores(): ArrayCollection
+    public function getScores(): ArrayCollection|PersistentCollection
     {
         return $this->scores;
     }
 
     /**
-     * @return ArrayCollection<int|string,AgainstGamePlace>
+     * @phpstan-return ArrayCollection<int|string, AgainstGamePlace>|PersistentCollection<int|string, AgainstGamePlace>
+     * @psalm-return ArrayCollection<int|string, AgainstGamePlace>
      */
-    public function getPlaces(): ArrayCollection
+    public function getPlaces(): ArrayCollection|PersistentCollection
     {
         return $this->places;
     }
@@ -168,14 +174,20 @@ class Against extends GameBase
     }
 
     /**
-     * @param TeamCompetitor|null $teamCompetitor
-     * @return ArrayCollection<int|string, Participation>
+     * @phpstan-return ArrayCollection<int|string, Participation>|PersistentCollection<int|string, Participation>
+     * @psalm-return ArrayCollection<int|string, Participation>
      */
-    public function getParticipations(TeamCompetitor $teamCompetitor = null): ArrayCollection
+    public function getParticipations(): ArrayCollection|PersistentCollection
     {
-        if ($teamCompetitor === null) {
-            return $this->participations;
-        }
+        return $this->participations;
+    }
+
+    /**
+     * @param TeamCompetitor $teamCompetitor
+     * @return Collection<int|string, Participation>
+     */
+    public function getTeamParticipations(TeamCompetitor $teamCompetitor): Collection
+    {
         return $this->getFilteredParticipations(function (Participation $participation) use ($teamCompetitor): bool {
             return $participation->getPlayer()->getTeam() === $teamCompetitor->getTeam();
         });
@@ -243,9 +255,9 @@ class Against extends GameBase
 
     /**
      * @param Closure $filter
-     * @return ArrayCollection<int|string, Participation>
+     * @return Collection<int|string, Participation>
      */
-    protected function getFilteredParticipations(Closure $filter): ArrayCollection
+    protected function getFilteredParticipations(Closure $filter): Collection
     {
         return $this->participations->filter($filter);
     }
@@ -257,7 +269,10 @@ class Against extends GameBase
     public function getGoalEvents(TeamCompetitor $teamCompetitor = null): array
     {
         $goalEvents = [];
-        foreach ($this->getParticipations($teamCompetitor) as $participation) {
+        if ($teamCompetitor === null) {
+            return $goalEvents;
+        }
+        foreach ($this->getTeamParticipations($teamCompetitor) as $participation) {
             $goalEvents = array_merge($goalEvents, $participation->getGoals()->toArray());
         }
         return array_values($goalEvents);
@@ -270,7 +285,10 @@ class Against extends GameBase
     public function getCardEvents(TeamCompetitor $teamCompetitor = null): array
     {
         $cardEvents = [];
-        foreach ($this->getParticipations($teamCompetitor) as $participation) {
+        if ($teamCompetitor === null) {
+            return $cardEvents;
+        }
+        foreach ($this->getTeamParticipations($teamCompetitor) as $participation) {
             $cardEvents = array_merge($cardEvents, $participation->getCards()->toArray());
         }
         return array_values($cardEvents);
@@ -323,7 +341,8 @@ class Against extends GameBase
         );
         uasort($events, function (
             GoalEvent|CardEvent|SubstitutionEvent $eventA,
-            GoalEvent|CardEvent|SubstitutionEvent $eventB): int {
+            GoalEvent|CardEvent|SubstitutionEvent $eventB
+        ): int {
             return $eventA->getMinute() < $eventB->getMinute() ? -1 : 1;
         });
         return $events;

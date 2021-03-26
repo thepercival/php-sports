@@ -5,6 +5,7 @@ namespace Sports\Competition;
 
 use DateTimeImmutable;
 use Doctrine\ORM\EntityRepository;
+use SportsHelpers\Repository as BaseRepository;
 use League\Period\Period;
 use Sports\Competition;
 use Sports\League;
@@ -16,7 +17,7 @@ use Sports\Sport;
  */
 class Repository extends EntityRepository
 {
-    use \Sports\Repository;
+    use BaseRepository;
     /*public function find($id, $lockMode = null, $lockVersion = null): ?Competition
     {
         return $this->_em->find($this->_entityName, $id, $lockMode, $lockVersion);

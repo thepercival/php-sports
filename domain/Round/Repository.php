@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Sports\Round;
 
+use SportsHelpers\Repository as BaseRepository;
 use Doctrine\ORM\EntityRepository;
 use Sports\Round as RoundBase;
 
@@ -11,5 +12,5 @@ use Sports\Round as RoundBase;
  */
 class Repository extends EntityRepository
 {
-    use \Sports\Repository;
+    use BaseRepository;
 }

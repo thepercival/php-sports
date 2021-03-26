@@ -3,7 +3,9 @@
 namespace Sports\Structure;
 
 use \Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\PersistentCollection;
 use Exception;
+use Sports\Qualify\AgainstConfig as QualifyAgainstConfig;
 use Sports\Round;
 use Sports\Round\Number as RoundNumber;
 use Sports\Structure as StructureBase;
@@ -337,8 +339,8 @@ class Service
 
         /** @var list<HorizontolPouleCreator> $horizontalPoulesCreators */
         $horizontalPoulesCreators = [];
-        $removedQualifyGroups = $round->getQualifyGroups($winnersOrLosers);
-        $round->clearQualifyGroups($winnersOrLosers);
+        $removedQualifyGroups = $round->getWinnersOrLosersQualifyGroups($winnersOrLosers);
+        $round->clearRoundAndQualifyGroups($winnersOrLosers);
         $qualifyGroupNumber = 1;
         while ($newNrOfPlacesChildren > 0) {
             $horizontalPoulesCreator = $this->getHorizontalPouleCreator($removedQualifyGroups, $round, $winnersOrLosers, $newNrOfPlacesChildren);
@@ -358,14 +360,15 @@ class Service
     }
 
     /**
-     * @param ArrayCollection<int|string, QualifyGroup> $removedQualifyGroups
+     * @phpstan-param ArrayCollection<int|string, QualifyGroup>|PersistentCollection<int|string, QualifyGroup> $removedQualifyGroups
+     * @psalm-param ArrayCollection<int|string, QualifyGroup> $removedQualifyGroups
      * @param Round $round
      * @param int $winnersOrLosers
      * @param int $newNrOfPlacesChildren
      * @return HorizontolPouleCreator
      */
     private function getHorizontalPouleCreator(
-        ArrayCollection $removedQualifyGroups,
+        ArrayCollection|PersistentCollection $removedQualifyGroups,
         Round $round,
         int $winnersOrLosers,
         int &$newNrOfPlacesChildren
@@ -377,7 +380,6 @@ class Service
         if ($qualifyGroup === false) {
             $nextRoundNumber = $this->createNextRoundNumber($round);
             $qualifyGroup = new QualifyGroup($round, $winnersOrLosers, $nextRoundNumber);
-            new Round($nextRoundNumber, $qualifyGroup);
             $nrOfQualifiers = $newNrOfPlacesChildren;
         } else {
             $removedQualifyGroups->removeElement($qualifyGroup);

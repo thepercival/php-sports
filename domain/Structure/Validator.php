@@ -27,7 +27,7 @@ class Validator
 
     public function checkValidity(Competition $competition, Structure $structure = null): void
     {
-        $prefix = "de structuur(competition-id:" . $competition->getId() . ")";
+        $prefix = "de structuur(competition:" . $competition->getName() . ")";
 
         if (!($structure instanceof Structure)) {
             throw new \Exception($prefix . " heeft geen rondenummers", E_ERROR);
@@ -107,9 +107,9 @@ class Validator
             }
         }
 
-        $winners = array_values($round->getQualifyGroups(QualifyGroup::WINNERS)->toArray());
+        $winners = array_values($round->getWinnersOrLosersQualifyGroups(QualifyGroup::WINNERS)->toArray());
         $this->checkQualifyGroupsNumberGap($winners);
-        $losers = array_values($round->getQualifyGroups(QualifyGroup::LOSERS)->toArray());
+        $losers = array_values($round->getWinnersOrLosersQualifyGroups(QualifyGroup::LOSERS)->toArray());
         $this->checkQualifyGroupsNumberGap($losers);
         foreach ($round->getQualifyGroups() as $qualifyGroup) {
             $this->checkRoundValidity($qualifyGroup->getChildRound());

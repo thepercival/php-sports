@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Sports\Round\Number;
 
+use SportsHelpers\Repository as BaseRepository;
 use Doctrine\ORM\EntityRepository;
 use Sports\Round\Number as RoundNumber;
 
@@ -11,7 +12,7 @@ use Sports\Round\Number as RoundNumber;
  */
 class Repository extends EntityRepository
 {
-    use \Sports\Repository;
+    use BaseRepository;
 
     public function removePlanning(RoundNumber $roundNumber): void
     {

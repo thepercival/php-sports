@@ -5,6 +5,7 @@ namespace Sports;
 
 use DateTimeImmutable;
 use \Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use \Doctrine\ORM\PersistentCollection;
 use Exception;
 use Sports\Ranking\RuleSet as RankingRuleSet;
@@ -22,22 +23,25 @@ class Competition extends Identifiable
     private int $rankingRuleSet;
     private int $state;
     /**
-     * @var ArrayCollection<int|string, Round\Number>
+     * @phpstan-var ArrayCollection<int|string, Round\Number>|PersistentCollection<int|string, Round\Number>
+     * @psalm-var ArrayCollection<int|string, Round\Number>
      */
-    private ArrayCollection $roundNumbers;
-
+    private ArrayCollection|PersistentCollection $roundNumbers;
     /**
-     * @var ArrayCollection<int|string, Referee>
+     * @phpstan-var ArrayCollection<int|string, Referee>|PersistentCollection<int|string, Referee>
+     * @psalm-var ArrayCollection<int|string, Referee>
      */
-    private ArrayCollection $referees;
+    private ArrayCollection|PersistentCollection $referees;
     /**
-     * @var ArrayCollection<int|string, CompetitionSport>
+     * @phpstan-var ArrayCollection<int|string, CompetitionSport>|PersistentCollection<int|string, CompetitionSport>
+     * @psalm-var ArrayCollection<int|string, CompetitionSport>
      */
-    private ArrayCollection $sports;
+    private ArrayCollection|PersistentCollection $sports;
     /**
-     * @var ArrayCollection<int|string, TeamCompetitor>
+     * @phpstan-var ArrayCollection<int|string, TeamCompetitor>|PersistentCollection<int|string, TeamCompetitor>
+     * @psalm-var ArrayCollection<int|string, TeamCompetitor>
      */
-    private ArrayCollection $teamCompetitors;
+    private ArrayCollection|PersistentCollection $teamCompetitors;
 
     const MIN_COMPETITORS = 3;
     const MAX_COMPETITORS = 40;
@@ -109,27 +113,21 @@ class Competition extends Identifiable
     }
 
     /**
-     * @return ArrayCollection<int|string, Round\Number>
+     * @phpstan-return ArrayCollection<int|string, Round\Number>|PersistentCollection<int|string, Round\Number>
+     * @psalm-return ArrayCollection<int|string, Round\Number>
      */
-    public function getRoundNumbers(): ArrayCollection
+    public function getRoundNumbers(): ArrayCollection|PersistentCollection
     {
         return $this->roundNumbers;
     }
 
     /**
-     * @return ArrayCollection<int|string, Referee>
+     * @phpstan-return ArrayCollection<int|string, Referee>|PersistentCollection<int|string, Referee>
+     * @psalm-return ArrayCollection<int|string, Referee>
      */
-    public function getReferees(): ArrayCollection
+    public function getReferees(): ArrayCollection|PersistentCollection
     {
         return $this->referees;
-    }
-
-    /**
-     * @param ArrayCollection<int|string, Referee> $referees
-     */
-    public function setReferees(ArrayCollection $referees): void
-    {
-        $this->referees = $referees;
     }
 
     public function getReferee(int $priority): Referee
@@ -143,26 +141,19 @@ class Competition extends Identifiable
     }
 
     /**
-     * @return ArrayCollection<int|string, TeamCompetitor>
+     * @phpstan-return ArrayCollection<int|string, TeamCompetitor>|PersistentCollection<int|string, TeamCompetitor>
+     * @psalm-return ArrayCollection<int|string, TeamCompetitor>
      */
-    public function getTeamCompetitors(): ArrayCollection
+    public function getTeamCompetitors(): ArrayCollection|PersistentCollection
     {
         return $this->teamCompetitors;
     }
 
     /**
-     * @param ArrayCollection<int|string, TeamCompetitor> $teamCompetitors
-     * @return void
+     * @phpstan-return ArrayCollection<int|string, CompetitionSport>|PersistentCollection<int|string, CompetitionSport>
+     * @psalm-return ArrayCollection<int|string, CompetitionSport>
      */
-    public function setTeamCompetitors(ArrayCollection $teamCompetitors): void
-    {
-        $this->teamCompetitors = $teamCompetitors;
-    }
-
-    /**
-     * @return ArrayCollection<int|string, CompetitionSport>
-     */
-    public function getSports(): ArrayCollection
+    public function getSports(): ArrayCollection|PersistentCollection
     {
         return $this->sports;
     }
@@ -191,9 +182,9 @@ class Competition extends Identifiable
     }
 
     /**
-     * @return ArrayCollection<int|string, Sport>
+     * @return Collection<int|string, Sport>
      */
-    public function getBaseSports(): ArrayCollection
+    public function getBaseSports(): Collection
     {
         return $this->sports->map(function (CompetitonSport $competitionSport): Sport {
             return $competitionSport->getSport();

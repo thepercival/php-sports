@@ -42,7 +42,7 @@ class PostCreateService
                 array_slice($round->getHorizontalPoules($winnersOrLosers), 0),
                 array_values(array_map(function (QualifyGroup $qualifyGroup): HorizontalPoule {
                     return new HorizontolPouleCreator($qualifyGroup, $qualifyGroup->getChildRound()->getNrOfPlaces());
-                }, $round->getQualifyGroups($winnersOrLosers)->toArray()))
+                }, $round->getWinnersOrLosersQualifyGroups($winnersOrLosers)->toArray()))
             );
         }
 

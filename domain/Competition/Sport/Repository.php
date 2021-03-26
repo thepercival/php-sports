@@ -3,11 +3,8 @@ declare(strict_types=1);
 
 namespace Sports\Competition\Sport;
 
-use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\Mapping\ClassMetadata;
-use Doctrine\Persistence\Mapping\ClassMetadata as ClassMetadataInterface;
 use Exception;
-use Sports\Competition\Field;
+use SportsHelpers\Repository as BaseRepository;
 use Sports\Sport\Repository as SportRepository;
 use Sports\Score\Config as ScoreConfig;
 use Sports\Planning\GameAmountConfig;
@@ -26,7 +23,7 @@ use Doctrine\ORM\EntityRepository;
  */
 class Repository extends EntityRepository
 {
-    use \Sports\Repository;
+    use BaseRepository;
 
     public function customAdd(CompetitionSport $competitionSport, Structure $structure): void
     {

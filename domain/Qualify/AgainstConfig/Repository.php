@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace Sports\Qualify\AgainstConfig;
 
 use Sports\Competition\Sport as CompetitionSport;
-use Sports\Repository as SportRepository;
+use SportsHelpers\Repository as BaseRepository;
 use Sports\Round;
 use Doctrine\ORM\EntityRepository;
 use Sports\Qualify\AgainstConfig as QualifyAgainstConfig;
@@ -14,7 +14,7 @@ use Sports\Qualify\AgainstConfig as QualifyAgainstConfig;
  */
 class Repository extends EntityRepository
 {
-    use SportRepository;
+    use BaseRepository;
 
     public function addObjects(CompetitionSport $competitionSport, Round $round): void
     {

@@ -4,76 +4,54 @@ declare(strict_types=1);
 namespace Sports\SerializationHandler;
 
 use JMS\Serializer\Handler\SubscribingHandlerInterface;
-use JMS\Serializer\GraphNavigatorInterface;
-use JMS\Serializer\Metadata\StaticPropertyMetadata;
 use JMS\Serializer\JsonDeserializationVisitor;
 use JMS\Serializer\Context;
-use Sports\Competition;
-use Sports\Association;
-use Sports\League;
-use Sports\Season;
-use Sports\Structure as StructureBase;
+use Sports\Round;
 use Sports\Round\Number as RoundNumber;
+use Sports\Structure;
 
-class Structure implements SubscribingHandlerInterface
+class StructureHandler extends Handler implements SubscribingHandlerInterface
 {
+    public function __construct(protected DummyCreator $dummyCreator) {
+    }
+
     /**
      * @psalm-return list<array<string, int|string>>
      */
-    public static function getSubscribingMethods()
+    public static function getSubscribingMethods(): array
     {
-        return [
-//            [
-//                'direction' => GraphNavigatorInterface::DIRECTION_SERIALIZATION,
-//                'format' => 'json',
-//                'type' => 'DateTime',
-//                'method' => 'serializeToJson',
-//            ],
-            [
-                'direction' => GraphNavigatorInterface::DIRECTION_DESERIALIZATION,
-                'format' => 'json',
-                'type' => 'Sports\Structure',
-                'method' => 'deserializeFromJson',
-            ],
-        ];
+        return static::getDeserializationMethods(Structure::class);
     }
 
     /**
      * @param JsonDeserializationVisitor $visitor
-     * @param array<string, int|string|array|null> $arrStructure
+     * @param array<string, bool|array> $fieldValue
      * @param array<string, int|string> $type
      * @param Context $context
-     * @return StructureBase
+     * @return Structure
      */
     public function deserializeFromJson(
         JsonDeserializationVisitor $visitor,
-        array $arrStructure,
+        array $fieldValue,
         array $type,
         Context $context
-    ): StructureBase {
-        $arrStructure["firstRoundNumber"]["previous"] = null;
-        $metadataRoundNumber = new StaticPropertyMetadata('Sports\Round\Number', "firstRoundNumber", $arrStructure["firstRoundNumber"]);
-        $metadataRoundNumber->setType(['name' => 'Sports\Round\Number', "params" => [ "competition" => $this->createCompetition()]]);
-        $firstRoundNumber = $visitor->visitProperty($metadataRoundNumber, $arrStructure);
+    ): Structure {
+        $firstRoundNumber = $this->getProperty(
+            $visitor,
+            $fieldValue,
+            "firstRoundNumber",
+            RoundNumber::class);
+        $fieldValue["rootRound"]["roundNumber"] = $firstRoundNumber;
+        $rootRound = $this->getProperty(
+            $visitor,
+            $fieldValue,
+            "rootRound",
+            Round::class);
 
-        $metadataRound = new StaticPropertyMetadata('Sports\Round', "rootRound", $arrStructure["rootRound"]);
-        $metadataRound->setType(['name' => 'Sports\Round', "params" => [ "roundnumber" => $firstRoundNumber]]);
-
-        return new StructureBase(
-            $firstRoundNumber,
-            $visitor->visitProperty($metadataRound, $arrStructure)
-        );
+        return new Structure($firstRoundNumber,$rootRound);
     }
 
-    private function createCompetition(): Competition
-    {
-        $association = new Association("knvb");
-        $league = new League($association, "my league");
-        $season = new Season("123", new \League\Period\Period("2018-12-17T11:33:15.710Z", "2018-12-17T11:33:15.710Z"));
-        $competition = new Competition($league, $season);
-        $competition->setStartDateTime(new \DateTimeImmutable("2018-12-17T12:00:00.000Z"));
-        return $competition;
-    }
+
 
     //function postSerialize( Structure $structure, Competition $competition ) {
 //    deserializeFromJson( $structure->getRootRound(), $structure->getFirstRoundNumber(), $competition );

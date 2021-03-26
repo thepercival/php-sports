@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Sports\Team\Player;
 
+use SportsHelpers\Repository as BaseRepository;
 use Doctrine\ORM\EntityRepository;
 use League\Period\Period;
 use Sports\Team;
@@ -13,7 +14,7 @@ use Sports\Team\Player as PlayerBase;
  */
 class Repository extends EntityRepository
 {
-    use \Sports\Repository;
+    use BaseRepository;
     /*public function find($id, $lockMode = null, $lockVersion = null): ?PlayerBase
     {
         return $this->_em->find($this->_entityName, $id, $lockMode, $lockVersion);

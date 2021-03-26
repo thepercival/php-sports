@@ -100,14 +100,15 @@ class Repository
         $structureMap = [];
         $roundNumbers = $this->roundNumberRepos->findBy($filter, array("number" => "asc"));
         foreach ($roundNumbers as $roundNumber) {
-            if (array_key_exists($roundNumber->getCompetition()->getId(), $structureMap)) {
+            $competitionId = $roundNumber->getCompetition()->getId();
+            if ($competitionId === null || isset($structureMap[$competitionId])) {
                 continue;
             }
             $structure = $this->getStructure($roundNumber->getCompetition());
             if ($structure === null) {
                 continue;
             }
-            $structureMap[$roundNumber->getCompetition()->getId()] = $structure;
+            $structureMap[$competitionId] = $structure;
         }
         return $structureMap;
     }

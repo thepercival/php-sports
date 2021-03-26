@@ -21,45 +21,13 @@ use Sports\Qualify\AgainstConfig\Service as QualifyAgainstConfigService;
 
 class Copier
 {
-    public function __construct(protected Competition $competition)
+    public function copy(Structure $structure, Competition $newCompetition): Structure
     {
-    }
-
-    public function copy(Structure $structure): Structure
-    {
-        $planningConfigService = new PlanningConfigService();
-        $gameAmountConfigService = new GameAmountConfigService();
-
-        $firstRoundNumber = null;
-        $rootRound = null;
-        {
-            /** @var RoundNumber|null $previousRoundNumber */
-            $previousRoundNumber = null;
-            foreach ($structure->getRoundNumbers() as $roundNumber) {
-                $newRoundNumber = $previousRoundNumber !== null ? $previousRoundNumber->createNext() : new RoundNumber(
-                    $this->competition,
-                    $previousRoundNumber
-                );
-                $planningConfig = $roundNumber->getPlanningConfig();
-                if ($planningConfig !== null) {
-                    $planningConfigService->copy($planningConfig, $newRoundNumber);
-                }
-                foreach ($roundNumber->getGameAmountConfigs() as $gameAmountConfig) {
-                    $newCompetitionSport = $this->getNewCompetitionSport($gameAmountConfig->getCompetitionSport());
-                    $gameAmountConfigService->copy($newCompetitionSport, $newRoundNumber, $gameAmountConfig->getAmount());
-                }
-
-                if ($firstRoundNumber === null) {
-                    $firstRoundNumber = $newRoundNumber;
-                }
-                $previousRoundNumber = $newRoundNumber;
-            }
-        }
-        if ($firstRoundNumber === null) {
-            throw new Exception("geen eerste rondenummer aanwezig", E_ERROR);
-        }
-        $rootRound = $this->copyRound($firstRoundNumber, $structure->getRootRound());
-        $newStructure = new Structure($firstRoundNumber, $rootRound);
+        $newFirstRoundNumber = new RoundNumber($newCompetition);
+        $this->copyRoundNumber($structure->getFirstRoundNumber(), $newFirstRoundNumber);
+        $newRootRound = new Round($newFirstRoundNumber);
+        $this->copyRound($structure->getRootRound(), $newRootRound);
+        $newStructure = new Structure($newFirstRoundNumber, $newRootRound);
         $newStructure->setStructureNumbers();
 
         $postCreateService = new PostCreateService($newStructure);
@@ -67,9 +35,31 @@ class Copier
         return $newStructure;
     }
 
-    protected function getNewCompetitionSport(CompetitionSport $sourceCompetitionSport): CompetitionSport
+    protected function copyRoundNumber(RoundNumber $roundNumber, RoundNumber $newRoundNumber): void
     {
-        foreach ($this->competition->getSports() as $competitionSport) {
+        $planningConfigService = new PlanningConfigService();
+        $gameAmountConfigService = new GameAmountConfigService();
+
+        $planningConfig = $roundNumber->getPlanningConfig();
+        if ($planningConfig !== null) {
+            $planningConfigService->copy($planningConfig, $newRoundNumber);
+        }
+        foreach ($roundNumber->getGameAmountConfigs() as $gameAmountConfig) {
+            $newCompetitionSport = $this->getNewCompetitionSport(
+                $gameAmountConfig->getCompetitionSport(),
+                $newRoundNumber->getCompetition()
+            );
+            $gameAmountConfigService->copy($newCompetitionSport, $newRoundNumber, $gameAmountConfig->getAmount());
+        }
+        $nextRoundNumber = $roundNumber->getNext();
+        if ($nextRoundNumber !== null) {
+            $this->copyRoundNumber($nextRoundNumber, $newRoundNumber->createNext());
+        }
+    }
+
+    protected function getNewCompetitionSport(CompetitionSport $sourceCompetitionSport, Competition $newCompetition): CompetitionSport
+    {
+        foreach ($newCompetition->getSports() as $competitionSport) {
             if ($competitionSport->getSport()->getId() === $sourceCompetitionSport->getSport()->getId()) {
                 return $competitionSport;
             }
@@ -77,70 +67,69 @@ class Copier
         throw new Exception("een sport kon niet gevonden worden", E_ERROR);
     }
 
-    protected function copyRound(RoundNumber $roundNumber, Round $round, QualifyGroup $parentQualifyGroup = null): Round
+    protected function copyRound(Round $round, Round $newRound): void
     {
-        $newRound = $this->copyRoundHelper(
-            $roundNumber,
+        $this->copyRoundHelper(
+            $newRound,
             array_values($round->getPoules()->toArray()),
             array_values($round->getFirstScoreConfigs()->toArray()),
-            array_values($round->getQualifyAgainstConfigs()->toArray()),
-            $parentQualifyGroup
+            array_values($round->getQualifyAgainstConfigs()->toArray())
         );
-        $nextRoundNumber = $roundNumber->getNext();
-        if( $nextRoundNumber === null ) {
-            return $newRound;
+        $newNextRoundNumber = $newRound->getNumber()->getNext();
+        if ($newNextRoundNumber === null) {
+            return;
         }
         foreach ($round->getQualifyGroups() as $qualifyGroup) {
-            $newQualifyGroup = new QualifyGroup($newRound, $qualifyGroup->getWinnersOrLosers(), $nextRoundNumber);
+            $newQualifyGroup = new QualifyGroup($newRound, $qualifyGroup->getWinnersOrLosers(), $newNextRoundNumber);
             $newQualifyGroup->setNumber($qualifyGroup->getNumber());
             // $qualifyGroup->setNrOfHorizontalPoules( $qualifyGroupSerialized->getNrOfHorizontalPoules() );
-            $this->copyRound($nextRoundNumber, $qualifyGroup->getChildRound(), $newQualifyGroup);
+            $this->copyRound($qualifyGroup->getChildRound(), $newQualifyGroup->getChildRound());
         }
-        return $newRound;
     }
 
     /**
-     * @param RoundNumber $roundNumber
+     * @param Round $newRound
      * @param list<Poule> $poules
      * @param list<ScoreConfig> $scoreConfigs
      * @param list<QualifyAgainstConfig> $qualifyAgainstConfigs
-     * @param QualifyGroup|null $parentQualifyGroup
-     * @return Round
      */
     protected function copyRoundHelper(
-        RoundNumber $roundNumber,
+        Round $newRound,
         array $poules,
         array $scoreConfigs,
-        array $qualifyAgainstConfigs,
-        QualifyGroup $parentQualifyGroup = null
-    ): Round {
-        $round = new Round($roundNumber, $parentQualifyGroup);
+        array $qualifyAgainstConfigs
+    ): void {
         foreach ($poules as $poule) {
-            $this->copyPoule($round, $poule->getNumber(), array_values($poule->getPlaces()->toArray()));
+            $this->copyPoule($newRound, $poule->getNumber(), array_values($poule->getPlaces()->toArray()));
         }
         $scoreConfigService = new ScoreConfigService();
         foreach ($scoreConfigs as $scoreConfig) {
-            $newCompetitionSport = $this->getNewCompetitionSport($scoreConfig->getCompetitionSport());
-            $scoreConfigService->copy($newCompetitionSport, $round, $scoreConfig);
+            $newCompetitionSport = $this->getNewCompetitionSport(
+                $scoreConfig->getCompetitionSport(),
+                $newRound->getCompetition()
+            );
+            $scoreConfigService->copy($newCompetitionSport, $newRound, $scoreConfig);
         }
         $qualifyAgainstConfigService = new QualifyAgainstConfigService();
         foreach ($qualifyAgainstConfigs as $qualifyAgainstConfig) {
-            $newCompetitionSport = $this->getNewCompetitionSport($qualifyAgainstConfig->getCompetitionSport());
-            $qualifyAgainstConfigService->copy($newCompetitionSport, $round, $qualifyAgainstConfig);
+            $newCompetitionSport = $this->getNewCompetitionSport(
+                $qualifyAgainstConfig->getCompetitionSport(),
+                $newRound->getCompetition()
+            );
+            $qualifyAgainstConfigService->copy($newCompetitionSport, $newRound, $qualifyAgainstConfig);
         }
-        return $round;
     }
 
     /**
-     * @param Round $round
+     * @param Round $newRound
      * @param int $number
      * @param list<Place> $places
      */
-    protected function copyPoule(Round $round, int $number, array $places): void
+    protected function copyPoule(Round $newRound, int $number, array $places): void
     {
-        $poule = new Poule($round, $number);
+        $newPoule = new Poule($newRound, $number);
         foreach ($places as $place) {
-            new Place($poule, $place->getNumber());
+            new Place($newPoule, $place->getNumber());
         }
     }
 

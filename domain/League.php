@@ -4,7 +4,9 @@ declare(strict_types=1);
 namespace Sports;
 
 use \Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\PersistentCollection;
 use InvalidArgumentException;
+use Sports\Competition\Sport as CompetitionSport;
 use SportsHelpers\Identifiable;
 
 class League extends Identifiable
@@ -12,9 +14,10 @@ class League extends Identifiable
     protected string $name;
     protected string|null $abbreviation;
     /**
-     * @var ArrayCollection<int|string, Competition>
+     * @phpstan-var ArrayCollection<int|string, Competition>|PersistentCollection<int|string, Competition>
+     * @psalm-var ArrayCollection<int|string, Competition>
      */
-    protected ArrayCollection $competitions;
+    protected ArrayCollection|PersistentCollection $competitions;
     protected Association $association;
 
     const MIN_LENGTH_NAME = 3;
@@ -78,9 +81,10 @@ class League extends Identifiable
     }
 
     /**
-     * @return ArrayCollection<int|string, Competition>
+     * @phpstan-return ArrayCollection<int|string, Competition>|PersistentCollection<int|string, Competition>
+     * @psalm-return ArrayCollection<int|string, Competition>
      */
-    public function getCompetitions(): ArrayCollection
+    public function getCompetitions(): ArrayCollection|PersistentCollection
     {
         return $this->competitions;
     }

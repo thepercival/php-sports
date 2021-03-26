@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Sports\Game;
 
+use SportsHelpers\Repository as BaseRepository;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\QueryBuilder;
 use Sports\Game as GameBase;
@@ -19,7 +20,7 @@ use League\Period\Period;
  */
 class Repository extends EntityRepository
 {
-    use \Sports\Repository;
+    use BaseRepository;
 
     /**
      * @param Competition $competition

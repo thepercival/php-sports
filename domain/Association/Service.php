@@ -13,11 +13,15 @@ class Service
     public function changeParent(Association $association, Association $parentAssociation = null): Association
     {
         $descendantMap = $this->getDescendantMap($association);
-        $descendantMap[$association->getId()] = $association;
+        $associationId = $association->getId();
+        if ($associationId !== null) {
+            $descendantMap[$associationId] = $association;
+        }
         if ($parentAssociation !== null) {
             $ancestors = $this->getAncestors($parentAssociation, [$parentAssociation]);
             foreach ($ancestors as $ancestor) {
-                if (array_key_exists($ancestor->getId(), $descendantMap)) {
+                $ancestorId = $ancestor->getId();
+                if ($ancestorId !== null && isset($descendantMap[$ancestorId])) {
                     throw new \Exception("er ontstaat een circulaire relatie tussen de bonden", E_ERROR);
                 }
             }
@@ -37,7 +41,10 @@ class Service
             $descendants = [];
         }
         foreach ($association->getChildren() as $child) {
-            $descendants[$association->getId()] = $association;
+            $associationId = $association->getId();
+            if ($associationId !== null) {
+                $descendants[$associationId] = $association;
+            }
             $descendants = array_merge($descendants, $this->getDescendantMap($child, $descendants));
         }
         return $descendants;

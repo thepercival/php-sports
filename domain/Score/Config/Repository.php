@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Sports\Score\Config;
 
+use SportsHelpers\Repository as BaseRepository;
 use Doctrine\ORM\EntityRepository;
 use Sports\Competition\Sport as CompetitionSport;
 use Sports\Round;
@@ -13,7 +14,7 @@ use Sports\Score\Config as ScoreConfig;
  */
 class Repository extends EntityRepository
 {
-    use \Sports\Repository;
+    use BaseRepository;
 
     public function addObjects(CompetitionSport $competitionSport, Round $round): void
     {

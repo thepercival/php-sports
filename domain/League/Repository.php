@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Sports\League;
 
+use SportsHelpers\Repository as BaseRepository;
 use Sports\League as LeagueBase;
 use Doctrine\ORM\EntityRepository;
 
@@ -11,5 +12,5 @@ use Doctrine\ORM\EntityRepository;
  */
 class Repository extends EntityRepository
 {
-    use \Sports\Repository;
+    use BaseRepository;
 }

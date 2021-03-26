@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Sports\Tests\Qualify;
 
+use Sports\Output\StructureOutput;
 use PHPUnit\Framework\TestCase;
 use Sports\TestHelper\CompetitionCreator;
 use Sports\TestHelper\GamesCreator;
@@ -120,13 +121,15 @@ class ServiceTest extends TestCase
         $rootRound = $structure->getRootRound();
 
         $structureService->addQualifiers($rootRound, QualifyGroup::WINNERS, 4);
-        $structureService->addQualifiers($rootRound, QualifyGroup::LOSERS, 4);
+         $structureService->addQualifiers($rootRound, QualifyGroup::LOSERS, 4);
         // W[2,2], L[2,2]
 
         $winnersRound = $rootRound->getChild(QualifyGroup::WINNERS, 1);
         self::assertNotNull($winnersRound);
         $losersRound = $rootRound->getChild(QualifyGroup::LOSERS, 1);
         self::assertNotNull($losersRound);
+
+        (new StructureOutput())->output($structure);
 
         $structureService->removePoule($winnersRound);
         $structureService->removePoule($losersRound);

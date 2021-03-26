@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Sports\Poule;
 
+use SportsHelpers\Repository as BaseRepository;
 use Doctrine\ORM\EntityRepository;
 use Sports\Poule as PouleBase;
 
@@ -11,5 +12,5 @@ use Sports\Poule as PouleBase;
  */
 class Repository extends EntityRepository
 {
-    use \Sports\Repository;
+    use BaseRepository;
 }

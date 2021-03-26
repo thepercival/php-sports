@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Sports\Game\Place\Against;
 
+use SportsHelpers\Repository as BaseRepository;
 use Doctrine\ORM\EntityRepository;
 use Sports\Game\Place\Against as AgainstGamePlace;
 
@@ -11,5 +12,5 @@ use Sports\Game\Place\Against as AgainstGamePlace;
  */
 class Repository extends EntityRepository
 {
-    use \Sports\Repository;
+    use BaseRepository;
 }

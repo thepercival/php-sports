@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Sports\Person;
 
+use SportsHelpers\Repository as BaseRepository;
 use Doctrine\ORM\EntityRepository;
 use League\Period\Period;
 use Sports\Person;
@@ -14,7 +15,7 @@ use Sports\Team;
  */
 class Repository extends EntityRepository
 {
-    use \Sports\Repository;
+    use BaseRepository;
 
     /**
      * @param Period $period

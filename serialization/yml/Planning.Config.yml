@@ -2,7 +2,7 @@ Sports\Planning\Config:
   exclusion_policy: ALL
   exclude: false
   properties:
-    gameMode:
+    creationStrategy:
       type: integer
     extension:
       type: boolean

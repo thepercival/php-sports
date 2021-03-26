@@ -75,14 +75,14 @@ class Structure
     {
         $nrOfDropoutPlaces = 0;
         $setRoundStructureNumbers = function (Round $round) use (&$setRoundStructureNumbers, &$nrOfDropoutPlaces): void {
-            foreach ($round->getQualifyGroups(QualifyGroup::WINNERS) as $qualifyGroup) {
+            foreach ($round->getWinnersOrLosersQualifyGroups(QualifyGroup::WINNERS) as $qualifyGroup) {
                 /** @var Closure(Round): void $setRoundStructureNumbers */
                 $setRoundStructureNumbers($qualifyGroup->getChildRound());
             }
             /** @var int $nrOfDropoutPlaces */
             $round->setStructureNumber($nrOfDropoutPlaces);
             $nrOfDropoutPlaces += $round->getNrOfDropoutPlaces();
-            $losersQualifyGroups = array_reverse($round->getQualifyGroups(QualifyGroup::LOSERS)->slice(0));
+            $losersQualifyGroups = array_reverse($round->getWinnersOrLosersQualifyGroups(QualifyGroup::LOSERS)->slice(0));
             foreach ($losersQualifyGroups as $qualifyGroup) {
                 /** @var Closure(Round): void $setRoundStructureNumbers */
                 $setRoundStructureNumbers($qualifyGroup->getChildRound());

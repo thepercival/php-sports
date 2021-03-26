@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Sports\Association;
 
 use Doctrine\ORM\EntityRepository;
+use SportsHelpers\Repository as BaseRepository;
 use Sports\Association as AssociationBase;
 
 /**
@@ -11,5 +12,5 @@ use Sports\Association as AssociationBase;
  */
 class Repository extends EntityRepository
 {
-    use \Sports\Repository;
+    use BaseRepository;
 }

@@ -6,7 +6,7 @@
         <field name="winPointsExt" column="winPointsExt" type="decimal" precision="3" scale="1" nullable="false" unique="false"/>
         <field name="drawPointsExt" column="drawPointsExt" type="decimal" precision="3" scale="1" nullable="false" unique="false"/>
         <field name="losePointsExt" column="losePointsExt" type="decimal" precision="3" scale="1" nullable="false" unique="false"/>
-        <field name="pointsCalculation" column="pointsCalculation" type="smallint" nullable="false" unique="false"/>
+        <field name="pointsCalculationDep" column="pointsCalculation" type="smallint" nullable="false" unique="false"/>
         <many-to-one field="competition" target-entity="Sports\Competition" inversed-by="sportConfigs">
           <join-columns>
               <join-column name="competitionid" referenced-column-name="id" nullable="true" on-delete="CASCADE"/>

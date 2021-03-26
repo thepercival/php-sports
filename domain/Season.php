@@ -1,8 +1,10 @@
 <?php
+declare(strict_types=1);
 
 namespace Sports;
 
 use DateTimeImmutable;
+use Doctrine\ORM\PersistentCollection;
 use League\Period\Period;
 use \Doctrine\Common\Collections\ArrayCollection;
 use SportsHelpers\Identifiable;
@@ -13,9 +15,10 @@ class Season extends Identifiable
     private DateTimeImmutable $startDateTime;
     private DateTimeImmutable $endDateTime;
     /**
-     * @var ArrayCollection<int|string, Competition>
+     * @phpstan-var ArrayCollection<int|string, Competition>|PersistentCollection<int|string, Competition>
+     * @psalm-var ArrayCollection<int|string, Competition>
      */
-    private ArrayCollection $competitions;
+    private ArrayCollection|PersistentCollection $competitions;
 
     const MIN_LENGTH_NAME = 2;
     const MAX_LENGTH_NAME = 9;
@@ -77,9 +80,10 @@ class Season extends Identifiable
     }
 
     /**
-     * @return ArrayCollection<int|string, Competition>
+     * @phpstan-return ArrayCollection<int|string, Competition>|PersistentCollection<int|string, Competition>
+     * @psalm-return ArrayCollection<int|string, Competition>
      */
-    public function getCompetitions(): ArrayCollection
+    public function getCompetitions(): ArrayCollection|PersistentCollection
     {
         return $this->competitions;
     }

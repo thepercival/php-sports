@@ -1,7 +1,9 @@
 <?php
+declare(strict_types=1);
 
 namespace Sports\Competition\Referee;
 
+use SportsHelpers\Repository as BaseRepository;
 use Sports\Competition\Referee;
 use Doctrine\ORM\EntityRepository;
 
@@ -10,10 +12,5 @@ use Doctrine\ORM\EntityRepository;
  */
 class Repository extends EntityRepository
 {
-    use \Sports\Repository;
-
-    /*public function find($id, $lockMode = null, $lockVersion = null): ?Referee
-    {
-        return $this->_em->find($this->_entityName, $id, $lockMode, $lockVersion);
-    }*/
+    use BaseRepository;
 }

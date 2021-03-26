@@ -4,6 +4,8 @@ declare(strict_types=1);
 namespace Sports;
 
 use \Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\ORM\PersistentCollection;
 use Exception;
 use Sports\Competition\Sport as CompetitionSport;
 use Sports\Qualify\AgainstConfig as QualifyAgainstConfig;
@@ -20,13 +22,15 @@ class Round extends Identifiable
     protected string|null $name = null;
     protected QualifyGroup|null $parentQualifyGroup;
     /**
-     * @var ArrayCollection<int|string, Poule>
+     * @phpstan-var ArrayCollection<int|string, Poule>|PersistentCollection<int|string, Poule>
+     * @psalm-var ArrayCollection<int|string, Poule>
      */
-    protected ArrayCollection $poules;
+    protected ArrayCollection|PersistentCollection $poules;
     /**
-     * @var ArrayCollection<int|string,QualifyGroup>
+     * @phpstan-var ArrayCollection<int|string, QualifyGroup>|PersistentCollection<int|string, QualifyGroup>
+     * @psalm-var ArrayCollection<int|string, QualifyGroup>
      */
-    protected ArrayCollection $qualifyGroups;
+    protected ArrayCollection|PersistentCollection $qualifyGroups;
     /**
      * @var list<HorizontalPoule>
      */
@@ -36,13 +40,15 @@ class Round extends Identifiable
      */
     protected array $winnersHorizontalPoules = array();
     /**
-     * @var ArrayCollection<int|string,QualifyAgainstConfig>
+     * @phpstan-var ArrayCollection<int|string, QualifyAgainstConfig>|PersistentCollection<int|string, QualifyAgainstConfig>
+     * @psalm-var ArrayCollection<int|string, QualifyAgainstConfig>
      */
-    protected ArrayCollection $qualifyAgainstConfigs;
+    protected ArrayCollection|PersistentCollection $qualifyAgainstConfigs;
     /**
-     * @var ArrayCollection<int|string,ScoreConfig>
+     * @phpstan-var ArrayCollection<int|string, ScoreConfig>|PersistentCollection<int|string, ScoreConfig>
+     * @psalm-var ArrayCollection<int|string, ScoreConfig>
      */
-    protected ArrayCollection $scoreConfigs;
+    protected ArrayCollection|PersistentCollection $scoreConfigs;
     protected int $structureNumber = 0;
 
     const WINNERS = 1;
@@ -115,14 +121,20 @@ class Round extends Identifiable
     }
 
     /**
-     * @param int|null $winnersOrLosers
-     * @return ArrayCollection<int|string,QualifyGroup>
+     * @phpstan-return ArrayCollection<int|string, QualifyGroup>|PersistentCollection<int|string, QualifyGroup>
+     * @psalm-return ArrayCollection<int|string, QualifyGroup>
      */
-    public function getQualifyGroups(int|null $winnersOrLosers = null): ArrayCollection
+    public function getQualifyGroups(): ArrayCollection|PersistentCollection
     {
-        if ($winnersOrLosers === null) {
-            return clone $this->qualifyGroups;
-        }
+        return clone $this->qualifyGroups;
+    }
+
+    /**
+     * @param int $winnersOrLosers
+     * @return ArrayCollection<int|string, QualifyGroup>
+     */
+    public function getWinnersOrLosersQualifyGroups(int $winnersOrLosers): ArrayCollection
+    {
         return $this->qualifyGroups->filter(function (QualifyGroup $qualifyGroup) use ($winnersOrLosers): bool {
             return $qualifyGroup->getWinnersOrLosers() === $winnersOrLosers;
         });
@@ -140,11 +152,16 @@ class Round extends Identifiable
         return $this->qualifyGroups->removeElement($qualifyGroup);
     }
 
-    public function clearQualifyGroups(int $winnersOrLosers): void
+    public function clearRoundAndQualifyGroups(int $winnersOrLosers): void
     {
-        $qualifyGroupsToRemove = $this->getQualifyGroups($winnersOrLosers);
+        $nextRoundNumber = $this->number->getNext();
+        $rounds = $nextRoundNumber !== null ? $nextRoundNumber->getRounds() : null;
+        $qualifyGroupsToRemove = $this->getWinnersOrLosersQualifyGroups($winnersOrLosers);
         foreach ($qualifyGroupsToRemove as $qualifyGroupToRemove) {
             $this->qualifyGroups->removeElement($qualifyGroupToRemove);
+            if( $rounds !== null && $rounds->contains($qualifyGroupToRemove->getRound())) {
+                $rounds->removeElement($qualifyGroupToRemove->getRound());
+            }
         }
     }
 
@@ -169,7 +186,7 @@ class Round extends Identifiable
 
     public function getQualifyGroup(int $winnersOrLosers, int $qualifyGroupNumber): ?QualifyGroup
     {
-        $qualifyGroup = $this->getQualifyGroups($winnersOrLosers)->filter(function (QualifyGroup $qualifyGroup) use ($qualifyGroupNumber): bool {
+        $qualifyGroup = $this->getWinnersOrLosersQualifyGroups($winnersOrLosers)->filter(function (QualifyGroup $qualifyGroup) use ($qualifyGroupNumber): bool {
             return $qualifyGroup->getNumber() === $qualifyGroupNumber;
         })->last();
         return $qualifyGroup === false ? null : $qualifyGroup;
@@ -177,7 +194,7 @@ class Round extends Identifiable
 
     public function getBorderQualifyGroup(int $winnersOrLosers): QualifyGroup|null
     {
-        $qualifyGroups = $this->getQualifyGroups($winnersOrLosers);
+        $qualifyGroups = $this->getWinnersOrLosersQualifyGroups($winnersOrLosers);
         $last = $qualifyGroups->last();
         return $last !== false ? $last : null;
     }
@@ -208,21 +225,12 @@ class Round extends Identifiable
     }
 
     /**
-     * @return ArrayCollection<int|string, Poule>
+     * @phpstan-return ArrayCollection<int|string, Poule>|PersistentCollection<int|string, Poule>
+     * @psalm-return ArrayCollection<int|string, Poule>
      */
-    public function getPoules(): ArrayCollection
+    public function getPoules(): ArrayCollection|PersistentCollection
     {
         return $this->poules;
-    }
-
-    /**
-     * @param ArrayCollection<int|string,Poule> $poules
-     *
-     * @return void
-     */
-    public function setPoules(ArrayCollection $poules): void
-    {
-        $this->poules = $poules;
     }
 
     public function getPoule(int $number): Poule
@@ -390,7 +398,12 @@ class Round extends Identifiable
     public function getNrOfPlacesChildren(int $winnersOrLosers = null): int
     {
         $nrOfPlacesChildRounds = 0;
-        $qualifyGroups = $this->getQualifyGroups($winnersOrLosers);
+        if($winnersOrLosers === null) {
+            $qualifyGroups = $this->getQualifyGroups();
+        } else {
+            $qualifyGroups = $this->getWinnersOrLosersQualifyGroups($winnersOrLosers);
+        }
+
         foreach ($qualifyGroups as $qualifyGroup) {
             $nrOfPlacesChildRounds += $qualifyGroup->getChildRound()->getNrOfPlaces();
         }
@@ -412,9 +425,10 @@ class Round extends Identifiable
     }
 
     /**
-     * @return ArrayCollection<int|string, ScoreConfig>
+     * @phpstan-return ArrayCollection<int|string, ScoreConfig>|PersistentCollection<int|string, ScoreConfig>
+     * @psalm-return ArrayCollection<int|string, ScoreConfig>
      */
-    public function getScoreConfigs(): ArrayCollection
+    public function getScoreConfigs(): ArrayCollection|PersistentCollection
     {
         return $this->scoreConfigs;
     }
@@ -463,9 +477,9 @@ class Round extends Identifiable
     }
 
     /**
-     * @return ArrayCollection<int|string, ScoreConfig>
+     * @return Collection<int|string, ScoreConfig>
      */
-    public function getFirstScoreConfigs(): ArrayCollection
+    public function getFirstScoreConfigs(): Collection
     {
         return $this->getScoreConfigs()->filter(function (ScoreConfig $config): bool {
             return $config->isFirst();
@@ -473,9 +487,10 @@ class Round extends Identifiable
     }
 
     /**
-     * @return ArrayCollection<int|string,QualifyAgainstConfig>
+     * @phpstan-return ArrayCollection<int|string, QualifyAgainstConfig>|PersistentCollection<int|string, QualifyAgainstConfig>
+     * @psalm-return ArrayCollection<int|string, QualifyAgainstConfig>
      */
-    public function getQualifyAgainstConfigs(): ArrayCollection
+    public function getQualifyAgainstConfigs(): ArrayCollection|PersistentCollection
     {
         return $this->qualifyAgainstConfigs;
     }

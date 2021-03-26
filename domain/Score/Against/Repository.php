@@ -6,13 +6,14 @@ namespace Sports\Score\Against;
 use Doctrine\ORM\EntityRepository;
 use Sports\Game\Against as AgainstGame;
 use Sports\Score\Against as AgainstScore;
+use SportsHelpers\Repository as BaseRepository;
 
 /**
  * @template-extends EntityRepository<AgainstScore>
  */
 class Repository extends EntityRepository
 {
-    use \Sports\Repository;
+    use BaseRepository;
 
     public function removeScores(AgainstGame $game): void
     {

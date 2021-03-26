@@ -5,6 +5,7 @@ namespace Sports\Round;
 
 use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\PersistentCollection;
 use Sports\Competition;
 use Sports\Game as GameBase;
@@ -27,15 +28,17 @@ class Number extends Identifiable
     protected int $number;
     protected RoundNumber|null $next = null;
     /**
-     * @var ArrayCollection<int|string, Round>
+     * @phpstan-var ArrayCollection<int|string, Round>|PersistentCollection<int|string, Round>
+     * @psalm-var ArrayCollection<int|string, Round>
      */
-    protected ArrayCollection $rounds;
+    protected ArrayCollection|PersistentCollection $rounds;
     protected bool $hasPlanning;
     protected PlanningConfig|null $planningConfig = null;
     /**
-     * @var ArrayCollection<int|string, GameAmountConfig>
+     * @phpstan-var ArrayCollection<int|string, GameAmountConfig>|PersistentCollection<int|string, GameAmountConfig>
+     * @psalm-var ArrayCollection<int|string, GameAmountConfig>
      */
-    protected $gameAmountConfigs;
+    protected ArrayCollection|PersistentCollection $gameAmountConfigs;
 
     public function __construct(protected Competition $competition, protected RoundNumber|null $previous = null)
     {
@@ -116,9 +119,10 @@ class Number extends Identifiable
     }
 
     /**
-     * @return ArrayCollection<int|string, Round>
+     * @phpstan-return ArrayCollection<int|string, Round>|PersistentCollection<int|string, Round>
+     * @psalm-return ArrayCollection<int|string, Round>
      */
-    public function getRounds()
+    public function getRounds(): ArrayCollection|PersistentCollection
     {
         return $this->rounds;
     }
@@ -271,9 +275,9 @@ class Number extends Identifiable
     }
 
     /**
-     * @return ArrayCollection<int|string, CompetitionSport>
+     * @return Collection<int|string, CompetitionSport>
      */
-    public function getCompetitionSports(): ArrayCollection
+    public function getCompetitionSports(): Collection
     {
         return $this->getCompetition()->getSports();
     }
@@ -299,9 +303,10 @@ class Number extends Identifiable
     }
 
     /**
-     * @return ArrayCollection<int|string, GameAmountConfig>
+     * @phpstan-return ArrayCollection<int|string, GameAmountConfig>|PersistentCollection<int|string, GameAmountConfig>
+     * @psalm-return ArrayCollection<int|string, GameAmountConfig>
      */
-    public function getGameAmountConfigs(): ArrayCollection
+    public function getGameAmountConfigs(): ArrayCollection|PersistentCollection
     {
         return $this->gameAmountConfigs;
     }

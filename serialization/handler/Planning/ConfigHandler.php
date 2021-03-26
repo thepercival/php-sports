@@ -1,0 +1,56 @@
+<?php
+declare(strict_types=1);
+
+namespace Sports\SerializationHandler\Planning;
+
+use Sports\Planning\Config as PlanningConfig;
+use JMS\Serializer\Handler\SubscribingHandlerInterface;
+use JMS\Serializer\JsonDeserializationVisitor;
+use JMS\Serializer\Context;
+use Sports\Qualify\Group as QualifyGroup;
+use Sports\Round;
+use Sports\Round\Number as RoundNumber;
+use Sports\SerializationHandler\Handler;
+
+class ConfigHandler extends Handler implements SubscribingHandlerInterface
+{
+    /**
+     * @psalm-return list<array<string, int|string>>
+     */
+    public static function getSubscribingMethods(): array
+    {
+        return static::getDeserializationMethods(PlanningConfig::class);
+    }
+
+    /**
+     * @param JsonDeserializationVisitor $visitor
+     * @param array<string, int|bool|RoundNumber> $fieldValue
+     * @param array<string, int|string> $type
+     * @param Context $context
+     * @return PlanningConfig
+     */
+    public function deserializeFromJson(
+        JsonDeserializationVisitor $visitor,
+        array $fieldValue,
+        array $type,
+        Context $context
+    ): PlanningConfig
+    {
+        if (!isset($fieldValue["roundNumber"])) {
+            throw new \Exception('malformd json => planningConfig', E_ERROR);
+        }
+        $planningConfig = new PlanningConfig(
+            $fieldValue["roundNumber"],
+            $fieldValue["creationStrategy"],
+            $fieldValue["extension"],
+            $fieldValue["enableTime"],
+            $fieldValue["minutesPerGame"],
+            $fieldValue["minutesPerGameExt"],
+            $fieldValue["minutesBetweenGames"],
+            $fieldValue["minutesAfter"],
+            $fieldValue["selfReferee"]
+        );
+
+        return $planningConfig;
+    }
+}

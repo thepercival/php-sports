@@ -19,6 +19,7 @@ class ConfigDep extends Identifiable
      * @var ArrayCollection<int|string, Field>
      */
     protected ArrayCollection $fieldsDep;
+    protected int $pointsCalculationDep = 0;
 
     public function __construct(protected SportBase $sport, protected Competition $competition)
     {

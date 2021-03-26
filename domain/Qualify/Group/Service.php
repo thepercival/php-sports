@@ -58,7 +58,7 @@ class Service
     public function merge(QualifyGroup $firstQualifyGroup, QualifyGroup $secondQualifyGroup): void
     {
         $round = $firstQualifyGroup->getRound();
-        $qualifyGroups = $round->getQualifyGroups($firstQualifyGroup->getWinnersOrLosers());
+        $qualifyGroups = $round->getWinnersOrLosersQualifyGroups($firstQualifyGroup->getWinnersOrLosers());
         $index = $qualifyGroups->indexOf($secondQualifyGroup);
         $round->removeQualifyGroup($secondQualifyGroup);
         $this->renumberQualifyGroups($round, $firstQualifyGroup->getWinnersOrLosers());
@@ -97,7 +97,7 @@ class Service
     protected function renumberQualifyGroups(Round $round, int $winnersOrLosers): void
     {
         $number = 1;
-        foreach ($round->getQualifyGroups($winnersOrLosers) as $qualifyGroup) {
+        foreach ($round->getWinnersOrLosersQualifyGroups($winnersOrLosers) as $qualifyGroup) {
             $qualifyGroup->setNumber($number++);
         }
     }
