@@ -4,13 +4,13 @@ declare(strict_types=1);
 namespace Sports\Output;
 
 use Psr\Log\LoggerInterface;
+use Sports\Output\Grid\Cell;
 use SportsHelpers\Output as OutputBase;
-use Stringable;
 
 final class Grid extends OutputBase
 {
     /**
-     * @var array<int, array<int, string>>
+     * @var array<int, array<int, Cell>>
      */
     private array $grid = [];
     public function __construct(protected int $height, protected int $width, LoggerInterface $logger = null)
@@ -19,18 +19,25 @@ final class Grid extends OutputBase
         for ($i = 0 ; $i < $this->height ; $i++) {
             $this->grid[$i] = [];
             for ($j = 0 ; $j < $this->width ; $j++) {
-                $this->grid[$i][$j] = ' ';
+                $this->grid[$i][$j] = new Cell(' ');
             }
         }
     }
 
-    public function setHorizontal(Coordinate $coordinate, string $char): Coordinate {
-        $this->grid[$coordinate->getY()][$coordinate->getX()] = $char;
+    public function setColor(Coordinate $coordinate, int $color): void
+    {
+        $this->grid[$coordinate->getY()][$coordinate->getX()]->setColor($color);
+    }
+
+    public function setHorizontal(Coordinate $coordinate, string $char): Coordinate
+    {
+        $this->grid[$coordinate->getY()][$coordinate->getX()]->setValue($char);
         return $coordinate->incrementX();
     }
 
-    public function setVertical(Coordinate $coordinate, string $char): Coordinate {
-        $this->grid[$coordinate->getY()][$coordinate->getX()] = $char;
+    public function setVertical(Coordinate $coordinate, string $char): Coordinate
+    {
+        $this->grid[$coordinate->getY()][$coordinate->getX()]->setValue($char);
         return $coordinate->incrementY();
     }
 
@@ -38,8 +45,8 @@ final class Grid extends OutputBase
     {
         foreach ($this->grid as $line) {
             $string = '';
-            foreach ($line as $value) {
-                $string .= $value;
+            foreach ($line as $cell) {
+                $string .= $cell;
             }
             $this->logger->info($string);
         }

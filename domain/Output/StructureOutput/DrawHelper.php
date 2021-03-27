@@ -11,9 +11,12 @@ use Sports\Round;
 use Sports\Structure;
 use Sports\Round\Number as RoundNumber;
 use Sports\Qualify\Group as QualifyGroup;
+use SportsHelpers\Output\Color;
 
 final class DrawHelper
 {
+    use Color;
+    
     protected NameService $nameService;
     protected RangeCalculator $rangeCalculator;
 
@@ -120,8 +123,9 @@ final class DrawHelper
         $this->drawer->drawHorizontalCell($selfCoordinate, '|', $roundWidth, Drawer::ALIGN_CENTER);
         $selfCoordinate = $selfCoordinate->incrementY();
         $qualifyGroupName = $qualifyGroup->getWinnersOrLosers() === QualifyGroup::WINNERS ? 'w' : 'l';
+        $color = $qualifyGroup->getWinnersOrLosers() === QualifyGroup::WINNERS ? 2 : 1;
         $qualifyGroupName .= $qualifyGroup->getNumber();
-        $this->drawer->drawHorizontalCell($selfCoordinate, $qualifyGroupName, $roundWidth, Drawer::ALIGN_CENTER);
+        $this->drawer->drawHorizontalCell($selfCoordinate, $qualifyGroupName, $roundWidth, Drawer::ALIGN_CENTER, $color);
         $this->drawer->drawHorizontalCell($selfCoordinate->incrementY(), '|', $roundWidth, Drawer::ALIGN_CENTER);
 
         $childRoundCoordinate = $origin->addY(RangeCalculator::QUALIFYGROUPHEIGHT);

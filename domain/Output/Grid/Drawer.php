@@ -19,35 +19,37 @@ final class Drawer
     {
     }
 
-    public function drawHorizontal(Coordinate $coordinate, string $value): Coordinate
+    public function drawHorizontal(Coordinate $coordinate, string $value, int $color = 0): Coordinate
     {
         $valueAsArray = str_split($value);
         while ($char = array_shift($valueAsArray)) {
+            $this->grid->setColor($coordinate, $color);
             $coordinate = $this->grid->setHorizontal($coordinate, $char);
         }
         return $coordinate->decrementX();
     }
 
-    public function drawHorizontalLine(Coordinate $coordinate, int $length, string $value = '-'): Coordinate
+    public function drawHorizontalLine(Coordinate $coordinate, int $length, string $value = '-', int $color = 0): Coordinate
     {
-        return $this->drawHorizontal($coordinate, $this->initString($length, $value));
+        return $this->drawHorizontal($coordinate, $this->initString($length, $value), $color);
     }
 
-    public function drawVertical(Coordinate $coordinate, string $value): Coordinate
+    public function drawVertical(Coordinate $coordinate, string $value, int $color = 0): Coordinate
     {
         $valueAsArray = str_split($value);
         while ($char = array_shift($valueAsArray)) {
+            $this->grid->setColor($coordinate, $color);
             $coordinate = $this->grid->setVertical($coordinate, $char);
         }
         return $coordinate->decrementY();
     }
 
-    public function drawVerticalLine(Coordinate $coordinate, int $length, string $value = '|'): Coordinate
+    public function drawVerticalLine(Coordinate $coordinate, int $length, string $value = '|', int $color = 0): Coordinate
     {
-        return $this->drawVertical($coordinate, $this->initString($length, $value));
+        return $this->drawVertical($coordinate, $this->initString($length, $value), $color);
     }
 
-    public function drawHorizontalCell(Coordinate $coordinate, string $text, int $width, int $align): Coordinate
+    public function drawHorizontalCell(Coordinate $coordinate, string $text, int $width, int $align, int $color = 0): Coordinate
     {
         $char = ' ';
         if (strlen($text) > $width) {
@@ -64,7 +66,7 @@ final class Drawer
                 $text = $this->addToString($text, $char, $align);
             }
         }
-        return $this->drawHorizontal($coordinate, $text);
+        return $this->drawHorizontal($coordinate, $text, $color);
     }
 
     public function initString(int $length, string $char = ' '): string
@@ -83,91 +85,4 @@ final class Drawer
         }
         return $char . $text;
     }
-
-//
-//
-//
-//    /**
-//     * @param list<TogetherGamePlace|AgainstGamePlace> $gamePlaces
-//     * @return string
-//     */
-//    protected function getPlacesAsString(array $gamePlaces): string
-//    {
-//        return implode(' & ', array_map(
-//            function (TogetherGamePlace|AgainstGamePlace $gamePlace): string {
-//                return $this->getPlaceAsString($gamePlace->getPlace());
-//            },
-//            $gamePlaces
-//        ));
-//    }
-//
-//    protected function getFieldAsString(Field $field = null): string
-//    {
-//        if ($field === null) {
-//            return '';
-//        }
-//        $priority = $field->getPriority();
-//        $fieldColor = $this->useColors() ? ($priority % 10) : -1;
-//        $retVal = 'field ' . ($priority < 10 ? ' ' : '') . $priority;
-//        return $this->outputColor($fieldColor, $retVal);
-//    }
-//
-//    protected function getPlaceAsString(Place $place): string
-//    {
-//        $retVal = $this->nameService->getPlaceFromName($place, false, false);
-//        if ($this->competitorMap !== null) {
-//            $competitor = $this->competitorMap->getCompetitor($place->getStartLocation());
-//            if ($competitor !== null) {
-//                $retVal .= ' ' . $competitor->getName();
-//            }
-//        }
-//        while (strlen($retVal) < 10) {
-//            $retVal .=  ' ';
-//        }
-//        if (strlen($retVal) > 10) {
-//            $retVal = substr($retVal, 0, 10);
-//        }
-//        $useColors = $this->useColors() && $place->getPoule()->getNumber() === 1;
-//        $placeColor = $useColors ? ($place->getNumber() % 10) : -1;
-//        return $this->outputColor($placeColor, $retVal);
-//    }
-//
-//    protected function getRefereeAsString(AgainstGame|TogetherGame $game): string
-//    {
-//        $refereePlace = $game->getRefereePlace();
-//        $referee = $game->getReferee();
-//        if ($referee === null && $refereePlace === null) {
-//            return '';
-//        }
-//        $refereeDescription = $this->getRefereeDescription($referee, $refereePlace);
-//        $refNr = -1;
-//        if ($this->useColors()) {
-//            if ($refereePlace !== null) {
-//                $refNr = $refereePlace->getNumber();
-//            } elseif ($referee !== null) {
-//                $refNr = $referee->getPriority();
-//            }
-//        }
-//
-//        $refereeColor = $this->useColors() ? ($refNr % 10) : -1;
-//        return $this->outputColor($refereeColor, $refereeDescription);
-//    }
-//
-//    protected function getRefereeDescription(Referee|null $referee, Place|null $refPlace): string
-//    {
-//        if ($referee === null && $refPlace === null) {
-//            return '';
-//        }
-//        $description = '';
-//        if ($refPlace !== null) {
-//            $description = $this->nameService->getPlaceFromName($refPlace, false, false);
-//        } else {
-//            /** @phpstan-ignore-next-line  */
-//            $description = $referee->getInitials();
-//        }
-//        while (strlen($description) < 3) {
-//            $description .=  ' ';
-//        }
-//        return $description;
-//    }
 }
