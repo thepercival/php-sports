@@ -31,6 +31,10 @@ class Service
         $this->create();
     }
 
+    round->removeHorizontalPoules
+    round->addHorizontalPoules
+
+
     protected function remove(): void
     {
         foreach ($this->winnersAndLosers as $winnersOrLosers) {
@@ -60,12 +64,23 @@ class Service
      */
     protected function createRoundHorizontalPoules(int $winnersOrLosers): array
     {
-        $horizontalPoules = &$this->round->getHorizontalPoules($winnersOrLosers);
+        $horizontalPoules = $this->round->getHorizontalPoules2($winnersOrLosers);
 
-        $placesOrderedByPlaceNumber = $this->getPlacesHorizontal();
+        $placesHorizontalOrdered = $this->getPlacesHorizontal();
         if ($winnersOrLosers === QualifyGroup::LOSERS) {
-            $placesOrderedByPlaceNumber = array_reverse($placesOrderedByPlaceNumber);
+            $placesHorizontalOrdered = array_reverse($placesHorizontalOrdered);
         }
+
+        $nrOfPoules = $this->round->getPoules()->count();
+
+        $horPoulePlaces = array_splice($placesHorizontalOrdered, 0, $nrOfPoules);
+        while(count($horPoulePlaces) > 0)
+        {
+            $foundHorizontalPoule = new HorizontalPoule($this->round, count($horizontalPoules) + 1);
+            $horPoulePlaces = array_splice($placesHorizontalOrdered, 0, $nrOfPoules);
+        }
+        // pak de breedte van de ronde en splice deze van de lijst en geef mee aan
+       //  constructor van horizontalpoule
 
         foreach ($placesOrderedByPlaceNumber as $placeIt) {
             $filteredHorizontalPoules = array_filter($horizontalPoules, function ($horizontalPoule) use ($placeIt,$winnersOrLosers): bool {
@@ -90,7 +105,7 @@ class Service
                 $foundHorizontalPoule = new HorizontalPoule($this->round, count($horizontalPoules) + 1);
                 $horizontalPoules[] = $foundHorizontalPoule;
             }
-            $placeIt->setHorizontalPoule($winnersOrLosers, $foundHorizontalPoule);
+            // $placeIt->setHorizontalPoule($winnersOrLosers, $foundHorizontalPoule);
         }
         return $horizontalPoules;
     }
@@ -132,16 +147,15 @@ class Service
         array $horizontalPouleCreators
     ): void {
         foreach ($horizontalPouleCreators as $creator) {
-            $horizontalPoules = &$creator->getQualifyGroup()->getHorizontalPoules();
-            $horizontalPoules = [];
+            $creator->getQualifyGroup()->resetHorizontalPoules();
             $qualifiersAdded = 0;
             while ($qualifiersAdded < $creator->getNrOfQualifiers()) {
                 $roundHorizontalPoule = array_shift($roundHorizontalPoules);
                 if ($roundHorizontalPoule === null) {
                     throw new \Exception('no horizontalpoules found', E_ERROR);
                 }
-                $roundHorizontalPoule->setQualifyGroup($creator->getQualifyGroup());
-                $qualifiersAdded += count($roundHorizontalPoule->getPlaces());
+                $creator->getQualifyGroup()->addHorirzontalPoule($roundHorizontalPoule);
+                $qualifiersAdded += count($roundHorizontalPoule->getPlaces2());
             }
         }
         foreach ($roundHorizontalPoules as $roundHorizontalPoule) {

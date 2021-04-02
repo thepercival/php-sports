@@ -53,8 +53,8 @@ class Service
                     if ($filterPoule !== null && $place->getPoule() !== $filterPoule) {
                         continue;
                     }
-                    $singleRule = $place->getToQualifyRule($horizontalPoule->getWinnersOrLosers());
-                    if (!($singleRule instanceof SingleQualifyRule)) {
+                    $singleRule = $place->getSingleToQualifyRule();
+                    if ($singleRule === null) {
                         continue;
                     }
                     $changedPlace = $this->setQualifierForSingleRuleAndReserve($singleRule, $reservationService);

@@ -11,15 +11,10 @@ use Sports\Qualify\Group as QualifyGroup;
 class Single extends QualifyRule
 {
     private Place|null $toPlace = null;
-    /**
-     * @var int
-     */
-    private $winnersOrLosers;
 
-    public function __construct(private Place $fromPlace, QualifyGroup $toQualifyGroup)
+    public function __construct(private Place $fromPlace, private int $winnersOrLosers)
     {
-        $this->winnersOrLosers = $toQualifyGroup->getWinnersOrLosers();
-        $this->fromPlace->setToQualifyRule($toQualifyGroup->getWinnersOrLosers(), $this);
+        // $this->fromPlace->setSingleToQualifyRule($this);
     }
 
     public function getFromRound(): Round

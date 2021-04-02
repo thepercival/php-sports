@@ -271,7 +271,7 @@ class Round extends Identifiable
      * @param int $winnersOrLosers
      * @return list<HorizontalPoule>
      */
-    public function &getHorizontalPoules(int $winnersOrLosers): array
+    public function getHorizontalPoules2(int $winnersOrLosers): array
     {
         if ($winnersOrLosers === QualifyGroup::WINNERS) {
             return $this->winnersHorizontalPoules;

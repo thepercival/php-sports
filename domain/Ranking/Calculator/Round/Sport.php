@@ -76,7 +76,7 @@ abstract class Sport
     {
         $performances = [];
         foreach ($horizontalPoule->getPlaces() as $place) {
-            if ($checkOnSingleQualifyRule === true && $this->hasPlaceSingleQualifyRule($place)) {
+            if ($checkOnSingleQualifyRule === true && $place->getSingleToQualifyRule() !== null) {
                 continue;
             }
             $sportRankingItems = $this->getItemsForPoule($place->getPoule());
@@ -170,13 +170,5 @@ abstract class Sport
             }
         }
         return $bestPerformances;
-    }
-
-    // Place can have a multiple and a single rule, if so than do not process place for horizontalpoule(multiple)
-    protected function hasPlaceSingleQualifyRule(Place $place): bool
-    {
-        return count(array_filter($place->getToQualifyRules(), function (SingleQualifyRule|MultipleQualifyRule $qualifyRuleIt): bool {
-            return ($qualifyRuleIt instanceof SingleQualifyRule);
-        })) > 0;
     }
 }

@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Sports\Qualify;
 
+use \Doctrine\Common\Collections\ArrayCollection;
 use Sports\Round\Number as RoundNumber;
 use Sports\Round;
 use Sports\Poule\Horizontal as HorizontalPoule;
@@ -13,9 +14,9 @@ class Group extends Identifiable
     protected int $number;
     protected Round $childRound;
     /**
-     * @var list<HorizontalPoule>
+     * @var ArrayCollection<int|string, HorizontalPoule>
      */
-    protected array $horizontalPoules = [];
+    protected ArrayCollection $horizontalPoules;
 
     const WINNERS = 1;
     const DROPOUTS = 2;
@@ -35,6 +36,7 @@ class Group extends Identifiable
             $this->insertQualifyGroupAt($round, $number);
         }
         $this->childRound = new Round($nextRoundNumber, $this);
+        $this->horizontalPoules = new ArrayCollection();
     }
 
     public function getWinnersOrLosers(): int
@@ -90,9 +92,9 @@ class Group extends Identifiable
     }
 
     /**
-     * @return list<HorizontalPoule>
+     * @return ArrayCollection<int|string, HorizontalPoule>
      */
-    public function &getHorizontalPoules(): array
+    public function getHorizontalPoules(): ArrayCollection
     {
         return $this->horizontalPoules;
     }

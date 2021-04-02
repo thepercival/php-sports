@@ -15,6 +15,6 @@ Sports\Game:
     competitionSport:
       type: Sports\Competition\Sport
   virtual_properties:
-    getRefereePlaceLocId:
-      type: integer
-      serialized_name: refereePlaceLocId
+    getRefereePlace:
+      type: Sports\Place\Location
+      serialized_name: refereeRoundLocation

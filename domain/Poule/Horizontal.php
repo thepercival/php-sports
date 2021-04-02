@@ -3,6 +3,7 @@
 namespace Sports\Poule;
 
 use Exception;
+use Sports\Poule\Horizontal as HorizontalPoule;
 use Sports\Round;
 use Sports\Qualify\Group as QualifyGroup;
 use Sports\Place;
@@ -22,13 +23,14 @@ use Sports\Qualify\Rule\Multiple as MultipleQualifyRule;
 class Horizontal
 {
     protected QualifyGroup|null $qualifyGroup = null;
-    /**
-     * @var list<Place>
-     */
-    protected array $places = [];
-    protected MultipleQualifyRule|null $multipleRule = null;
+    // protected MultipleQualifyRule|null $multipleRule = null;
 
-    public function __construct(protected Round $round, protected int $number)
+    /**
+     * @param Round $round
+     * @param int $number
+     * @param non-empty-list<Place> $places
+     */
+    public function __construct(protected Round $round, protected int $number, protected array $places)
     {
     }
 
@@ -39,7 +41,8 @@ class Horizontal
 
     public function getWinnersOrLosers(): int
     {
-        return $this->qualifyGroup !== null ? $this->qualifyGroup->getWinnersOrLosers() : QualifyGroup::DROPOUTS;
+        $qualifyGroup = $this->getQualifyGroup();
+        return $qualifyGroup !== null ? $qualifyGroup->getWinnersOrLosers() : QualifyGroup::DROPOUTS;
     }
 
     public function getNumber(): int
@@ -56,8 +59,8 @@ class Horizontal
         if ($qualifyGroup === null) {
             throw new Exception('kwalificatiegroep kan niet gevonden worden', E_ERROR);
         }
-        $nrOfPlaceNubers = count($qualifyGroup->getRound()->getHorizontalPoules(QualifyGroup::WINNERS));
-        return $nrOfPlaceNubers - ($this->number - 1);
+        $nrOfPlaceNumbers = count($qualifyGroup->getRound()->getHorizontalPoules2(QualifyGroup::WINNERS));
+        return $nrOfPlaceNumbers - ($this->number - 1);
     }
 
     public function getQualifyGroup(): QualifyGroup|null
@@ -67,37 +70,29 @@ class Horizontal
 
     public function setQualifyGroup(QualifyGroup|null $qualifyGroup): void
     {
-        // this is done in horizontalpouleservice
-        // if( this.qualifyGroup != null ){ // remove from old round
-        //     var index = this.qualifyGroup.getHorizontalPoules().indexOf(this);
-        //     if (index > -1) {
-        //         this.round.getHorizontalPoules().splice(index, 1);
-        //     }
-        // }
+        if ($this->qualifyGroup !== null) {
+            $this->qualifyGroup->getHorizontalPoules()->removeElement($this);
+        }
         $this->qualifyGroup = $qualifyGroup;
         if ($this->qualifyGroup !== null) {
-            $horizontalPoules = &$this->qualifyGroup->getHorizontalPoules();
-            $horizontalPoules[] = $this;
+            $this->qualifyGroup->getHorizontalPoules()->add($this);
         }
     }
 
-    public function getMultipleQualifyRule(): MultipleQualifyRule|null
+    /*public function getMultipleQualifyRule(): MultipleQualifyRule|null
     {
         return $this->multipleRule;
     }
 
     public function setMultipleQualifyRule(MultipleQualifyRule|null $multipleRule = null): void
     {
-        foreach ($this->getPlaces() as $place) {
-            $place->setToQualifyRule($this->getWinnersOrLosers(), $multipleRule);
-        }
         $this->multipleRule = $multipleRule;
-    }
+    }*/
 
     /**
      * @return list<Place>
      */
-    public function &getPlaces(): array
+    public function getPlaces2(): array
     {
         return $this->places;
     }
@@ -109,7 +104,7 @@ class Horizontal
 
     public function hasPlace(Place $place): bool
     {
-        return array_search($place, $this->getPlaces(), true) !== false;
+        return array_search($place, $this->getPlaces2(), true) !== false;
     }
 
     // next(): Poule {
@@ -123,8 +118,8 @@ class Horizontal
         if ($qualifyGroup === null || !$qualifyGroup->isBorderGroup()) {
             return false;
         }
-        $horPoules = $qualifyGroup->getHorizontalPoules();
-        return $horPoules[count($horPoules)-1] === $this;
+        $horPoules = $qualifyGroup->getHorizontalPoules2();
+        return end($horPoules) === $this;
     }
 
     public function getNrOfQualifiers(): int
@@ -134,8 +129,8 @@ class Horizontal
             return 0;
         }
         if (!$this->isBorderPoule()) {
-            return count($this->getPlaces());
+            return count($this->getPlaces2());
         }
-        return count($this->getPlaces()) - ($qualifyGroup->getNrOfToPlacesTooMuch());
+        return count($this->getPlaces2()) - ($qualifyGroup->getNrOfToPlacesTooMuch());
     }
 }
