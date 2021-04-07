@@ -112,7 +112,6 @@ abstract class Game extends OutputBase
         if ($refPlace !== null) {
             $description = $this->nameService->getPlaceFromName($refPlace, false, false);
         } else {
-            /** @phpstan-ignore-next-line  */
             $description = $referee->getInitials();
         }
         while (strlen($description) < 3) {

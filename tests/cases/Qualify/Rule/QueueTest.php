@@ -3,11 +3,12 @@ declare(strict_types=1);
 
 namespace Sports\Tests\Qualify\Rule;
 
+use Sports\Qualify\Target as QualifyTarget;
 use Sports\Qualify\Rule\Queue as QualifyRuleQueue;
 use PHPUnit\Framework\TestCase;
 use Sports\TestHelper\CompetitionCreator;
 use Sports\TestHelper\SetScores;
-use Sports\Structure\Service as StructureService;
+use Sports\Structure\Editor as StructureService;
 use Sports\Qualify\Group as QualifyGroup;
 use SportsHelpers\PouleStructure;
 
@@ -21,9 +22,9 @@ final class QueueTest extends TestCase
         $structureService = new StructureService([]);
         $structure = $structureService->create($competition, new PouleStructure([5]));
         $rootRound = $structure->getRootRound();
-        $structureService->addQualifiers($rootRound, QualifyGroup::WINNERS, 2);
+        $structureService->addQualifiers($rootRound, QualifyTarget::WINNERS, 2);
 
-        $winnersRound = $rootRound->getChild(QualifyGroup::WINNERS, 1);
+        $winnersRound = $rootRound->getChild(QualifyTarget::WINNERS, 1);
         self::assertNotNull($winnersRound);
         $firstPlace = $winnersRound->getPoule(1)->getPlace(1);
         $fromQualifyRule = $firstPlace->getFromQualifyRule();
@@ -40,9 +41,9 @@ final class QueueTest extends TestCase
         $structureService = new StructureService([]);
         $structure = $structureService->create($competition, new PouleStructure([5]));
         $rootRound = $structure->getRootRound();
-        $structureService->addQualifiers($rootRound, QualifyGroup::WINNERS, 2);
+        $structureService->addQualifiers($rootRound, QualifyTarget::WINNERS, 2);
 
-        $winnersRound = $rootRound->getChild(QualifyGroup::WINNERS, 1);
+        $winnersRound = $rootRound->getChild(QualifyTarget::WINNERS, 1);
         self::assertNotNull($winnersRound);
         $firstPlace = $winnersRound->getPoule(1)->getPlace(1);
         $fromQualifyRule = $firstPlace->getFromQualifyRule();
@@ -59,9 +60,9 @@ final class QueueTest extends TestCase
         $structureService = new StructureService([]);
         $structure = $structureService->create($competition, new PouleStructure([3,3,3]));
         $rootRound = $structure->getRootRound();
-        $structureService->addQualifiers($rootRound, QualifyGroup::WINNERS, 3);
+        $structureService->addQualifiers($rootRound, QualifyTarget::WINNERS, 3);
 
-        $winnersRound = $rootRound->getChild(QualifyGroup::WINNERS, 1);
+        $winnersRound = $rootRound->getChild(QualifyTarget::WINNERS, 1);
         self::assertNotNull($winnersRound);
         $fromQualifyRuleOne = $winnersRound->getPoule(1)->getPlace(1)->getFromQualifyRule();
         self::assertNotNull($fromQualifyRuleOne);

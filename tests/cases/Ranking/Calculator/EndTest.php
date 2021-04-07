@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Sports\Tests\Ranking\Calculator;
 
+use Sports\Qualify\Target as QualifyTarget;
 use PHPUnit\Framework\TestCase;
 use Sports\Ranking\Item\End as EndRankingItem;
 use Sports\Place\Location as PlaceLocation;
@@ -10,7 +11,7 @@ use Sports\Round;
 use Sports\TestHelper\CompetitionCreator;
 use Sports\TestHelper\GamesCreator;
 use Sports\TestHelper\SetScores;
-use Sports\Structure\Service as StructureService;
+use Sports\Structure\Editor as StructureService;
 use Sports\Qualify\Group as QualifyGroup;
 use Sports\Qualify\Service as QualifyService;
 use Sports\Ranking\Calculator\End as EndRankingCalculator;
@@ -84,8 +85,8 @@ class EndTest extends TestCase
         $structure = $structureService->create($competition, new PouleStructure([5]));
         $rootRound = $structure->getRootRound();
 
-        $structureService->addQualifier($rootRound, QualifyGroup::WINNERS);
-        $structureService->addQualifier($rootRound, QualifyGroup::LOSERS);
+        $structureService->addQualifier($rootRound, QualifyTarget::WINNERS);
+        $structureService->addQualifier($rootRound, QualifyTarget::LOSERS);
 
         (new GamesCreator())->createStructureGames($structure);
 
@@ -102,11 +103,11 @@ class EndTest extends TestCase
         $this->setScoreSingle($pouleOne, 3, 5, 5, 3);
         $this->setScoreSingle($pouleOne, 4, 5, 5, 4);
 
-        $winnersChildRound = $rootRound->getChild(QualifyGroup::WINNERS, 1);
+        $winnersChildRound = $rootRound->getChild(QualifyTarget::WINNERS, 1);
         self::assertInstanceOf(Round::class, $winnersChildRound);
         $winnersPoule = $winnersChildRound->getPoule(1);
         $this->setScoreSingle($winnersPoule, 1, 2, 2, 1);
-        $losersChildRound = $rootRound->getChild(QualifyGroup::LOSERS, 1);
+        $losersChildRound = $rootRound->getChild(QualifyTarget::LOSERS, 1);
         self::assertInstanceOf(Round::class, $losersChildRound);
         $loserssPoule = $losersChildRound->getPoule(1);
         $this->setScoreSingle($loserssPoule, 1, 2, 2, 1);

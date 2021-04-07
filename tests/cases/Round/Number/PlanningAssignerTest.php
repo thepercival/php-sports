@@ -3,12 +3,13 @@ declare(strict_types=1);
 
 namespace Sports\Tests\Round\Number;
 
+use Sports\Qualify\Target as QualifyTarget;
 use PHPUnit\Framework\TestCase;
 use Sports\Qualify\Group as QualifyGroup;
 use Sports\Round\Number\GamesValidator;
 use Sports\TestHelper\CompetitionCreator;
 use Sports\TestHelper\GamesCreator;
-use Sports\Structure\Service as StructureService;
+use Sports\Structure\Editor as StructureService;
 use SportsHelpers\PouleStructure;
 use SportsHelpers\SelfReferee;
 
@@ -60,7 +61,7 @@ final class PlanningAssignerTest extends TestCase
         $structure = $structureService->create($competition, new PouleStructure([6,5]));
 
         $rootRound = $structure->getRootRound();
-        $structureService->addQualifiers($rootRound, QualifyGroup::WINNERS, 7);
+        $structureService->addQualifiers($rootRound, QualifyTarget::WINNERS, 7);
 
         $firstRoundNumber = $structure->getFirstRoundNumber();
         $firstRoundNumber->getValidPlanningConfig()->setSelfReferee(SelfReferee::SAMEPOULE);

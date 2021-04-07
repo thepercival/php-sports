@@ -30,7 +30,6 @@ class Poule extends Identifiable
      * @psalm-var ArrayCollection<int|string, TogetherGame>
      */
     protected ArrayCollection|PersistentCollection $togetherGames;
-    protected int $structureNumber = 0;
 
     const MAX_LENGTH_NAME = 10;
 
@@ -87,14 +86,8 @@ class Poule extends Identifiable
         $this->name = $name;
     }
 
-    public function getStructureNumber(): int
-    {
-        return $this->structureNumber;
-    }
-
-    public function setStructureNumber(int $structureNumber): void
-    {
-        $this->structureNumber = $structureNumber;
+    public function getStructureLocation(): string {
+        return $this->getRound()->getStructurePathNode()->pathToString() . $this->getNumber();
     }
 
     /**

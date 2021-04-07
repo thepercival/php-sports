@@ -6,7 +6,7 @@ namespace Sports;
 use Sports\Competitor\Map as CompetitorMap;
 use Sports\Poule\Horizontal as HorizontalPoule;
 use Sports\Round\Number as RoundNumber;
-use Sports\Qualify\Group as QualifyGroup;
+use Sports\Qualify\Target as QualifyTarget;
 use Sports\Game\Place as GamePlace;
 use Sports\Ranking\Rule\Getter as RankingRuleGetter;
 use Sports\Ranking\Rule as RankingRule;
@@ -25,9 +25,9 @@ class NameService
         $this->competitorMap = $competitorMap;
     }
 
-    public function getWinnersLosersDescription(int $winnersOrLosers, bool $multiple = false): string
+    public function getQualifyTargetDescription(string $qualifyTarget, bool $multiple = false): string
     {
-        $description = $winnersOrLosers === QualifyGroup::WINNERS ? 'winnaar' : ($winnersOrLosers === QualifyGroup::LOSERS ? 'verliezer' : '');
+        $description = $qualifyTarget === QualifyTarget::WINNERS ? 'winnaar' : ($qualifyTarget === QualifyTarget::LOSERS ? 'verliezer' : '');
         return (($multiple && ($description !== '')) ? $description . 's' : $description);
     }
 
@@ -120,8 +120,8 @@ class NameService
             if ($longName !== true || $fromPlace->getPoule()->needsRanking()) {
                 return $this->getPlaceName($fromPlace, false, $longName);
             }
-            $name = $this->getWinnersLosersDescription(
-                $fromPlace->getNumber() === 1 ? QualifyGroup::WINNERS : QualifyGroup::LOSERS
+            $name = $this->getQualifyTargetDescription(
+                $fromPlace->getNumber() === 1 ? QualifyTarget::WINNERS : QualifyTarget::LOSERS
             );
             return $name . ' ' . $this->getPouleName($fromPlace->getPoule(), false);
         }
@@ -161,7 +161,7 @@ class NameService
         }
         $nrOfQualifiers = $horizontalPoule->getNrOfQualifiers();
 
-        if ($horizontalPoule->getWinnersOrLosers() === QualifyGroup::WINNERS) {
+        if ($horizontalPoule->getWinnersOrLosers() === QualifyTarget::WINNERS) {
             $name = 'nummer' . ($nrOfQualifiers > 1 ? 's ' : ' ') . $horizontalPoule->getNumber();
             if ($horizontalPoule->isBorderPoule()) {
                 return ($nrOfQualifiers > 1 ? ($nrOfQualifiers . ' ') : '') . 'beste ' . $name;

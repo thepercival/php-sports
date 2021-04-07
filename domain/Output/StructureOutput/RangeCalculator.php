@@ -4,10 +4,8 @@ declare(strict_types=1);
 namespace Sports\Output\StructureOutput;
 
 use Doctrine\Common\Collections\ArrayCollection;
-use Sports\Output\Coordinate;
 use Sports\Poule;
 use Sports\Round\Number as RoundNumber;
-use Psr\Log\LoggerInterface;
 use Sports\NameService;
 use Sports\Structure;
 use Sports\Round;
@@ -22,7 +20,7 @@ final class RangeCalculator
 
     protected NameService $nameService;
 
-    public function __construct(LoggerInterface $logger = null)
+    public function __construct()
     {
         $this->nameService = new NameService();
     }

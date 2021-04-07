@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Sports\Tests\Round\Number;
 
+use Sports\Qualify\Target as QualifyTarget;
 use DateTimeImmutable;
 use League\Period\Period;
 use PHPUnit\Framework\TestCase;
@@ -13,7 +14,7 @@ use Sports\Round\Number\PlanningScheduler;
 use Sports\TestHelper\CompetitionCreator;
 use Sports\TestHelper\GamesCreator;
 use Sports\Planning\Config\Service as PlanningConfigService;
-use Sports\Structure\Service as StructureService;
+use Sports\Structure\Editor as StructureService;
 use Sports\Game;
 use \Exception;
 use SportsHelpers\PouleStructure;
@@ -30,7 +31,7 @@ final class PlanningSchedulerTest extends TestCase
         $structureService = new StructureService([]);
         $structure = $structureService->create($competition, new PouleStructure([3,3]));
 
-        $structureService->addQualifiers($structure->getRootRound(), QualifyGroup::WINNERS, 2);
+        $structureService->addQualifiers($structure->getRootRound(), QualifyTarget::WINNERS, 2);
         $firstRoundNumber = $structure->getFirstRoundNumber();
         $secondRoundNumber = $firstRoundNumber->getNext();
         self::assertNotNull($secondRoundNumber);
@@ -60,7 +61,7 @@ final class PlanningSchedulerTest extends TestCase
         $structureService = new StructureService([]);
         $structure = $structureService->create($competition, new PouleStructure([3,3]));
 
-        $structureService->addQualifiers($structure->getRootRound(), QualifyGroup::WINNERS, 2);
+        $structureService->addQualifiers($structure->getRootRound(), QualifyTarget::WINNERS, 2);
         $firstRoundNumber = $structure->getFirstRoundNumber();
         $secondRoundNumber = $firstRoundNumber->getNext();
         self::assertNotNull($secondRoundNumber);
@@ -102,7 +103,7 @@ final class PlanningSchedulerTest extends TestCase
         $structureService = new StructureService([]);
         $structure = $structureService->create($competition, new PouleStructure([3,3]));
 
-        $structureService->addQualifiers($structure->getRootRound(), QualifyGroup::WINNERS, 2);
+        $structureService->addQualifiers($structure->getRootRound(), QualifyTarget::WINNERS, 2);
         $firstRoundNumber = $structure->getFirstRoundNumber();
         $secondRoundNumber = $firstRoundNumber->getNext();
         self::assertNotNull($secondRoundNumber);
@@ -135,7 +136,7 @@ final class PlanningSchedulerTest extends TestCase
         $structureService = new StructureService([]);
         $structure = $structureService->create($competition, new PouleStructure([3,3]));
 
-        $structureService->addQualifiers($structure->getRootRound(), QualifyGroup::WINNERS, 2);
+        $structureService->addQualifiers($structure->getRootRound(), QualifyTarget::WINNERS, 2);
         $firstRoundNumber = $structure->getFirstRoundNumber();
         $secondRoundNumber = $firstRoundNumber->getNext();
         self::assertNotNull($secondRoundNumber);
@@ -168,7 +169,7 @@ final class PlanningSchedulerTest extends TestCase
         $structureService = new StructureService([]);
         $structure = $structureService->create($competition, new PouleStructure([3,3]));
 
-        $structureService->addQualifiers($structure->getRootRound(), QualifyGroup::WINNERS, 2);
+        $structureService->addQualifiers($structure->getRootRound(), QualifyTarget::WINNERS, 2);
         $firstRoundNumber = $structure->getFirstRoundNumber();
         $secondRoundNumber = $firstRoundNumber->getNext();
         self::assertNotNull($secondRoundNumber);
@@ -201,7 +202,7 @@ final class PlanningSchedulerTest extends TestCase
         $structureService = new StructureService([]);
         $structure = $structureService->create($competition, new PouleStructure([3,3]));
 
-        $structureService->addQualifiers($structure->getRootRound(), QualifyGroup::WINNERS, 2);
+        $structureService->addQualifiers($structure->getRootRound(), QualifyTarget::WINNERS, 2);
         $firstRoundNumber = $structure->getFirstRoundNumber();
         $secondRoundNumber = $firstRoundNumber->getNext();
         self::assertNotNull($secondRoundNumber);
@@ -234,7 +235,7 @@ final class PlanningSchedulerTest extends TestCase
         $structureService = new StructureService([]);
         $structure = $structureService->create($competition, new PouleStructure([3,3]));
 
-        $structureService->addQualifiers($structure->getRootRound(), QualifyGroup::WINNERS, 2);
+        $structureService->addQualifiers($structure->getRootRound(), QualifyTarget::WINNERS, 2);
         $firstRoundNumber = $structure->getFirstRoundNumber();
         $secondRoundNumber = $firstRoundNumber->getNext();
         self::assertNotNull($secondRoundNumber);

@@ -16,7 +16,7 @@ use Sports\Game\Place\Against as AgainstGamePlace;
 use Sports\TestHelper\CompetitionCreator;
 use Sports\TestHelper\GamesCreator;
 use Sports\Round\Number\GamesValidator;
-use Sports\Structure\Service as StructureService;
+use Sports\Structure\Editor as StructureService;
 use SportsHelpers\PouleStructure;
 use SportsHelpers\SelfReferee;
 

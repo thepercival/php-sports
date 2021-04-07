@@ -3,17 +3,23 @@ declare(strict_types=1);
 
 namespace Sports\Structure;
 
+use Sports\Round;
 use Sports\Structure as StructureBase;
 use Sports\Round\Number as RoundNumber;
 use Sports\Competition;
 use Doctrine\ORM\EntityManager;
 use Sports\Round\Number\Repository as RoundNumberRepository;
+use Sports\Poule\Horizontal\Creator as HorizontalPouleCreator;
+use Sports\Qualify\Rule\Creator as QualifyRuleCreator;
 
 class Repository
 {
     private RoundNumberRepository $roundNumberRepos;
 
-    public function __construct(protected EntityManager $em)
+    public function __construct(
+        protected EntityManager $em,
+        private HorizontalPouleCreator $horPouleCreator,
+        private QualifyRuleCreator $qualifyRuleCreator)
     {
         /** @psalm-suppress MixedArgumentTypeCoercion */
         $this->roundNumberRepos = new RoundNumberRepository($em, $em->getClassMetadata(RoundNumber::class));
@@ -77,15 +83,13 @@ class Repository
         }
         $firstRoundNumber = reset($roundNumbers);
 
-        $firstRound = $firstRoundNumber->getRounds()->first();
-        if ($firstRound === false) {
+        $rootRound = $firstRoundNumber->getRounds()->first();
+        if ($rootRound === false) {
             return null;
         }
-        $structure = new StructureBase($firstRoundNumber, $firstRound);
-        $structure->setStructureNumbers();
+        $structure = new StructureBase($firstRoundNumber, $rootRound);
 
-        $postCreateService = new PostCreateService($structure);
-        $postCreateService->create();
+        $this->addHorizontalPoulesAndQualifyRules($rootRound);
 
         return $structure;
     }
@@ -137,6 +141,13 @@ class Repository
         $this->em->flush();
     }
 
+    protected function addHorizontalPoulesAndQualifyRules(Round $parentRound): void {
+        $this->horPouleCreator->create($parentRound);
+        $this->qualifyRuleCreator->create($parentRound);
+        foreach($parentRound->getChildren() as $childRound) {
+            $this->addHorizontalPoulesAndQualifyRules($childRound);
+        }
+    }
     /*public function remove(Structure $structure, int $roundNumberValue = null )
     {
         $conn = $this->em->getConnection();

@@ -7,7 +7,8 @@ use Closure;
 use Sports\State;
 use Sports\Place;
 use Sports\Poule\Horizontal as HorizontalPoule;
-use Sports\Qualify\Group as QualifyGroup;
+use Sports\Qualify\Target as QualifyTarget;
+use Sports\Qualify\Rule\Single as SingleQualifyRule;
 use Sports\Round;
 use Sports\Structure;
 use Sports\Ranking\Item\End as EndRankingItem;
@@ -30,7 +31,7 @@ class End
         $getItems = function (Round $round) use (&$getItems) : array {
             /** @var Closure(Round):list<EndRankingItem> $getItems */
             $items = [];
-            foreach ($round->getWinnersOrLosersQualifyGroups(QualifyGroup::WINNERS) as $qualifyGroup) {
+            foreach ($round->getTargetQualifyGroups(QualifyTarget::WINNERS) as $qualifyGroup) {
                 $items = array_merge($items, $getItems($qualifyGroup->getChildRound()));
             }
             if ($round->getState() === State::Finished) {
@@ -38,7 +39,7 @@ class End
             } else {
                 $items = array_merge($items, $this->getDropoutsNotPlayed($round));
             }
-            foreach (array_reverse($round->getWinnersOrLosersQualifyGroups(QualifyGroup::LOSERS)->slice(0)) as $qualifyGroup) {
+            foreach (array_reverse($round->getTargetQualifyGroups(QualifyTarget::LOSERS)->slice(0)) as $qualifyGroup) {
                 $items = array_merge($items, $getItems($qualifyGroup->getChildRound()));
             }
             return array_values($items);
@@ -71,7 +72,7 @@ class End
         $dropouts = [];
         $nrOfDropouts = $round->getNrOfDropoutPlaces();
         while ($nrOfDropouts > 0) {
-            foreach ([QualifyGroup::WINNERS, QualifyGroup::LOSERS] as $winnersOrLosers) {
+            foreach ([QualifyTarget::WINNERS, QualifyTarget::LOSERS] as $winnersOrLosers) {
                 foreach ($round->getHorizontalPoules($winnersOrLosers) as $horizontalPoule) {
                     $qualifyGroup = $horizontalPoule->getQualifyGroup();
                     if ($qualifyGroup!== null && $qualifyGroup->getNrOfToPlacesTooMuch() === 0) {
@@ -106,9 +107,21 @@ class End
     {
         $roundRankingCalculator = new RoundRankingCalculator();
         $rankedPlaces = $roundRankingCalculator->getPlacesForHorizontalPoule($horizontalPoule);
-        array_splice($rankedPlaces, 0, $horizontalPoule->getNrOfQualifiers());
+        array_splice($rankedPlaces, 0, $this->getNrOfDropouts($horizontalPoule));
         return array_map(function (Place $rankedPlace): EndRankingItem {
             return new EndRankingItem($this->currentRank, $this->currentRank++, $rankedPlace->getStartLocation());
         }, $rankedPlaces);
+    }
+
+    public function getNrOfDropouts(HorizontalPoule $horizontalPoule): int
+    {
+        $qualifyRule = $horizontalPoule->getQualifyRule();
+        if ($qualifyRule === null) {
+            return 0;
+        }
+        if ($qualifyRule instanceof SingleQualifyRule) {
+            return $qualifyRule->getMappings()->count();
+        }
+        return $qualifyRule->getFromHorizontalPoule()->getPlaces()->count();
     }
 }

@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Sports\Structure;
 
+use Sports\Qualify\Target as QualifyTarget;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Exception;
@@ -107,9 +108,9 @@ class Validator
             }
         }
 
-        $winners = array_values($round->getWinnersOrLosersQualifyGroups(QualifyGroup::WINNERS)->toArray());
+        $winners = array_values($round->getWinnersOrLosersQualifyGroups(QualifyTarget::WINNERS)->toArray());
         $this->checkQualifyGroupsNumberGap($winners);
-        $losers = array_values($round->getWinnersOrLosersQualifyGroups(QualifyGroup::LOSERS)->toArray());
+        $losers = array_values($round->getWinnersOrLosersQualifyGroups(QualifyTarget::LOSERS)->toArray());
         $this->checkQualifyGroupsNumberGap($losers);
         foreach ($round->getQualifyGroups() as $qualifyGroup) {
             $this->checkRoundValidity($qualifyGroup->getChildRound());

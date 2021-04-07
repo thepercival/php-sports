@@ -4,49 +4,41 @@ declare(strict_types=1);
 namespace Sports\Qualify;
 
 use \Doctrine\Common\Collections\ArrayCollection;
+use Exception;
+use Sports\Place;
 use Sports\Round\Number as RoundNumber;
 use Sports\Round;
-use Sports\Poule\Horizontal as HorizontalPoule;
+use Sports\Qualify\Rule\Single as SingleQualifyRule;
+use Sports\Qualify\Rule\Multiple as MultipleQualifyRule;
 use SportsHelpers\Identifiable;
 
 class Group extends Identifiable
 {
     protected int $number;
     protected Round $childRound;
-    /**
-     * @var ArrayCollection<int|string, HorizontalPoule>
-     */
-    protected ArrayCollection $horizontalPoules;
-
-    const WINNERS = 1;
-    const DROPOUTS = 2;
-    const LOSERS = 3;
+    protected SingleQualifyRule|null $firstSingleRule;
+    protected MultipleQualifyRule|null $multipleRule;
+    protected int $winnersOrLosersDep; // CDK TODO DEPRECATED
 
     public function __construct(
-        protected Round $round,
-        protected int $winnersOrLosers,
+        protected Round $parentRound,
+        protected string $target,
         RoundNumber $nextRoundNumber,
-        int $number = null
+        int|null $numberAsValue = null
     ) {
-        $this->setWinnersOrLosers($winnersOrLosers);
-        $this->number = $number !== null ? $number : $round->getWinnersOrLosersQualifyGroups($winnersOrLosers)->count() + 1;
-        if ($number === null) {
-            $this->addQualifyGroup($round);
+        if ($numberAsValue !== null) {
+            $this->number = $numberAsValue;
+            $this->insertQualifyGroupAt($parentRound, $numberAsValue);
         } else {
-            $this->insertQualifyGroupAt($round, $number);
+            $this->number = $parentRound->getTargetQualifyGroups($target)->count() + 1;
+            $this->addQualifyGroup($parentRound);
         }
         $this->childRound = new Round($nextRoundNumber, $this);
-        $this->horizontalPoules = new ArrayCollection();
     }
 
-    public function getWinnersOrLosers(): int
+    public function getTarget(): string
     {
-        return $this->winnersOrLosers;
-    }
-
-    public function setWinnersOrLosers(int $winnersOrLosers): void
-    {
-        $this->winnersOrLosers = $winnersOrLosers;
+        return $this->target;
     }
 
     public function getNumber(): int
@@ -59,14 +51,14 @@ class Group extends Identifiable
         $this->number = $number;
     }
 
-    public function getRound(): Round
+    public function getParentRound(): Round
     {
-        return $this->round;
+        return $this->parentRound;
     }
 
     protected function insertQualifyGroupAt(Round $round, int $insertAt): void
     {
-        $qualifyGroups = $round->getWinnersOrLosersQualifyGroups($this->getWinnersOrLosers());
+        $qualifyGroups = $round->getTargetQualifyGroups($this->getTarget());
         if (!$qualifyGroups->contains($this)) {
             $round->addQualifyGroup($this);
             // sort auto because of sort-config in db-yml
@@ -75,7 +67,7 @@ class Group extends Identifiable
 
     public function addQualifyGroup(Round $round): void
     {
-        $qualifyGroups = $round->getWinnersOrLosersQualifyGroups($this->getWinnersOrLosers());
+        $qualifyGroups = $round->getTargetQualifyGroups($this->getTarget());
         if (!$qualifyGroups->contains($this)) {
             $round->addQualifyGroup($this);
         }
@@ -86,51 +78,100 @@ class Group extends Identifiable
         return $this->childRound;
     }
 
-    public function setChildRound(Round $childRound): void
+    public function getFirstSingleRule(): SingleQualifyRule | null
     {
-        $this->childRound = $childRound;
+        return $this->firstSingleRule;
     }
 
-    /**
-     * @return ArrayCollection<int|string, HorizontalPoule>
-     */
-    public function getHorizontalPoules(): ArrayCollection
+    public function setFirstSingleRule(SingleQualifyRule | null $singleRule): void
     {
-        return $this->horizontalPoules;
+        $this->firstSingleRule = $singleRule;
+    }
+
+    public function getMultipleRule(): MultipleQualifyRule | null
+    {
+        return $this->multipleRule;
+    }
+
+    public function setMultipleRule(MultipleQualifyRule | null $multipleRule): void
+    {
+        $this->multipleRule = $multipleRule;
+    }
+
+    public function getNrOfSingleRules(): int
+    {
+        if ($this->firstSingleRule === null) {
+            return 0;
+        }
+        return $this->firstSingleRule->getLast()->getNumber();
+    }
+
+    public function getNrOfToPlaces(): int
+    {
+        $nrOfToPlaces = 0;
+        $firstSingleRule = $this->getFirstSingleRule();
+        if ($firstSingleRule !== null) {
+            $nrOfToPlaces = $firstSingleRule->getNrOfToPlaces()
+                + $firstSingleRule->getNrOfToPlacesTargetSide(Target::LOSERS);
+        }
+        $multipleRule = $this->getMultipleRule();
+        if ($multipleRule !== null) {
+            $nrOfToPlaces += $multipleRule->getNrOfToPlaces();
+        }
+        return $nrOfToPlaces;
+    }
+
+    public function getRule(Place $toPlace): SingleQualifyRule | MultipleQualifyRule
+    {
+        $singleRule = $this->firstSingleRule;
+        while ($singleRule !== null) {
+            try {
+                if ($singleRule->getFromPlace($toPlace) !== null) {
+                    return $singleRule;
+                }
+            } catch (Exception $e) {
+            }
+            $singleRule = $singleRule->getNext();
+        }
+        $multipleRule = $this->getMultipleRule();
+        if ($multipleRule === null || !$multipleRule->hasToPlace($toPlace)) {
+            throw new Exception('de kwalificatieregel kan niet gevonden worden', E_ERROR);
+        }
+        return $multipleRule;
+    }
+
+    public function getFromPlace(Place $toPlace): Place | null
+    {
+        $singleRule = $this->getRule($toPlace);
+        if ($singleRule instanceof SingleQualifyRule) {
+            return $singleRule->getFromPlace($toPlace);
+        }
+        return null;
     }
 
     public function isBorderGroup(): bool
     {
-        $qualifyGroups = $this->getRound()->getWinnersOrLosersQualifyGroups($this->getWinnersOrLosers());
-        return $this === $qualifyGroups->last();
+        $qualifyGroups = $this->getParentRound()->getTargetQualifyGroups($this->getTarget());
+        return $this === end($qualifyGroups);
     }
 
-    // public function isInBorderHoritontalPoule(Place $place ): bool {
-    //     $borderHorizontalPoule = $this->getHorizontalPoules()->last();
-    //     return $borderHorizontalPoule->hasPlace($place);
-    // }
-
-    public function getBorderPoule(): HorizontalPoule
+    public function detach()
     {
-        return $this->horizontalPoules[count($this->horizontalPoules)-1];
+        $this->detachRules();
+        $qualifyGroups = $this->getParentRound()->getTargetQualifyGroups($this->getTarget());
+        $qualifyGroups->removeElement($this);
+        $this->getChildRound()->detach();
     }
 
-    public function getNrOfPlaces(): int
+    public function detachRules()
     {
-        return count($this->getHorizontalPoules()) * $this->getRound()->getPoules()->count();
-    }
-
-    public function getNrOfToPlacesTooMuch(): int
-    {
-        return $this->getNrOfPlaces() - $this->getChildRound()->getNrOfPlaces();
-    }
-
-    public function getNrOfQualifiers(): int
-    {
-        $nrOfQualifiers = 0;
-        foreach ($this->getHorizontalPoules() as $horizontalPoule) {
-            $nrOfQualifiers += $horizontalPoule->getNrOfQualifiers();
+        if ($this->multipleRule !== null) {
+            $this->multipleRule->detach();
+            $this->multipleRule = null;
         }
-        return $nrOfQualifiers;
+        if ($this->firstSingleRule !== null) {
+            $this->firstSingleRule->detach();
+            $this->firstSingleRule = null;
+        }
     }
 }

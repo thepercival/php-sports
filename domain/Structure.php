@@ -5,7 +5,6 @@ namespace Sports;
 
 use Closure;
 use Sports\Round\Number as RoundNumber;
-use Sports\Qualify\Group as QualifyGroup;
 
 class Structure
 {
@@ -70,82 +69,4 @@ class Structure
         }
         return $roundNumber;
     }
-
-    public function setStructureNumbers(): void
-    {
-        $nrOfDropoutPlaces = 0;
-        $setRoundStructureNumbers = function (Round $round) use (&$setRoundStructureNumbers, &$nrOfDropoutPlaces): void {
-            foreach ($round->getWinnersOrLosersQualifyGroups(QualifyGroup::WINNERS) as $qualifyGroup) {
-                /** @var Closure(Round): void $setRoundStructureNumbers */
-                $setRoundStructureNumbers($qualifyGroup->getChildRound());
-            }
-            /** @var int $nrOfDropoutPlaces */
-            $round->setStructureNumber($nrOfDropoutPlaces);
-            $nrOfDropoutPlaces += $round->getNrOfDropoutPlaces();
-            $losersQualifyGroups = array_reverse($round->getWinnersOrLosersQualifyGroups(QualifyGroup::LOSERS)->slice(0));
-            foreach ($losersQualifyGroups as $qualifyGroup) {
-                /** @var Closure(Round): void $setRoundStructureNumbers */
-                $setRoundStructureNumbers($qualifyGroup->getChildRound());
-            }
-        };
-
-        $pouleNr = 1;
-        $setPouleStructureNumbers = function (RoundNumber $roundNumber) use (&$setPouleStructureNumbers, &$pouleNr): void {
-            /** @var Closure(RoundNumber): void $setPouleStructureNumbers */
-            $rounds = array_values($roundNumber->getRounds()->toArray());
-            usort($rounds, function (Round $roundA, Round $roundB) {
-                return ($roundA->getStructureNumber() > $roundB->getStructureNumber()) ? 1 : -1;
-            });
-            foreach ($rounds as $round) {
-                foreach ($round->getPoules() as $poule) {
-                    /** @var int $pouleNr */
-                    $poule->setStructureNumber($pouleNr++);
-                }
-            }
-            $nextRoundNumber = $roundNumber->getNext();
-            if ($nextRoundNumber !== null) {
-                $setPouleStructureNumbers($nextRoundNumber);
-            }
-        };
-
-        $setRoundStructureNumbers($this->rootRound);
-        $setPouleStructureNumbers($this->firstRoundNumber);
-    }
-
-
-//
-//    public function getRound( array $winnersOrLosersPath ): Round {
-//        $round = $this->getRootRound();
-//        foreach( $winnersOrLosersPath as $winnersOrLosers ) {
-//            $round = $round->getChildRoundDep($winnersOrLosers);
-//        }
-//        return $round;
-//    }
-//
-//    public function getRoundNumberById(int $id): ?RoundNumber {
-//        $roundNumber = $this->getFirstRoundNumber();
-//        while( $roundNumber !== null ) {
-//            if($roundNumber->getId() === $id) {
-//                return $roundNumber;
-//            }
-//            $roundNumber = $roundNumber->getNext();
-//        }
-//        return $roundNumber;
-//    }
-//
-//    public function setQualifyRules() {
-//        if( count( $this->getRootRound()->getToQualifyRules() ) === 0 ) {
-//            $this->setQualifyRulesHelper( $this->getRootRound() );
-//        }
-//    }
-//
-//    protected function setQualifyRulesHelper( Round $parentRound )
-//    {
-//        throw new \Exception("setQualifyRulesHelper", E_ERROR);
-////        foreach ($parentRound->getChildRounds() as $childRound) {
-////            $qualifyService = new QualifyService($childRound);
-////            $qualifyService->createRules();
-////            $this->setQualifyRulesHelper( $childRound );
-////        }
-//    }
 }

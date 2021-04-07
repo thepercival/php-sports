@@ -11,8 +11,9 @@ use Sports\Round;
 use Sports\Round\Number as RoundNumber;
 use Sports\Structure;
 use Sports\TestHelper\CompetitionCreator;
-use Sports\Structure\Service as StructureService;
+use Sports\Structure\Editor as StructureService;
 use Sports\Structure\Validator as StructureValidator;
+use Sports\Qualify\Target as QualifyTarget;
 use Sports\TestHelper\GamesCreator;
 use SportsHelpers\PouleStructure;
 
@@ -128,11 +129,11 @@ final class ValidatorTest extends TestCase
         $structure = $structureService->create($competition, new PouleStructure([3,3]));
         $firstRoundNumber = $structure->getFirstRoundNumber();
         $rootRound = $structure->getRootRound();
-        $structureService->addQualifiers($rootRound, QualifyGroup::WINNERS, 2);
+        $structureService->addQualifiers($rootRound, QualifyTarget::WINNERS, 2);
 
         (new GamesCreator())->createStructureGames($structure);
 
-        $winnersQualifyGroup = $rootRound->getQualifyGroup(QualifyGroup::WINNERS, 1);
+        $winnersQualifyGroup = $rootRound->getQualifyGroup(QualifyTarget::WINNERS, 1);
         self::assertNotNull($winnersQualifyGroup);
         $winnersQualifyGroup->setNumber(0);
 
@@ -202,7 +203,7 @@ final class ValidatorTest extends TestCase
 
         $secondRoundNumber = new RoundNumber($competition);
 
-        new QualifyGroup($rootRound, QualifyGroup::WINNERS, $secondRoundNumber);
+        new QualifyGroup($rootRound, QualifyTarget::WINNERS, $secondRoundNumber);
 
         (new GamesCreator())->createStructureGames($structure);
 
@@ -222,7 +223,7 @@ final class ValidatorTest extends TestCase
         $firstRoundNumber = $structure->getFirstRoundNumber();
         $rootRound = $structure->getRootRound();
 
-        $structureService->addQualifiers($rootRound, QualifyGroup::WINNERS, 2);
+        $structureService->addQualifiers($rootRound, QualifyTarget::WINNERS, 2);
 
         (new GamesCreator())->createStructureGames($structure);
 

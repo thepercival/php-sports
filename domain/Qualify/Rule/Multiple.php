@@ -4,58 +4,48 @@ namespace Sports\Qualify\Rule;
 
 use Sports\Poule\Horizontal as HorizontalPoule;
 use Sports\Place;
-use Sports\Qualify\RuleOld as QualifyRule;
-use Sports\Round;
+use Sports\Qualify\Rule as QualifyRule;
+use Sports\Qualify\Group as QualifyGroup;
 
 class Multiple extends QualifyRule
 {
     /**
-     * @var array<Place>
+     * Multiple constructor.
+     * @param HorizontalPoule $fromHorizontalPoule
+     * @param QualifyGroup $group
+     * @param list<Place> $toPlaces
      */
-    private array $toPlaces;
-
-    public function __construct(private HorizontalPoule $fromHorizontalPoule, private int $nrOfToPlaces)
+    public function __construct(
+        HorizontalPoule $fromHorizontalPoule,
+        QualifyGroup $group,
+        private array $toPlaces
+    )
     {
-        $this->fromHorizontalPoule->setMultipleQualifyRule($this);
-        $this->toPlaces = [];
+        parent::__construct($fromHorizontalPoule);
+        $this->fromHorizontalPoule->setQualifyRule($this);
+        $group->setMultipleRule($this);
     }
 
-    public function getFromHorizontalPoule(): HorizontalPoule
+    public function hasToPlace(Place $place): bool
     {
-        return $this->fromHorizontalPoule;
-    }
-
-    public function getFromRound(): Round
-    {
-        return $this->fromHorizontalPoule->getRound();
-    }
-
-    public function getWinnersOrLosers(): int
-    {
-        return $this->fromHorizontalPoule->getWinnersOrLosers();
-    }
-
-    public function addToPlace(Place $toPlace): void
-    {
-        $this->toPlaces[] = $toPlace;
-        $toPlace->setFromQualifyRule($this);
-    }
-
-    public function toPlacesComplete(): bool
-    {
-        return $this->nrOfToPlaces === count($this->toPlaces);
+        return $this->toPlaces->indexOf($place) >= 0;
     }
 
     /**
-     * @return array<Place>
+     * @return list<Place>
      */
     public function getToPlaces(): array
     {
         return $this->toPlaces;
     }
 
-    public function getFromPlaceNumber(): int
+    public function getNrOfToPlaces(): int
     {
-        return $this->getFromHorizontalPoule()->getPlaceNumber();
+        return count($this->toPlaces);
+    }
+
+    public function detach()
+    {
+        $this->getFromHorizontalPoule()->setQualifyRule(null);
     }
 }

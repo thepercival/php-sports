@@ -3,8 +3,9 @@ declare(strict_types=1);
 
 namespace Sports\Tests;
 
+use Sports\Qualify\Target as QualifyTarget;
 use PHPUnit\Framework\TestCase;
-use Sports\Structure\Service as StructureService;
+use Sports\Structure\Editor as StructureService;
 use Sports\Qualify\Group as QualifyGroup;
 use Sports\TestHelper\CompetitionCreator;
 use SportsHelpers\PouleStructure;
@@ -23,7 +24,7 @@ class StructureTest extends TestCase
 
         self::assertSame($rootRound->getNumber(), $firstRoundNumber);
 
-        $structureService->addQualifier($rootRound, QualifyGroup::WINNERS);
+        $structureService->addQualifier($rootRound, QualifyTarget::WINNERS);
 
         self::assertSame($rootRound->getNumber()->getNext(), $structure->getLastRoundNumber());
 
@@ -45,13 +46,13 @@ class StructureTest extends TestCase
 
         self::assertSame($rootRound->getNumber(), $firstRoundNumber);
 
-        $structureService->addQualifiers($rootRound, QualifyGroup::WINNERS, 2);
-        $structureService->addQualifiers($rootRound, QualifyGroup::LOSERS, 2);
+        $structureService->addQualifiers($rootRound, QualifyTarget::WINNERS, 2);
+        $structureService->addQualifiers($rootRound, QualifyTarget::LOSERS, 2);
 
         $structure->setStructureNumbers();
 
-        $childWinnersRound = $rootRound->getChild(QualifyGroup::WINNERS, 1);
-        $childLosersRound = $rootRound->getChild(QualifyGroup::LOSERS, 1);
+        $childWinnersRound = $rootRound->getChild(QualifyTarget::WINNERS, 1);
+        $childLosersRound = $rootRound->getChild(QualifyTarget::LOSERS, 1);
 
         self::assertNotNull($childWinnersRound);
         self::assertNotNull($childLosersRound);

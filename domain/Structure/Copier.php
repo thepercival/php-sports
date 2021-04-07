@@ -18,9 +18,16 @@ use Sports\Planning\Config\Service as PlanningConfigService;
 use Sports\Score\Config\Service as ScoreConfigService;
 use Sports\Planning\GameAmountConfig\Service as GameAmountConfigService;
 use Sports\Qualify\AgainstConfig\Service as QualifyAgainstConfigService;
+use Sports\Poule\Horizontal\Creator as HorizontalPouleCreator;
+use Sports\Qualify\Rule\Creator as QualifyRuleCreator;
 
 class Copier
 {
+    public function __construct(
+        private HorizontalPouleCreator $horPouleCreator,
+        private QualifyRuleCreator $qualifyRuleCreator
+    ){}
+
     public function copy(Structure $structure, Competition $newCompetition): Structure
     {
         $newFirstRoundNumber = new RoundNumber($newCompetition);
@@ -28,10 +35,6 @@ class Copier
         $newRootRound = new Round($newFirstRoundNumber);
         $this->copyRound($structure->getRootRound(), $newRootRound);
         $newStructure = new Structure($newFirstRoundNumber, $newRootRound);
-        $newStructure->setStructureNumbers();
-
-        $postCreateService = new PostCreateService($newStructure);
-        $postCreateService->create();
         return $newStructure;
     }
 
@@ -75,6 +78,8 @@ class Copier
             array_values($round->getFirstScoreConfigs()->toArray()),
             array_values($round->getQualifyAgainstConfigs()->toArray())
         );
+        $this->horPouleCreator->create($newRound);
+
         $newNextRoundNumber = $newRound->getNumber()->getNext();
         if ($newNextRoundNumber === null) {
             return;
@@ -85,6 +90,7 @@ class Copier
             // $qualifyGroup->setNrOfHorizontalPoules( $qualifyGroupSerialized->getNrOfHorizontalPoules() );
             $this->copyRound($qualifyGroup->getChildRound(), $newQualifyGroup->getChildRound());
         }
+        $this->qualifyRuleCreator->create($newRound);
     }
 
     /**

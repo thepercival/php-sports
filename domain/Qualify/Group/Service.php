@@ -2,7 +2,7 @@
 
 namespace Sports\Qualify\Group;
 
-use Sports\Structure\Service as StructureService;
+use Sports\Structure\Editor as StructureService;
 use Sports\Poule\Horizontal as HorizontalPoule;
 use Sports\Round;
 use Sports\Qualify\Group as QualifyGroup;
@@ -84,10 +84,10 @@ class Service
 //                return -1;
 //            }
 //            if ( $qualifyGroupA->getNumber() < $qualifyGroupB->getNumber()) {
-//                return ( $qualifyGroupA->getWinnersOrLosers() === QualifyGroup::WINNERS ) ? 1 : -1;
+//                return ( $qualifyGroupA->getWinnersOrLosers() === QualifyTarget::WINNERS ) ? 1 : -1;
 //            }
 //            if ($qualifyGroupA->getNumber() > $qualifyGroupB->getNumber()) {
-//                return ( $qualifyGroupA->getWinnersOrLosers() === QualifyGroup::WINNERS ) ? -1 : 1;
+//                return ( $qualifyGroupA->getWinnersOrLosers() === QualifyTarget::WINNERS ) ? -1 : 1;
 //            }
 //            return 0;
 //        });

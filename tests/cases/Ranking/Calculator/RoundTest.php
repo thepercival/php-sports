@@ -3,13 +3,14 @@ declare(strict_types=1);
 
 namespace Sports\Tests\Ranking\Calculator;
 
+use Sports\Qualify\Target as QualifyTarget;
 use Exception;
 use PHPUnit\Framework\TestCase;
 use Sports\Poule\Horizontal as HorizontalPoule;
 use Sports\TestHelper\CompetitionCreator;
 use Sports\TestHelper\GamesCreator;
 use Sports\TestHelper\SetScores;
-use Sports\Structure\Service as StructureService;
+use Sports\Structure\Editor as StructureService;
 use Sports\Qualify\Group as QualifyGroup;
 use Sports\Ranking\Calculator\Round as RoundRankingCalculator;
 use Sports\State;
@@ -142,7 +143,7 @@ class RoundTest extends TestCase
         // Rank 2.1, 1.1, 2.2, 1.2, 2.3, 1.3
 
         $roundRankingCalculator = new RoundRankingCalculator();
-        $firstHorizontalPoule = $rootRound->getHorizontalPoule(QualifyGroup::WINNERS, 1);
+        $firstHorizontalPoule = $rootRound->getHorizontalPoule(QualifyTarget::WINNERS, 1);
         self::assertInstanceOf(HorizontalPoule::class, $firstHorizontalPoule);
         $placeLocations = $roundRankingCalculator->getPlaceLocationsForHorizontalPoule($firstHorizontalPoule);
 
@@ -165,7 +166,7 @@ class RoundTest extends TestCase
 //        $structure = $structureService->create($competition, new PouleStructure([3,3]));
 //        $rootRound = $structure->getRootRound();
 //
-//        $structureService->addQualifier($rootRound, QualifyGroup::WINNERS);
+//        $structureService->addQualifier($rootRound, QualifyTarget::WINNERS);
 //
 //        (new GamesCreator())->createStructureGames($structure);
 //
@@ -181,7 +182,7 @@ class RoundTest extends TestCase
 //        $this->setScoreSingle($pouleTwo, 2, 3, 6, 4);
 //
 //        $roundRankingCalculator = new RoundRankingCalculator();
-//        $firstHorizontalPoule = $rootRound->getHorizontalPoule(QualifyGroup::WINNERS, 1);
+//        $firstHorizontalPoule = $rootRound->getHorizontalPoule(QualifyTarget::WINNERS, 1);
 //        self::assertInstanceOf(HorizontalPoule::class, $firstHorizontalPoule);
 //        $placeLocations = $roundRankingCalculator->getPlaceLocationsForHorizontalPoule($firstHorizontalPoule);
 //
