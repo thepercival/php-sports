@@ -13,21 +13,22 @@ use Sports\Qualify\Service as QualifyService;
 use Sports\Ranking\Calculator\Against as AgainstRankingService;
 use Sports\Qualify\ReservationService as QualifyReservationService;
 use Sports\Qualify\Group as QualifyGroup;
+use Sports\TestHelper\StructureEditorCreator;
 use SportsHelpers\PouleStructure;
 
 final class ReservationServiceTest extends TestCase
 {
-    use CompetitionCreator, SetScores;
+    use CompetitionCreator, SetScores, StructureEditorCreator;
 
     public function testFreeAndReserve(): void
     {
         $competition = $this->createCompetition();
 
-        $structureService = new StructureService([]);
-        $structure = $structureService->create($competition, new PouleStructure([5]));
+        $structureEditor = $this->createStructureEditor([]);
+        $structure = $structureEditor->create($competition, [5]);
         $rootRound = $structure->getRootRound();
-        $structureService->addQualifier($rootRound, QualifyTarget::WINNERS);
-        $structureService->addQualifier($rootRound, QualifyTarget::LOSERS);
+        $structureEditor->addChildRound($rootRound, QualifyTarget::WINNERS, [2]);
+        $structureEditor->addChildRound($rootRound, QualifyTarget::LOSERS, [2]);
 
         $winnersRound = $rootRound->getChild(QualifyTarget::WINNERS, 1);
         self::assertNotNull($winnersRound);
@@ -62,16 +63,11 @@ final class ReservationServiceTest extends TestCase
     {
         $competition = $this->createCompetition();
 
-        $structureService = new StructureService([]);
-        $structure = $structureService->create($competition, new PouleStructure([3,3,3,3]));
+        $structureEditor = $this->createStructureEditor([]);
+        $structure = $structureEditor->create($competition, [3,3,3,3]);
         $rootRound = $structure->getRootRound();
 
-        $structureService->addQualifiers($rootRound, QualifyTarget::WINNERS, 6);
-
-        $winnersRound = $rootRound->getChild(QualifyTarget::WINNERS, 1);
-        self::assertNotNull($winnersRound);
-
-        $structureService->addPoule($winnersRound);
+        $winnersRound = $structureEditor->addChildRound($rootRound, QualifyTarget::WINNERS, [2, 2, 2]);
 
         (new GamesCreator())->createStructureGames( $structure );
 
@@ -114,14 +110,13 @@ final class ReservationServiceTest extends TestCase
 
 
         $horPoule = $rootRound->getHorizontalPoule(QualifyTarget::WINNERS, 1);
-        self::assertNotNull($horPoule);
 
         // none available
-        $placeLocationOne = $resService->getFreeAndLeastAvailabe(1, $rootRound, $horPoule->getPlaces());
+        $placeLocationOne = $resService->getFreeAndLeastAvailabe(1, $rootRound, $horPoule->getPlaces()->toArray());
         self::assertSame($placeLocationOne->getPouleNr(), $pouleOne->getNumber());
 
         // two available, three least available
-        $placeLocationThree = $resService->getFreeAndLeastAvailabe(3, $rootRound, $horPoule->getPlaces());
+        $placeLocationThree = $resService->getFreeAndLeastAvailabe(3, $rootRound, $horPoule->getPlaces()->toArray());
         self::assertSame($placeLocationThree->getPouleNr(), $pouleTwo->getNumber());
     }
 
@@ -129,15 +124,11 @@ final class ReservationServiceTest extends TestCase
     {
         $competition = $this->createCompetition();
 
-        $structureService = new StructureService([]);
-        $structure = $structureService->create($competition, new PouleStructure([3,3,3]));
+        $structureEditor = $this->createStructureEditor([]);
+        $structure = $structureEditor->create($competition, [3,3,3]);
         $rootRound = $structure->getRootRound();
 
-        $structureService->addQualifiers($rootRound, QualifyTarget::WINNERS, 4);
-        $winnersRound = $rootRound->getChild(QualifyTarget::WINNERS, 1);
-        self::assertNotNull($winnersRound);
-
-        $structureService->removePoule($winnersRound);
+        $winnersRound = $structureEditor->addChildRound($rootRound, QualifyTarget::WINNERS, [4]);
 
         (new GamesCreator())->createStructureGames( $structure );
 

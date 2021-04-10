@@ -86,7 +86,8 @@ class Poule extends Identifiable
         $this->name = $name;
     }
 
-    public function getStructureLocation(): string {
+    public function getStructureLocation(): string
+    {
         return $this->getRound()->getStructurePathNode()->pathToString() . $this->getNumber();
     }
 

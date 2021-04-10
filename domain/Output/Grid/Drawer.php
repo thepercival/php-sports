@@ -19,37 +19,67 @@ final class Drawer
     {
     }
 
-    public function drawHorizontal(Coordinate $coordinate, string $value, int $color = 0): Coordinate
+    public function drawToRight(Coordinate $coordinate, string $value, int $color = 0): Coordinate
     {
         $valueAsArray = str_split($value);
         while ($char = array_shift($valueAsArray)) {
             $this->grid->setColor($coordinate, $color);
-            $coordinate = $this->grid->setHorizontal($coordinate, $char);
+            $coordinate = $this->grid->setToRight($coordinate, $char);
         }
         return $coordinate->decrementX();
     }
 
-    public function drawHorizontalLine(Coordinate $coordinate, int $length, string $value = '-', int $color = 0): Coordinate
+    public function drawLineToRight(Coordinate $coordinate, int $length, string $value = '-', int $color = 0): Coordinate
     {
-        return $this->drawHorizontal($coordinate, $this->initString($length, $value), $color);
+        return $this->drawToRight($coordinate, $this->initString($length, $value), $color);
     }
 
-    public function drawVertical(Coordinate $coordinate, string $value, int $color = 0): Coordinate
+    public function drawToLeft(Coordinate $coordinate, string $value, int $color = 0): Coordinate
     {
         $valueAsArray = str_split($value);
         while ($char = array_shift($valueAsArray)) {
             $this->grid->setColor($coordinate, $color);
-            $coordinate = $this->grid->setVertical($coordinate, $char);
+            $coordinate = $this->grid->setToLeft($coordinate, $char);
+        }
+        return $coordinate->incrementX();
+    }
+
+    public function drawLineToLeft(Coordinate $coordinate, int $length, string $value = '-', int $color = 0): Coordinate
+    {
+        return $this->drawToLeft($coordinate, $this->initString($length, $value), $color);
+    }
+
+    public function drawVertAwayFromOrigin(Coordinate $coordinate, string $value, int $color = 0): Coordinate
+    {
+        $valueAsArray = str_split($value);
+        while ($char = array_shift($valueAsArray)) {
+            $this->grid->setColor($coordinate, $color);
+            $coordinate = $this->grid->setVertAwayFromOrigin($coordinate, $char);
         }
         return $coordinate->decrementY();
     }
 
-    public function drawVerticalLine(Coordinate $coordinate, int $length, string $value = '|', int $color = 0): Coordinate
+    public function drawVertLineAwayFromOrigin(Coordinate $coordinate, int $length, string $value = '|', int $color = 0): Coordinate
     {
-        return $this->drawVertical($coordinate, $this->initString($length, $value), $color);
+        return $this->drawVertAwayFromOrigin($coordinate, $this->initString($length, $value), $color);
+    }
+    
+    public function drawVertToOrigin(Coordinate $coordinate, string $value, int $color = 0): Coordinate
+    {
+        $valueAsArray = str_split($value);
+        while ($char = array_shift($valueAsArray)) {
+            $this->grid->setColor($coordinate, $color);
+            $coordinate = $this->grid->setVertToOrigin($coordinate, $char);
+        }
+        return $coordinate->decrementY();
     }
 
-    public function drawHorizontalCell(Coordinate $coordinate, string $text, int $width, int $align, int $color = 0): Coordinate
+    public function drawVertLineToOrigin(Coordinate $coordinate, int $length, string $value = '|', int $color = 0): Coordinate
+    {
+        return $this->drawVertToOrigin($coordinate, $this->initString($length, $value), $color);
+    }
+
+    public function drawCellToRight(Coordinate $coordinate, string $text, int $width, int $align, int $color = 0): Coordinate
     {
         $char = ' ';
         if (strlen($text) > $width) {
@@ -66,8 +96,15 @@ final class Drawer
                 $text = $this->addToString($text, $char, $align);
             }
         }
-        return $this->drawHorizontal($coordinate, $text, $color);
+        return $this->drawToRight($coordinate, $text, $color);
     }
+
+    public function drawRectangle(Coordinate $origin, Coordinate $size): void {
+        $topRight = $this->drawLineToRight($origin, $size->getX());
+        $bottomRight = $this->drawVertLineAwayFromOrigin($topRight, $size->getY());
+        $bottomLeft = $this->drawLineToLeft($bottomRight->decrementX(), $size->getX() - 1);
+        $this->drawVertLineToOrigin($bottomLeft, $size->getY());
+}
 
     public function initString(int $length, string $char = ' '): string
     {

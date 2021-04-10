@@ -14,6 +14,7 @@ use Sports\State;
 use Sports\Ranking\Calculator\Round\Sport as SportRoundRankingCalculator;
 use Sports\Ranking\Calculator\Round\Sport\Against as AgainstSportRoundRankingCalculator;
 use Sports\Ranking\Calculator\Round\Sport\Together as TogetherSportRoundRankingCalculator;
+use Sports\Qualify\Rule\Multiple as MultipleQualifyRule;
 use SportsHelpers\GameMode;
 
 class Round
@@ -50,7 +51,18 @@ class Round
             return $this->getSportRoundRankingCalculator($competitionSport)->getItemsForPoule($poule);
         })->toArray();
         return $this->convertSportRoundRankingsToRoundItems(
-            array_values($poule->getPlaces()->toArray()), array_values($sportRoundRankingItems));
+            array_values($poule->getPlaces()->toArray()),
+            array_values($sportRoundRankingItems)
+        );
+    }
+
+    /**
+     * @param MultipleQualifyRule $multipleRule
+     * @return list<Place>
+     */
+    public function getPlaceLocationsForMultipleRule(MultipleQualifyRule $multipleRule): array
+    {
+        return $this->getPlacesForHorizontalPoule($multipleRule->getFromHorizontalPoule());
     }
 
     /**
@@ -61,31 +73,24 @@ class Round
     {
         return array_values(array_map(function (RoundRankingItem $rankingItem): Place {
             return $rankingItem->getPlace();
-        }, $this->getItemsForHorizontalPoule($horizontalPoule, true)));
+        }, $this->getItemsForHorizontalPoule($horizontalPoule)));
     }
 
     /**
      * @param HorizontalPoule $horizontalPoule
-     * @return list<Place>
-     */
-    public function getPlaceLocationsForHorizontalPoule(HorizontalPoule $horizontalPoule): array
-    {
-        return $this->getPlacesForHorizontalPoule($horizontalPoule);
-    }
-
-    /**
-     * @param HorizontalPoule $horizontalPoule
-     * @param bool|null $checkOnSingleQualifyRule
      * @return list<RoundRankingItem>
      */
-    public function getItemsForHorizontalPoule(HorizontalPoule $horizontalPoule, bool $checkOnSingleQualifyRule = null): array
+    public function getItemsForHorizontalPoule(HorizontalPoule $horizontalPoule): array
     {
         $competitionSports = $horizontalPoule->getRound()->getNumber()->getCompetitionSports();
-        $sportRoundRankingItems = $competitionSports->map(function (CompetitionSport $competitionSport) use ($horizontalPoule, $checkOnSingleQualifyRule): array {
+        $sportRoundRankingItems = $competitionSports->map(function (CompetitionSport $competitionSport) use ($horizontalPoule): array {
             $calculator = $this->getSportRoundRankingCalculator($competitionSport);
-            return $calculator->getItemsForHorizontalPoule($horizontalPoule, $checkOnSingleQualifyRule);
+            return $calculator->getItemsForHorizontalPoule($horizontalPoule);
         })->toArray();
-        return $this->convertSportRoundRankingsToRoundItems($horizontalPoule->getPlaces(), array_values($sportRoundRankingItems));
+        return $this->convertSportRoundRankingsToRoundItems(
+            $horizontalPoule->getPlaces()->toArray(),
+            array_values($sportRoundRankingItems)
+        );
     }
 
     /**
@@ -109,7 +114,6 @@ class Round
     protected function convertSportRoundRankingsToRoundItems(array $places, array $sportRoundRankings): array
     {
         $map = $this->getRoundRankingItemMap($places, $sportRoundRankings);
-        // TODOSPORTS CHECK IF ARRAY IS CHANGES
         $roundRankingItems = array_map(function (Place $place) use ($map): RoundRankingItem {
             return $map[$place->getRoundLocationId()];
         }, $places);
@@ -129,7 +133,7 @@ class Round
         }
         foreach ($sportRoundRankings as $sportRoundRanking) {
             foreach ($sportRoundRanking as $sportRoundItem) {
-                $map[$sportRoundItem->getRoundLocationId()]->addSportRoundItem($sportRoundItem);
+                $map[$sportRoundItem->getPlaceLocation()->getRoundLocationId()]->addSportRoundItem($sportRoundItem);
             }
         }
         return $map;

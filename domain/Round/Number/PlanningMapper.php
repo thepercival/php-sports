@@ -4,6 +4,8 @@ declare(strict_types=1);
 namespace Sports\Round\Number;
 
 use Exception;
+use Sports\Ranking\Map\PouleStructureNumber as PouleStructureNumberMap;
+use Sports\Ranking\Map\PreviousNrOfDropouts as PreviousNrOfDropoutsMap;
 use Sports\Round\Number as RoundNumber;
 use SportsPlanning\Planning;
 use Sports\Poule;
@@ -51,11 +53,15 @@ class PlanningMapper
                 return $pouleA->getPlaces()->count() >= $pouleB->getPlaces()->count() ? -1 : 1;
             });
         } else {
+            $previousNrOfDropoutsMap = new PreviousNrOfDropoutsMap($roundNumber->getRounds()->first());
+            $pouleStructureNumberMap = new PouleStructureNumberMap($roundNumber, $previousNrOfDropoutsMap);
             usort(
                 $poules,
-                function (Poule $pouleA, Poule $pouleB) {
+                function (Poule $pouleA, Poule $pouleB) use ($pouleStructureNumberMap) : int {
                     if ($pouleA->getPlaces()->count() === $pouleB->getPlaces()->count()) {
-                        return $pouleA->getStructureNumber() >= $pouleB->getStructureNumber() ? -1 : 1;
+                        $pouleAStructureNumber = $pouleStructureNumberMap->get($pouleA);
+                        $pouleBStructureNumber = $pouleStructureNumberMap->get($pouleB);
+                        return $pouleAStructureNumber >= $pouleBStructureNumber ? -1 : 1;
                     }
                     return $pouleA->getPlaces()->count() >= $pouleB->getPlaces()->count() ? -1 : 1;
                 }

@@ -216,7 +216,7 @@ class GamesValidator
 
             $refereePlace = $game->getRefereePlace();
             if ($refereePlace !== null) {
-                $pouleNr = $refereePlace->getPoule()->getStructureNumber();
+                $pouleNr = $refereePlace->getPoule()->getStructureLocation();
                 if (array_key_exists($pouleNr, $refereePlaces) === false) {
                     $refereePlaces[$pouleNr] = [];
                 }

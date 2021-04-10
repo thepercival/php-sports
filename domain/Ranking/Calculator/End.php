@@ -71,10 +71,16 @@ class End
     {
         $dropouts = [];
         $nrOfDropouts = $round->getNrOfDropoutPlaces();
-        while ($nrOfDropouts > 0) {
-            foreach ([QualifyTarget::WINNERS, QualifyTarget::LOSERS] as $winnersOrLosers) {
-                foreach ($round->getHorizontalPoules($winnersOrLosers) as $horizontalPoule) {
-                    $qualifyGroup = $horizontalPoule->getQualifyGroup();
+        while (count($dropouts) < $nrOfDropouts) {
+            foreach ([QualifyTarget::WINNERS, QualifyTarget::LOSERS] as $qualifyTarget) {
+                foreach ($round->getHorizontalPoules($qualifyTarget) as $horPoule) {
+                    $horPouleDropouts = $this->getHorizontalPouleDropouts($horPoule);
+                    $horPouleDropout = array_pop($horPouleDropouts);
+                    while (count($dropouts) < $nrOfDropouts && $horPouleDropout !== null) {
+                        array_push($dropouts, $horPouleDropout);
+                        $horPouleDropout = array_pop($horPouleDropouts);
+                    }
+                    /*$qualifyGroup = $horizontalPoule->getQualifyGroup();
                     if ($qualifyGroup!== null && $qualifyGroup->getNrOfToPlacesTooMuch() === 0) {
                         if ($nrOfDropouts > 0) {
                             continue;
@@ -86,12 +92,12 @@ class End
                         array_pop($dropoutsHorizontalPoule);
                     }
                     $dropouts = array_merge($dropouts, $dropoutsHorizontalPoule);
-                    $nrOfDropouts -= count($dropoutsHorizontalPoule);
-                    if ($nrOfDropouts === 0) {
+                    $nrOfDropouts -= count($dropoutsHorizontalPoule);*/
+                    if (count($dropouts) === $nrOfDropouts) {
                         break;
                     }
                 }
-                if ($nrOfDropouts === 0) {
+                if (count($dropouts) === $nrOfDropouts) {
                     break;
                 }
             }
@@ -103,7 +109,7 @@ class End
      * @param HorizontalPoule $horizontalPoule
      * @return list<EndRankingItem>
      */
-    protected function getDropoutsHorizontalPoule(HorizontalPoule $horizontalPoule): array
+    protected function getHorizontalPouleDropouts(HorizontalPoule $horizontalPoule): array
     {
         $roundRankingCalculator = new RoundRankingCalculator();
         $rankedPlaces = $roundRankingCalculator->getPlacesForHorizontalPoule($horizontalPoule);

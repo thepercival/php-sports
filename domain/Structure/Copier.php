@@ -85,7 +85,7 @@ class Copier
             return;
         }
         foreach ($round->getQualifyGroups() as $qualifyGroup) {
-            $newQualifyGroup = new QualifyGroup($newRound, $qualifyGroup->getWinnersOrLosers(), $newNextRoundNumber);
+            $newQualifyGroup = new QualifyGroup($newRound, $qualifyGroup->getTarget(), $newNextRoundNumber);
             $newQualifyGroup->setNumber($qualifyGroup->getNumber());
             // $qualifyGroup->setNrOfHorizontalPoules( $qualifyGroupSerialized->getNrOfHorizontalPoules() );
             $this->copyRound($qualifyGroup->getChildRound(), $newQualifyGroup->getChildRound());

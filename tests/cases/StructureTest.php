@@ -8,23 +8,24 @@ use PHPUnit\Framework\TestCase;
 use Sports\Structure\Editor as StructureService;
 use Sports\Qualify\Group as QualifyGroup;
 use Sports\TestHelper\CompetitionCreator;
+use Sports\TestHelper\StructureEditorCreator;
 use SportsHelpers\PouleStructure;
 
 class StructureTest extends TestCase
 {
-    use CompetitionCreator;
+    use CompetitionCreator, StructureEditorCreator;
 
     public function testBasics(): void
     {
         $competition = $this->createCompetition();
-        $structureService = new StructureService([]);
-        $structure = $structureService->create($competition, new PouleStructure([4,4,4,4]));
+        $structureEditor = $this->createStructureEditor([]);
+        $structure = $structureEditor->create($competition, [4,4,4,4]);
         $firstRoundNumber = $structure->getFirstRoundNumber();
         $rootRound = $structure->getRootRound();
 
         self::assertSame($rootRound->getNumber(), $firstRoundNumber);
 
-        $structureService->addQualifier($rootRound, QualifyTarget::WINNERS);
+        $structureEditor->addChildRound($rootRound, QualifyTarget::WINNERS, [2]);
 
         self::assertSame($rootRound->getNumber()->getNext(), $structure->getLastRoundNumber());
 
@@ -34,36 +35,5 @@ class StructureTest extends TestCase
         self::assertSame($structure->getRoundNumber(2), $firstRoundNumber->getNext());
         self::assertSame($structure->getRoundNumber(3), null);
         self::assertSame($structure->getRoundNumber(0), null);
-    }
-
-    public function testSetStructureNumbers(): void
-    {
-        $competition = $this->createCompetition();
-        $structureService = new StructureService([]);
-        $structure = $structureService->create($competition, new PouleStructure([4,4,4,4]));
-        $firstRoundNumber = $structure->getFirstRoundNumber();
-        $rootRound = $structure->getRootRound();
-
-        self::assertSame($rootRound->getNumber(), $firstRoundNumber);
-
-        $structureService->addQualifiers($rootRound, QualifyTarget::WINNERS, 2);
-        $structureService->addQualifiers($rootRound, QualifyTarget::LOSERS, 2);
-
-        $structure->setStructureNumbers();
-
-        $childWinnersRound = $rootRound->getChild(QualifyTarget::WINNERS, 1);
-        $childLosersRound = $rootRound->getChild(QualifyTarget::LOSERS, 1);
-
-        self::assertNotNull($childWinnersRound);
-        self::assertNotNull($childLosersRound);
-
-        self::assertSame($childWinnersRound->getStructureNumber(), 0);
-        self::assertSame($rootRound->getStructureNumber(), 2);
-        self::assertSame($childLosersRound->getStructureNumber(), 14);
-
-        self::assertSame($rootRound->getPoule(1)->getStructureNumber(), 1);
-        self::assertSame($rootRound->getPoule(4)->getStructureNumber(), 4);
-        self::assertSame($childWinnersRound->getPoule(1)->getStructureNumber(), 5);
-        self::assertSame($childLosersRound->getPoule(1)->getStructureNumber(), 6);
     }
 }

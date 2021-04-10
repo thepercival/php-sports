@@ -149,8 +149,8 @@ class Round extends Identifiable
         $qualifyGroupsToRemove = $this->getTargetQualifyGroups($target);
         foreach ($qualifyGroupsToRemove as $qualifyGroupToRemove) {
             $this->qualifyGroups->removeElement($qualifyGroupToRemove);
-            if ($rounds !== null && $rounds->contains($qualifyGroupToRemove->getRound())) {
-                $rounds->removeElement($qualifyGroupToRemove->getRound());
+            if ($rounds !== null && $rounds->contains($qualifyGroupToRemove->getChildRound())) {
+                $rounds->removeElement($qualifyGroupToRemove->getChildRound());
             }
         }
     }
@@ -158,10 +158,10 @@ class Round extends Identifiable
 
 //    protected function sortQualifyGroups() {
 //        uasort( $this->qualifyGroups, function( QualifyGroup $qualifyGroupA, QualifyGroup $qualifyGroupB) {
-//            if ($qualifyGroupA->getWinnersOrLosers() < $qualifyGroupB->getWinnersOrLosers()) {
+//            if ($qualifyGroupA->getTarget() < $qualifyGroupB->getTarget()) {
 //                return 1;
 //            }
-//            if ($qualifyGroupA->getWinnersOrLosers() > $qualifyGroupB->getWinnersOrLosers()) {
+//            if ($qualifyGroupA->getTarget() > $qualifyGroupB->getTarget()) {
 //                return -1;
 //            }
 //            if ($qualifyGroupA->getNumber() < $qualifyGroupB->getNumber()) {
@@ -233,6 +233,68 @@ class Round extends Identifiable
         throw new \Exception("poule kan niet gevonden worden", E_ERROR);
     }
 
+    public function getFirstPoule(): Poule
+    {
+        return $this->getPoule(1);
+    }
+
+    public function getLastPoule(): Poule
+    {
+        return $this->getPoule($this->getPoules()->count());
+    }
+
+    public function addPlace()
+    {
+        $pouleStructure = $this->createPouleStructure();
+        $pouleNr = $pouleStructure->getFirstLesserNrOfPlacesPouleNr();
+        new Place($this->getPoule($pouleNr));
+    }
+
+    public function removePlace(): int
+    {
+        $pouleStructure = $this->createPouleStructure();
+        $pouleNr = $pouleStructure->getLastGreaterNrOfPlacesPouleNr();
+        $poule = $this->getPoule($pouleNr);
+
+        $poulePlaces = $poule->getPlaces();
+        $nrOfRemovedPoulePlaces = 0;
+        if ($poulePlaces->removeElement($poulePlaces->last()) !== null) {
+            $nrOfRemovedPoulePlaces++;
+        };
+
+        if ($poulePlaces->count() === 1) {
+            $this->removePoule();
+            $nrOfRemovedPoulePlaces++;
+        }
+        return $nrOfRemovedPoulePlaces;
+    }
+
+    public function addPoule(): Poule
+    {
+        $lastPoule = $this->getLastPoule();
+        $poule = new Poule($this);
+        foreach ($lastPoule->getPlaces() as $place) {
+            new Place($poule);
+        }
+        return $this->getLastPoule();
+    }
+
+    public function removePoule(): Poule
+    {
+        $lastPoule = $this->getLastPoule();
+        $this->poules->removeElement($lastPoule);
+        if ($this->poules->count() === 0) {
+            $this->detach();
+        }
+        return $lastPoule;
+    }
+
+    public function getRoot(): Round
+    {
+        $parent = $this->getParent();
+        return $parent !== null ? $parent->getRoot() : $this;
+    }
+
     public function isRoot(): bool
     {
         return $this->getParentQualifyGroup() === null;
@@ -244,7 +306,7 @@ class Round extends Identifiable
         return  $parent!== null ? $parent->getParentRound() : null;
     }
 
-    public function getParentQualifyGroup(): ?QualifyGroup
+    public function getParentQualifyGroup(): QualifyGroup|null
     {
         return $this->parentQualifyGroup;
     }
@@ -261,22 +323,21 @@ class Round extends Identifiable
         return $this->losersHorizontalPoules;
     }
 
-    public function getHorizontalPoule(string $target, int $number): HorizontalPoule|null
+    public function getHorizontalPoule(string $target, int $number): HorizontalPoule
     {
         $foundHorPoules = $this->getHorizontalPoules($target)->filter(function ($horPoule) use ($number): bool {
             return $horPoule->getNumber() === $number;
         });
-        $first = $foundHorPoules->first();
-        return $first !== false ? $first : null;
+        $firstHorPoule = $foundHorPoules->first();
+        if ($firstHorPoule === false) {
+            throw new Exception('horizontalPoule can not be undefined', E_ERROR);
+        }
+        return $firstHorPoule;
     }
 
     public function getFirstPlace(string $target): Place
     {
-        $horPoule = $this->getHorizontalPoule($target, 1);
-        if ($horPoule === null) {
-            throw new Exception('de eerste plaats binnen een poule kan niet gevonden worden', E_ERROR);
-        }
-        return $horPoule->getFirstPlace();
+        return $this->getHorizontalPoule($target, 1)->getFirstPlace();
     }
 
     /**
@@ -288,7 +349,7 @@ class Round extends Identifiable
         $places = [];
         if ($order === Round::ORDER_NUMBER_POULE) {
             foreach ($this->getHorizontalPoules(QualifyTarget::WINNERS) as $horPoule) {
-                $places = array_merge($places, $horPoule->getPlaces());
+                $places = array_merge($places, $horPoule->getPlaces()->toArray());
             }
         } else {
             foreach ($this->getPoules() as $poule) {
@@ -543,5 +604,19 @@ class Round extends Identifiable
             return $poule->getPlaces()->count();
         });
         return new BalancedPouleStructure(...$nrOfPlaces);
+    }
+
+    public function detach()
+    {
+        $rounds = $this->getNumber()->getRounds();
+        $rounds->removeElement($this);
+//        const idx = rounds.indexOf(this);
+//        if ($rounds->contains($rounds)) {
+//            rounds.splice(idx, 1);
+//        }
+        if ($rounds->count() === 0) {
+            $this->getNumber()->detach();
+        }
+        $this->parentQualifyGroup = null;
     }
 }

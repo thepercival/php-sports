@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Sports;
 
+use Exception;
 use Sports\Competitor\Map as CompetitorMap;
 use Sports\Poule\Horizontal as HorizontalPoule;
 use Sports\Round\Number as RoundNumber;
@@ -12,17 +13,17 @@ use Sports\Ranking\Rule\Getter as RankingRuleGetter;
 use Sports\Ranking\Rule as RankingRule;
 use Sports\Qualify\Rule\Single as SingleQualifyRule;
 use Sports\Qualify\Rule\Multiple as MultipleQualifyRule;
+use Sports\Ranking\Map\PouleStructureNumber as PouleStructureNumberMap;
+use Sports\Ranking\Map\PreviousNrOfDropouts as PreviousNrOfDropoutsMap;
 
 class NameService
 {
-    /**
-     * @var CompetitorMap|null
-     */
-    protected $competitorMap;
+    protected PouleStructureNumberMap|null $pouleStructureNumberMap = null;
+    protected PreviousNrOfDropoutsMap|null $previousNrOfDropoutsMap = null;
 
-    public function __construct(CompetitorMap $competitorMap = null)
-    {
-        $this->competitorMap = $competitorMap;
+    public function __construct(
+        protected CompetitorMap|null $competitorMap = null
+    ) {
     }
 
     public function getQualifyTargetDescription(string $qualifyTarget, bool $multiple = false): string
@@ -58,7 +59,7 @@ class NameService
         }
         // if (round.getNrOfPlaces() > 1) {
         if ($round->getNrOfPlaces() === 2 && $sameName === false) {
-            $rank = $round->getStructureNumber() + 1;
+            $rank = $this->getPreviousNrOfDropoutsMap($round)->get($round) + 1;
             return $this->getHtmlNumber($rank) . '/' . $this->getHtmlNumber($rank + 1) . ' plaats';
         }
         return 'finale';
@@ -70,7 +71,7 @@ class NameService
         if ($withPrefix === true) {
             $pouleName = $poule->needsRanking() ? 'poule ' : 'wed. ';
         }
-        $pouleStructureNumber = $poule->getStructureNumber() - 1;
+        $pouleStructureNumber = $this->getPouleStructureNumberMap($poule->getRound())->get($poule) - 1;
         $secondLetter = $pouleStructureNumber % 26;
         if ($pouleStructureNumber >= 26) {
             $firstLetter = (int)(($pouleStructureNumber - $secondLetter) / 26);
@@ -103,29 +104,33 @@ class NameService
             }
         }
 
+        $fromQualifyRule = null;
         $parentQualifyGroup = $place->getRound()->getParentQualifyGroup();
-        if ($parentQualifyGroup === null) {
+        if ($parentQualifyGroup !== null) {
+            try {
+                $fromQualifyRule = $parentQualifyGroup->getRule($place);
+            } catch (Exception $exception) {
+            }
+        }
+        if ($fromQualifyRule === null) {
             return $this->getPlaceName($place, false, $longName);
         }
 
-        $fromQualifyRule = $place->getFromQualifyRule();
         if ($fromQualifyRule instanceof MultipleQualifyRule) {
             if ($longName) {
                 return $this->getHorizontalPouleName($fromQualifyRule->getFromHorizontalPoule());
             }
             return '?' . $fromQualifyRule->getFromPlaceNumber();
         }
-        if ($fromQualifyRule instanceof SingleQualifyRule) {
-            $fromPlace = $fromQualifyRule->getFromPlace();
-            if ($longName !== true || $fromPlace->getPoule()->needsRanking()) {
-                return $this->getPlaceName($fromPlace, false, $longName);
-            }
-            $name = $this->getQualifyTargetDescription(
-                $fromPlace->getNumber() === 1 ? QualifyTarget::WINNERS : QualifyTarget::LOSERS
-            );
-            return $name . ' ' . $this->getPouleName($fromPlace->getPoule(), false);
+
+        $fromPlace = $fromQualifyRule->getFromPlace($place);
+        if ($longName !== true || $fromPlace->getPoule()->needsRanking()) {
+            return $this->getPlaceName($fromPlace, false, $longName);
         }
-        return '?';
+        $name = $this->getQualifyTargetDescription(
+            $fromPlace->getNumber() === 1 ? QualifyTarget::WINNERS : QualifyTarget::LOSERS
+        );
+        return $name . ' ' . $this->getPouleName($fromPlace->getPoule(), false);
     }
 
     /**
@@ -156,22 +161,23 @@ class NameService
      */
     public function getHorizontalPouleName(HorizontalPoule $horizontalPoule): string
     {
-        if ($horizontalPoule->getQualifyGroup() === null) {
+        $qualifyRule = $horizontalPoule->getQualifyRule();
+        if ($qualifyRule === null) {
             return 'nummers ' . $horizontalPoule->getNumber();
         }
-        $nrOfQualifiers = $horizontalPoule->getNrOfQualifiers();
+        $nrOfToPlaces = $qualifyRule->getNrOfToPlaces();
 
-        if ($horizontalPoule->getWinnersOrLosers() === QualifyTarget::WINNERS) {
-            $name = 'nummer' . ($nrOfQualifiers > 1 ? 's ' : ' ') . $horizontalPoule->getNumber();
-            if ($horizontalPoule->isBorderPoule()) {
-                return ($nrOfQualifiers > 1 ? ($nrOfQualifiers . ' ') : '') . 'beste ' . $name;
+        if ($qualifyRule->getQualifyTarget() === QualifyTarget::WINNERS) {
+            $name = 'nummer' . ($nrOfToPlaces > 1 ? 's ' : ' ') . $horizontalPoule->getNumber();
+            if ($qualifyRule instanceof MultipleQualifyRule) {
+                return ($nrOfToPlaces > 1 ? ($nrOfToPlaces . ' ') : '') . 'beste ' . $name;
             }
             return $name;
         }
-        $name = ($nrOfQualifiers > 1 ? 'nummers ' : '');
+        $name = ($nrOfToPlaces > 1 ? 'nummers ' : '');
         $name .= $horizontalPoule->getNumber() > 1 ? (($horizontalPoule->getNumber() - 1) . ' na laatst') : 'laatste';
-        if ($horizontalPoule->isBorderPoule()) {
-            return ($nrOfQualifiers > 1 ? ($nrOfQualifiers . ' ') : '') . 'slechtste ' . $name;
+        if ($qualifyRule instanceof MultipleQualifyRule) {
+            return ($nrOfToPlaces > 1 ? ($nrOfToPlaces . ' ') : '') . 'slechtste ' . $name;
         }
         return $name;
     }
@@ -308,5 +314,24 @@ class NameService
             }
         }
         return $biggestMaxDepth;
+    }
+
+    private function getPreviousNrOfDropoutsMap(Round $round): PreviousNrOfDropoutsMap
+    {
+        if ($this->previousNrOfDropoutsMap === null) {
+            $this->previousNrOfDropoutsMap = new PreviousNrOfDropoutsMap($round->getRoot());
+        }
+        return $this->previousNrOfDropoutsMap;
+    }
+
+    private function getPouleStructureNumberMap(Round $round): PouleStructureNumberMap
+    {
+        if ($this->pouleStructureNumberMap === null) {
+            $this->pouleStructureNumberMap = new PouleStructureNumberMap(
+                $round->getNumber()->getFirst(),
+                $this->getPreviousNrOfDropoutsMap($round)
+            );
+        }
+        return $this->pouleStructureNumberMap;
     }
 }

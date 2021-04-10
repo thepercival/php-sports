@@ -58,13 +58,13 @@ class Creator
         }
 
         $nrOfPoules = $round->getPoules()->count();
-        $horPlaces = array_splice($placesHorizontalOrdered, $nrOfPoules);
+        $horPlaces = array_splice($placesHorizontalOrdered, 0, $nrOfPoules);
         $previous = null;
         while (count($horPlaces) > 0) {
             $previous = new HorizontalPoule($round, $qualifyTarget, $previous, new ArrayCollection($horPlaces));
-            $horPlaces = array_splice($placesHorizontalOrdered, $nrOfPoules);
+            $horPlaces = array_splice($placesHorizontalOrdered, 0, $nrOfPoules);
         }
-        return new ArrayCollection($horizontalPoules);
+        return $horizontalPoules;
     }
 
     /**

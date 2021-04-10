@@ -28,7 +28,7 @@ class Multiple extends QualifyRule
 
     public function hasToPlace(Place $place): bool
     {
-        return $this->toPlaces->indexOf($place) >= 0;
+        return array_search($place, $this->toPlaces, true) !== false;
     }
 
     /**

@@ -64,7 +64,7 @@ class OriginCalculator
      * @param Poule $poule
      * @param list<Poule> $origins
      */
-    protected function addPossibleOriginToList(Poule $poule, array $origins)
+    protected function addPossibleOriginToList(Poule $poule, array &$origins)
     {
         if (array_search($poule, $origins, true) === false) {
             array_push($origins, $poule);
@@ -75,7 +75,7 @@ class OriginCalculator
      * @param Poule $poule
      * @param array<int|string, Poule> $origins
      */
-    protected function addPossibleOriginMap(Poule $poule, array $origins)
+    protected function addPossibleOriginMap(Poule $poule, array &$origins)
     {
         $origins[$poule->getStructureLocation()] = $poule;
     }
@@ -97,12 +97,12 @@ class OriginCalculator
                 $this->getPlacePossiblePreviousPoules($place)
             );
         }
-        return $possiblePreviousPoules;
+        return array_values($possiblePreviousPoules);
     }
 
     /**
      * @param Place $place
-     * @return list<Place>
+     * @return list<Poule>
      * @throws \Exception
      */
     protected function getPlacePossiblePreviousPoules(Place $place): array

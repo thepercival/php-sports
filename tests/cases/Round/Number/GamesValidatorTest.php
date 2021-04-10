@@ -9,6 +9,7 @@ use PHPUnit\Framework\TestCase;
 use Sports\Competition\Field;
 use Sports\Competition\Referee;
 use Sports\Output\Game\Against as AgainstGameOutput;
+use Sports\TestHelper\StructureEditorCreator;
 use SportsHelpers\Against\Side as AgainstSide;
 use Sports\Game\Against as AgainstGame;
 use Sports\Place;
@@ -22,14 +23,14 @@ use SportsHelpers\SelfReferee;
 
 class GamesValidatorTest extends TestCase
 {
-    use CompetitionCreator;
+    use CompetitionCreator, StructureEditorCreator;
 
     public function testGameWithoutField(): void
     {
         $competition = $this->createCompetition();
 
-        $structureService = new StructureService([]);
-        $structure = $structureService->create($competition, new PouleStructure([5]));
+        $structureEditor = $this->createStructureEditor([]);
+        $structure = $structureEditor->create($competition, [5]);
 
         (new GamesCreator())->createStructureGames($structure);
 
@@ -50,8 +51,8 @@ class GamesValidatorTest extends TestCase
     {
         $competition = $this->createCompetition();
 
-        $structureService = new StructureService([]);
-        $structure = $structureService->create($competition, new PouleStructure([5]));
+        $structureEditor = $this->createStructureEditor([]);
+        $structure = $structureEditor->create($competition, [5]);
 
         (new GamesCreator())->createStructureGames($structure);
 
@@ -72,8 +73,8 @@ class GamesValidatorTest extends TestCase
     {
         $competition = $this->createCompetition();
 
-        $structureService = new StructureService([]);
-        $structure = $structureService->create($competition, new PouleStructure([5]));
+        $structureEditor = $this->createStructureEditor([]);
+        $structure = $structureEditor->create($competition, [5]);
 
         (new GamesCreator())->createStructureGames($structure);
 
@@ -97,8 +98,8 @@ class GamesValidatorTest extends TestCase
     {
         $competition = $this->createCompetition();
 
-        $structureService = new StructureService([]);
-        $structure = $structureService->create($competition, new PouleStructure([5]));
+        $structureEditor = $this->createStructureEditor([]);
+        $structure = $structureEditor->create($competition, [5]);
 
         (new GamesCreator())->createStructureGames($structure);
 
@@ -122,8 +123,8 @@ class GamesValidatorTest extends TestCase
     {
         $competition = $this->createCompetition();
 
-        $structureService = new StructureService([]);
-        $structure = $structureService->create($competition, new PouleStructure([5]));
+        $structureEditor = $this->createStructureEditor([]);
+        $structure = $structureEditor->create($competition, [5]);
 
         (new GamesCreator())->createStructureGames($structure);
 
@@ -147,8 +148,8 @@ class GamesValidatorTest extends TestCase
     {
         $competition = $this->createCompetition();
 
-        $structureService = new StructureService([]);
-        $structure = $structureService->create($competition, new PouleStructure([5]));
+        $structureEditor = $this->createStructureEditor([]);
+        $structure = $structureEditor->create($competition, [5]);
 
         (new GamesCreator())->createStructureGames($structure);
 
@@ -176,8 +177,8 @@ class GamesValidatorTest extends TestCase
     {
         $competition = $this->createCompetition();
 
-        $structureService = new StructureService([]);
-        $structure = $structureService->create($competition, new PouleStructure([5]));
+        $structureEditor = $this->createStructureEditor([]);
+        $structure = $structureEditor->create($competition, [5]);
 
         (new GamesCreator())->createStructureGames($structure);
 
@@ -215,8 +216,8 @@ class GamesValidatorTest extends TestCase
     {
         $competition = $this->createCompetition();
 
-        $structureService = new StructureService([]);
-        $structure = $structureService->create($competition, new PouleStructure([5]));
+        $structureEditor = $this->createStructureEditor([]);
+        $structure = $structureEditor->create($competition, [5]);
 
         $firstRoundNumber = $structure->getFirstRoundNumber();
         $firstRoundNumber->getValidPlanningConfig()->setSelfReferee(SelfReferee::SAMEPOULE);
@@ -258,8 +259,8 @@ class GamesValidatorTest extends TestCase
     {
         $competition = $this->createCompetition();
 
-        $structureService = new StructureService([]);
-        $structure = $structureService->create($competition, new PouleStructure([5,4]));
+        $structureEditor = $this->createStructureEditor([]);
+        $structure = $structureEditor->create($competition, [5,4]);
 
         $firstRoundNumber = $structure->getFirstRoundNumber();
         $firstRoundNumber->getValidPlanningConfig()->setSelfReferee(SelfReferee::OTHERPOULES);
@@ -282,8 +283,8 @@ class GamesValidatorTest extends TestCase
     {
         $competition = $this->createCompetition();
 
-        $structureService = new StructureService([]);
-        $structure = $structureService->create($competition, new PouleStructure([5,4]));
+        $structureEditor = $this->createStructureEditor([]);
+        $structure = $structureEditor->create($competition, [5,4]);
 
         $firstRoundNumber = $structure->getFirstRoundNumber();
         $firstRoundNumber->getValidPlanningConfig()->setSelfReferee(SelfReferee::OTHERPOULES);
@@ -314,8 +315,8 @@ class GamesValidatorTest extends TestCase
     {
         $competition = $this->createCompetition();
 
-        $structureService = new StructureService([]);
-        $structure = $structureService->create($competition, new PouleStructure([5]));
+        $structureEditor = $this->createStructureEditor([]);
+        $structure = $structureEditor->create($competition, [5]);
 
         (new GamesCreator())->createStructureGames($structure);
 

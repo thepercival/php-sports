@@ -30,9 +30,8 @@ class Sport
         return $this->getPerformance()->getCompetitionSport();
     }
 
-    public function getRoundLocationId(): string
-    {
-        return $this->getPerformance()->getRoundLocationId();
+    public function getPlaceLocation(): PlaceLocation {
+        return $this->performance->getPlaceLocation();
     }
 
     public function getPerformance(): SportPerformance

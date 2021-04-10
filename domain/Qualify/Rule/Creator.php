@@ -7,33 +7,37 @@ use Exception;
 use Sports\Round;
 use Sports\Qualify\Target as QualifyTarget;
 
-class Creator {
+class Creator
+{
+
     /**
-     * @param list<Round | null>
+     * @param Round|null ...$parentRounds
      */
-    public function remove(Round|null ...$parentRounds) {
-        foreach($parentRounds as $parentRound) {
+    public function remove(Round|null ...$parentRounds)
+    {
+        foreach ($parentRounds as $parentRound) {
             if ($parentRound === null) {
                 return;
             }
-            foreach( $parentRound->getQualifyGroups() as $qualifyGroup) {
+            foreach ($parentRound->getQualifyGroups() as $qualifyGroup) {
                 $qualifyGroup->detachRules();
             }
         }
     }
 
-    public function create(Round | null ...$parentRounds) {
-        foreach( [QualifyTarget::WINNERS, QualifyTarget::LOSERS] as $target) {
-            foreach($parentRounds as $parentRound) {
+    public function create(Round | null ...$parentRounds)
+    {
+        foreach ([QualifyTarget::WINNERS, QualifyTarget::LOSERS] as $target) {
+            foreach ($parentRounds as $parentRound) {
                 if ($parentRound === null) {
                     continue;
                 }
                 $fromRoundHorPoules = $parentRound->getHorizontalPoules($target)->slice(0);
-                foreach( $parentRound->getQualifyGroups($target) as $qualifyGroup) {
+                foreach ($parentRound->getTargetQualifyGroups($target) as $qualifyGroup) {
                     $nrOfChildRoundPlaces = $qualifyGroup->getChildRound()->getNrOfPlaces();
                     $fromHorPoules = [];
                     while ($nrOfChildRoundPlaces > 0) {
-                        $fromRoundHorPoule = $fromRoundHorPoules->shift();
+                        $fromRoundHorPoule = array_shift($fromRoundHorPoules);
                         if ($fromRoundHorPoule === null) {
                             throw new Exception('fromRoundHorPoule should not be null', E_ERROR);
                         }

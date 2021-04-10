@@ -16,8 +16,8 @@ class Group extends Identifiable
 {
     protected int $number;
     protected Round $childRound;
-    protected SingleQualifyRule|null $firstSingleRule;
-    protected MultipleQualifyRule|null $multipleRule;
+    protected SingleQualifyRule|null $firstSingleRule = null;
+    protected MultipleQualifyRule|null $multipleRule = null;
     protected int $winnersOrLosersDep; // CDK TODO DEPRECATED
 
     public function __construct(
@@ -126,9 +126,8 @@ class Group extends Identifiable
         $singleRule = $this->firstSingleRule;
         while ($singleRule !== null) {
             try {
-                if ($singleRule->getFromPlace($toPlace) !== null) {
-                    return $singleRule;
-                }
+                $singleRule->getFromPlace($toPlace);
+                return $singleRule;
             } catch (Exception $e) {
             }
             $singleRule = $singleRule->getNext();
@@ -152,7 +151,7 @@ class Group extends Identifiable
     public function isBorderGroup(): bool
     {
         $qualifyGroups = $this->getParentRound()->getTargetQualifyGroups($this->getTarget());
-        return $this === end($qualifyGroups);
+        return $this === $qualifyGroups->last();
     }
 
     public function detach()

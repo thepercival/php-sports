@@ -100,7 +100,7 @@ class Service
             return $changedPlaces;
         }
         $round = $multipleRule->getFromRound();
-        $rankedPlaceLocations = $this->rankingCalculator->getPlaceLocationsForHorizontalPoule($multipleRule->getFromHorizontalPoule());
+        $rankedPlaceLocations = $this->rankingCalculator->getPlaceLocationsForMultipleRule($multipleRule);
 
         while (count($rankedPlaceLocations) > count($toPlaces)) {
             $multipleRule->getQualifyTarget() === QualifyTarget::WINNERS ? array_pop($rankedPlaceLocations) : array_shift($rankedPlaceLocations);

@@ -37,9 +37,9 @@ class SportPerformance
         return $this->place;
     }
 
-    public function getRoundLocationId(): string
+    public function getPlaceLocation(): PlaceLocation
     {
-        return $this->place->getRoundLocationId();
+        return $this->place;
     }
 
     public function getGames(): int

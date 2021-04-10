@@ -15,11 +15,12 @@ use Sports\Structure\Editor as StructureService;
 use Sports\Structure\Validator as StructureValidator;
 use Sports\Qualify\Target as QualifyTarget;
 use Sports\TestHelper\GamesCreator;
+use Sports\TestHelper\StructureEditorCreator;
 use SportsHelpers\PouleStructure;
 
 final class ValidatorTest extends TestCase
 {
-    use CompetitionCreator;
+    use CompetitionCreator, StructureEditorCreator;
 
     public function testNoStructure(): void
     {
@@ -35,7 +36,7 @@ final class ValidatorTest extends TestCase
     {
         $competition = $this->createCompetition();
 
-        // $structureService = new StructureService([]);
+        // $structureEditor = new StructureService([]);
 
         $firstRoundNumber = new RoundNumber($competition);
         $rootRound = new Round($firstRoundNumber);
@@ -51,9 +52,8 @@ final class ValidatorTest extends TestCase
     {
         $competition = $this->createCompetition();
 
-        $structureService = new StructureService([]);
-
-        $structure = $structureService->create($competition, new PouleStructure([4]));
+        $structureEditor = $this->createStructureEditor([]);
+        $structure = $structureEditor->create($competition, [4]);
 
         $structure->getRootRound()->getScoreConfigs()->clear();
 
@@ -66,9 +66,8 @@ final class ValidatorTest extends TestCase
     {
         $competition = $this->createCompetition();
 
-        $structureService = new StructureService([]);
-
-        $structure = $structureService->create($competition, new PouleStructure([4]));
+        $structureEditor = $this->createStructureEditor([]);
+        $structure = $structureEditor->create($competition, [4]);
 
         $firstRoundNumber = $structure->getFirstRoundNumber();
         $rootRound = $structure->getRootRound();
@@ -84,9 +83,8 @@ final class ValidatorTest extends TestCase
     {
         $competition = $this->createCompetition();
 
-        $structureService = new StructureService([]);
-
-        $structure = $structureService->create($competition, new PouleStructure([4]));
+        $structureEditor = $this->createStructureEditor([]);
+        $structure = $structureEditor->create($competition, [4]);
 
         $firstRoundNumber = $structure->getFirstRoundNumber();
         $rootRound = $structure->getRootRound();
@@ -102,9 +100,8 @@ final class ValidatorTest extends TestCase
     {
         $competition = $this->createCompetition();
 
-        $structureService = new StructureService([]);
-
-        $structure = $structureService->create($competition, new PouleStructure([3,3]));
+        $structureEditor = $this->createStructureEditor([]);
+        $structure = $structureEditor->create($competition, [3,3]);
 
         (new GamesCreator())->createStructureGames($structure);
 
@@ -124,12 +121,11 @@ final class ValidatorTest extends TestCase
     {
         $competition = $this->createCompetition();
 
-        $structureService = new StructureService([]);
-
-        $structure = $structureService->create($competition, new PouleStructure([3,3]));
+        $structureEditor = $this->createStructureEditor([]);
+        $structure = $structureEditor->create($competition, [3,3]);
         $firstRoundNumber = $structure->getFirstRoundNumber();
         $rootRound = $structure->getRootRound();
-        $structureService->addQualifiers($rootRound, QualifyTarget::WINNERS, 2);
+        $structureEditor->addChildRound($rootRound, QualifyTarget::WINNERS, [2]);
 
         (new GamesCreator())->createStructureGames($structure);
 
@@ -146,9 +142,8 @@ final class ValidatorTest extends TestCase
     {
         $competition = $this->createCompetition();
 
-        $structureService = new StructureService([]);
-
-        $structure = $structureService->create($competition, new PouleStructure([3,3]));
+        $structureEditor = $this->createStructureEditor([]);
+        $structure = $structureEditor->create($competition, [3,3]);
 
         $rootRound = $structure->getRootRound();
 
@@ -170,9 +165,8 @@ final class ValidatorTest extends TestCase
     {
         $competition = $this->createCompetition();
 
-        $structureService = new StructureService([]);
-
-        $structure = $structureService->create($competition, new PouleStructure([3,3]));
+        $structureEditor = $this->createStructureEditor([]);
+        $structure = $structureEditor->create($competition, [3,3]);
 
         $rootRound = $structure->getRootRound();
 
@@ -194,9 +188,8 @@ final class ValidatorTest extends TestCase
     {
         $competition = $this->createCompetition();
 
-        $structureService = new StructureService([]);
-
-        $structure = $structureService->create($competition, new PouleStructure([3,3]));
+        $structureEditor = $this->createStructureEditor([]);
+        $structure = $structureEditor->create($competition, [3,3]);
 
         $firstRoundNumber = $structure->getFirstRoundNumber();
         $rootRound = $structure->getRootRound();
@@ -216,14 +209,13 @@ final class ValidatorTest extends TestCase
     {
         $competition = $this->createCompetition();
 
-        $structureService = new StructureService([]);
-
-        $structure = $structureService->create($competition, new PouleStructure([3,3]));
+        $structureEditor = $this->createStructureEditor([]);
+        $structure = $structureEditor->create($competition, [3,3]);
 
         $firstRoundNumber = $structure->getFirstRoundNumber();
         $rootRound = $structure->getRootRound();
 
-        $structureService->addQualifiers($rootRound, QualifyTarget::WINNERS, 2);
+        $structureEditor->addChildRound($rootRound, QualifyTarget::WINNERS, [2]);
 
         (new GamesCreator())->createStructureGames($structure);
 

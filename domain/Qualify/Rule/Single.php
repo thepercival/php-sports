@@ -13,7 +13,7 @@ use Sports\Qualify\Group as QualifyGroup;
 
 class Single extends QualifyRule
 {
-    private Single | null $next;
+    private Single | null $next = null;
 
     public function __construct(
         HorizontalPoule $fromHorizontalPoule,
@@ -88,7 +88,7 @@ class Single extends QualifyRule
         $this->previous = $previous;
     }
 
-    public function getNeighbour(QualifyTarget $targetSide): Single | null
+    public function getNeighbour(string $targetSide): Single | null
     {
         return $targetSide === QualifyTarget::WINNERS ? $this->previous : $this->next;
     }

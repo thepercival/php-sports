@@ -75,6 +75,20 @@ class Number extends Identifiable
         $this->next = $roundNumber;
     }
 
+    public function detachFromNext(): void
+    {
+        $this->next = null;
+    }
+
+    public function detachFromPrevious(): void
+    {
+        if ($this->previous === null) {
+            return;
+        }
+        $this->previous->removeNext();
+        $this->previous = null;
+    }
+
     public function hasPrevious(): bool
     {
         return $this->previous !== null;
@@ -338,7 +352,7 @@ class Number extends Identifiable
      */
     public function getValidGameAmountConfigs(): array
     {
-        return array_values( $this->getCompetitionSports()->map(
+        return array_values($this->getCompetitionSports()->map(
             function (CompetitionSport $competitionSport): GameAmountConfig {
                 return $this->getValidGameAmountConfig($competitionSport);
             }
@@ -350,17 +364,28 @@ class Number extends Identifiable
      */
     public function createSportConfigs(): array
     {
-        return array_values( $this->getCompetition()->getSports()->map(function (CompetitionSport $competitionSport): SportConfig {
+        return array_values($this->getCompetition()->getSports()->map(function (CompetitionSport $competitionSport): SportConfig {
             $gameAmountConfig = $this->getValidGameAmountConfig($competitionSport);
             return $competitionSport->createConfig($gameAmountConfig->getAmount());
         })->toArray());
     }
 
-    public function createPouleStructure(): PouleStructure {
+    public function createPouleStructure(): PouleStructure
+    {
         $placesPerPoule = [];
-        foreach( $this->getPoules() as $poule ) {
+        foreach ($this->getPoules() as $poule) {
             $placesPerPoule[] = $poule->getPlaces()->count();
         }
-        return new PouleStructure($placesPerPoule);
+        return new PouleStructure(...$placesPerPoule);
+    }
+
+    public function detach()
+    {
+        $next = $this->getNext();
+        if ($next !== null) {
+            $next->detach();
+            $this->detachFromNext();
+        }
+        $this->detachFromPrevious();
     }
 }

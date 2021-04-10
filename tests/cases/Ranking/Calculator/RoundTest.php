@@ -15,18 +15,19 @@ use Sports\Qualify\Group as QualifyGroup;
 use Sports\Ranking\Calculator\Round as RoundRankingCalculator;
 use Sports\State;
 use Sports\Ranking\RuleSet as RankingRuleSet;
+use Sports\TestHelper\StructureEditorCreator;
 use SportsHelpers\PouleStructure;
 
 class RoundTest extends TestCase
 {
-    use CompetitionCreator, SetScores;
+    use CompetitionCreator, SetScores, StructureEditorCreator;
 
     public function testMultipleEqualRanked(): void
     {
         $competition = $this->createCompetition();
 
-        $structureService = new StructureService([]);
-        $structure = $structureService->create($competition, new PouleStructure([3]));
+        $structureEditor = $this->createStructureEditor([]);
+        $structure = $structureEditor->create($competition, [3]);
         $rootRound = $structure->getRootRound();
 
         (new GamesCreator())->createStructureGames($structure);
@@ -54,8 +55,8 @@ class RoundTest extends TestCase
     {
         $competition = $this->createCompetition();
 
-        $structureService = new StructureService([]);
-        $structure = $structureService->create($competition, new PouleStructure([3]));
+        $structureEditor = $this->createStructureEditor([]);
+        $structure = $structureEditor->create($competition, [3]);
         $rootRound = $structure->getRootRound();
 
         (new GamesCreator())->createStructureGames($structure);
@@ -88,8 +89,8 @@ class RoundTest extends TestCase
     {
         $competition = $this->createCompetition();
 
-        $structureService = new StructureService([]);
-        $structure = $structureService->create($competition, new PouleStructure([3]));
+        $structureEditor = $this->createStructureEditor([]);
+        $structure = $structureEditor->create($competition, [3]);
         $rootRound = $structure->getRootRound();
 
         (new GamesCreator())->createStructureGames($structure);
@@ -124,8 +125,8 @@ class RoundTest extends TestCase
     {
         $competition = $this->createCompetition();
 
-        $structureService = new StructureService([]);
-        $structure = $structureService->create($competition, new PouleStructure([3,3]));
+        $structureEditor = $this->createStructureEditor([]);
+        $structure = $structureEditor->create($competition, [3,3]);
         $rootRound = $structure->getRootRound();
 
         (new GamesCreator())->createStructureGames($structure);
@@ -144,15 +145,14 @@ class RoundTest extends TestCase
 
         $roundRankingCalculator = new RoundRankingCalculator();
         $firstHorizontalPoule = $rootRound->getHorizontalPoule(QualifyTarget::WINNERS, 1);
-        self::assertInstanceOf(HorizontalPoule::class, $firstHorizontalPoule);
-        $placeLocations = $roundRankingCalculator->getPlaceLocationsForHorizontalPoule($firstHorizontalPoule);
+        $placeLocations = $roundRankingCalculator->getPlacesForHorizontalPoule($firstHorizontalPoule);
 
         self::assertSame(2, $placeLocations[0]->getPouleNr());
         self::assertSame(1, $placeLocations[1]->getPouleNr());
 
         $competition->setRankingRuleSet(RankingRuleSet::AgainstAmong);
         $roundRankingCalculator2 = new RoundRankingCalculator();
-        $placeLocations2 = $roundRankingCalculator2->getPlaceLocationsForHorizontalPoule($firstHorizontalPoule);
+        $placeLocations2 = $roundRankingCalculator2->getPlacesForHorizontalPoule($firstHorizontalPoule);
 
         self::assertSame(2, $placeLocations2[0]->getPouleNr());
         self::assertSame(1, $placeLocations2[1]->getPouleNr());
@@ -162,11 +162,11 @@ class RoundTest extends TestCase
 //    {
 //        $competition = $this->createCompetition();
 //
-//        $structureService = new StructureService([]);
-//        $structure = $structureService->create($competition, new PouleStructure([3,3]));
+//        $structureEditor = new StructureService([]);
+//        $structure = $structureEditor->create($competition, new PouleStructure([3,3]));
 //        $rootRound = $structure->getRootRound();
 //
-//        $structureService->addQualifier($rootRound, QualifyTarget::WINNERS);
+//        $structureEditor->addQualifier($rootRound, QualifyTarget::WINNERS);
 //
 //        (new GamesCreator())->createStructureGames($structure);
 //
@@ -193,8 +193,8 @@ class RoundTest extends TestCase
     {
         $competition = $this->createCompetition();
 
-        $structureService = new StructureService([]);
-        $structure = $structureService->create($competition, new PouleStructure([4]));
+        $structureEditor = $this->createStructureEditor([]);
+        $structure = $structureEditor->create($competition, [4]);
         $rootRound = $structure->getRootRound();
 
         (new GamesCreator())->createStructureGames($structure);
@@ -233,8 +233,8 @@ class RoundTest extends TestCase
     {
         $competition = $this->createCompetition();
 
-        $structureService = new StructureService([]);
-        $structure = $structureService->create($competition, new PouleStructure([3]));
+        $structureEditor = $this->createStructureEditor([]);
+        $structure = $structureEditor->create($competition, [3]);
         $rootRound = $structure->getRootRound();
 
         (new GamesCreator())->createStructureGames($structure);
@@ -263,8 +263,8 @@ class RoundTest extends TestCase
     {
         $competition = $this->createCompetition();
 
-        $structureService = new StructureService([]);
-        $structure = $structureService->create($competition, new PouleStructure([4]));
+        $structureEditor = $this->createStructureEditor([]);
+        $structure = $structureEditor->create($competition, [4]);
         $rootRound = $structure->getRootRound();
 
         (new GamesCreator())->createStructureGames($structure);
@@ -296,8 +296,8 @@ class RoundTest extends TestCase
     {
         $competition = $this->createCompetition();
 
-        $structureService = new StructureService([]);
-        $structure = $structureService->create($competition, new PouleStructure([4]));
+        $structureEditor = $this->createStructureEditor([]);
+        $structure = $structureEditor->create($competition, [4]);
         $rootRound = $structure->getRootRound();
 
         (new GamesCreator())->createStructureGames($structure);
@@ -329,8 +329,8 @@ class RoundTest extends TestCase
     {
         $competition = $this->createCompetition();
 
-        $structureService = new StructureService([]);
-        $structure = $structureService->create($competition, new PouleStructure([3]));
+        $structureEditor = $this->createStructureEditor([]);
+        $structure = $structureEditor->create($competition, [3]);
         $rootRound = $structure->getRootRound();
 
         (new GamesCreator())->createStructureGames($structure);
@@ -359,8 +359,8 @@ class RoundTest extends TestCase
     {
         $competition = $this->createCompetition();
 
-        $structureService = new StructureService([]);
-        $structure = $structureService->create($competition, new PouleStructure([4]));
+        $structureEditor = $this->createStructureEditor([]);
+        $structure = $structureEditor->create($competition, [4]);
         $rootRound = $structure->getRootRound();
 
         (new GamesCreator())->createStructureGames($structure);
@@ -387,8 +387,8 @@ class RoundTest extends TestCase
     {
         $competition = $this->createCompetition();
 
-        $structureService = new StructureService([]);
-        $structure = $structureService->create($competition, new PouleStructure([4]));
+        $structureEditor = $this->createStructureEditor([]);
+        $structure = $structureEditor->create($competition, [4]);
         $rootRound = $structure->getRootRound();
 
         (new GamesCreator())->createStructureGames($structure);

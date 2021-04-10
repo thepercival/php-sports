@@ -29,16 +29,28 @@ final class Grid extends OutputBase
         $this->grid[$coordinate->getY()][$coordinate->getX()]->setColor($color);
     }
 
-    public function setHorizontal(Coordinate $coordinate, string $char): Coordinate
+    public function setToRight(Coordinate $coordinate, string $char): Coordinate
     {
         $this->grid[$coordinate->getY()][$coordinate->getX()]->setValue($char);
         return $coordinate->incrementX();
     }
 
-    public function setVertical(Coordinate $coordinate, string $char): Coordinate
+    public function setToLeft(Coordinate $coordinate, string $char): Coordinate
+    {
+        $this->grid[$coordinate->getY()][$coordinate->getX()]->setValue($char);
+        return $coordinate->decrementX();
+    }
+
+    public function setVertAwayFromOrigin(Coordinate $coordinate, string $char): Coordinate
     {
         $this->grid[$coordinate->getY()][$coordinate->getX()]->setValue($char);
         return $coordinate->incrementY();
+    }
+
+    public function setVertToOrigin(Coordinate $coordinate, string $char): Coordinate
+    {
+        $this->grid[$coordinate->getY()][$coordinate->getX()]->setValue($char);
+        return $coordinate->decrementY();
     }
 
     public function output(): void

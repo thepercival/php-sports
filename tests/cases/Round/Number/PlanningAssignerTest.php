@@ -10,19 +10,20 @@ use Sports\Round\Number\GamesValidator;
 use Sports\TestHelper\CompetitionCreator;
 use Sports\TestHelper\GamesCreator;
 use Sports\Structure\Editor as StructureService;
+use Sports\TestHelper\StructureEditorCreator;
 use SportsHelpers\PouleStructure;
 use SportsHelpers\SelfReferee;
 
 final class PlanningAssignerTest extends TestCase
 {
-    use CompetitionCreator;
+    use CompetitionCreator, StructureEditorCreator;
 
     public function testValid(): void
     {
         $competition = $this->createCompetition();
 
-        $structureService = new StructureService([]);
-        $structure = $structureService->create($competition, new PouleStructure([2,2]));
+        $structureEditor = $this->createStructureEditor([]);
+        $structure = $structureEditor->create($competition, [2,2]);
 
         $firstRoundNumber = $structure->getFirstRoundNumber();
 
@@ -40,8 +41,8 @@ final class PlanningAssignerTest extends TestCase
         $competition = $this->createCompetition();
         $competition->getReferees()->clear();
 
-        $structureService = new StructureService([]);
-        $structure = $structureService->create($competition, new PouleStructure([4]));
+        $structureEditor = $this->createStructureEditor([]);
+        $structure = $structureEditor->create($competition, [4]);
 
         $firstRoundNumber = $structure->getFirstRoundNumber();
 
@@ -57,11 +58,11 @@ final class PlanningAssignerTest extends TestCase
     {
         $competition = $this->createCompetition();
 
-        $structureService = new StructureService([]);
-        $structure = $structureService->create($competition, new PouleStructure([6,5]));
+        $structureEditor = $this->createStructureEditor([]);
+        $structure = $structureEditor->create($competition, [6,5]);
 
         $rootRound = $structure->getRootRound();
-        $structureService->addQualifiers($rootRound, QualifyTarget::WINNERS, 7);
+        $structureEditor->addChildRound($rootRound, QualifyTarget::WINNERS, [7]);
 
         $firstRoundNumber = $structure->getFirstRoundNumber();
         $firstRoundNumber->getValidPlanningConfig()->setSelfReferee(SelfReferee::SAMEPOULE);

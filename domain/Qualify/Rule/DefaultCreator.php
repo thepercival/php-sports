@@ -70,10 +70,10 @@ class DefaultCreator
         while ($childRoundPlace = array_shift($childRoundPlaces)) {
             $fromHorPoulePlace = $this->getBestPick($childRoundPlace, $fromHorPoulePlaces);
             $idx = array_search($fromHorPoulePlace, $fromHorPoulePlaces, true);
-            if ($idx < 0) {
+            if ($idx === false) {
                 continue;
             }
-            array_splice($fromHorPoulePlaces, 1);
+            array_splice($fromHorPoulePlaces, $idx,1);
             $mappings->add(new QualifyPlaceMapping($fromHorPoulePlace, $childRoundPlace));
         }
         return $mappings;

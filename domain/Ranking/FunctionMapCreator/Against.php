@@ -73,7 +73,7 @@ class Against extends BaseFunctionMapCreator
             $performanceMap = $this->getPerformanceMap($sportPerformances);
             return array_values(array_map(
                 function (SportRoundRankingItem $rankingItem) use ($performanceMap): SportPerformance {
-                    return $performanceMap[$rankingItem->getRoundLocationId()];
+                    return $performanceMap[$rankingItem->getPlaceLocation()->getRoundLocationId()];
                 },
                 $rankingItems
             ));
@@ -88,7 +88,7 @@ class Against extends BaseFunctionMapCreator
     {
         $map = [];
         foreach ($performances as $performance) {
-            $map[$performance->getRoundLocationId()] = $performance;
+            $map[$performance->getPlaceLocation()->getRoundLocationId()] = $performance;
         }
         return $map;
     }

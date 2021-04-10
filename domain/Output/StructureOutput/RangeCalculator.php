@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Sports\Poule;
 use Sports\Round\Number as RoundNumber;
 use Sports\NameService;
+use Sports\Qualify\Target as QualifyTarget;
 use Sports\Structure;
 use Sports\Round;
 
@@ -16,6 +17,7 @@ final class RangeCalculator
     public const PADDING = 1;
     public const BORDER = 1;
     protected const PLACEWIDTH = 3;
+    protected const HORPLACEWIDTH = 3;
     public const QUALIFYGROUPHEIGHT = 3;
 
     protected NameService $nameService;
@@ -76,7 +78,9 @@ final class RangeCalculator
 
     public function getRoundWidth(Round $round): int
     {
-        $widthPoules = self::BORDER + self::PADDING + $this->getPoulesWidth($round->getPoules()) + self::PADDING + self::BORDER;
+        $widthPoules = self::BORDER + self::PADDING
+            + $this->getAllPoulesWidth($round)
+            + self::PADDING + self::BORDER;
 
         $qualifyGroups = $round->getQualifyGroups();
         $widthQualifyGroups = 0;
@@ -88,21 +92,40 @@ final class RangeCalculator
         return $widthPoules > $widthQualifyGroups ? $widthPoules : $widthQualifyGroups;
     }
 
-    /**
-     * @param ArrayCollection<int|string, Poule> $poules
-     * @return int
-     */
-    public function getPoulesWidth(ArrayCollection $poules): int
+    public function getQualifyGroupsWidth(Round $parentRound): int
+    {
+        $qualifyGroups = $parentRound->getQualifyGroups();
+        $widthQualifyGroups = 0;
+        foreach ($qualifyGroups as $qualifyGroup) {
+            $widthQualifyGroups += $this->getRoundWidth($qualifyGroup->getChildRound()) + RangeCalculator::PADDING;
+        }
+        return $widthQualifyGroups - RangeCalculator::PADDING;
+    }
+
+    public function getAllPoulesWidth(Round $round): int
     {
         $width = 0;
-        foreach ($poules as $poule) {
+        foreach ($round->getPoules() as $poule) {
             $width += $this->getPouleWidth($poule) + self::PADDING;
         }
-        return $width - self::PADDING;
+        $horPouleWidth = $this->getHorPoulesWidth($round);
+        if ($horPouleWidth === 0) {
+            return $width;
+        }
+        return $width + RangeCalculator::PADDING + $horPouleWidth;
     }
 
     public function getPouleWidth(Poule $poule): int
     {
         return self::PLACEWIDTH;
+    }
+
+    public function getHorPoulesWidth(Round $round): int
+    {
+        if ($round->getHorizontalPoules(QualifyTarget::WINNERS)->count() === 0
+            && $round->getHorizontalPoules(QualifyTarget::LOSERS)->count() === 0) {
+            return 0;
+        }
+        return RangeCalculator::BORDER + RangeCalculator::PADDING + RangeCalculator::HORPLACEWIDTH;
     }
 }

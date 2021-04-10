@@ -68,7 +68,7 @@ class PlanningInputCreator
         foreach ($roundNumber->getPoules() as $poule) {
             $nrOfPlacesPerPoule[] = $poule->getPlaces()->count();
         }
-        return new PouleStructure($nrOfPlacesPerPoule);
+        return new PouleStructure(...$nrOfPlacesPerPoule);
     }
 
     /**

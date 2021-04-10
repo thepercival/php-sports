@@ -108,9 +108,9 @@ class Validator
             }
         }
 
-        $winners = array_values($round->getWinnersOrLosersQualifyGroups(QualifyTarget::WINNERS)->toArray());
+        $winners = array_values($round->getTargetQualifyGroups(QualifyTarget::WINNERS)->toArray());
         $this->checkQualifyGroupsNumberGap($winners);
-        $losers = array_values($round->getWinnersOrLosersQualifyGroups(QualifyTarget::LOSERS)->toArray());
+        $losers = array_values($round->getTargetQualifyGroups(QualifyTarget::LOSERS)->toArray());
         $this->checkQualifyGroupsNumberGap($losers);
         foreach ($round->getQualifyGroups() as $qualifyGroup) {
             $this->checkRoundValidity($qualifyGroup->getChildRound());

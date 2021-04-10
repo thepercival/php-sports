@@ -25,17 +25,23 @@ use Sports\Qualify\Rule\Single as SingleQualifyRule;
 class Horizontal
 {
     protected int $number;
-    protected MultipleQualifyRule | SingleQualifyRule | null $qualifyRule;
+    protected MultipleQualifyRule | SingleQualifyRule | null $qualifyRule = null;
 
+    /**
+     * Horizontal constructor.
+     * @param Round $round
+     * @param string $qualifyTarget
+     * @param Horizontal|null $previous
+     * @param ArrayCollection<int|string, Place> $places
+     */
     public function __construct(
         protected Round $round,
-        protected int $qualifyTarget,
+        protected string $qualifyTarget,
         protected HorizontalPoule | null $previous,
         protected ArrayCollection $places
-    )
-    {
+    ) {
         $round->getHorizontalPoules($qualifyTarget)->add($this);
-        $this->number = $previous ? $previous->getNumber() + 1 : 1;
+        $this->number = $previous !== null ? $previous->getNumber() + 1 : 1;
     }
 
     public function getRound(): Round
@@ -43,7 +49,7 @@ class Horizontal
         return $this->round;
     }
 
-    public function getQualifyTarget(): int
+    public function getQualifyTarget(): string
     {
         return $this->qualifyTarget;
     }
@@ -73,6 +79,9 @@ class Horizontal
         return $this->qualifyRule;
     }
 
+    /**
+     * @return ArrayCollection<int|string, Place>
+     */
     public function getPlaces(): ArrayCollection
     {
         return $this->places;
