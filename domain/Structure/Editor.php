@@ -269,7 +269,11 @@ class Editor
         $childRound = $qualifyGroup->getChildRound();
         $this->rulesCreator->remove($parentRound);
         // begin editing
-        $this->removePlaceFromRound($childRound);
+        if ($childRound->getNrOfPlaces() <= 2) {
+            $qualifyGroup->detach();
+        } else {
+            $this->removePlaceFromRound($childRound);
+        }
         // end editing
         $this->rulesCreator->create($parentRound);
         return true;
@@ -382,7 +386,7 @@ class Editor
             $parentRound,
             $qualifyGroup->getTarget(),
             $childRound->getNumber(),
-            $qualifyGroup->getNumber()
+            $qualifyGroup->getNumber() + 1
         );
         $this->renumber($parentRound, $qualifyGroup->getTarget());
         return $newQualifyGroup;

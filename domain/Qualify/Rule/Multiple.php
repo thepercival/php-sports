@@ -2,6 +2,7 @@
 
 namespace Sports\Qualify\Rule;
 
+use Exception;
 use Sports\Poule\Horizontal as HorizontalPoule;
 use Sports\Place;
 use Sports\Qualify\Rule as QualifyRule;
@@ -47,5 +48,18 @@ class Multiple extends QualifyRule
     public function detach()
     {
         $this->getFromHorizontalPoule()->setQualifyRule(null);
+    }
+
+    public function getGroup(): QualifyGroup {
+        $target = $this->getQualifyTarget();
+        $targetGroups = $this->getFromRound()->getTargetQualifyGroups($target);
+        $qualifGroups = $targetGroups->filter(function(QualifyGroup $qualifyGroup): bool {
+            return $this === $qualifyGroup->getMultipleRule();
+        });
+        $qualifGroup = $qualifGroups->last();
+        if ($qualifGroup === false) {
+            throw new Exception('voor de multiple-kwalificatieregel kan geen groep worden gevonden', E_ERROR);
+        }
+        return $qualifGroup;
     }
 }

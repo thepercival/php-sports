@@ -41,16 +41,14 @@ class RoundHandler extends Handler implements SubscribingHandlerInterface
         array $type,
         Context $context
     ): Round {
-        if (!isset($fieldValue["roundNumber"])) {
-            throw new \Exception('malformd json => qualifygroup', E_ERROR);
+        $parentQualifyGroup = $fieldValue["parentQualifyGroup"];
+        $round = null;
+        if ($parentQualifyGroup instanceof QualifyGroup) {
+            $round = $parentQualifyGroup->getChildRound();
+        } else {
+            $round = new Round($fieldValue["roundNumber"], null);
         }
-
-        $roundNumber = $fieldValue["roundNumber"];
-        $parentQualifyGroup = null;
-        if (isset($fieldValue["parentQualifyGroup"])) {
-            $parentQualifyGroup = $fieldValue["parentQualifyGroup"];
-        }
-        $round = new Round($roundNumber, $parentQualifyGroup);
+        $roundNumber = $round->getNumber();
 
         if (isset($fieldValue["scoreConfigs"])) {
             foreach ($fieldValue["scoreConfigs"] as $arrScoreConfig) {
@@ -88,7 +86,7 @@ class RoundHandler extends Handler implements SubscribingHandlerInterface
         if ($nextRoundNumber !== null && isset($fieldValue["qualifyGroups"])) {
             foreach ($fieldValue["qualifyGroups"] as $arrQualifyGroup) {
                 $fieldValue["qualifyGroup"] = $arrQualifyGroup;
-                $fieldValue["qualifyGroup"]["round"] = $round;
+                $fieldValue["qualifyGroup"]["parentRound"] = $round;
                 $fieldValue["qualifyGroup"]["nextRoundNumber"] = $nextRoundNumber;
                 $this->getProperty(
                     $visitor,
@@ -112,7 +110,7 @@ class RoundHandler extends Handler implements SubscribingHandlerInterface
 //                if (!isset($arrPlace["qualifiedPlace"])) {
 //                    continue;
 //                }
-                // @TODO DEPRECATED
+        // @TODO DEPRECATED
 //                $round->getParentQualifyGroup()->getRound()->getPoule()
 //                $competitor = new Competitor($association, "dummy");
 //                $competitor->setName($arrPlace["competitor"]["name"]);

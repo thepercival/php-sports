@@ -35,15 +35,15 @@ class GroupHandler extends Handler implements SubscribingHandlerInterface
         Context $context
     ): QualifyGroup
     {
-        if (!isset($fieldValue["round"]) || !isset($fieldValue["nextRoundNumber"])) {
+        if (!isset($fieldValue["parentRound"]) || !isset($fieldValue["nextRoundNumber"])) {
             throw new \Exception('malformd json => qualifygroup', E_ERROR);
         }
-        /** @var Round $round */
-        $round = $fieldValue["round"];
+        /** @var Round $parentRound */
+        $parentRound = $fieldValue["parentRound"];
         /** @var RoundNumber $nextRoundNumber */
         $nextRoundNumber = $fieldValue["nextRoundNumber"];
-        $qualifyGroup = new QualifyGroup($round, $fieldValue["winnersOrLosers"], $nextRoundNumber, $fieldValue["number"]);
-        $fieldValue["childRound"]["roundNumber"] = $round->getNumber();
+        $qualifyGroup = new QualifyGroup($parentRound, $fieldValue["target"], $nextRoundNumber, $fieldValue["number"]);
+        //$fieldValue["childRound"] = $qualifyGroup->getChildRound();
         $fieldValue["childRound"]["parentQualifyGroup"] = $qualifyGroup;
         $this->getProperty(
             $visitor,

@@ -369,6 +369,7 @@ final class EditorTest extends TestCase
         $structureEditor->removeQualifier($rootRound, QualifyTarget::WINNERS);
         // (new StructureOutput())->output($structure, console);
 
+        self::assertCount(0, $rootRound->getTargetQualifyGroups(QualifyTarget::WINNERS));
         self::assertCount(1, $structure->getRoundNumbers());
 
         self::assertNull($structure->getRoundNumber(2));

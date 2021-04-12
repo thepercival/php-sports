@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Sports\Qualify\Rule;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Exception;
 use Sports\Place;
 use Sports\Qualify\PlaceMapping as QualifyPlaceMapping;
 use Sports\Qualify\Rule as QualifyRule;
@@ -93,6 +94,15 @@ class Single extends QualifyRule
         return $targetSide === QualifyTarget::WINNERS ? $this->previous : $this->next;
     }
 
+    public function getFirst(): Single
+    {
+        $previous = $this->getPrevious();
+        if ($previous !== null) {
+            return $previous->getFirst();
+        }
+        return $this;
+    }
+
     public function getLast(): Single
     {
         $next = $this->getNext();
@@ -121,5 +131,19 @@ class Single extends QualifyRule
         }
         $this->getFromHorizontalPoule()->setQualifyRule(null);
         $this->setPrevious(null);
+    }
+
+    public function getGroup(): QualifyGroup {
+        $target = $this->getQualifyTarget();
+        $firstSingleRule = $this->getFirst();
+        $targetGroups = $this->getFromRound()->getTargetQualifyGroups($target);
+        $qualifGroups = $targetGroups->filter(function(QualifyGroup $qualifyGroup) use ($firstSingleRule): bool {
+            return $firstSingleRule === $qualifyGroup->getFirstSingleRule();
+        });
+        $qualifGroup = $qualifGroups->last();
+        if ($qualifGroup === false) {
+            throw new Exception('voor de single-kwalificatieregel kan geen groep worden gevonden', E_ERROR);
+        }
+        return $qualifGroup;
     }
 }

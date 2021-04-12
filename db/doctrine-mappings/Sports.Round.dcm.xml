@@ -21,13 +21,14 @@
         <order-by-field name="number" direction="ASC" />
       </order-by>
     </one-to-many>
-    <one-to-many field="qualifyGroups" target-entity="Sports\Qualify\Group" mapped-by="round">
+    <one-to-many field="qualifyGroups" target-entity="Sports\Qualify\Group" mapped-by="parentRound">
       <cascade>
         <cascade-persist/>
         <cascade-remove/>
       </cascade>
       <order-by>
-        <order-by-field name="winnersOrLosers" direction="ASC" />
+        <order-by-field name="target" direction="DESC" />
+        <order-by-field name="number" direction="ASC" />
       </order-by>
     </one-to-many>
     <one-to-many field="scoreConfigs" target-entity="Sports\Score\Config" mapped-by="round">
@@ -42,5 +43,8 @@
         <cascade-remove/>
       </cascade>
     </one-to-many>
+    <lifecycle-callbacks>
+      <lifecycle-callback type="postLoad" method="onPostLoad"/>
+    </lifecycle-callbacks>
   </entity>
 </doctrine-mapping>

@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace Sports\Qualify;
 
-use \Doctrine\Common\Collections\ArrayCollection;
 use Exception;
 use Sports\Place;
 use Sports\Round\Number as RoundNumber;
@@ -157,7 +156,7 @@ class Group extends Identifiable
     public function detach()
     {
         $this->detachRules();
-        $qualifyGroups = $this->getParentRound()->getTargetQualifyGroups($this->getTarget());
+        $qualifyGroups = $this->getParentRound()->getQualifyGroups();
         $qualifyGroups->removeElement($this);
         $this->getChildRound()->detach();
     }

@@ -115,7 +115,7 @@ class Round extends Identifiable
      */
     public function getQualifyGroups(): ArrayCollection|PersistentCollection
     {
-        return clone $this->qualifyGroups;
+        return $this->qualifyGroups;
     }
 
     /**
@@ -191,11 +191,7 @@ class Round extends Identifiable
 
     public function getNrOfDropoutPlaces(): int
     {
-        // if (this.nrOfDropoutPlaces === null) {
-        // @TODO performance check
         return $this->getNrOfPlaces() - $this->getNrOfPlacesChildren();
-        // }
-        // return this.nrOfDropoutPlaces;
     }
 
     /**
@@ -333,6 +329,12 @@ class Round extends Identifiable
             throw new Exception('horizontalPoule can not be undefined', E_ERROR);
         }
         return $firstHorPoule;
+    }
+
+    public function onPostLoad() {
+        $this->winnersHorizontalPoules = new ArrayCollection();
+        $this->losersHorizontalPoules = new ArrayCollection();
+        $this->structurePathNode = $this->constructStructurePathNode();
     }
 
     public function getFirstPlace(string $target): Place
