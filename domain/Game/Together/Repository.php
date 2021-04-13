@@ -1,5 +1,4 @@
 <?php
-
 declare(strict_types=1);
 
 namespace Sports\Game\Together;
@@ -12,5 +11,4 @@ use Sports\Game\Together as TogetherGame;
  */
 class Repository extends GameRepository
 {
-
 }

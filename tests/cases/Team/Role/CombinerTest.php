@@ -81,7 +81,7 @@ final class CombinerTest extends TestCase
         $periodA = new Period($fourMinutesBefore, $now);
         $periodX = new Period($twoMinutesBefore, $twoMinutesAfter);
 
-        $playerA = new Player($teamY, $person, $periodA, SportCustom::Football_Line_Defense);
+        new Player($teamY, $person, $periodA, SportCustom::Football_Line_Defense);
         $combiner->combineWithPast($teamZ, $periodX, SportCustom::Football_Line_Defense);
 
         self::assertCount(2, $person->getPlayers()->toArray());
@@ -114,7 +114,7 @@ final class CombinerTest extends TestCase
         $periodA = new Period($fourMinutesBefore, $now);
         $periodX = new Period($twoMinutesBefore, $twoMinutesAfter);
 
-        $playerA = new Player($teamY, $person, $periodA, SportCustom::Football_Line_Defense);
+        new Player($teamY, $person, $periodA, SportCustom::Football_Line_Defense);
         $combiner->combineWithPast($teamY, $periodX, SportCustom::Football_Line_Midfield);
 
         self::assertCount(2, $person->getPlayers()->toArray());

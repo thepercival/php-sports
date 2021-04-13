@@ -112,11 +112,17 @@ final class ReservationServiceTest extends TestCase
         $horPoule = $rootRound->getHorizontalPoule(QualifyTarget::WINNERS, 1);
 
         // none available
-        $placeLocationOne = $resService->getFreeAndLeastAvailabe(1, $rootRound, $horPoule->getPlaces()->toArray());
+        $placeLocationOne = $resService->getFreeAndLeastAvailabe(
+            1,
+            $rootRound,
+            array_values($horPoule->getPlaces()->toArray()));
         self::assertSame($placeLocationOne->getPouleNr(), $pouleOne->getNumber());
 
         // two available, three least available
-        $placeLocationThree = $resService->getFreeAndLeastAvailabe(3, $rootRound, $horPoule->getPlaces()->toArray());
+        $placeLocationThree = $resService->getFreeAndLeastAvailabe(
+            3,
+            $rootRound,
+            array_values($horPoule->getPlaces()->toArray()));
         self::assertSame($placeLocationThree->getPouleNr(), $pouleTwo->getNumber());
     }
 

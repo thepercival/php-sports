@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Sports\Competition;
 
+use SportsHelpers\Repository\SaveRemove as SaveRemoveRepository;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityRepository;
 use SportsHelpers\Repository as BaseRepository;
@@ -14,14 +15,11 @@ use Sports\Sport;
 
 /**
  * @template-extends EntityRepository<Competition>
+ * @template-implements SaveRemoveRepository<Competition>
  */
-class Repository extends EntityRepository
+class Repository extends EntityRepository implements SaveRemoveRepository
 {
     use BaseRepository;
-    /*public function find($id, $lockMode = null, $lockVersion = null): ?Competition
-    {
-        return $this->_em->find($this->_entityName, $id, $lockMode, $lockVersion);
-    }*/
 
     public function customPersist(Competition $competition): void
     {

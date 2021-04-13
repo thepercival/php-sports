@@ -211,7 +211,7 @@ class Editor
         $this->rulesCreator->create($round->getParent(), $round);
     }
 
-    public function decrementNrOfPoules(Round $round)
+    public function decrementNrOfPoules(Round $round): void
     {
         $poules = $round->getPoules();
         if ($poules->count() <= 1) {
@@ -279,7 +279,7 @@ class Editor
         return true;
     }
 
-    private function fillRound(Round $round, BalancedPouleStructure $pouleStructure)
+    private function fillRound(Round $round, BalancedPouleStructure $pouleStructure): void
     {
         foreach ($pouleStructure->toArray() as $nrOfPlaces) {
             $poule = new Poule($round);
@@ -348,7 +348,7 @@ class Editor
     }
 
     // horizontalPoule is split-points, from which qualifyGroup
-    public function splitQualifyGroupFrom(QualifyGroup $qualifyGroup, QualifyRuleSingle $singleRule)
+    public function splitQualifyGroupFrom(QualifyGroup $qualifyGroup, QualifyRuleSingle $singleRule): void
     {
         $parentRound = $qualifyGroup->getParentRound();
         $nrOfToPlaces = $singleRule->getNrOfToPlaces() + $singleRule->getNrOfToPlacesTargetSide(QualifyTarget::WINNERS);

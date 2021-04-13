@@ -53,7 +53,11 @@ class PlanningMapper
                 return $pouleA->getPlaces()->count() >= $pouleB->getPlaces()->count() ? -1 : 1;
             });
         } else {
-            $previousNrOfDropoutsMap = new PreviousNrOfDropoutsMap($roundNumber->getRounds()->first());
+            $someRound = $roundNumber->getRounds()->first();
+            if ($someRound === false) {
+                throw new Exception("rondenummer heeft geen rondes", E_ERROR);
+            }
+            $previousNrOfDropoutsMap = new PreviousNrOfDropoutsMap($someRound);
             $pouleStructureNumberMap = new PouleStructureNumberMap($roundNumber, $previousNrOfDropoutsMap);
             usort(
                 $poules,
@@ -79,7 +83,7 @@ class PlanningMapper
             $filtered = array_filter($competitionSports, function (CompetitionSport $competitionSport) use ($sport, $maxNrOfFields): bool {
                 return ($competitionSport->getFields()->count() === $sport->getFields()->count()
                         || $competitionSport->getFields()->count() > $maxNrOfFields)
-                    && $competitionSport->getSport()->getNrOfGamePlaces() === $sport->getNrOfGamePlaces();
+                    && $competitionSport->getNrOfGamePlaces() === $sport->getNrOfGamePlaces();
             });
             $filteredCompetitionSport = reset($filtered);
             if ($filteredCompetitionSport === false) {

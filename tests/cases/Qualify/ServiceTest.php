@@ -71,7 +71,6 @@ class ServiceTest extends TestCase
 
         $structureEditor = $this->createStructureEditor([]);
         $structure = $structureEditor->create($competition, [3,3]);
-        $firstRoundNumber = $structure->getFirstRoundNumber();
         // $competitorMap = new CompetitorMap($this->createTeamCompetitors($competition, $firstRoundNumber));
         $rootRound = $structure->getRootRound();
 

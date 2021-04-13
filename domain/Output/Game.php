@@ -90,14 +90,8 @@ abstract class Game extends OutputBase
             return '';
         }
         $refereeDescription = $this->getRefereeDescription($referee, $refereePlace);
-        $refNr = -1;
-        if ($this->useColors()) {
-            if ($refereePlace !== null) {
-                $refNr = $refereePlace->getNumber();
-            } else if ($referee !== null) {
-                $refNr = $referee->getPriority();
-            }
-        }
+        $refNr = $this->getRefereeNumber($referee, $refereePlace);
+
 
         $refereeColor = $this->useColors() ? ($refNr % 10) : -1;
         return $this->outputColor($refereeColor, $refereeDescription);
@@ -108,7 +102,6 @@ abstract class Game extends OutputBase
         if ($referee === null && $refPlace === null) {
             return '';
         }
-        $description = '';
         if ($refPlace !== null) {
             $description = $this->nameService->getPlaceFromName($refPlace, false, false);
         } else {
@@ -118,5 +111,20 @@ abstract class Game extends OutputBase
             $description .=  ' ';
         }
         return $description;
+    }
+
+    protected function getRefereeNumber(Referee|null $referee, Place|null $refPlace): int
+    {
+        $refNr = -1;
+        if (!$this->useColors()) {
+            return $refNr;
+        }
+        if ($referee === null && $refPlace === null) {
+            return $refNr;
+        }
+        if ($refPlace !== null) {
+            return $refPlace->getNumber();
+        }
+        return $referee->getPriority();
     }
 }

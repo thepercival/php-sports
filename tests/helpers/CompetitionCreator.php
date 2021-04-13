@@ -54,13 +54,24 @@ trait CompetitionCreator
         return $this->competition;
     }
 
-    protected function createSport(): Sport
+    /*protected function createSportVariant(): Sport
     {
         if ($this->sport !== null) {
             return $this->sport;
         }
 
         $this->sport = new Sport("voetbal", true, 2, GameMode::AGAINST);
+        $this->sport->setCustomId(SportCustom::Football);
+        return $this->sport;
+    }*/
+
+    protected function createSport(): Sport
+    {
+        if ($this->sport !== null) {
+            return $this->sport;
+        }
+
+        $this->sport = new Sport("voetbal", true);
         $this->sport->setCustomId(SportCustom::Football);
         return $this->sport;
     }

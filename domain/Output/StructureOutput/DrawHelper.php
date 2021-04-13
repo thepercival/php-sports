@@ -90,7 +90,7 @@ final class DrawHelper
     {
         $width = $this->rangeCalculator->getRoundWidth($round);
 
-        $topLeft = $origin->addX($width-1);
+        $origin->addX($width-1);
         $this->drawer->drawRectangle($origin, new Coordinate($width, $roundNumberHeight));
     }
 
@@ -147,13 +147,6 @@ final class DrawHelper
             $value .= $horPoule->getNumber();
         }
         return $value;
-    }
-
-    protected function drawHorPouleQualifyTarget(Coordinate $origin): void
-    {
-        $this->drawer->drawToLeft($origin, QualifyTarget::WINNERS . ' ' . QualifyTarget::LOSERS);
-        $seperator = $origin->incrementY();
-        $this->drawer->drawToLeft($origin, '---');
     }
 
     protected function drawQualifyRules(Round $round, Coordinate $origin): void

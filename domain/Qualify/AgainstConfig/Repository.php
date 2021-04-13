@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Sports\Qualify\AgainstConfig;
 
+use SportsHelpers\Repository\SaveRemove as SaveRemoveRepository;
 use Sports\Competition\Sport as CompetitionSport;
 use SportsHelpers\Repository as BaseRepository;
 use Sports\Round;
@@ -11,8 +12,9 @@ use Sports\Qualify\AgainstConfig as QualifyAgainstConfig;
 
 /**
  * @template-extends EntityRepository<QualifyAgainstConfig>
+ * @template-implements SaveRemoveRepository<QualifyAgainstConfig>
  */
-class Repository extends EntityRepository
+class Repository extends EntityRepository implements SaveRemoveRepository
 {
     use BaseRepository;
 

@@ -25,7 +25,6 @@ class Service
             }
         );
         $priority = 1;
-        /** @var Prioritizable $prioritizableIt */
         foreach ($this->prioritizables as $prioritizableIt) {
             if ($prioritizableIt->getPriority() !== $priority) {
                 $prioritizableIt->setPriority($priority);

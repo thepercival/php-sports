@@ -1,5 +1,5 @@
 parameters:
-    level: 5
+    level: 8
     inferPrivatePropertyTypeFromConstructor:
         true
     paths:
@@ -7,3 +7,6 @@ parameters:
         - tests/cases/
         - tests/helpers/
         #- serialization/handler
+#    doctrine:
+##        objectManagerLoader: build/phpstan/doctrine-orm-bootstrap.php
+#        repositoryClass: \Sports\Repository

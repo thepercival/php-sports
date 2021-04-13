@@ -13,7 +13,7 @@ class Creator
     /**
      * @param Round|null ...$parentRounds
      */
-    public function remove(Round|null ...$parentRounds)
+    public function remove(Round|null ...$parentRounds): void
     {
         foreach ($parentRounds as $parentRound) {
             if ($parentRound === null) {
@@ -25,7 +25,7 @@ class Creator
         }
     }
 
-    public function create(Round | null ...$parentRounds)
+    public function create(Round | null ...$parentRounds): void
     {
         foreach ([QualifyTarget::WINNERS, QualifyTarget::LOSERS] as $target) {
             foreach ($parentRounds as $parentRound) {

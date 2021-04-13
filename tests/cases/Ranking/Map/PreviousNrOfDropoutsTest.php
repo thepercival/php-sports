@@ -30,7 +30,7 @@ final class PreviousNrOfDropoutsTest extends TestCase
         $losersChildRound = $structureEditor->addChildRound($rootRound, QualifyTarget::LOSERS, [5]);
 
         $round1and2 = $structureEditor->addChildRound($winnersChildRound, QualifyTarget::WINNERS, [2]);
-        $round4and5 = $structureEditor->addChildRound($winnersChildRound, QualifyTarget::LOSERS, [2]);
+        $structureEditor->addChildRound($winnersChildRound, QualifyTarget::LOSERS, [2]);
         $round10and11 = $structureEditor->addChildRound($losersChildRound, QualifyTarget::WINNERS, [2]);
         $round13and14 = $structureEditor->addChildRound($losersChildRound, QualifyTarget::LOSERS, [2]);
 

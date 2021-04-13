@@ -30,7 +30,6 @@ class CheckerTest extends TestCase
     {
         $checker = new AvailabilityChecker();
 
-        /** @var Competition $competition */
         $competition = $this->createCompetition();
 
         $checker->checkRefereePriority($competition, 3);
@@ -44,7 +43,6 @@ class CheckerTest extends TestCase
     {
         $checker = new AvailabilityChecker();
 
-        /** @var Competition $competition */
         $competition = $this->createCompetition();
 
         $referee1 = $competition->getReferee(1);
@@ -64,7 +62,6 @@ class CheckerTest extends TestCase
     {
         $checker = new AvailabilityChecker();
 
-        /** @var Competition $competition */
         $competition = $this->createCompetition();
 
         $referee1 = $competition->getReferee(1);

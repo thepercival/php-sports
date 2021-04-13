@@ -4,8 +4,6 @@ declare(strict_types=1);
 namespace Sports\Competition;
 
 use Sports\Priority\Prioritizable;
-use Sports\Sport;
-use Sports\Sport\ConfigDep as SportConfig;
 use Sports\Competition;
 use Sports\Competition\Sport as CompetitionSport;
 use SportsHelpers\Identifiable;

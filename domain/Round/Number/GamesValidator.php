@@ -81,7 +81,7 @@ class GamesValidator
     {
         $pouleStructure = $roundNumber->createPouleStructure();
         $selfReferee = $roundNumber->getValidPlanningConfig()->getSelfReferee();
-        $sports = array_values($roundNumber->getCompetition()->getBaseSports()->toArray());
+        $sports = array_values($roundNumber->getCompetition()->getSports()->toArray());
         if (!$pouleStructure->isSelfRefereeBeAvailable($selfReferee, $sports)) {
             return;
         }
@@ -165,35 +165,36 @@ class GamesValidator
             if (array_key_exists($game->getBatchNr(), $batchesResources) === false) {
                 $batchesResources[$game->getBatchNr()] = array("fields" => [], "referees" => [], "places" => []);
             }
-            $batchResources = &$batchesResources[$game->getBatchNr()];
             $places = $this->getPlaces($game);
             if ($game->getRefereePlace() !== null) {
                 $places[] = $game->getRefereePlace();
             }
             foreach ($places as $placeIt) {
-                if (array_search($placeIt, $batchResources["places"], true) !== false) {
+                /** @var bool|int|string $search */
+                $search = array_search($placeIt, $batchesResources[$game->getBatchNr()]["places"], true);
+                if ($search !== false) {
                     return false;
                 }
-                $batchResources["places"][] = $placeIt;
+                array_push($batchesResources[$game->getBatchNr()]["places"], $placeIt);
             }
             $field = $game->getField();
             if ($field !== null) {
                 /** @var bool|int|string $search */
-                $search = array_search($field, $batchResources["fields"], true);
+                $search = array_search($field, $batchesResources[$game->getBatchNr()]["fields"], true);
                 if ($search !== false) {
                     return false;
                 }
-                $batchResources["fields"][] = $field;
+                array_push($batchesResources[$game->getBatchNr()]["fields"], $field);
             }
 
             $referee = $game->getReferee();
             if ($referee !== null) {
                 /** @var bool|int|string $search */
-                $search = array_search($referee, $batchResources["referees"], true);
+                $search = array_search($referee, $batchesResources[$game->getBatchNr()]["referees"], true);
                 if ($search !== false) {
                     return false;
                 }
-                $batchResources["referees"][] = $referee;
+                array_push($batchesResources[$game->getBatchNr()]["referees"], $referee);
             }
         }
         return true;
@@ -272,7 +273,7 @@ class GamesValidator
         $minNrOfGames = null;
         /** @var int|null $maxNrOfGames */
         $maxNrOfGames = null;
-        foreach ($gameAmounts as $nr => $nrOfGames) {
+        foreach ($gameAmounts as $nrOfGames) {
             if ($minNrOfGames === null || $nrOfGames < $minNrOfGames) {
                 $minNrOfGames = $nrOfGames;
             }

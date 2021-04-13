@@ -16,6 +16,12 @@ class Single extends QualifyRule
 {
     private Single | null $next = null;
 
+    /**
+     * @param HorizontalPoule $fromHorizontalPoule
+     * @param QualifyGroup $group
+     * @param ArrayCollection<int|string, QualifyPlaceMapping> $placeMappings
+     * @param Single|null $previous
+     */
     public function __construct(
         HorizontalPoule $fromHorizontalPoule,
         QualifyGroup $group,

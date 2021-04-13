@@ -34,6 +34,7 @@ class Service
      */
     public function setQualifiers(Poule $filterPoule = null): array
     {
+        /** @var array<int|string, Place> $changedPlaces */
         $changedPlaces = [];
         $setQualifiersForSingleRule = function (
             SingleQualifyRule $singleQualifyRule,
@@ -44,6 +45,7 @@ class Service
                 if ($filterPoule !== null && $fromPlace->getPoule() !== $filterPoule) {
                     return;
                 }
+                /** @var array<int|string, Place> $changedPlaces */
                 $this->setQualifierForPlaceMappingAndReserve($qualifyPlaceMapping, $reservationService);
                 array_push($changedPlaces, $qualifyPlaceMapping->getToPlace());
             }
@@ -56,6 +58,7 @@ class Service
                 $singleRule = $singleRule->getNext();
             }
             $multipleRule = $qualifyGroup->getMultipleRule();
+            /** @var array<int|string, Place> $changedPlaces */
             if ($multipleRule !== null) {
                 $changedPlaces = array_merge(
                     $changedPlaces,
@@ -66,8 +69,8 @@ class Service
                 );
             }
         }
-        /** @var list<Place> $changedPlaces */
-        return $changedPlaces;
+        /** @var array<int|string, Place> $changedPlaces */
+        return array_values($changedPlaces);
     }
 
     protected function setQualifierForPlaceMappingAndReserve(

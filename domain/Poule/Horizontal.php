@@ -68,7 +68,7 @@ class Horizontal
         return $nrOfPlaceNubers - ($this->number - 1);
     }
 
-    public function setQualifyRule(MultipleQualifyRule | SingleQualifyRule | null $qualifyRule)
+    public function setQualifyRule(MultipleQualifyRule | SingleQualifyRule | null $qualifyRule): void
     {
         $this->qualifyRule = $qualifyRule;
     }

@@ -7,14 +7,13 @@ use Sports\Planning\GameAmountConfig;
 use Sports\Round\Number as RoundNumber;
 use Sports\Competition\Sport as CompetitionSport;
 use SportsHelpers\GameMode;
-use SportsHelpers\SportConfig;
 
 class Service
 {
     public function createDefault(CompetitionSport $competitionSport, RoundNumber $roundNumber): GameAmountConfig
     {
         $amount = PlanningConfig::DEFAULTGAMEAMOUNT;
-        if ($competitionSport->getSport()->getGameMode() === GameMode::TOGETHER) {
+        if ($competitionSport->getGameMode() === GameMode::TOGETHER) {
             $amount = $competitionSport->getFields()->count();
         }
         return new GameAmountConfig($competitionSport, $roundNumber, $amount);

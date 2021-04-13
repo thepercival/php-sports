@@ -161,7 +161,6 @@ class Service
     public function getFinalTogetherSubScore(TogetherGamePlace $gamePlace): int
     {
         $score = 0;
-        /** @var TogetherScore $togetherScore */
         foreach ($gamePlace->getScores() as $togetherScore) {
             $score += $togetherScore->getScore();
         }

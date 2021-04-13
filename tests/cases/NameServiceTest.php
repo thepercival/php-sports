@@ -41,7 +41,7 @@ final class NameServiceTest extends TestCase
         $firstRoundNumber = $structure->getFirstRoundNumber();
         $rootRound = $structure->getRootRound();
 
-        $winnersRound = $structureEditor->addChildRound($rootRound, QualifyTarget::WINNERS, [2,2]);
+        $structureEditor->addChildRound($rootRound, QualifyTarget::WINNERS, [2,2]);
         $losersRound = $structureEditor->addChildRound($rootRound, QualifyTarget::LOSERS, [2,2]);
         // (new StructureOutput())->output($structure);
         $secondRoundNumber = $firstRoundNumber->getNext();
@@ -109,7 +109,6 @@ final class NameServiceTest extends TestCase
             $structureEditor->addChildRound($winnersWinnersRound, QualifyTarget::WINNERS, [2]);
             $losersFinal = $structureEditor->addChildRound($losersLosersRound, QualifyTarget::LOSERS, [2]);
 
-            $number = 8;
             // '<span style="font-size: 80%"><sup>1</sup>&frasl;<sub>' . $number . '</sub></span> finale'
             self::assertSame('1/8 finale', $nameService->getRoundName($rootRound));
 
@@ -242,7 +241,6 @@ final class NameServiceTest extends TestCase
 
     public function testPlacesFromName(): void
     {
-        $nameService = new NameService();
         $competition = $this->createCompetition();
         $competitionSport = $competition->getSingleSport();
         $field = $competitionSport->getFields()->last();
@@ -291,8 +289,8 @@ final class NameServiceTest extends TestCase
             $firstWinnersHorPoule = $rootRound->getHorizontalPoule(QualifyTarget::WINNERS, 1);
             self::assertSame($nameService->getHorizontalPouleName($firstWinnersHorPoule), 'nummers 1');
 
-            $winnersRound = $structureEditor->addChildRound($rootRound, QualifyTarget::WINNERS, [2]);
-            $losersRound = $structureEditor->addChildRound($rootRound, QualifyTarget::LOSERS, [2]);
+            $structureEditor->addChildRound($rootRound, QualifyTarget::WINNERS, [2]);
+            $structureEditor->addChildRound($rootRound, QualifyTarget::LOSERS, [2]);
 
             $firstWinnersHorPoule2 = $rootRound->getHorizontalPoule(QualifyTarget::WINNERS, 1);
             self::assertSame($nameService->getHorizontalPouleName($firstWinnersHorPoule2), '2 beste nummers 1');

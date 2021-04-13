@@ -1,7 +1,6 @@
 Sports\Competition:
   exclusion_policy: ALL
   exclude: false
-  custom_accessor_order: [sportConfigs,fields]
   properties:
     rankingRuleSet:
       type: integer

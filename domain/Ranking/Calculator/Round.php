@@ -34,7 +34,7 @@ class Round
 
     protected function getSportRoundRankingCalculator(CompetitionSport $competitionSport): SportRoundRankingCalculator
     {
-        if ($competitionSport->getSport()->getGameMode() === GameMode::AGAINST) {
+        if ($competitionSport->getGameMode() === GameMode::AGAINST) {
             return new AgainstSportRoundRankingCalculator($competitionSport, $this->gameStates);
         }
         return new TogetherSportRoundRankingCalculator($competitionSport, $this->gameStates);
@@ -88,7 +88,7 @@ class Round
             return $calculator->getItemsForHorizontalPoule($horizontalPoule);
         })->toArray();
         return $this->convertSportRoundRankingsToRoundItems(
-            $horizontalPoule->getPlaces()->toArray(),
+            array_values($horizontalPoule->getPlaces()->toArray()),
             array_values($sportRoundRankingItems)
         );
     }
@@ -159,7 +159,6 @@ class Round
         $nrOfIterations = 0;
         $rank = 0;
         $previousCumulativeRank = 0;
-        $cumulativeRoundRankingItem = null;
         while ($cumulativeRoundRankingItem = array_shift($cumulativeRoundRankingItems)) {
             if ($previousCumulativeRank < $cumulativeRoundRankingItem->getCumulativeRank()) {
                 $rank++;

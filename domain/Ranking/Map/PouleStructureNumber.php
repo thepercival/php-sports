@@ -31,12 +31,14 @@ class PouleStructureNumber
 
         $pouleNr = 1;
         $setPouleStructureNumbers = function (RoundNumber $roundNumber) use (&$pouleNr, &$setPouleStructureNumbers) : void {
+            /** @var \Closure $setPouleStructureNumbers */
             $rounds = $roundNumber->getRounds()->toArray();
             uasort($rounds, function (Round $roundA, Round $roundB): int {
                 return $this->previousNrOfDropoutsMap->get($roundA) > $this->previousNrOfDropoutsMap->get($roundB) ? 1 : -1;
             });
             foreach ($rounds as $round) {
                 foreach ($round->getPoules() as $poule) {
+                    /** @var int $pouleNr */
                     $this->map[$poule->getStructureLocation()] = $pouleNr;
                     $pouleNr++;
                 }

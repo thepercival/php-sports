@@ -34,7 +34,6 @@ class Against extends Calculator
         $performances = $this->createPerformances($places);
         $performanceMap = $this->getPerformanceMap($performances);
         $useSubScore = $this->round->getValidScoreConfig($this->competitionSport)->useSubScore();
-        /** @var AgainstGame $game */
         foreach ($this->getFilteredGames($games) as $game) {
             $finalScore = $this->scoreConfigService->getFinalAgainstScore($game);
             $finalSubScore = $useSubScore ? $this->scoreConfigService->getFinalAgainstSubScore($game) : null;

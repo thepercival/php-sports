@@ -4,11 +4,12 @@ declare(strict_types=1);
 namespace Sports\Round\Number;
 
 use SportsHelpers\PouleStructure;
+use SportsHelpers\Sport\GameAmountVariant;
+use SportsHelpers\Sport\Variant as SportVariant;
 use SportsPlanning\Input as PlanningInput;
 use Sports\Round\Number as RoundNumber;
 use SportsPlanning\Input\Service as PlanningInputService;
 use SportsPlanning\Input\Calculator as InputCalculator;
-use SportsHelpers\SportConfig;
 use Sports\Planning\Config as PlanningConfig;
 use SportsHelpers\SelfReferee;
 
@@ -22,17 +23,17 @@ class PlanningInputCreator
     {
         $config = $roundNumber->getValidPlanningConfig();
 
-        $sportConfigBases = $roundNumber->createSportConfigs();
+        $sportVariants = $roundNumber->createSportVariants();
         $pouleStructure = $this->createPouleStructure($roundNumber);
         $selfReferee = $this->getSelfReferee(
             $config,
-            $sportConfigBases,
+            $sportVariants,
             $pouleStructure
         );
-        $sportConfigs = $this->reduceFields($pouleStructure, $sportConfigBases, $selfReferee !== SelfReferee::DISABLED);
+        $efficientSportVariants = $this->reduceFields($pouleStructure, $sportVariants, $selfReferee !== SelfReferee::DISABLED);
         return new PlanningInput(
             $pouleStructure,
-            $sportConfigs,
+            $efficientSportVariants,
             $nrOfReferees,
             $selfReferee,
         );
@@ -40,16 +41,16 @@ class PlanningInputCreator
 
     /**
      * @param PlanningConfig $planningConfig
-     * @param list<SportConfig> $sportConfigs
+     * @param list<SportVariant> $sportVariants
      * @param PouleStructure $pouleStructure
      * @return int
      */
-    protected function getSelfReferee(PlanningConfig $planningConfig, array $sportConfigs, PouleStructure $pouleStructure): int
+    protected function getSelfReferee(PlanningConfig $planningConfig, array $sportVariants, PouleStructure $pouleStructure): int
     {
         $planningInputService = new PlanningInputService();
 
         $otherPoulesAvailable = $planningInputService->canSelfRefereeOtherPoulesBeAvailable($pouleStructure);
-        $samePouleAvailable = $planningInputService->canSelfRefereeSamePouleBeAvailable($pouleStructure, $sportConfigs);
+        $samePouleAvailable = $planningInputService->canSelfRefereeSamePouleBeAvailable($pouleStructure, $sportVariants);
         if (!$otherPoulesAvailable && !$samePouleAvailable) {
             return SelfReferee::DISABLED;
         }
@@ -73,32 +74,32 @@ class PlanningInputCreator
 
     /**
      * @param PouleStructure $pouleStructure
-     * @param list<SportConfig> $sportConfigs
+     * @param list<GameAmountVariant> $sportVariants
      * @param bool $selfReferee
-     * @return list<SportConfig>
+     * @return list<GameAmountVariant>
      */
-    protected function reduceFields(PouleStructure $pouleStructure, array $sportConfigs, bool $selfReferee): array
+    protected function reduceFields(PouleStructure $pouleStructure, array $sportVariants, bool $selfReferee): array
     {
         $inputCalculator = new InputCalculator();
-        $maxNrOfGamesPerBatch = $inputCalculator->getMaxNrOfGamesPerBatch($pouleStructure, $sportConfigs, $selfReferee);
+        $maxNrOfGamesPerBatch = $inputCalculator->getMaxNrOfGamesPerBatch($pouleStructure, $sportVariants, $selfReferee);
         $reducedConfigs = [];
-        foreach ($sportConfigs as $sportConfig) {
-            $reducedNrOfFields = $sportConfig->getNrOfFields();
+        foreach ($sportVariants as $sportVariant) {
+            $reducedNrOfFields = $sportVariant->getNrOfFields();
             if ($reducedNrOfFields > $maxNrOfGamesPerBatch) {
                 $reducedNrOfFields = $maxNrOfGamesPerBatch;
             }
-            $reducedConfigs[] = new SportConfig(
-                $sportConfig->getGameMode(),
-                $sportConfig->getNrOfGamePlaces(),
+            $reducedConfigs[] = new GameAmountVariant(
+                $sportVariant->getGameMode(),
+                $sportVariant->getNrOfGamePlaces(),
                 $reducedNrOfFields,
-                $sportConfig->getGameAmount()
+                $sportVariant->getGameAmount()
             );
         }
 
         usort(
             $reducedConfigs,
-            function (SportConfig $sportConfigA, SportConfig $sportConfigB): int {
-                return $sportConfigA->getNrOfFields() > $sportConfigB->getNrOfFields() ? -1 : 1;
+            function (GameAmountVariant $sportA, GameAmountVariant $sportB): int {
+                return $sportA->getNrOfFields() > $sportB->getNrOfFields() ? -1 : 1;
             }
         );
         return $reducedConfigs;

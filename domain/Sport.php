@@ -1,13 +1,12 @@
 <?php
-
 declare(strict_types=1);
 
 namespace Sports;
 
 use InvalidArgumentException;
-use SportsHelpers\SportBase;
+use SportsHelpers\Identifiable;
 
-class Sport extends SportBase
+class Sport extends Identifiable
 {
     const MIN_LENGTH_NAME = 3;
     const MAX_LENGTH_NAME = 30;
@@ -20,9 +19,8 @@ class Sport extends SportBase
     private string $name;
     private int $customId = 0;
 
-    public function __construct(string $name, private bool $team, int $nrOfGamePlaces, int $gameMode)
+    public function __construct(string $name, private bool $team)
     {
-        parent::__construct($gameMode, $nrOfGamePlaces);
         $this->setName($name);
     }
 

@@ -21,7 +21,7 @@ use Sports\Game\Against as AgainstGame;
 use Sports\Game\Together as TogetherGame;
 use SportsHelpers\Identifiable;
 use SportsHelpers\PouleStructure;
-use SportsHelpers\SportConfig;
+use SportsHelpers\Sport\GameAmountVariant;
 
 class Number extends Identifiable
 {
@@ -360,13 +360,13 @@ class Number extends Identifiable
     }
 
     /**
-     * @return list<SportConfig>
+     * @return list<GameAmountVariant>
      */
-    public function createSportConfigs(): array
+    public function createSportVariants(): array
     {
-        return array_values($this->getCompetition()->getSports()->map(function (CompetitionSport $competitionSport): SportConfig {
+        return array_values($this->getCompetition()->getSports()->map(function (CompetitionSport $competitionSport): GameAmountVariant {
             $gameAmountConfig = $this->getValidGameAmountConfig($competitionSport);
-            return $competitionSport->createConfig($gameAmountConfig->getAmount());
+            return $competitionSport->createGameAmountVariant($gameAmountConfig->getAmount());
         })->toArray());
     }
 
@@ -379,7 +379,7 @@ class Number extends Identifiable
         return new PouleStructure(...$placesPerPoule);
     }
 
-    public function detach()
+    public function detach(): void
     {
         $next = $this->getNext();
         if ($next !== null) {

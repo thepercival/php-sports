@@ -17,7 +17,7 @@ class Group extends Identifiable
     protected Round $childRound;
     protected SingleQualifyRule|null $firstSingleRule = null;
     protected MultipleQualifyRule|null $multipleRule = null;
-    protected int $winnersOrLosersDep; // CDK TODO DEPRECATED
+    protected int $winnersOrLosersDep = 0; // CDK TODO DEPRECATED
 
     public function __construct(
         protected Round $parentRound,
@@ -153,7 +153,7 @@ class Group extends Identifiable
         return $this === $qualifyGroups->last();
     }
 
-    public function detach()
+    public function detach(): void
     {
         $this->detachRules();
         $qualifyGroups = $this->getParentRound()->getQualifyGroups();
@@ -161,7 +161,7 @@ class Group extends Identifiable
         $this->getChildRound()->detach();
     }
 
-    public function detachRules()
+    public function detachRules(): void
     {
         if ($this->multipleRule !== null) {
             $this->multipleRule->detach();

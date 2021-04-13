@@ -70,10 +70,10 @@ class Service
             return CreationStrategy::StaticManual;
         }
         $sport = $competition->getSingleSport();
-        if ($sport->getSport()->getGameMode() === GameMode::AGAINST) {
+        if ($sport->getGameMode() === GameMode::AGAINST) {
             return CreationStrategy::StaticPouleSize;
         }
-        if ($sport->getSport()->getNrOfGamePlaces() > 2) {
+        if ($sport->getNrOfGamePlaces() > 2) {
             return CreationStrategy::IncrementalRandom;
         }
         return CreationStrategy::StaticManual;

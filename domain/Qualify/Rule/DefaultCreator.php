@@ -28,13 +28,14 @@ class DefaultCreator
      * @param list<HorizontalPoule> $fromHorPoules
      * @param QualifyGroup $qualifyGroup
      */
-    public function createRules(array $fromHorPoules, QualifyGroup $qualifyGroup)
+    public function createRules(array $fromHorPoules, QualifyGroup $qualifyGroup): void
     {
         $childRoundPlaces = $this->getChildRoundPlaces($qualifyGroup);
         $fromHorPoule = array_shift($fromHorPoules);
         $previousRule = null;
         while ($fromHorPoule !== null && count($childRoundPlaces) > 0) {
-            $toPlaces = array_splice($childRoundPlaces, 0, count($fromHorPoule->getPlaces()));
+            /** @var list<Place> $toPlaces */
+            $toPlaces = array_values(array_splice($childRoundPlaces, 0, count($fromHorPoule->getPlaces())));
             if ($fromHorPoule->getPlaces()->count() > count($toPlaces)) {
                 new MultipleQualifyRule($fromHorPoule, $qualifyGroup, $toPlaces);
             } else {
@@ -53,9 +54,9 @@ class DefaultCreator
     {
         $childRoundPlaces = $qualifyGroup->getChildRound()->getPlaces(Round::ORDER_NUMBER_POULE);
         if ($qualifyGroup->getTarget() === QualifyTarget::WINNERS) {
-            return $childRoundPlaces;
+            return array_values($childRoundPlaces);
         }
-        return array_reverse($childRoundPlaces);
+        return array_values(array_reverse($childRoundPlaces));
     }
 
     /**
@@ -65,15 +66,16 @@ class DefaultCreator
      */
     public function createPlaceMappings(HorizontalPoule $fromHorPoule, array $childRoundPlaces): ArrayCollection
     {
+        /** @var ArrayCollection<int|string, QualifyPlaceMapping> $mappings */
         $mappings = new ArrayCollection();
-        $fromHorPoulePlaces = $fromHorPoule->getPlaces()->slice(0);
+        $fromHorPoulePlaces = array_values($fromHorPoule->getPlaces()->slice(0));
         while ($childRoundPlace = array_shift($childRoundPlaces)) {
             $fromHorPoulePlace = $this->getBestPick($childRoundPlace, $fromHorPoulePlaces);
             $idx = array_search($fromHorPoulePlace, $fromHorPoulePlaces, true);
             if ($idx === false) {
                 continue;
             }
-            array_splice($fromHorPoulePlaces, $idx,1);
+            array_splice($fromHorPoulePlaces, $idx, 1);
             $mappings->add(new QualifyPlaceMapping($fromHorPoulePlace, $childRoundPlace));
         }
         return $mappings;
@@ -90,15 +92,23 @@ class DefaultCreator
             $childRoundPlace->getPoule(),
             $fromHorPoulePlaces
         );
-        if (count($fromHorPoulePlacesWithFewestPouleOrigins) === 1) {
-            return reset($fromHorPoulePlacesWithFewestPouleOrigins);
+
+        if (count($fromHorPoulePlacesWithFewestPouleOrigins) < 2) {
+            $fromHorPoulePlaceWithFewestPouleOrigins = reset($fromHorPoulePlacesWithFewestPouleOrigins);
+            if ($fromHorPoulePlaceWithFewestPouleOrigins !== false) {
+                return $fromHorPoulePlaceWithFewestPouleOrigins;
+            }
         }
         $otherChildRoundPoules = $this->getOtherChildRoundPoules($childRoundPlace->getPoule());
         $fromHorPoulePlacesWithMostOtherPouleOrigins = $this->getMostOtherOverlappingPouleOrigins(
             $otherChildRoundPoules,
             $fromHorPoulePlacesWithFewestPouleOrigins
         );
-        return reset($fromHorPoulePlacesWithMostOtherPouleOrigins);
+        $fromHorPoulePlaceWithMostOtherPouleOrigins = reset($fromHorPoulePlacesWithMostOtherPouleOrigins);
+        if( $fromHorPoulePlaceWithMostOtherPouleOrigins === false ) {
+            throw new \Exception('could not find best pick', E_ERROR );
+        }
+        return $fromHorPoulePlaceWithMostOtherPouleOrigins;
     }
 
     /**
@@ -141,8 +151,7 @@ class DefaultCreator
     protected function getMostOtherOverlappingPouleOrigins(
         array $otherChildRoundPoules,
         array $fromHorPoulePlaces
-    ): array
-    {
+    ): array {
         $bestFromPlaces = [];
         $mostOverlappingOrigins = null;
         foreach ($fromHorPoulePlaces as $fromHorPoulePlace) {

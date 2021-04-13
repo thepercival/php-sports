@@ -48,7 +48,7 @@ class OriginCalculator
      * @param Poule $poule
      * @param array<int|string, Poule> $originMap
      */
-    protected function fillPossibleOriginMap(Poule $poule, array $originMap)
+    protected function fillPossibleOriginMap(Poule $poule, array $originMap): void
     {
         $previousOrigins = $this->getPossiblePreviousPoules($poule);
         if (count($previousOrigins) === 0) {
@@ -64,7 +64,7 @@ class OriginCalculator
      * @param Poule $poule
      * @param list<Poule> $origins
      */
-    protected function addPossibleOriginToList(Poule $poule, array &$origins)
+    protected function addPossibleOriginToList(Poule $poule, array &$origins): void
     {
         if (array_search($poule, $origins, true) === false) {
             array_push($origins, $poule);
@@ -75,7 +75,7 @@ class OriginCalculator
      * @param Poule $poule
      * @param array<int|string, Poule> $origins
      */
-    protected function addPossibleOriginMap(Poule $poule, array &$origins)
+    protected function addPossibleOriginMap(Poule $poule, array &$origins): void
     {
         $origins[$poule->getStructureLocation()] = $poule;
     }
@@ -88,7 +88,7 @@ class OriginCalculator
     {
         $parentQualifyGroup = $poule->getRound()->getParentQualifyGroup();
         if ($parentQualifyGroup !== null && $parentQualifyGroup->getMultipleRule() !== null) {
-            return $parentQualifyGroup->getParentRound()->getPoules()->toArray();
+            return array_values($parentQualifyGroup->getParentRound()->getPoules()->toArray());
         }
         $possiblePreviousPoules = [];
         foreach ($poule->getPlaces() as $place) {
@@ -116,7 +116,7 @@ class OriginCalculator
             if ($rule instanceof SingleQualifyRule) {
                 return [$rule->getFromPlace($place)->getPoule()];
             }
-            return $parentQualifyGroup->getParentRound()->getPoules()->toArray();
+            return array_values($parentQualifyGroup->getParentRound()->getPoules()->toArray());
         } catch (Exception $e) {
             return [];
         }

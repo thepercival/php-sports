@@ -44,7 +44,6 @@ class End
             }
             return array_values($items);
         };
-        /** @var list<EndRankingItem> $endRankingItems */
         $endRankingItems = $getItems($this->structure->getRootRound());
         return array_values($endRankingItems);
     }

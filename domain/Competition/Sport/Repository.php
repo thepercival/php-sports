@@ -3,9 +3,9 @@ declare(strict_types=1);
 
 namespace Sports\Competition\Sport;
 
+use SportsHelpers\Repository\SaveRemove as SaveRemoveRepository;
 use Exception;
 use SportsHelpers\Repository as BaseRepository;
-use Sports\Sport\Repository as SportRepository;
 use Sports\Score\Config as ScoreConfig;
 use Sports\Planning\GameAmountConfig;
 use Sports\Planning\GameAmountConfig\Repository as GameAmountConfigRepos;
@@ -13,15 +13,14 @@ use Sports\Qualify\AgainstConfig as QualifyAgainstConfig;
 use Sports\Qualify\AgainstConfig\Repository as QualifyAgainstConfigRepos;
 use Sports\Score\Config\Repository as ScoreConfigRepos;
 use Sports\Competition\Sport as CompetitionSport;
-use Sports\Competition\Field\Repository as FieldRepository;
-use Sports\Round\Number as RoundNumber;
 use Sports\Structure;
 use Doctrine\ORM\EntityRepository;
 
 /**
  * @template-extends EntityRepository<CompetitionSport>
+ * @template-implements SaveRemoveRepository<CompetitionSport>
  */
-class Repository extends EntityRepository
+class Repository extends EntityRepository implements SaveRemoveRepository
 {
     use BaseRepository;
 
@@ -53,7 +52,7 @@ class Repository extends EntityRepository
         }
     }
 
-    public function customRemove(CompetitionSport $competitionSport, SportRepository $sportRepos): void
+    public function customRemove(CompetitionSport $competitionSport): void
     {
         $conn = $this->_em->getConnection();
         $conn->beginTransaction();

@@ -15,6 +15,7 @@ use Sports\Qualify\AgainstConfig\Service as QualifyConfigService;
 use Sports\Competition;
 use Sports\Competition\Sport as CompetitionSport;
 use Sports\Structure;
+use SportsHelpers\GameMode;
 
 class Service
 {
@@ -31,17 +32,22 @@ class Service
 
     public function createDefault(Sport $sport, Competition $competition, Structure $structure = null): CompetitionSport
     {
-        $competitionSport = new CompetitionSport($sport, $competition);
+        $competitionSport = new CompetitionSport(
+            $sport,
+            $competition,
+            $this->getDefaultNrOfGamePlaces($sport),
+            $this->getDefaultGameMode($sport)
+        );
         if ($structure !== null) {
             $this->addToStructure($competitionSport, $structure);
         }
         return $competitionSport;
     }
 
-    public function copy(Competition $newCompetition, Sport $sport): CompetitionSport
+    /*public function copy(Competition $newCompetition, Sport $sport): CompetitionSport
     {
         return new CompetitionSport($sport, $newCompetition);
-    }
+    }*/
 
     public function addToStructure(CompetitionSport $competitionSport, Structure $structure): void
     {
@@ -112,5 +118,13 @@ class Service
             }
         };
         $removeFromRounds([$structure->getRootRound()]);
+    }
+
+    protected function getDefaultGameMode(Sport $sport): int {
+        return GameMode::AGAINST;
+    }
+
+    protected function getDefaultNrOfGamePlaces(Sport $sport): int {
+        return 2;
     }
 }

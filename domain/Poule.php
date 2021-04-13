@@ -6,10 +6,10 @@ namespace Sports;
 use \Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\PersistentCollection;
 use InvalidArgumentException;
-use SportsHelpers\SportConfig as SportConfig;
 use SportsHelpers\Identifiable;
 use Sports\Game\Against as AgainstGame;
 use Sports\Game\Together as TogetherGame;
+use SportsHelpers\Sport\Variant as SportVariant;
 
 class Poule extends Identifiable
 {
@@ -164,11 +164,11 @@ class Poule extends Identifiable
         return ($this->getPlaces()->count() > 2);
     }
 
-    public function getNrOfGamesPerRoundNumber(SportConfig $sportConfig): int
+    public function getNrOfGamesPerRoundNumber(SportVariant $sportVariant): int
     {
         $nrOfPlaces = $this->getPlaces()->count();
-        $rest = $nrOfPlaces % $sportConfig->getNrOfGamePlaces();
-        return (int)(($nrOfPlaces - $rest) / $sportConfig->getNrOfGamePlaces());
+        $rest = $nrOfPlaces % $sportVariant->getNrOfGamePlaces();
+        return (int)(($nrOfPlaces - $rest) / $sportVariant->getNrOfGamePlaces());
     }
 
     public function getState(): int

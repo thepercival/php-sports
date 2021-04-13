@@ -7,17 +7,22 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Sports\Competition;
 use Sports\Sport as SportsSport;
 use SportsHelpers\Identifiable;
-use SportsHelpers\SportConfig;
+use SportsHelpers\Sport\GameAmountVariant;
+use SportsHelpers\Sport\Variant;
 
-class Sport extends Identifiable
+class Sport extends Identifiable implements Variant
 {
     /**
      * @var ArrayCollection<int|string,Field>
      */
     protected $fields;
 
-    public function __construct(protected SportsSport $sport, protected Competition $competition)
-    {
+    public function __construct(
+        protected SportsSport $sport,
+        protected Competition $competition,
+        protected int $nrOfGamePlaces,
+        protected int $gameMode
+    ) {
         $this->competition->getSports()->add($this);
         $this->fields = new ArrayCollection();
     }
@@ -30,6 +35,16 @@ class Sport extends Identifiable
     public function getCompetition(): Competition
     {
         return $this->competition;
+    }
+
+    public function getGameMode(): int
+    {
+        return $this->gameMode;
+    }
+
+    public function getNrOfGamePlaces(): int
+    {
+        return $this->nrOfGamePlaces;
     }
 
     /**
@@ -55,11 +70,11 @@ class Sport extends Identifiable
         return $field;
     }
 
-    public function createConfig(int $gameAmount): SportConfig
+    public function createGameAmountVariant(int $gameAmount): GameAmountVariant
     {
-        return new SportConfig(
-            $this->getSport()->getGameMode(),
-            $this->getSport()->getNrOfGamePlaces(),
+        return new GameAmountVariant(
+            $this->getGameMode(),
+            $this->getNrOfGamePlaces(),
             $this->fields->count(),
             $gameAmount
         );

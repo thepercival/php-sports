@@ -45,7 +45,7 @@ class Multiple extends QualifyRule
         return count($this->toPlaces);
     }
 
-    public function detach()
+    public function detach(): void
     {
         $this->getFromHorizontalPoule()->setQualifyRule(null);
     }

@@ -69,7 +69,6 @@ final class ValidatorTest extends TestCase
         $structureEditor = $this->createStructureEditor([]);
         $structure = $structureEditor->create($competition, [4]);
 
-        $firstRoundNumber = $structure->getFirstRoundNumber();
         $rootRound = $structure->getRootRound();
 
         $rootRound->getPoules()->clear();
@@ -86,7 +85,6 @@ final class ValidatorTest extends TestCase
         $structureEditor = $this->createStructureEditor([]);
         $structure = $structureEditor->create($competition, [4]);
 
-        $firstRoundNumber = $structure->getFirstRoundNumber();
         $rootRound = $structure->getRootRound();
 
         $rootRound->getPoule(1)->getPlaces()->clear();
@@ -105,7 +103,6 @@ final class ValidatorTest extends TestCase
 
         (new GamesCreator())->createStructureGames($structure);
 
-        $firstRoundNumber = $structure->getFirstRoundNumber();
         $rootRound = $structure->getRootRound();
 
         $firstPoule = $rootRound->getPoule(1);
@@ -123,7 +120,6 @@ final class ValidatorTest extends TestCase
 
         $structureEditor = $this->createStructureEditor([]);
         $structure = $structureEditor->create($competition, [3,3]);
-        $firstRoundNumber = $structure->getFirstRoundNumber();
         $rootRound = $structure->getRootRound();
         $structureEditor->addChildRound($rootRound, QualifyTarget::WINNERS, [2]);
 
@@ -191,7 +187,6 @@ final class ValidatorTest extends TestCase
         $structureEditor = $this->createStructureEditor([]);
         $structure = $structureEditor->create($competition, [3,3]);
 
-        $firstRoundNumber = $structure->getFirstRoundNumber();
         $rootRound = $structure->getRootRound();
 
         $secondRoundNumber = new RoundNumber($competition);
@@ -212,7 +207,6 @@ final class ValidatorTest extends TestCase
         $structureEditor = $this->createStructureEditor([]);
         $structure = $structureEditor->create($competition, [3,3]);
 
-        $firstRoundNumber = $structure->getFirstRoundNumber();
         $rootRound = $structure->getRootRound();
 
         $structureEditor->addChildRound($rootRound, QualifyTarget::WINNERS, [2]);

@@ -27,7 +27,7 @@ class Service
 
     protected function getDefaultPointCalculation(CompetitionSport $competitionSport): int
     {
-        if ($competitionSport->getSport()->getGameMode() === GameMode::AGAINST) {
+        if ($competitionSport->getGameMode() === GameMode::AGAINST) {
             return PointsCalculation::AGAINSTGAMEPOINTS;
         }
         return PointsCalculation::SCORES;

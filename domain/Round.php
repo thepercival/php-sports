@@ -7,6 +7,7 @@ use \Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\PersistentCollection;
 use Exception;
+use InvalidArgumentException;
 use Sports\Competition\Sport as CompetitionSport;
 use Sports\Qualify\AgainstConfig as QualifyAgainstConfig;
 use Sports\Qualify\Group as QualifyGroup;
@@ -104,7 +105,7 @@ class Round extends Identifiable
             $name = null;
         }
         if ($name !== null && strlen($name) > self::MAX_LENGTH_NAME) {
-            throw new \InvalidArgumentException("de naam mag maximaal ".self::MAX_LENGTH_NAME." karakters bevatten", E_ERROR);
+            throw new InvalidArgumentException("de naam mag maximaal ".self::MAX_LENGTH_NAME." karakters bevatten", E_ERROR);
         }
         $this->name = $name;
     }
@@ -124,6 +125,7 @@ class Round extends Identifiable
      */
     public function getTargetQualifyGroups(string $target): ArrayCollection
     {
+        /* @phpstan-ignore-next-line */
         return $this->qualifyGroups->filter(function (QualifyGroup $qualifyGroup) use ($target): bool {
             return $qualifyGroup->getTarget() === $target;
         });
@@ -239,7 +241,7 @@ class Round extends Identifiable
         return $this->getPoule($this->getPoules()->count());
     }
 
-    public function addPlace()
+    public function addPlace(): void
     {
         $pouleStructure = $this->createPouleStructure();
         $pouleNr = $pouleStructure->getFirstLesserNrOfPlacesPouleNr();
@@ -253,8 +255,9 @@ class Round extends Identifiable
         $poule = $this->getPoule($pouleNr);
 
         $poulePlaces = $poule->getPlaces();
+        $lastPlace = $poulePlaces->last();
         $nrOfRemovedPoulePlaces = 0;
-        if ($poulePlaces->removeElement($poulePlaces->last()) !== null) {
+        if ($lastPlace !== false && $poulePlaces->removeElement($lastPlace)) {
             $nrOfRemovedPoulePlaces++;
         };
 
@@ -269,7 +272,7 @@ class Round extends Identifiable
     {
         $lastPoule = $this->getLastPoule();
         $poule = new Poule($this);
-        foreach ($lastPoule->getPlaces() as $place) {
+        for ($i = 1 ; $i <= $lastPoule->getPlaces()->count() ; $i++) {
             new Place($poule);
         }
         return $this->getLastPoule();
@@ -321,7 +324,7 @@ class Round extends Identifiable
 
     public function getHorizontalPoule(string $target, int $number): HorizontalPoule
     {
-        $foundHorPoules = $this->getHorizontalPoules($target)->filter(function ($horPoule) use ($number): bool {
+        $foundHorPoules = $this->getHorizontalPoules($target)->filter(function (HorizontalPoule $horPoule) use ($number): bool {
             return $horPoule->getNumber() === $number;
         });
         $firstHorPoule = $foundHorPoules->first();
@@ -331,7 +334,8 @@ class Round extends Identifiable
         return $firstHorPoule;
     }
 
-    public function onPostLoad() {
+    public function onPostLoad(): void
+    {
         $this->winnersHorizontalPoules = new ArrayCollection();
         $this->losersHorizontalPoules = new ArrayCollection();
         $this->structurePathNode = $this->constructStructurePathNode();
@@ -608,14 +612,10 @@ class Round extends Identifiable
         return new BalancedPouleStructure(...$nrOfPlaces);
     }
 
-    public function detach()
+    public function detach(): void
     {
         $rounds = $this->getNumber()->getRounds();
         $rounds->removeElement($this);
-//        const idx = rounds.indexOf(this);
-//        if ($rounds->contains($rounds)) {
-//            rounds.splice(idx, 1);
-//        }
         if ($rounds->count() === 0) {
             $this->getNumber()->detach();
         }

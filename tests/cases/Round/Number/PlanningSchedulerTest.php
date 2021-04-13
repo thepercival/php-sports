@@ -60,7 +60,7 @@ final class PlanningSchedulerTest extends TestCase
         $structure = $structureEditor->create($competition, [3,3]);
 
         $rootRound = $structure->getRootRound();
-        $winnersRound = $structureEditor->addChildRound($rootRound, QualifyTarget::WINNERS, [2]);
+        $structureEditor->addChildRound($rootRound, QualifyTarget::WINNERS, [2]);
         $firstRoundNumber = $structure->getFirstRoundNumber();
         $secondRoundNumber = $firstRoundNumber->getNext();
         self::assertNotNull($secondRoundNumber);
@@ -137,7 +137,7 @@ final class PlanningSchedulerTest extends TestCase
         $structure = $structureEditor->create($competition, [3,3]);
 
         $rootRound = $structure->getRootRound();
-        $winnersRound = $structureEditor->addChildRound($rootRound, QualifyTarget::WINNERS, [2]);
+        $structureEditor->addChildRound($rootRound, QualifyTarget::WINNERS, [2]);
         $firstRoundNumber = $structure->getFirstRoundNumber();
         $secondRoundNumber = $firstRoundNumber->getNext();
         self::assertNotNull($secondRoundNumber);

@@ -10,7 +10,7 @@ use Sports\Round;
 
 class Creator
 {
-    public function remove(Round|null ...$rounds)
+    public function remove(Round|null ...$rounds): void
     {
         foreach ($rounds as $round) {
             if ($round === null) {
@@ -22,7 +22,7 @@ class Creator
         }
     }
 
-    protected function removeRound(Round $round, string $target)
+    protected function removeRound(Round $round, string $target): void
     {
         $horizontalPoules = $round->getHorizontalPoules($target);
 
@@ -31,7 +31,7 @@ class Creator
         }
     }
 
-    public function create(Round|null ...$rounds)
+    public function create(Round|null ...$rounds): void
     {
         foreach ($rounds as $round) {
             if ($round === null) {
@@ -58,10 +58,12 @@ class Creator
         }
 
         $nrOfPoules = $round->getPoules()->count();
-        $horPlaces = array_splice($placesHorizontalOrdered, 0, $nrOfPoules);
+        $horPlaces = array_values(array_splice($placesHorizontalOrdered, 0, $nrOfPoules));
         $previous = null;
         while (count($horPlaces) > 0) {
-            $previous = new HorizontalPoule($round, $qualifyTarget, $previous, new ArrayCollection($horPlaces));
+            /** @var ArrayCollection<int|string, Place> $horPlacesCollection */
+            $horPlacesCollection = new ArrayCollection($horPlaces);
+            $previous = new HorizontalPoule($round, $qualifyTarget, $previous, $horPlacesCollection);
             $horPlaces = array_splice($placesHorizontalOrdered, 0, $nrOfPoules);
         }
         return $horizontalPoules;
