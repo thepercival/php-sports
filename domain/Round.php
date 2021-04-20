@@ -121,11 +121,10 @@ class Round extends Identifiable
 
     /**
      * @param string $target
-     * @return ArrayCollection<int|string, QualifyGroup>
+     * @return Collection<int|string, QualifyGroup>
      */
-    public function getTargetQualifyGroups(string $target): ArrayCollection
+    public function getTargetQualifyGroups(string $target): Collection
     {
-        /* @phpstan-ignore-next-line */
         return $this->qualifyGroups->filter(function (QualifyGroup $qualifyGroup) use ($target): bool {
             return $qualifyGroup->getTarget() === $target;
         });

@@ -71,7 +71,7 @@ trait CompetitionCreator
             return $this->sport;
         }
 
-        $this->sport = new Sport("voetbal", true);
+        $this->sport = new Sport("voetbal", true, GameMode::AGAINST, 1);
         $this->sport->setCustomId(SportCustom::Football);
         return $this->sport;
     }

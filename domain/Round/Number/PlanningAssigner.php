@@ -28,7 +28,7 @@ class PlanningAssigner
 
     public function assignPlanningToRoundNumber(RoundNumber $roundNumber, Planning $planning): void
     {
-        $mapper = new PlanningMapper($roundNumber, $planning);
+        $mapper = new PlanningMapper($roundNumber, $planning->getInput());
         $firstBatch = $planning->createFirstBatch();
         $gameStartDateTime = $this->scheduler->getRoundNumberStartDateTime($roundNumber);
         $planningConfig = $roundNumber->getValidPlanningConfig();

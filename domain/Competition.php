@@ -15,6 +15,7 @@ use SportsHelpers\Identifiable;
 use Sports\Competitor\Team as TeamCompetitor;
 use Sports\Competition\Referee;
 use Sports\Competition\Sport as CompetitonSport;
+use SportsHelpers\Sport\Variant as SportVariant;
 
 class Competition extends Identifiable
 {
@@ -156,6 +157,16 @@ class Competition extends Identifiable
     public function getSports(): ArrayCollection|PersistentCollection
     {
         return $this->sports;
+    }
+
+    /**
+     * @return list<SportVariant>
+     */
+    public function createSportVariants(): array
+    {
+        return array_values($this->getSports()->map(function (CompetitionSport $competitionSport): SportVariant {
+            return $competitionSport->createVariant();
+        })->toArray());
     }
 
     public function getSingleSport(): CompetitionSport

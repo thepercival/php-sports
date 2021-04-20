@@ -164,12 +164,12 @@ class Poule extends Identifiable
         return ($this->getPlaces()->count() > 2);
     }
 
-    public function getNrOfGamesPerRoundNumber(SportVariant $sportVariant): int
+    /*public function getNrOfGamesPerRoundNumber(SportVariant $sportVariant): int
     {
         $nrOfPlaces = $this->getPlaces()->count();
         $rest = $nrOfPlaces % $sportVariant->getNrOfGamePlaces();
         return (int)(($nrOfPlaces - $rest) / $sportVariant->getNrOfGamePlaces());
-    }
+    }*/
 
     public function getState(): int
     {

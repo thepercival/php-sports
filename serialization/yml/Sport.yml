@@ -11,6 +11,9 @@ Sports\Sport:
     customId:
       type: integer
       groups: [noReference]
-    gameMode:
+    defaultGameMode:
       type: integer
       groups: [noReference]
+    defaultNrOfSidePlaces:
+      type: integer
+      groups: [ noReference ]

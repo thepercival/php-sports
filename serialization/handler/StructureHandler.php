@@ -25,7 +25,7 @@ class StructureHandler extends Handler implements SubscribingHandlerInterface
 
     /**
      * @param JsonDeserializationVisitor $visitor
-     * @param array<string, bool|array> $fieldValue
+     * @param array<string, array> $fieldValue
      * @param array<string, int|string> $type
      * @param Context $context
      * @return Structure

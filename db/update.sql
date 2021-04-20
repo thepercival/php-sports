@@ -1,20 +1,25 @@
 -- PRE PRE PRE doctrine-update =============================================================
 alter table roundnumbers rename roundNumbers;
 alter table planningconfigs rename planningConfigs;
+alter table qualifygroups rename qualifyGroups;
 
 update competitors set registered = 0 where registered is null;
 
 -- POST POST POST doctrine-update ===========================================================
-update sports set gameMode = 2, nrOfGamePlaces = 2;
+
+update sports set defaultGameMode = 2, defaultNrOfSidePlaces = 1;
+update sports set defaultGameMode = 2, defaultNrOfSidePlaces = 1;
+update sports set customId = 15, defaultGameMode = 1, defaultNrOfSidePlaces = 0 where name = 'sjoelen';
 update planningConfigs set creationStrategy = 1;
 update qualifyGroups set target = 'W' where winnersOrLosers = 1;
+update qualifyGroups set target = '' where winnersOrLosers = 2;
 update qualifyGroups set target = 'L' where winnersOrLosers = 3;
-
-update fields f join sportconfigs sc on sc.id = f.sportConfigId set competitionSportId = ( select id from competitionSports where competitionId = sc.competitionId );
+-- enable unique-constraints-qualifygroup again
 
 -- scoreConfigs: fk to competitionSports needs to be not null again
 -- fields: fk to competitionSports needs to be not null again
-INSERT INTO competitionSports ( sportId, competitionId )( SELECT sportid, competitionid from sportconfigs );
+INSERT INTO competitionSports ( sportId, competitionId, gameMode, nrOfHomePlaces, nrOfAwayPlaces, nrOfH2H, nrOfGamePlaces, gameAmount )( SELECT sportid, competitionid, 2, 1, 1, 1, 0, 0  from sportconfigs );
+update fields f join sportconfigs sc on sc.id = f.sportConfigId set competitionSportId = ( select id from competitionSports where competitionId = sc.competitionId );
 INSERT INTO gameAmountConfigs ( amount, roundNumberId, competitionSportId )(
     SELECT pc.nrOfHeadtohead, rn.id, (select id from competitionSports where competitionId = rn.competitionId ) from roundNumbers rn join planningConfigs pc on rn.planningConfigId = pc.id
 );

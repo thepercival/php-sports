@@ -81,8 +81,8 @@ class GamesValidator
     {
         $pouleStructure = $roundNumber->createPouleStructure();
         $selfReferee = $roundNumber->getValidPlanningConfig()->getSelfReferee();
-        $sports = array_values($roundNumber->getCompetition()->getSports()->toArray());
-        if (!$pouleStructure->isSelfRefereeBeAvailable($selfReferee, $sports)) {
+        $sportVariants = $roundNumber->getCompetition()->createSportVariants();
+        if (!$pouleStructure->isSelfRefereeBeAvailable($selfReferee, $sportVariants)) {
             return;
         }
         foreach ($roundNumber->getGames() as $game) {

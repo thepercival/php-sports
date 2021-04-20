@@ -30,7 +30,7 @@ class RoundHandler extends Handler implements SubscribingHandlerInterface
 
     /**
      * @param JsonDeserializationVisitor $visitor
-     * @param array<string, bool|RoundNumber|array> $fieldValue
+     * @param array<string, bool|RoundNumber|QualifyGroup|array> $fieldValue
      * @param array<string, array<string, RoundNumber>> $type
      * @param Context $context
      * @return Round
@@ -41,7 +41,10 @@ class RoundHandler extends Handler implements SubscribingHandlerInterface
         array $type,
         Context $context
     ): Round {
-        $parentQualifyGroup = $fieldValue["parentQualifyGroup"];
+        $parentQualifyGroup = null;
+        if( isset($fieldValue["parentQualifyGroup"]) ) {
+            $parentQualifyGroup = $fieldValue["parentQualifyGroup"];
+        }
         $round = null;
         if ($parentQualifyGroup instanceof QualifyGroup) {
             $round = $parentQualifyGroup->getChildRound();

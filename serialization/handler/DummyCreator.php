@@ -10,6 +10,7 @@ use Sports\League;
 use Sports\Season;
 use Sports\Sport;
 use SportsHelpers\GameMode;
+use SportsHelpers\Sport\PersistVariant as PersistSportVariant;
 
 class DummyCreator
 {
@@ -24,7 +25,7 @@ class DummyCreator
 
     public function createCompetition(): Competition
     {
-        if($this->competition === null ) {
+        if ($this->competition === null) {
             $association = new Association("knvb");
             $league = new League($association, "my league");
             $season = new Season("123", new \League\Period\Period("2018-12-17T11:33:15.710Z", "2018-12-17T11:33:15.710Z"));
@@ -49,14 +50,25 @@ class DummyCreator
         };
         $competitionSport = $getCompetitionSport($competitionSportId);
         if ($competitionSport === null) {
+            $defaultNrOfSidePlaces = 1;
             $sport = new Sport(
                 'dummy',
                 true,
-                2,
-                GameMode::AGAINST
+                GameMode::AGAINST,
+                $defaultNrOfSidePlaces * 2
             );
             $sport->setId($sportId);
-            $competitionSport = new CompetitionSport($sport, $competition);
+            $competitionSport = new CompetitionSport(
+                $sport,
+                $competition,
+                new PersistSportVariant(
+                    $sport->getDefaultGameMode(),
+                    $defaultNrOfSidePlaces,
+                    $defaultNrOfSidePlaces,
+                    1,
+                    0,
+                    0
+                ));
             $competitionSport->setId($competitionSportId);
             $this->competitionSports[$competitionSportId] = $competitionSport;
         }

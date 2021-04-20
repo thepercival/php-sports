@@ -31,7 +31,7 @@ class Repository
         $conn->beginTransaction();
         try {
             $this->remove($competition, $roundNumberValue);
-            $roundNumber = $this->add($newStructure, $roundNumberValue);
+            $roundNumber = $this->addNoFlush($newStructure, $roundNumberValue);
 
             $this->em->flush();
             $conn->commit();
@@ -43,6 +43,22 @@ class Repository
     }
 
     public function add(StructureBase $structure, int $roundNumberValue = null): RoundNumber
+    {
+        $conn = $this->em->getConnection();
+        $conn->beginTransaction();
+        try {
+            $roundNumber = $this->addNoFlush($structure, $roundNumberValue);
+
+            $this->em->flush();
+            $conn->commit();
+            return $roundNumber;
+        } catch (\Exception $e) {
+            $conn->rollBack();
+            throw $e;
+        }
+    }
+
+    protected function addNoFlush(StructureBase $structure, int $roundNumberValue = null): RoundNumber
     {
         $roundNumber = $structure->getRoundNumber($roundNumberValue !== null ? $roundNumberValue : 1);
         if ($roundNumber === null) {
@@ -70,11 +86,11 @@ class Repository
         return count($roundNumbers) > 0;
     }
 
-    public function getStructure(Competition $competition): ?StructureBase
+    public function getStructure(Competition $competition): StructureBase
     {
         $roundNumbers = $this->roundNumberRepos->findBy(array("competition" => $competition), array("number" => "asc"));
         if (count($roundNumbers) === 0) {
-            return null;
+            throw new \Exception('mallformed structure, no roundnumbers', E_ERROR);
         }
         $roundNumber = reset($roundNumbers);
         while ($nextRoundNumber = next($roundNumbers)) {
@@ -85,7 +101,7 @@ class Repository
 
         $rootRound = $firstRoundNumber->getRounds()->first();
         if ($rootRound === false) {
-            return null;
+            throw new \Exception('mallformed structure, no rootround', E_ERROR);
         }
         $structure = new StructureBase($firstRoundNumber, $rootRound);
 
@@ -109,9 +125,6 @@ class Repository
                 continue;
             }
             $structure = $this->getStructure($roundNumber->getCompetition());
-            if ($structure === null) {
-                continue;
-            }
             $structureMap[$competitionId] = $structure;
         }
         return $structureMap;
@@ -120,15 +133,12 @@ class Repository
     /**
      * @return void
      */
-    public function remove(Competition $competition, int $roundNumberAsValue = null)
+    protected function remove(Competition $competition, int $roundNumberAsValue = null)
     {
         if ($roundNumberAsValue === null) {
             $roundNumberAsValue = 1;
         }
         $structure = $this->getStructure($competition);
-        if ($structure === null) {
-            return;
-        }
         $roundNumber = $structure->getRoundNumber($roundNumberAsValue);
         if ($roundNumber === null) {
             return;

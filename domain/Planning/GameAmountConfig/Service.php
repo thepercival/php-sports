@@ -13,9 +13,9 @@ class Service
     public function createDefault(CompetitionSport $competitionSport, RoundNumber $roundNumber): GameAmountConfig
     {
         $amount = PlanningConfig::DEFAULTGAMEAMOUNT;
-        if ($competitionSport->getGameMode() === GameMode::TOGETHER) {
-            $amount = $competitionSport->getFields()->count();
-        }
+//        if ($competitionSport->getGameMode() === GameMode::TOGETHER) {
+//            $amount = $competitionSport->getFields()->count();
+//        }
         return new GameAmountConfig($competitionSport, $roundNumber, $amount);
     }
 

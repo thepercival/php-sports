@@ -19,8 +19,12 @@ class Sport extends Identifiable
     private string $name;
     private int $customId = 0;
 
-    public function __construct(string $name, private bool $team)
-    {
+    public function __construct(
+        string $name,
+        private bool $team,
+        private int $defaultGameMode,
+        private int $defaultNrOfSidePlaces,
+    ) {
         $this->setName($name);
     }
 
@@ -41,6 +45,16 @@ class Sport extends Identifiable
     public function getTeam(): bool
     {
         return $this->team;
+    }
+
+    public function getDefaultGameMode(): int
+    {
+        return $this->defaultGameMode;
+    }
+
+    public function getDefaultNrOfSidePlaces(): int
+    {
+        return $this->defaultNrOfSidePlaces;
     }
 
     public function getCustomId(): int

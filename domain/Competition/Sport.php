@@ -6,11 +6,10 @@ namespace Sports\Competition;
 use Doctrine\Common\Collections\ArrayCollection;
 use Sports\Competition;
 use Sports\Sport as SportsSport;
-use SportsHelpers\Identifiable;
-use SportsHelpers\Sport\GameAmountVariant;
-use SportsHelpers\Sport\Variant;
+use SportsHelpers\Sport\PersistVariant;
+use SportsHelpers\Sport\VariantWithFields as SportVariantWithFields;
 
-class Sport extends Identifiable implements Variant
+class Sport extends PersistVariant implements \Stringable
 {
     /**
      * @var ArrayCollection<int|string,Field>
@@ -20,9 +19,17 @@ class Sport extends Identifiable implements Variant
     public function __construct(
         protected SportsSport $sport,
         protected Competition $competition,
-        protected int $nrOfGamePlaces,
-        protected int $gameMode
+        PersistVariant $sportVariant
     ) {
+        parent::__construct(
+            $sportVariant->getGameMode(),
+            $sportVariant->getNrOfHomePlaces(),
+            $sportVariant->getNrOfAwayPlaces(),
+            $sportVariant->getNrOfH2H(),
+            $sportVariant->getNrOfGamePlaces(),
+            $sportVariant->getGameAmount()
+        );
+
         $this->competition->getSports()->add($this);
         $this->fields = new ArrayCollection();
     }
@@ -35,16 +42,6 @@ class Sport extends Identifiable implements Variant
     public function getCompetition(): Competition
     {
         return $this->competition;
-    }
-
-    public function getGameMode(): int
-    {
-        return $this->gameMode;
-    }
-
-    public function getNrOfGamePlaces(): int
-    {
-        return $this->nrOfGamePlaces;
     }
 
     /**
@@ -70,13 +67,13 @@ class Sport extends Identifiable implements Variant
         return $field;
     }
 
-    public function createGameAmountVariant(int $gameAmount): GameAmountVariant
+    public function createVariantWithFields(): SportVariantWithFields
     {
-        return new GameAmountVariant(
-            $this->getGameMode(),
-            $this->getNrOfGamePlaces(),
-            $this->fields->count(),
-            $gameAmount
-        );
+        return new SportVariantWithFields($this->createVariant(), $this->getFields()->count());
+    }
+
+    public function __toString(): string
+    {
+        return $this->createVariant() . ' f(' . $this->getFields()->count() . ')';
     }
 }

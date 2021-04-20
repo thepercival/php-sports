@@ -36,7 +36,7 @@ class NumberHandler extends Handler implements SubscribingHandlerInterface
 
     /**
      * @param JsonDeserializationVisitor $visitor
-     * @param array<string, bool|array> $fieldValue
+     * @param array<string, bool|RoundNumber|array> $fieldValue
      * @param array<string, array<string, RoundNumber>> $type
      * @param Context $context
      * @return RoundNumber

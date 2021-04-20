@@ -42,7 +42,11 @@ class GroupHandler extends Handler implements SubscribingHandlerInterface
         $parentRound = $fieldValue["parentRound"];
         /** @var RoundNumber $nextRoundNumber */
         $nextRoundNumber = $fieldValue["nextRoundNumber"];
-        $qualifyGroup = new QualifyGroup($parentRound, $fieldValue["target"], $nextRoundNumber, $fieldValue["number"]);
+        $qualifyGroup = new QualifyGroup(
+            $parentRound,
+            (string)$fieldValue["target"],
+            $nextRoundNumber,
+            $fieldValue["number"]);
         //$fieldValue["childRound"] = $qualifyGroup->getChildRound();
         $fieldValue["childRound"]["parentQualifyGroup"] = $qualifyGroup;
         $this->getProperty(

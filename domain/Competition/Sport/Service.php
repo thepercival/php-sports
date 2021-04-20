@@ -16,6 +16,10 @@ use Sports\Competition;
 use Sports\Competition\Sport as CompetitionSport;
 use Sports\Structure;
 use SportsHelpers\GameMode;
+use SportsHelpers\Sport\Variant\Against as AgainstSportVariant;
+use SportsHelpers\Sport\Variant\Single as SingleSportVariant;
+use SportsHelpers\Sport\Variant\AllInOneGame as AllInOneGameSportVariant;
+use SportsHelpers\Sport\Variant as SportVariant;
 
 class Service
 {
@@ -35,8 +39,7 @@ class Service
         $competitionSport = new CompetitionSport(
             $sport,
             $competition,
-            $this->getDefaultNrOfGamePlaces($sport),
-            $this->getDefaultGameMode($sport)
+            $this->getDefaultSportVariant($sport)->createPersistVariant()
         );
         if ($structure !== null) {
             $this->addToStructure($competitionSport, $structure);
@@ -120,11 +123,15 @@ class Service
         $removeFromRounds([$structure->getRootRound()]);
     }
 
-    protected function getDefaultGameMode(Sport $sport): int {
-        return GameMode::AGAINST;
-    }
-
-    protected function getDefaultNrOfGamePlaces(Sport $sport): int {
-        return 2;
+    protected function getDefaultSportVariant(Sport $sport): SportVariant {
+        if( $sport->getDefaultGameMode() === GameMode::AGAINST ) {
+            return new AgainstSportVariant(
+                $sport->getDefaultNrOfSidePlaces(),
+                $sport->getDefaultNrOfSidePlaces(),
+            1);
+        } else if( $sport->getDefaultGameMode() === GameMode::SINGLE ) {
+            return new SingleSportVariant(1, 1);
+        }
+        return new AllInOneGameSportVariant(1);
     }
 }
