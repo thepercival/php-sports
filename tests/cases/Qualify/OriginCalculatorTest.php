@@ -19,7 +19,7 @@ class OriginCalculatorTest extends TestCase
     {
         $competition = $this->createCompetition();
 
-        $structureEditor = $this->createStructureEditor([]);
+        $structureEditor = $this->createStructureEditor();
         $structure = $structureEditor->create($competition, [2, 2, 2, 2, 2, 2, 2, 2]);
         $rootRound = $structure->getRootRound();
 
@@ -35,7 +35,7 @@ class OriginCalculatorTest extends TestCase
     {
         $competition = $this->createCompetition();
 
-        $structureEditor = $this->createStructureEditor([]);
+        $structureEditor = $this->createStructureEditor();
         $structure = $structureEditor->create($competition, [2, 2, 2, 2, 2, 2, 2, 2]);
         $rootRound = $structure->getRootRound();
 
@@ -54,7 +54,7 @@ class OriginCalculatorTest extends TestCase
     {
         $competition = $this->createCompetition();
 
-        $structureEditor = $this->createStructureEditor([]);
+        $structureEditor = $this->createStructureEditor();
         $structure = $structureEditor->create($competition, [4, 4, 4, 4]);
         $rootRound = $structure->getRootRound();
 
@@ -78,7 +78,7 @@ class OriginCalculatorTest extends TestCase
     {
         $competition = $this->createCompetition();
 
-        $structureEditor = $this->createStructureEditor([]);
+        $structureEditor = $this->createStructureEditor();
         $structure = $structureEditor->create($competition, [4, 4, 4, 4]);
         $rootRound = $structure->getRootRound();
 

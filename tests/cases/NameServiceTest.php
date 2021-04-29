@@ -36,7 +36,7 @@ final class NameServiceTest extends TestCase
     {
         $nameService = new NameService();
         $competition = $this->createCompetition();
-        $structureEditor = $this->createStructureEditor([]);
+        $structureEditor = $this->createStructureEditor();
         $structure = $structureEditor->create($competition, [3,3,2]);
         $firstRoundNumber = $structure->getFirstRoundNumber();
         $rootRound = $structure->getRootRound();
@@ -62,7 +62,7 @@ final class NameServiceTest extends TestCase
 
         // root needs no ranking, unequal depth
         {
-            $structureEditor = $this->createStructureEditor([]);
+            $structureEditor = $this->createStructureEditor();
             $structure = $structureEditor->create($competition, [2,2]);
             $rootRound = $structure->getRootRound();
 
@@ -75,7 +75,7 @@ final class NameServiceTest extends TestCase
 
         // root needs ranking
         {
-            $structureEditor2 = $this->createStructureEditor([]);
+            $structureEditor2 = $this->createStructureEditor();
             $structure2 = $structureEditor2->create($competition, [4,4,4,4]);
             $rootRound2 = $structure2->getRootRound();
 
@@ -94,7 +94,7 @@ final class NameServiceTest extends TestCase
 
         // root needs ranking, depth 2
         {
-            $structureEditor = $this->createStructureEditor([]);
+            $structureEditor = $this->createStructureEditor();
             $structure = $structureEditor->create($competition, [2,2,2,2,2,2,2,2]);
             $rootRound = $structure->getRootRound();
 
@@ -123,7 +123,7 @@ final class NameServiceTest extends TestCase
 
         // basics
         {
-            $structureEditor = $this->createStructureEditor([]);
+            $structureEditor = $this->createStructureEditor();
             $poules = [];
             for ($i = 1 ; $i <= 29 ; $i++) {
                 array_push($poules, 3);
@@ -149,7 +149,7 @@ final class NameServiceTest extends TestCase
 
         // basics
         {
-            $structureEditor = $this->createStructureEditor([]);
+            $structureEditor = $this->createStructureEditor();
             $structure = $structureEditor->create($competition, [3]);
             $rootRound = $structure->getRootRound();
 
@@ -184,7 +184,7 @@ final class NameServiceTest extends TestCase
 
         // basics
         {
-            $structureEditor = $this->createStructureEditor([]);
+            $structureEditor = $this->createStructureEditor();
             $structure = $structureEditor->create($competition, [3,3,3]);
             $rootRound = $structure->getRootRound();
 
@@ -249,7 +249,7 @@ final class NameServiceTest extends TestCase
 
         // basics
         {
-            $structureEditor = $this->createStructureEditor([]);
+            $structureEditor = $this->createStructureEditor();
             $structure = $structureEditor->create($competition, [2]);
             $rootRound = $structure->getRootRound();
 
@@ -282,7 +282,7 @@ final class NameServiceTest extends TestCase
 
         // basics
         {
-            $structureEditor = $this->createStructureEditor([]);
+            $structureEditor = $this->createStructureEditor();
             $structure = $structureEditor->create($competition, [4,4,4]);
             $rootRound = $structure->getRootRound();
 
@@ -337,7 +337,7 @@ final class NameServiceTest extends TestCase
 
         // basics
         {
-            $structureEditor = $this->createStructureEditor([]);
+            $structureEditor = $this->createStructureEditor();
             $structure = $structureEditor->create($competition, [2]);
             $rootRound = $structure->getRootRound();
 

@@ -10,10 +10,14 @@ use JMS\Serializer\Context;
 use Sports\Qualify\Group as QualifyGroup;
 use Sports\Round;
 use Sports\Round\Number as RoundNumber;
+use Sports\SerializationHandler\DummyCreator;
 use Sports\SerializationHandler\Handler;
 
 class ConfigHandler extends Handler implements SubscribingHandlerInterface
 {
+    public function __construct(protected DummyCreator $dummyCreator) {
+    }
+
     /**
      * @psalm-return list<array<string, int|string>>
      */
@@ -37,11 +41,10 @@ class ConfigHandler extends Handler implements SubscribingHandlerInterface
     ): PlanningConfig
     {
         if (!isset($fieldValue["roundNumber"])) {
-            throw new \Exception('malformd json => planningConfig', E_ERROR);
+            $fieldValue["roundNumber"] = $this->dummyCreator->createRoundNumber();
         }
         $planningConfig = new PlanningConfig(
             $fieldValue["roundNumber"],
-            $fieldValue["creationStrategy"],
             $fieldValue["extension"],
             $fieldValue["enableTime"],
             $fieldValue["minutesPerGame"],

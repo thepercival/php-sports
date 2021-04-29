@@ -34,7 +34,7 @@ class Service
         $this->qualifyConfigService = new QualifyConfigService();
     }
 
-    public function createDefault(Sport $sport, Competition $competition, Structure $structure = null): CompetitionSport
+    /*public function createDefault(Sport $sport, Competition $competition, Structure $structure = null): CompetitionSport
     {
         $competitionSport = new CompetitionSport(
             $sport,
@@ -45,7 +45,7 @@ class Service
             $this->addToStructure($competitionSport, $structure);
         }
         return $competitionSport;
-    }
+    }*/
 
     /*public function copy(Competition $newCompetition, Sport $sport): CompetitionSport
     {
@@ -128,7 +128,8 @@ class Service
             return new AgainstSportVariant(
                 $sport->getDefaultNrOfSidePlaces(),
                 $sport->getDefaultNrOfSidePlaces(),
-            1);
+                $sport->getDefaultNrOfSidePlaces() > 1 ? 0 : 1,
+                $sport->getDefaultNrOfSidePlaces() > 1 ? 1 : 0);
         } else if( $sport->getDefaultGameMode() === GameMode::SINGLE ) {
             return new SingleSportVariant(1, 1);
         }

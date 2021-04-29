@@ -12,9 +12,12 @@ use Sports\League;
 use Sports\Competition\Referee;
 use Sports\Season;
 use Sports\Sport;
+use Sports\Competition\Sport as CompetitionSport;
 use Sports\Sport\Custom as SportCustom;
-use Sports\Competition\Sport\Service as CompetitionSportService;
 use SportsHelpers\GameMode;
+use SportsHelpers\Sport\Variant\Against as AgainstSportVariant;
+use SportsHelpers\Sport\Variant\Single as SingleSportVariant;
+use SportsHelpers\Sport\Variant\AllInOneGame as AllInOneGameSportVariant;
 
 trait CompetitionCreator
 {
@@ -23,11 +26,13 @@ trait CompetitionCreator
      */
     protected $competition;
     /**
-     * @var Sport|null
+     * @var CompetitionSport|null
      */
-    protected $sport;
+    protected $competitionSport;
 
-    protected function createCompetition(): Competition
+    protected function createCompetition(
+        SingleSportVariant|AgainstSportVariant|AllInOneGameSportVariant|null $sportVariant = null
+    ): Competition
     {
         if ($this->competition !== null) {
             return $this->competition;
@@ -38,20 +43,15 @@ trait CompetitionCreator
             new DateTimeImmutable("2018-08-01"),
             new DateTimeImmutable("2019-07-01"),
         ));
-        $this->competition = new Competition($league, $season);
-        $this->competition->setId(0);
-        $this->competition->setStartDateTime(new DateTimeImmutable("2030-01-01T12:00:00.000Z"));
-        new Referee($this->competition, '111');
-        new Referee($this->competition, '222');
+        $competition = new Competition($league, $season);
+        $competition->setId(0);
+        $competition->setStartDateTime(new DateTimeImmutable("2030-01-01T12:00:00.000Z"));
+        new Referee($competition, '111');
+        new Referee($competition, '222');
 
-        $competitionSportService = new CompetitionSportService();
-        $competitionSport = $competitionSportService->createDefault($this->createSport(), $this->competition);
-        $field1 = new Field($competitionSport);
-        $field1->setName("1");
-        $field2 = new Field($competitionSport);
-        $field2->setName("2");
-
-        return $this->competition;
+        $this->createCompetitionSport($competition, $sportVariant);
+        $this->competition = $competition;
+        return $competition;
     }
 
     /*protected function createSportVariant(): Sport
@@ -65,14 +65,25 @@ trait CompetitionCreator
         return $this->sport;
     }*/
 
-    protected function createSport(): Sport
+    protected function createCompetitionSport(
+        Competition $competition,
+        SingleSportVariant|AgainstSportVariant|AllInOneGameSportVariant|null $sportVariant
+    ): void
     {
-        if ($this->sport !== null) {
-            return $this->sport;
+        if ($this->competitionSport !== null) {
+            return;
         }
 
-        $this->sport = new Sport("voetbal", true, GameMode::AGAINST, 1);
-        $this->sport->setCustomId(SportCustom::Football);
-        return $this->sport;
+        $sport = new Sport("voetbal", true, GameMode::AGAINST, 1);
+        $sport->setCustomId(SportCustom::Football);
+
+        if ($sportVariant === null) {
+            $sportVariant = new AgainstSportVariant(1, 1, 1, 0);
+        }
+        $this->competitionSport = new CompetitionSport($sport, $competition, $sportVariant->createPersistVariant());
+        $field1 = new Field($this->competitionSport);
+        $field1->setName("1");
+        $field2 = new Field($this->competitionSport);
+        $field2->setName("2");
     }
 }

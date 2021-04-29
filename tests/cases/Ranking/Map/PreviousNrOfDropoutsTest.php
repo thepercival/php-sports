@@ -17,7 +17,7 @@ final class PreviousNrOfDropoutsTest extends TestCase
     public function testSimple(): void
     {
         $competition = $this->createCompetition();
-        $structureEditor = $this->createStructureEditor([]);
+        $structureEditor = $this->createStructureEditor();
         $structure = $structureEditor->create($competition, [7,7]);
         $rootRound = $structure->getRootRound();
         $firstRoundNumber = $structure->getFirstRoundNumber();

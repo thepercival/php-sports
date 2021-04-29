@@ -8,10 +8,10 @@ use Sports\Round;
 use Sports\Round\Number as RoundNumber;
 use Sports\Structure;
 use Sports\Structure as StructureBase;
+use SportsHelpers\PlaceRanges;
 use SportsHelpers\PouleStructure\Balanced as BalancedPouleStructure;
 use Sports\Competition;
 use Sports\Place;
-use SportsHelpers\Place\Range as PlaceRange;
 use Sports\Poule;
 use Sports\Poule\Horizontal as HorizontalPoule;
 use Sports\Planning\Config\Service as PlanningConfigService;
@@ -26,21 +26,19 @@ class Editor
 {
     private HorizontalPouleCreator $horPouleCreator;
     private QualifyRuleCreator $rulesCreator;
+    private PlaceRanges|null $placeRanges = null;
 
-    /**
-     * Editor constructor.
-     * @param CompetitionSportService $competitionSportService
-     * @param PlanningConfigService $planningConfigService
-     * @param list<PlaceRange> $placeRanges
-     */
     public function __construct(
         private CompetitionSportService $competitionSportService,
-        private PlanningConfigService $planningConfigService,
-        private array $placeRanges
-    )
-    {
+        private PlanningConfigService $planningConfigService
+    ) {
         $this->horPouleCreator = new HorizontalPouleCreator();
         $this->rulesCreator = new QualifyRuleCreator();
+    }
+
+    public function setPlaceRanges(PlaceRanges $placeRanges): void
+    {
+        $this->placeRanges = $placeRanges;
     }
 
     /**
@@ -78,6 +76,7 @@ class Editor
     public function addChildRound(Round $parentRound, string $qualifyTarget, array $pouleStructure): Round
     {
         $balancedPouleStructure = new BalancedPouleStructure(...$pouleStructure);
+        $this->placeRanges?->validateStructure($balancedPouleStructure);
         $this->rulesCreator->remove($parentRound);
         // begin editing
 
@@ -96,8 +95,7 @@ class Editor
         Round $parentRound,
         string $qualifyTarget,
         BalancedPouleStructure $pouleStructure
-    ): QualifyGroup
-    {
+    ): QualifyGroup {
         $nextRoundNumber = $parentRound->getNumber()->getNext();
         if ($nextRoundNumber === null) {
             $nextRoundNumber = $parentRound->getNumber()->createNext();
@@ -121,12 +119,13 @@ class Editor
     // 3,3 => 4, 5
     public function addPlaceToRootRound(Round $rootRound): Place
     {
-        $this->horPouleCreator->remove($rootRound);
-        $this->rulesCreator->remove($rootRound);
-    
         $newNrOfPlaces = $rootRound->getNrOfPlaces() + 1;
         $nrOfPoules = $rootRound->getPoules()->count();
-        $this->checkRanges($newNrOfPlaces, $nrOfPoules);
+        $this->placeRanges?->validate($newNrOfPlaces, $nrOfPoules);
+
+        $this->horPouleCreator->remove($rootRound);
+        $this->rulesCreator->remove($rootRound);
+
         // begin editing
         $rootRound->addPlace();
         // end editing
@@ -142,10 +141,8 @@ class Editor
             throw new Exception('de deelnemer kan niet verwijderd worden, omdat alle deelnemer naar de volgende ronde gaan', E_ERROR);
         }
         $newNrOfPlaces = $rootRound->getNrOfPlaces() - 1;
-        $this->checkRanges($newNrOfPlaces);
-        if (($newNrOfPlaces / $rootRound->getPoules()->count()) < 2) {
-            throw new Exception('Er kan geen deelnemer verwijderd worden-> De minimale aantal deelnemers per poule is 2->', E_ERROR);
-        }
+        $this->placeRanges?->validate($newNrOfPlaces, $rootRound->getPoules()->count());
+
         $this->horPouleCreator->remove($rootRound);
         $this->rulesCreator->remove($rootRound);
         // begin editing
@@ -159,7 +156,7 @@ class Editor
     {
         $lastPoule = $rootRound->getFirstPoule();
         $newNrOfPlaces = $rootRound->getNrOfPlaces() + $lastPoule->getPlaces()->count();
-        $this->checkRanges($newNrOfPlaces, $rootRound->getPoules()->count() + 1);
+        $this->validate($newNrOfPlaces, $rootRound->getPoules()->count() + 1);
 
         $this->horPouleCreator->remove($rootRound);
         $this->rulesCreator->remove($rootRound);
@@ -197,7 +194,7 @@ class Editor
 
     public function incrementNrOfPoules(Round $round): void
     {
-        $this->checkRanges($round->getNrOfPlaces(), $round->getPoules()->count() + 1);
+        $this->validate($round->getNrOfPlaces(), $round->getPoules()->count() + 1);
 
         $this->horPouleCreator->remove($round);
         $this->rulesCreator->remove($round);
@@ -230,34 +227,48 @@ class Editor
         $this->rulesCreator->create($round->getParent(), $round);
     }
 
-    public function addQualifiers(Round $parentRound, string $qualifyTarget, int $nrOfQualifiers): void
+    public function addQualifiers(Round $parentRound, string $qualifyTarget, int $nrOfToPlacesToAdd): void
     {
         $nrOfPlaces = $parentRound->getNrOfPlaces();
         $nrOfToPlaces = $parentRound->getNrOfPlacesChildren();
-        if (($nrOfToPlaces + $nrOfQualifiers) > $nrOfPlaces) {
+        if (($nrOfToPlaces + $nrOfToPlacesToAdd) > $nrOfPlaces) {
             throw new Exception('er mogen maximaal ' . ($nrOfPlaces - $nrOfToPlaces) . ' deelnemers naar de volgende ronde');
         }
-        $this->horPouleCreator->remove($parentRound);
-        $this->rulesCreator->remove($parentRound);
         // begin editing
         $qualifyGroup = $parentRound->getBorderQualifyGroup($qualifyTarget);
-        if ($qualifyGroup === null) {
-            if ($nrOfQualifiers < 2) {
-                throw new Exception('Voeg miniaal 2 gekwalificeerden toe', E_ERROR);
+        $addChildRound = $qualifyGroup === null;
+        if ($addChildRound) {
+            $minNrOfPlacesPerPoule = $this->placeRanges?->getPlacesPerPouleSmall()->getMin() ?? PlaceRanges::MinNrOfPlacesPerPoule;
+            if ($nrOfToPlacesToAdd < $minNrOfPlacesPerPoule) {
+                throw new \Exception('er moeten minimaal ' . $minNrOfPlacesPerPoule . ' deelnemers naar de volgende ronde, vanwege het aantal deelnemers per wedstrijd', E_ERROR);
             }
-            $qualifyGroup = $this->addChildRoundHelper($parentRound, $qualifyTarget, new BalancedPouleStructure(2));
-            $nrOfQualifiers -= 2;
+            $newStructure = new BalancedPouleStructure($minNrOfPlacesPerPoule);
+            $this->placeRanges?->validateStructure($newStructure);
+            $this->horPouleCreator->remove($parentRound);
+            $this->rulesCreator->remove($parentRound);
+            // begin editing
+            $qualifyGroup = $this->addChildRoundHelper($parentRound, $qualifyTarget, $newStructure);
+            $nrOfToPlacesToAdd -= $minNrOfPlacesPerPoule;
+            $childRound = $qualifyGroup->getChildRound();
+            while ($nrOfToPlacesToAdd-- > 0) {
+                $childRound->addPlace();
+            }
+            // end editing
+            $this->horPouleCreator->create($parentRound, $childRound);
+            $this->rulesCreator->create($parentRound, $childRound);
+        } else {
+            $childRound = $qualifyGroup->getChildRound();
+            $this->validate($childRound->getNrOfPlaces() + $nrOfToPlacesToAdd, $childRound->getPoules()->count());
+            $this->horPouleCreator->remove($childRound);
+            $this->rulesCreator->remove($parentRound, $childRound);
+            // begin editing
+            while ($nrOfToPlacesToAdd-- > 0) {
+                $childRound->addPlace();
+            }
+            // end editing
+            $this->horPouleCreator->create($childRound);
+            $this->rulesCreator->create($parentRound, $childRound);
         }
-        $childRound = $qualifyGroup->getChildRound();
-        $this->horPouleCreator->remove($childRound);
-        $this->rulesCreator->remove($childRound);
-        for ($qualifier = 0; $qualifier < $nrOfQualifiers; $qualifier++) {
-            $this->checkRanges($childRound->getNrOfPlaces() + 1, $childRound->getPoules()->count());
-            $childRound->addPlace();
-        }
-        // end editing
-        $this->horPouleCreator->create($childRound->getParent(), $childRound);
-        $this->rulesCreator->create($childRound->getParent(), $childRound);
     }
 
     public function removeQualifier(Round $parentRound, string $qualifyTarget): bool
@@ -303,32 +314,6 @@ class Editor
     {
         $parent = $round->getParent();
         return $parent !== null ? $this->getRoot($parent) : $round;
-    }
-
-    protected function checkRanges(int $nrOfPlaces, int $nrOfPoules = null): void
-    {
-        if (count($this->placeRanges) === 0) {
-            return;
-        }
-        $filteredPlaceRanges = array_filter($this->placeRanges, function (PlaceRange $placeRangeIt) use ($nrOfPlaces): bool {
-            return $nrOfPlaces >= $placeRangeIt->getMin() && $nrOfPlaces <= $placeRangeIt->getMax();
-        });
-        $placeRange = reset($filteredPlaceRanges);
-        if ($placeRange === false) {
-            throw new Exception('het aantal deelnemers is kleiner dan het minimum of groter dan het maximum', E_ERROR);
-        }
-        if ($nrOfPoules === null) {
-            return;
-        }
-        $pouleStructure = $this->createBalanced($nrOfPlaces, $nrOfPoules);
-        $smallestNrOfPlacesPerPoule = $pouleStructure->getSmallestPoule();
-        if ($smallestNrOfPlacesPerPoule < $placeRange->getPlacesPerPouleRange()->getMin()) {
-            throw new Exception('vanaf ' . $placeRange->getMin() . ' deelnemers moeten er minimaal ' . $placeRange->getPlacesPerPouleRange()->getMin() . ' deelnemers per poule zijn', E_ERROR);
-        }
-        $biggestNrOfPlacesPerPoule = $pouleStructure->getBiggestPoule();
-        if ($biggestNrOfPlacesPerPoule > $placeRange->getPlacesPerPouleRange()->getMax()) {
-            throw new Exception('vanaf ' . $placeRange->getMin() . ' deelnemers mogen er maximaal ' . $placeRange->getPlacesPerPouleRange()->getMax() . ' deelnemers per poule zijn', E_ERROR);
-        }
     }
 
     public function createBalanced(int $nrOfPlaces, int $nrOfPoules): BalancedPouleStructure
@@ -457,6 +442,24 @@ class Editor
             $qualifyGroup->setNumber($number++);
         }
     }
+
+    public function validate(int $nrOfPlaces, int $nrOfPoules): bool {
+        if ($this->placeRanges !== null) {
+            return $this->placeRanges->validate($nrOfPlaces, $nrOfPoules);
+        }
+        if ($nrOfPlaces < PlaceRanges::MinNrOfPlacesPerPoule) {
+            throw new \Exception('het minimaal aantal deelnemers is ' . PlaceRanges::MinNrOfPlacesPerPoule, E_ERROR);
+        }
+        return true;
+    }
+
+    public function getMinPlacesPerPouleSmall(): int {
+        if( $this->placeRanges === null ) {
+            return PlaceRanges::MinNrOfPlacesPerPoule;
+        }
+        return $this->placeRanges->getPlacesPerPouleSmall()->getMin();
+    }
+
     /* MOVE TO FCTOERNOOI DEFAULTSERVICE
         public function getDefaultNrOfPoules(int $nrOfPlaces): int
         {

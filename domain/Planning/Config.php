@@ -18,7 +18,6 @@ class Config extends Identifiable
 
     public function __construct(
         protected RoundNumber $roundNumber,
-        protected int $creationStrategy,
         protected bool $extension,
         protected bool $enableTime,
         protected int $minutesPerGame,
@@ -31,15 +30,7 @@ class Config extends Identifiable
         $this->roundNumber->setPlanningConfig($this);
     }
 
-    public function getCreationStrategy(): int
-    {
-        return $this->creationStrategy;
-    }
 
-    public function setCreationStrategy(int $creationStrategy): void
-    {
-        $this->creationStrategy = $creationStrategy;
-    }
 
     public function getExtension(): bool
     {

@@ -2,8 +2,6 @@ Sports\Planning\Config:
   exclusion_policy: ALL
   exclude: false
   properties:
-    creationStrategy:
-      type: integer
     extension:
       type: boolean
     enableTime:

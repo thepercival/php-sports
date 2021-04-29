@@ -18,7 +18,7 @@ class StructureTest extends TestCase
     public function testBasics(): void
     {
         $competition = $this->createCompetition();
-        $structureEditor = $this->createStructureEditor([]);
+        $structureEditor = $this->createStructureEditor();
         $structure = $structureEditor->create($competition, [4,4,4,4]);
         $firstRoundNumber = $structure->getFirstRoundNumber();
         $rootRound = $structure->getRootRound();

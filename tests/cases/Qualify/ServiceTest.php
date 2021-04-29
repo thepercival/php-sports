@@ -25,7 +25,7 @@ class ServiceTest extends TestCase
     {
         $competition = $this->createCompetition();
 
-        $structureEditor = $this->createStructureEditor([]);
+        $structureEditor = $this->createStructureEditor();
         $structure = $structureEditor->create($competition, [5]);
         $rootRound = $structure->getRootRound();
 
@@ -69,7 +69,7 @@ class ServiceTest extends TestCase
     {
         $competition = $this->createCompetition();
 
-        $structureEditor = $this->createStructureEditor([]);
+        $structureEditor = $this->createStructureEditor();
         $structure = $structureEditor->create($competition, [3,3]);
         // $competitorMap = new CompetitorMap($this->createTeamCompetitors($competition, $firstRoundNumber));
         $rootRound = $structure->getRootRound();
@@ -114,7 +114,7 @@ class ServiceTest extends TestCase
     {
         $competition = $this->createCompetition();
 
-        $structureEditor = $this->createStructureEditor([]);
+        $structureEditor = $this->createStructureEditor();
         $structure = $structureEditor->create($competition, [3,3,3]);
         $rootRound = $structure->getRootRound();
 
@@ -197,7 +197,7 @@ class ServiceTest extends TestCase
     {
         $competition = $this->createCompetition();
 
-        $structureEditor = $this->createStructureEditor([]);
+        $structureEditor = $this->createStructureEditor();
         $structure = $structureEditor->create($competition, [3,3,3]);
         $rootRound = $structure->getRootRound();
 
@@ -234,7 +234,7 @@ class ServiceTest extends TestCase
     {
         $competition = $this->createCompetition();
 
-        $structureEditor = $this->createStructureEditor([]);
+        $structureEditor = $this->createStructureEditor();
         $structure = $structureEditor->create($competition, [3,3]);
         $rootRound = $structure->getRootRound();
 

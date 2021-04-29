@@ -26,8 +26,9 @@ class Sport extends PersistVariant implements \Stringable
             $sportVariant->getNrOfHomePlaces(),
             $sportVariant->getNrOfAwayPlaces(),
             $sportVariant->getNrOfH2H(),
+            $sportVariant->getNrOfPartials(),
             $sportVariant->getNrOfGamePlaces(),
-            $sportVariant->getGameAmount()
+            $sportVariant->getNrOfGamesPerPlace()
         );
 
         $this->competition->getSports()->add($this);

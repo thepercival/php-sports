@@ -5,6 +5,7 @@ namespace Sports\SerializationHandler;
 
 use Sports\Association;
 use Sports\Competition;
+use Sports\Round\Number as RoundNumber;
 use Sports\Competition\Sport as CompetitionSport;
 use Sports\League;
 use Sports\Season;
@@ -68,10 +69,16 @@ class DummyCreator
                     1,
                     0,
                     0
-                ));
+                )
+            );
             $competitionSport->setId($competitionSportId);
             $this->competitionSports[$competitionSportId] = $competitionSport;
         }
         return $competitionSport;
+    }
+
+    public function createRoundNumber(): RoundNumber
+    {
+        return new RoundNumber($this->createCompetition());
     }
 }

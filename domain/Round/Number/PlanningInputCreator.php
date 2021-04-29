@@ -3,8 +3,12 @@ declare(strict_types=1);
 
 namespace Sports\Round\Number;
 
+use SportsHelpers\GameMode;
 use SportsHelpers\PouleStructure;
 use SportsHelpers\Sport\Variant as SportVariant;
+use SportsHelpers\Sport\Variant\Against as AgainstSportVariant;
+use SportsHelpers\Sport\Variant\AllInOneGame as AllInOneGameSportVariant;
+use SportsHelpers\Sport\Variant\Single as SingleSportVariant;
 use SportsPlanning\Input as PlanningInput;
 use Sports\Round\Number as RoundNumber;
 use Sports\Planning\GameAmountConfig;
@@ -48,20 +52,29 @@ class PlanningInputCreator
     {
         $gameAmountConfigs = $roundNumber->getValidGameAmountConfigs();
         return array_values(array_map(function (GameAmountConfig $gameAmountConfig): SportVariantWithFields {
-            $competitionSport = $gameAmountConfig->getCompetitionSport();
-            $persistSportVariant = new PersistSportVariant(
-                $competitionSport->getGameMode(),
-                $competitionSport->getNrOfHomePlaces(),
-                $competitionSport->getNrOfAwayPlaces(),
-                $competitionSport->getNrOfH2H(),
-                $competitionSport->getNrOfGamePlaces(),
-                $gameAmountConfig->getAmount()
-            );
             return new SportVariantWithFields(
-                $persistSportVariant->createVariant(),
+                $this->createVariant($gameAmountConfig),
                 $gameAmountConfig->getCompetitionSport()->getFields()->count()
             );
         }, $gameAmountConfigs));
+    }
+
+    protected function createVariant(
+        GameAmountConfig $gameAmountConfig
+    ): SingleSportVariant|AgainstSportVariant|AllInOneGameSportVariant {
+        $competitionSport = $gameAmountConfig->getCompetitionSport();
+        if ($competitionSport->getGameMode() === GameMode::SINGLE) {
+            return new SingleSportVariant($competitionSport->getNrOfGamePlaces(), $gameAmountConfig->getAmount());
+        }
+        if ($competitionSport->getGameMode() === GameMode::ALL_IN_ONE_GAME) {
+            return new AllInOneGameSportVariant($gameAmountConfig->getAmount());
+        }
+        return new AgainstSportVariant(
+            $competitionSport->getNrOfHomePlaces(),
+            $competitionSport->getNrOfAwayPlaces(),
+            $competitionSport->getNrOfGamePlaces() <= 2 ? $gameAmountConfig->getAmount() : 0,
+            $competitionSport->getNrOfGamePlaces() > 2 ? $gameAmountConfig->getAmount() : 0,
+        );
     }
 
     /**

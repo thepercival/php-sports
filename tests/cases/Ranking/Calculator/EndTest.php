@@ -24,7 +24,7 @@ class EndTest extends TestCase
     {
         $competition = $this->createCompetition();
 
-        $structureEditor = $this->createStructureEditor([]);
+        $structureEditor = $this->createStructureEditor();
         $structure = $structureEditor->create($competition, [3]);
         $rootRound = $structure->getRootRound();
 
@@ -53,7 +53,7 @@ class EndTest extends TestCase
     {
         $competition = $this->createCompetition();
 
-        $structureEditor = $this->createStructureEditor([]);
+        $structureEditor = $this->createStructureEditor();
         $structure = $structureEditor->create($competition, [3]);
         $rootRound = $structure->getRootRound();
 
@@ -79,7 +79,7 @@ class EndTest extends TestCase
     {
         $competition = $this->createCompetition();
 
-        $structureEditor = $this->createStructureEditor([]);
+        $structureEditor = $this->createStructureEditor();
         $structure = $structureEditor->create($competition, [5]);
         $rootRound = $structure->getRootRound();
 

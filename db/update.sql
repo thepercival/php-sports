@@ -10,7 +10,6 @@ update competitors set registered = 0 where registered is null;
 update sports set defaultGameMode = 2, defaultNrOfSidePlaces = 1;
 update sports set defaultGameMode = 2, defaultNrOfSidePlaces = 1;
 update sports set customId = 15, defaultGameMode = 1, defaultNrOfSidePlaces = 0 where name = 'sjoelen';
-update planningConfigs set creationStrategy = 1;
 update qualifyGroups set target = 'W' where winnersOrLosers = 1;
 update qualifyGroups set target = '' where winnersOrLosers = 2;
 update qualifyGroups set target = 'L' where winnersOrLosers = 3;
@@ -18,7 +17,7 @@ update qualifyGroups set target = 'L' where winnersOrLosers = 3;
 
 -- scoreConfigs: fk to competitionSports needs to be not null again
 -- fields: fk to competitionSports needs to be not null again
-INSERT INTO competitionSports ( sportId, competitionId, gameMode, nrOfHomePlaces, nrOfAwayPlaces, nrOfH2H, nrOfGamePlaces, gameAmount )( SELECT sportid, competitionid, 2, 1, 1, 1, 0, 0  from sportconfigs );
+INSERT INTO competitionSports ( sportId, competitionId, gameMode, nrOfHomePlaces, nrOfAwayPlaces, nrOfH2H, nrOfGamePlaces, nrOfGameRounds )( SELECT sportid, competitionid, 2, 1, 1, 1, 0, 0  from sportconfigs );
 update fields f join sportconfigs sc on sc.id = f.sportConfigId set competitionSportId = ( select id from competitionSports where competitionId = sc.competitionId );
 INSERT INTO gameAmountConfigs ( amount, roundNumberId, competitionSportId )(
     SELECT pc.nrOfHeadtohead, rn.id, (select id from competitionSports where competitionId = rn.competitionId ) from roundNumbers rn join planningConfigs pc on rn.planningConfigId = pc.id

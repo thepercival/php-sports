@@ -22,7 +22,7 @@ final class PlanningAssignerTest extends TestCase
     {
         $competition = $this->createCompetition();
 
-        $structureEditor = $this->createStructureEditor([]);
+        $structureEditor = $this->createStructureEditor();
         $structure = $structureEditor->create($competition, [2,2]);
 
         $firstRoundNumber = $structure->getFirstRoundNumber();
@@ -41,7 +41,7 @@ final class PlanningAssignerTest extends TestCase
         $competition = $this->createCompetition();
         $competition->getReferees()->clear();
 
-        $structureEditor = $this->createStructureEditor([]);
+        $structureEditor = $this->createStructureEditor();
         $structure = $structureEditor->create($competition, [4]);
 
         $firstRoundNumber = $structure->getFirstRoundNumber();
@@ -58,7 +58,7 @@ final class PlanningAssignerTest extends TestCase
     {
         $competition = $this->createCompetition();
 
-        $structureEditor = $this->createStructureEditor([]);
+        $structureEditor = $this->createStructureEditor();
         $structure = $structureEditor->create($competition, [6,5]);
 
         $rootRound = $structure->getRootRound();

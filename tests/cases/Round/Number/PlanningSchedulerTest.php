@@ -25,7 +25,7 @@ final class PlanningSchedulerTest extends TestCase
     {
         $competition = $this->createCompetition();
 
-        $structureEditor = $this->createStructureEditor([]);
+        $structureEditor = $this->createStructureEditor();
         $structure = $structureEditor->create($competition, [3,3]);
         $rootRound = $structure->getRootRound();
         $structureEditor->addChildRound($rootRound, QualifyTarget::WINNERS, [2]);
@@ -56,7 +56,7 @@ final class PlanningSchedulerTest extends TestCase
     {
         $competition = $this->createCompetition();
 
-        $structureEditor = $this->createStructureEditor([]);
+        $structureEditor = $this->createStructureEditor();
         $structure = $structureEditor->create($competition, [3,3]);
 
         $rootRound = $structure->getRootRound();
@@ -99,7 +99,7 @@ final class PlanningSchedulerTest extends TestCase
     {
         $competition = $this->createCompetition();
 
-        $structureEditor = $this->createStructureEditor([]);
+        $structureEditor = $this->createStructureEditor();
         $structure = $structureEditor->create($competition, [3,3]);
 
         $rootRound = $structure->getRootRound();
@@ -133,7 +133,7 @@ final class PlanningSchedulerTest extends TestCase
     {
         $competition = $this->createCompetition();
 
-        $structureEditor = $this->createStructureEditor([]);
+        $structureEditor = $this->createStructureEditor();
         $structure = $structureEditor->create($competition, [3,3]);
 
         $rootRound = $structure->getRootRound();
@@ -167,7 +167,7 @@ final class PlanningSchedulerTest extends TestCase
     {
         $competition = $this->createCompetition();
 
-        $structureEditor = $this->createStructureEditor([]);
+        $structureEditor = $this->createStructureEditor();
         $structure = $structureEditor->create($competition, [3,3]);
 
         $rootRound = $structure->getRootRound();
@@ -201,7 +201,7 @@ final class PlanningSchedulerTest extends TestCase
     {
         $competition = $this->createCompetition();
 
-        $structureEditor = $this->createStructureEditor([]);
+        $structureEditor = $this->createStructureEditor();
         $structure = $structureEditor->create($competition, [3,3]);
 
         $rootRound = $structure->getRootRound();
@@ -235,7 +235,7 @@ final class PlanningSchedulerTest extends TestCase
     {
         $competition = $this->createCompetition();
 
-        $structureEditor = $this->createStructureEditor([]);
+        $structureEditor = $this->createStructureEditor();
         $structure = $structureEditor->create($competition, [3,3]);
 
         $rootRound = $structure->getRootRound();

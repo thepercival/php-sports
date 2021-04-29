@@ -16,6 +16,7 @@ use Sports\Association;
 use Sports\Round\Number as RoundNumber;
 use Sports\Competition;
 use Sports\Structure;
+use SportsHelpers\PlaceRanges;
 
 class Validator
 {
@@ -26,7 +27,7 @@ class Validator
         $this->nameService = new NameService();
     }
 
-    public function checkValidity(Competition $competition, Structure $structure = null): void
+    public function checkValidity(Competition $competition, Structure $structure = null, PlaceRanges|null $placeRanges): void
     {
         $prefix = "de structuur(competition:" . $competition->getName() . ")";
 
@@ -38,7 +39,7 @@ class Validator
 
         $this->checkRoundNumberValidity($firstRoundNumber, $competition);
         foreach ($firstRoundNumber->getRounds() as $round) {
-            $this->checkRoundValidity($round);
+            $this->checkRoundValidity($round, $placeRanges);
         }
     }
 
@@ -64,20 +65,12 @@ class Validator
         }
     }
 
-    /**
-     * @param int|null|string $id
-     */
-    protected function getIdOutput($id = null): string
+    protected function getIdOutput(int|null|string $id = null): string
     {
         return $id !== null ? " (" . $id . ")" : '';
     }
 
-    /**
-     * @param Round $round
-     *
-     * @return void
-     */
-    public function checkRoundValidity(Round $round): void
+    public function checkRoundValidity(Round $round, PlaceRanges|null $placeRanges): void
     {
         $prefix = "ronde " . $this->getIdOutput($round->getId());
         if ($round->getPoules()->count() === 0) {
@@ -108,12 +101,16 @@ class Validator
             }
         }
 
+        if ($placeRanges !== null) {
+            $placeRanges->validateStructure($round->createPouleStructure());
+        }
+
         $winners = array_values($round->getTargetQualifyGroups(QualifyTarget::WINNERS)->toArray());
         $this->checkQualifyGroupsNumberGap($winners);
         $losers = array_values($round->getTargetQualifyGroups(QualifyTarget::LOSERS)->toArray());
         $this->checkQualifyGroupsNumberGap($losers);
         foreach ($round->getQualifyGroups() as $qualifyGroup) {
-            $this->checkRoundValidity($qualifyGroup->getChildRound());
+            $this->checkRoundValidity($qualifyGroup->getChildRound(), $placeRanges);
         }
     }
 

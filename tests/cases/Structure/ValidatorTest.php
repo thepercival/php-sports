@@ -16,7 +16,9 @@ use Sports\Structure\Validator as StructureValidator;
 use Sports\Qualify\Target as QualifyTarget;
 use Sports\TestHelper\GamesCreator;
 use Sports\TestHelper\StructureEditorCreator;
+use SportsHelpers\PlaceRanges;
 use SportsHelpers\PouleStructure;
+use SportsHelpers\Sport\Variant\Against as AgainstSportVariant;
 
 final class ValidatorTest extends TestCase
 {
@@ -29,7 +31,7 @@ final class ValidatorTest extends TestCase
         $structureValidator = new StructureValidator();
 
         self::expectException(Exception::class);
-        $structureValidator->checkValidity($competition, null);
+        $structureValidator->checkValidity($competition, null, null);
     }
 
     public function testRoundNumberNoRounds(): void
@@ -45,28 +47,28 @@ final class ValidatorTest extends TestCase
 
         $structureValidator = new StructureValidator();
         self::expectException(Exception::class);
-        $structureValidator->checkValidity($competition, $structure);
+        $structureValidator->checkValidity($competition, $structure, null);
     }
 
     public function testRoundNumberNoValidScoreConfig(): void
     {
         $competition = $this->createCompetition();
 
-        $structureEditor = $this->createStructureEditor([]);
+        $structureEditor = $this->createStructureEditor();
         $structure = $structureEditor->create($competition, [4]);
 
         $structure->getRootRound()->getScoreConfigs()->clear();
 
         $structureValidator = new StructureValidator();
         self::expectException(Exception::class);
-        $structureValidator->checkValidity($competition, $structure);
+        $structureValidator->checkValidity($competition, $structure, null);
     }
 
     public function testRoundNoPoules(): void
     {
         $competition = $this->createCompetition();
 
-        $structureEditor = $this->createStructureEditor([]);
+        $structureEditor = $this->createStructureEditor();
         $structure = $structureEditor->create($competition, [4]);
 
         $rootRound = $structure->getRootRound();
@@ -75,14 +77,14 @@ final class ValidatorTest extends TestCase
 
         $structureValidator = new StructureValidator();
         self::expectException(Exception::class);
-        $structureValidator->checkValidity($competition, $structure);
+        $structureValidator->checkValidity($competition, $structure, null);
     }
 
     public function testPouleNoPlaces(): void
     {
         $competition = $this->createCompetition();
 
-        $structureEditor = $this->createStructureEditor([]);
+        $structureEditor = $this->createStructureEditor();
         $structure = $structureEditor->create($competition, [4]);
 
         $rootRound = $structure->getRootRound();
@@ -91,14 +93,14 @@ final class ValidatorTest extends TestCase
 
         $structureValidator = new StructureValidator();
         self::expectException(Exception::class);
-        $structureValidator->checkValidity($competition, $structure);
+        $structureValidator->checkValidity($competition, $structure, null);
     }
 
     public function testRoundNrOfPlaces(): void
     {
         $competition = $this->createCompetition();
 
-        $structureEditor = $this->createStructureEditor([]);
+        $structureEditor = $this->createStructureEditor();
         $structure = $structureEditor->create($competition, [3,3]);
 
         (new GamesCreator())->createStructureGames($structure);
@@ -111,14 +113,39 @@ final class ValidatorTest extends TestCase
 
         $structureValidator = new StructureValidator();
         self::expectException(Exception::class);
-        $structureValidator->checkValidity($competition, $structure);
+        $structureValidator->checkValidity($competition, $structure, null);
+    }
+
+    public function testWithPlaceRanges(): void
+    {
+        $sportVariant = new AgainstSportVariant(2, 2, 1, 0);
+        $competition = $this->createCompetition( $sportVariant );
+
+        $structureEditor = $this->createStructureEditor();
+        $structure = $structureEditor->create($competition, [4]);
+
+        // (new GamesCreator())->createStructureGames($structure);
+
+        $maxNrOfPlacesPerPoule = 3;
+        $placeRanges = new PlaceRanges(
+            $structureEditor->getMinPlacesPerPouleSmall(),
+            $maxNrOfPlacesPerPoule,
+            null,
+            $structureEditor->getMinPlacesPerPouleSmall(),
+            40,
+            null
+        );
+
+        $structureValidator = new StructureValidator();
+        self::expectException(Exception::class);
+        $structureValidator->checkValidity($competition, $structure, $placeRanges);
     }
 
     public function testQualifyGroupsNumberGap(): void
     {
         $competition = $this->createCompetition();
 
-        $structureEditor = $this->createStructureEditor([]);
+        $structureEditor = $this->createStructureEditor();
         $structure = $structureEditor->create($competition, [3,3]);
         $rootRound = $structure->getRootRound();
         $structureEditor->addChildRound($rootRound, QualifyTarget::WINNERS, [2]);
@@ -131,14 +158,14 @@ final class ValidatorTest extends TestCase
 
         $structureValidator = new StructureValidator();
         self::expectException(Exception::class);
-        $structureValidator->checkValidity($competition, $structure);
+        $structureValidator->checkValidity($competition, $structure, null);
     }
 
     public function testPoulesNumberGap(): void
     {
         $competition = $this->createCompetition();
 
-        $structureEditor = $this->createStructureEditor([]);
+        $structureEditor = $this->createStructureEditor();
         $structure = $structureEditor->create($competition, [3,3]);
 
         $rootRound = $structure->getRootRound();
@@ -154,14 +181,14 @@ final class ValidatorTest extends TestCase
 
         $structureValidator = new StructureValidator();
         self::expectException(Exception::class);
-        $structureValidator->checkValidity($competition, $structure);
+        $structureValidator->checkValidity($competition, $structure, null);
     }
 
     public function testPlacesNumberGap(): void
     {
         $competition = $this->createCompetition();
 
-        $structureEditor = $this->createStructureEditor([]);
+        $structureEditor = $this->createStructureEditor();
         $structure = $structureEditor->create($competition, [3,3]);
 
         $rootRound = $structure->getRootRound();
@@ -177,14 +204,14 @@ final class ValidatorTest extends TestCase
 
         $structureValidator = new StructureValidator();
         self::expectException(Exception::class);
-        $structureValidator->checkValidity($competition, $structure);
+        $structureValidator->checkValidity($competition, $structure, null);
     }
 
     public function testNextRoundNumberExists(): void
     {
         $competition = $this->createCompetition();
 
-        $structureEditor = $this->createStructureEditor([]);
+        $structureEditor = $this->createStructureEditor();
         $structure = $structureEditor->create($competition, [3,3]);
 
         $rootRound = $structure->getRootRound();
@@ -197,14 +224,14 @@ final class ValidatorTest extends TestCase
 
         $structureValidator = new StructureValidator();
         self::expectException(Exception::class);
-        $structureValidator->checkValidity($competition, $structure);
+        $structureValidator->checkValidity($competition, $structure, null);
     }
 
     public function testValid(): void
     {
         $competition = $this->createCompetition();
 
-        $structureEditor = $this->createStructureEditor([]);
+        $structureEditor = $this->createStructureEditor();
         $structure = $structureEditor->create($competition, [3,3]);
 
         $rootRound = $structure->getRootRound();
@@ -215,6 +242,6 @@ final class ValidatorTest extends TestCase
 
         $structureValidator = new StructureValidator();
         self::expectNotToPerformAssertions();
-        $structureValidator->checkValidity($competition, $structure);
+        $structureValidator->checkValidity($competition, $structure, null);
     }
 }

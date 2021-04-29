@@ -29,7 +29,7 @@ class GamesValidatorTest extends TestCase
     {
         $competition = $this->createCompetition();
 
-        $structureEditor = $this->createStructureEditor([]);
+        $structureEditor = $this->createStructureEditor();
         $structure = $structureEditor->create($competition, [5]);
 
         (new GamesCreator())->createStructureGames($structure);
@@ -51,7 +51,7 @@ class GamesValidatorTest extends TestCase
     {
         $competition = $this->createCompetition();
 
-        $structureEditor = $this->createStructureEditor([]);
+        $structureEditor = $this->createStructureEditor();
         $structure = $structureEditor->create($competition, [5]);
 
         (new GamesCreator())->createStructureGames($structure);
@@ -73,7 +73,7 @@ class GamesValidatorTest extends TestCase
     {
         $competition = $this->createCompetition();
 
-        $structureEditor = $this->createStructureEditor([]);
+        $structureEditor = $this->createStructureEditor();
         $structure = $structureEditor->create($competition, [5]);
 
         (new GamesCreator())->createStructureGames($structure);
@@ -98,7 +98,7 @@ class GamesValidatorTest extends TestCase
     {
         $competition = $this->createCompetition();
 
-        $structureEditor = $this->createStructureEditor([]);
+        $structureEditor = $this->createStructureEditor();
         $structure = $structureEditor->create($competition, [5]);
 
         (new GamesCreator())->createStructureGames($structure);
@@ -123,7 +123,7 @@ class GamesValidatorTest extends TestCase
     {
         $competition = $this->createCompetition();
 
-        $structureEditor = $this->createStructureEditor([]);
+        $structureEditor = $this->createStructureEditor();
         $structure = $structureEditor->create($competition, [5]);
 
         (new GamesCreator())->createStructureGames($structure);
@@ -148,7 +148,7 @@ class GamesValidatorTest extends TestCase
     {
         $competition = $this->createCompetition();
 
-        $structureEditor = $this->createStructureEditor([]);
+        $structureEditor = $this->createStructureEditor();
         $structure = $structureEditor->create($competition, [5]);
 
         (new GamesCreator())->createStructureGames($structure);
@@ -177,7 +177,7 @@ class GamesValidatorTest extends TestCase
     {
         $competition = $this->createCompetition();
 
-        $structureEditor = $this->createStructureEditor([]);
+        $structureEditor = $this->createStructureEditor();
         $structure = $structureEditor->create($competition, [5]);
 
         (new GamesCreator())->createStructureGames($structure);
@@ -216,7 +216,7 @@ class GamesValidatorTest extends TestCase
     {
         $competition = $this->createCompetition();
 
-        $structureEditor = $this->createStructureEditor([]);
+        $structureEditor = $this->createStructureEditor();
         $structure = $structureEditor->create($competition, [5]);
 
         $firstRoundNumber = $structure->getFirstRoundNumber();
@@ -259,7 +259,7 @@ class GamesValidatorTest extends TestCase
     {
         $competition = $this->createCompetition();
 
-        $structureEditor = $this->createStructureEditor([]);
+        $structureEditor = $this->createStructureEditor();
         $structure = $structureEditor->create($competition, [5,4]);
 
         $firstRoundNumber = $structure->getFirstRoundNumber();
@@ -283,7 +283,7 @@ class GamesValidatorTest extends TestCase
     {
         $competition = $this->createCompetition();
 
-        $structureEditor = $this->createStructureEditor([]);
+        $structureEditor = $this->createStructureEditor();
         $structure = $structureEditor->create($competition, [5,4]);
 
         $firstRoundNumber = $structure->getFirstRoundNumber();
@@ -315,7 +315,7 @@ class GamesValidatorTest extends TestCase
     {
         $competition = $this->createCompetition();
 
-        $structureEditor = $this->createStructureEditor([]);
+        $structureEditor = $this->createStructureEditor();
         $structure = $structureEditor->create($competition, [5]);
 
         (new GamesCreator())->createStructureGames($structure);

@@ -8,6 +8,7 @@ use \Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use \Doctrine\ORM\PersistentCollection;
 use Exception;
+use Sports\Game\CreationStrategy;
 use Sports\Ranking\RuleSet as RankingRuleSet;
 use Sports\Competition\Sport as CompetitionSport;
 use Sports\Competition\Field as CompetitionField;
@@ -15,7 +16,9 @@ use SportsHelpers\Identifiable;
 use Sports\Competitor\Team as TeamCompetitor;
 use Sports\Competition\Referee;
 use Sports\Competition\Sport as CompetitonSport;
-use SportsHelpers\Sport\Variant as SportVariant;
+use SportsHelpers\Sport\Variant\Single as SingleSportVariant;
+use SportsHelpers\Sport\Variant\Against as AgainstSportVariant;
+use SportsHelpers\Sport\Variant\AllInOneGame as AllInOneGameSportVariant;
 
 class Competition extends Identifiable
 {
@@ -160,11 +163,11 @@ class Competition extends Identifiable
     }
 
     /**
-     * @return list<SportVariant>
+     * @return list<SingleSportVariant|AgainstSportVariant|AllInOneGameSportVariant>
      */
     public function createSportVariants(): array
     {
-        return array_values($this->getSports()->map(function (CompetitionSport $competitionSport): SportVariant {
+        return array_values($this->getSports()->map(function (CompetitionSport $competitionSport): SingleSportVariant|AgainstSportVariant|AllInOneGameSportVariant {
             return $competitionSport->createVariant();
         })->toArray());
     }

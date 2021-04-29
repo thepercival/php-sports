@@ -22,6 +22,6 @@ class Subscriber
         $registry->registerSubscribingHandler(new QualifyGroupHandler());
         $registry->registerSubscribingHandler(new RoundHandler($this->dummyCreator));
         $registry->registerSubscribingHandler(new PouleHandler($this->dummyCreator));
-        $registry->registerSubscribingHandler(new PlanningConfigHandler());
+        $registry->registerSubscribingHandler(new PlanningConfigHandler($this->dummyCreator));
     }
 }
