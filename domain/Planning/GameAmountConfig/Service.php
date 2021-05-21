@@ -10,17 +10,25 @@ use SportsHelpers\GameMode;
 
 class Service
 {
-    public function createDefault(CompetitionSport $competitionSport, RoundNumber $roundNumber): GameAmountConfig
+    public function getDefaultAmount(CompetitionSport $competitionSport): int
     {
-        $amount = PlanningConfig::DEFAULTGAMEAMOUNT;
-//        if ($competitionSport->getGameMode() === GameMode::TOGETHER) {
-//            $amount = $competitionSport->getFields()->count();
-//        }
-        return new GameAmountConfig($competitionSport, $roundNumber, $amount);
+        $nrOfGamePlaces = $competitionSport->getNrOfHomePlaces() + $competitionSport->getNrOfAwayPlaces();
+        return $nrOfGamePlaces > 2 ? 0 : PlanningConfig::DEFAULTGAMEAMOUNT;
     }
 
-    public function copy(CompetitionSport $competitionSport, RoundNumber $roundNumber, int $amount): GameAmountConfig
+    public function getDefaultPartials(CompetitionSport $competitionSport): int
     {
-        return new GameAmountConfig($competitionSport, $roundNumber, $amount);
+        $nrOfGamePlaces = $competitionSport->getNrOfHomePlaces() + $competitionSport->getNrOfAwayPlaces();
+        return $nrOfGamePlaces > 2 ? PlanningConfig::DEFAULTGAMEAMOUNT : 0;
+    }
+
+    public function create(CompetitionSport $competitionSport, RoundNumber $roundNumber): GameAmountConfig
+    {
+        return new GameAmountConfig(
+            $competitionSport,
+            $roundNumber,
+            $this->getDefaultAmount($competitionSport),
+            $this->getDefaultPartials($competitionSport)
+        );
     }
 }

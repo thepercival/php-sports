@@ -4,5 +4,7 @@ Sports\Planning\GameAmountConfig:
   properties:
     amount:
       type: integer
+    partial:
+      type: integer
     competitionSport:
       type: Sports\Competition\Sport

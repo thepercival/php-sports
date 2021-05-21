@@ -83,8 +83,14 @@ class PlanningMapper
             $filtered = array_filter($competitionSports, function (CompetitionSport $competitionSport) use ($sport, $maxNrOfFields): bool {
                 return ($competitionSport->getFields()->count() === $sport->getFields()->count()
                         || $competitionSport->getFields()->count() > $maxNrOfFields)
-                    && $competitionSport->getNrOfGamePlaces() === $sport->getNrOfGamePlaces();
+                    && $competitionSport->getNrOfHomePlaces() === $sport->getNrOfHomePlaces()
+                    && $competitionSport->getNrOfAwayPlaces() === $sport->getNrOfAwayPlaces()
+                    && $competitionSport->getNrOfH2H() === $sport->getNrOfH2H()
+                    && $competitionSport->getNrOfPartials() === $sport->getNrOfPartials()
+                    && $competitionSport->getNrOfGamePlaces() === $sport->getNrOfGamePlaces()
+                    && $competitionSport->getNrOfGamesPerPlace() === $sport->getNrOfGamesPerPlace();
             });
+
             $filteredCompetitionSport = reset($filtered);
             if ($filteredCompetitionSport === false) {
                 throw new Exception("competitionsport could not be found", E_ERROR);

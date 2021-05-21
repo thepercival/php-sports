@@ -72,8 +72,8 @@ class PlanningInputCreator
         return new AgainstSportVariant(
             $competitionSport->getNrOfHomePlaces(),
             $competitionSport->getNrOfAwayPlaces(),
-            $competitionSport->getNrOfGamePlaces() <= 2 ? $gameAmountConfig->getAmount() : 0,
-            $competitionSport->getNrOfGamePlaces() > 2 ? $gameAmountConfig->getAmount() : 0,
+            $gameAmountConfig->getAmount(),
+            $gameAmountConfig->getPartial(),
         );
     }
 

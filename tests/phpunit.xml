@@ -8,12 +8,13 @@
       <file>../vendor/autoload.php</file>
     </exclude>
     <report>
-      <html outputDirectory="./codecoverage" lowUpperBound="50" highLowerBound="80"/>
+      <html outputDirectory="./codecoverage/html" lowUpperBound="50" highLowerBound="80"/>
+      <xml outputDirectory="./codecoverage/xml"/>
     </report>
   </coverage>
   <testsuites>
     <testsuite name="php-sports">
-      <directory suffix=".php">./tests/cases</directory>
+      <directory suffix=".php">cases</directory>
     </testsuite>
   </testsuites>
   <logging/>

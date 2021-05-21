@@ -1,24 +1,22 @@
 <?php
+declare(strict_types=1);
 
 namespace Sports\Planning;
 
 use Sports\Competition\Sport as CompetitionSport;
-use Sports\Sport as SportBase;
 use Sports\Round\Number as RoundNumber;
 use SportsHelpers\Identifiable;
 
 class GameAmountConfig extends Identifiable
 {
-    protected CompetitionSport $competitionSport;
-    protected RoundNumber $roundNumber;
-    protected int $amount;
-
-    public function __construct(CompetitionSport $competitionSport, RoundNumber $roundNumber, int $amount)
+    public function __construct(
+        protected CompetitionSport $competitionSport,
+        protected RoundNumber $roundNumber,
+        protected int $amount,
+        protected int $partial
+    )
     {
-        $this->competitionSport = $competitionSport;
-        $this->roundNumber = $roundNumber;
         $this->roundNumber->getGameAmountConfigs()->add($this);
-        $this->amount = $amount;
     }
 
     public function getCompetitionSport(): CompetitionSport
@@ -39,5 +37,15 @@ class GameAmountConfig extends Identifiable
     public function setAmount(int $amount): void
     {
         $this->amount = $amount;
+    }
+
+    public function getPartial(): int
+    {
+        return $this->partial;
+    }
+
+    public function setPartial(int $partial): void
+    {
+        $this->partial = $partial;
     }
 }

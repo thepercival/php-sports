@@ -52,7 +52,7 @@ class Copier
                 $gameAmountConfig->getCompetitionSport(),
                 $newRoundNumber->getCompetition()
             );
-            $gameAmountConfigService->copy($newCompetitionSport, $newRoundNumber, $gameAmountConfig->getAmount());
+            $gameAmountConfigService->create($newCompetitionSport, $newRoundNumber);
         }
         $nextRoundNumber = $roundNumber->getNext();
         if ($nextRoundNumber !== null) {

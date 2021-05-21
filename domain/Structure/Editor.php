@@ -236,9 +236,8 @@ class Editor
         }
         // begin editing
         $qualifyGroup = $parentRound->getBorderQualifyGroup($qualifyTarget);
-        $addChildRound = $qualifyGroup === null;
-        if ($addChildRound) {
-            $minNrOfPlacesPerPoule = $this->placeRanges?->getPlacesPerPouleSmall()->getMin() ?? PlaceRanges::MinNrOfPlacesPerPoule;
+        if ($qualifyGroup === null) {
+            $minNrOfPlacesPerPoule = $this->getMinPlacesPerPouleSmall();
             if ($nrOfToPlacesToAdd < $minNrOfPlacesPerPoule) {
                 throw new \Exception('er moeten minimaal ' . $minNrOfPlacesPerPoule . ' deelnemers naar de volgende ronde, vanwege het aantal deelnemers per wedstrijd', E_ERROR);
             }

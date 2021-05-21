@@ -57,7 +57,7 @@ class Service
         $roundNumber = $structure->getFirstRoundNumber();
         while ($roundNumber !== null) {
             if ($roundNumber->hasPrevious() === false || $roundNumber->getGameAmountConfigs()->count() > 0) {
-                $this->gameAmountConfigService->createDefault($competitionSport, $roundNumber);
+                $this->gameAmountConfigService->create($competitionSport, $roundNumber);
             }
             $roundNumber = $roundNumber->getNext();
         }

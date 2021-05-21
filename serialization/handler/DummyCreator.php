@@ -66,7 +66,8 @@ class DummyCreator
                     $sport->getDefaultGameMode(),
                     $defaultNrOfSidePlaces,
                     $defaultNrOfSidePlaces,
-                    1,
+                    $defaultNrOfSidePlaces <= 2 ? 1 : 0,
+                    $defaultNrOfSidePlaces > 2 ? 1 : 0,
                     0,
                     0
                 )
