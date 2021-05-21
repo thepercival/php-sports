@@ -80,7 +80,7 @@ trait CompetitionCreator
         if ($sportVariant === null) {
             $sportVariant = new AgainstSportVariant(1, 1, 1, 0);
         }
-        $this->competitionSport = new CompetitionSport($sport, $competition, $sportVariant->createPersistVariant());
+        $this->competitionSport = new CompetitionSport($sport, $competition, $sportVariant->toPersistVariant());
         $field1 = new Field($this->competitionSport);
         $field1->setName("1");
         $field2 = new Field($this->competitionSport);

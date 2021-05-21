@@ -25,9 +25,8 @@ class Sport extends PersistVariant implements \Stringable
             $sportVariant->getGameMode(),
             $sportVariant->getNrOfHomePlaces(),
             $sportVariant->getNrOfAwayPlaces(),
-            $sportVariant->getNrOfH2H(),
-            $sportVariant->getNrOfPartials(),
             $sportVariant->getNrOfGamePlaces(),
+            $sportVariant->getNrOfH2H(),
             $sportVariant->getNrOfGamesPerPlace()
         );
 

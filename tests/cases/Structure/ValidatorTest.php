@@ -118,7 +118,7 @@ final class ValidatorTest extends TestCase
 
     public function testWithPlaceRanges(): void
     {
-        $sportVariant = new AgainstSportVariant(2, 2, 1, 0);
+        $sportVariant = new AgainstSportVariant(2, 2, 0, 3);
         $competition = $this->createCompetition( $sportVariant );
 
         $structureEditor = $this->createStructureEditor();

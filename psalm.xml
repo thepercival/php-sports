@@ -12,8 +12,6 @@
 <!--        <directory name="serialization/handler"/>-->
         <ignoreFiles>
             <directory name="vendor"/>
-            <directory name="tests/casesold"/>
-            <directory name="tests/helpersold"/>
         </ignoreFiles>
     </projectFiles>
 <plugins>

@@ -85,9 +85,8 @@ class PlanningMapper
                         || $competitionSport->getFields()->count() > $maxNrOfFields)
                     && $competitionSport->getNrOfHomePlaces() === $sport->getNrOfHomePlaces()
                     && $competitionSport->getNrOfAwayPlaces() === $sport->getNrOfAwayPlaces()
-                    && $competitionSport->getNrOfH2H() === $sport->getNrOfH2H()
-                    && $competitionSport->getNrOfPartials() === $sport->getNrOfPartials()
                     && $competitionSport->getNrOfGamePlaces() === $sport->getNrOfGamePlaces()
+                    && $competitionSport->getNrOfH2H() === $sport->getNrOfH2H()
                     && $competitionSport->getNrOfGamesPerPlace() === $sport->getNrOfGamesPerPlace();
             });
 
