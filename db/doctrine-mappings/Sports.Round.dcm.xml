@@ -37,7 +37,7 @@
         <cascade-remove/>
       </cascade>
     </one-to-many>
-    <one-to-many field="qualifyAgainstConfigs" target-entity="Sports\Qualify\AgainstConfig" mapped-by="round">
+    <one-to-many field="againstQualifyConfigs" target-entity="Sports\Qualify\AgainstConfig" mapped-by="round">
       <cascade>
         <cascade-persist/>
         <cascade-remove/>

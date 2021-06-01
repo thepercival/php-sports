@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
-  <entity name="Sports\Game\Place\Against" table="gamePlacesAgainst" repository-class="Sports\Game\Place\Against\Repository">
+  <entity name="Sports\Game\Place\Against" table="againstGamePlaces" repository-class="Sports\Game\Place\Against\Repository">
     <field name="side" column="side" type="smallint" nullable="false" unique="false"/>
     <many-to-one field="game" target-entity="Sports\Game\Against" inversed-by="places">
       <join-columns>

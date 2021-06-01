@@ -13,11 +13,11 @@ use Sports\Round;
 use Sports\Place;
 use Sports\Poule;
 use Sports\Score\Config as ScoreConfig;
-use Sports\Qualify\AgainstConfig as QualifyAgainstConfig;
+use Sports\Qualify\AgainstConfig as AgainstQualifyConfig;
 use Sports\Planning\Config\Service as PlanningConfigService;
 use Sports\Score\Config\Service as ScoreConfigService;
 use Sports\Planning\GameAmountConfig\Service as GameAmountConfigService;
-use Sports\Qualify\AgainstConfig\Service as QualifyAgainstConfigService;
+use Sports\Qualify\AgainstConfig\Service as AgainstQualifyConfigService;
 use Sports\Poule\Horizontal\Creator as HorizontalPouleCreator;
 use Sports\Qualify\Rule\Creator as QualifyRuleCreator;
 
@@ -76,7 +76,7 @@ class Copier
             $newRound,
             array_values($round->getPoules()->toArray()),
             array_values($round->getFirstScoreConfigs()->toArray()),
-            array_values($round->getQualifyAgainstConfigs()->toArray())
+            array_values($round->getAgainstQualifyConfigs()->toArray())
         );
         $this->horPouleCreator->create($newRound);
 
@@ -97,13 +97,13 @@ class Copier
      * @param Round $newRound
      * @param list<Poule> $poules
      * @param list<ScoreConfig> $scoreConfigs
-     * @param list<QualifyAgainstConfig> $qualifyAgainstConfigs
+     * @param list<AgainstQualifyConfig> $againstQualifyConfigs
      */
     protected function copyRoundHelper(
         Round $newRound,
         array $poules,
         array $scoreConfigs,
-        array $qualifyAgainstConfigs
+        array $againstQualifyConfigs
     ): void {
         foreach ($poules as $poule) {
             $this->copyPoule($newRound, $poule->getNumber(), array_values($poule->getPlaces()->toArray()));
@@ -116,13 +116,13 @@ class Copier
             );
             $scoreConfigService->copy($newCompetitionSport, $newRound, $scoreConfig);
         }
-        $qualifyAgainstConfigService = new QualifyAgainstConfigService();
-        foreach ($qualifyAgainstConfigs as $qualifyAgainstConfig) {
+        $againstQualifyConfigService = new AgainstQualifyConfigService();
+        foreach ($againstQualifyConfigs as $againstQualifyConfig) {
             $newCompetitionSport = $this->getNewCompetitionSport(
-                $qualifyAgainstConfig->getCompetitionSport(),
+                $againstQualifyConfig->getCompetitionSport(),
                 $newRound->getCompetition()
             );
-            $qualifyAgainstConfigService->copy($newCompetitionSport, $newRound, $qualifyAgainstConfig);
+            $againstQualifyConfigService->copy($newCompetitionSport, $newRound, $againstQualifyConfig);
         }
     }
 

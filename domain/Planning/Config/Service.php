@@ -3,11 +3,11 @@ declare(strict_types=1);
 
 namespace Sports\Planning\Config;
 
-use Sports\Competition;
 use Sports\Planning\Config as PlanningConfig;
-use SportsHelpers\GameMode;
+use Sports\Planning\EditMode;
 use Sports\Round\Number as RoundNumber;
 use SportsHelpers\SelfReferee;
+use SportsPlanning\Combinations\GamePlaceStrategy;
 
 class Service
 {
@@ -15,6 +15,8 @@ class Service
     {
         return new PlanningConfig(
             $roundNumber,
+            EditMode::Auto,
+            GamePlaceStrategy::EquallyAssigned,
             PlanningConfig::DEFAULTEXTENSION,
             PlanningConfig::DEFAULTENABLETIME,
             $this->getDefaultMinutesPerGame(),
@@ -29,6 +31,8 @@ class Service
     {
         return new PlanningConfig(
             $roundNumber,
+            $planningConfig->getEditMode(),
+            $planningConfig->getGamePlaceStrategy(),
             $planningConfig->getExtension(),
             $planningConfig->getEnableTime(),
             $planningConfig->getMinutesPerGame(),

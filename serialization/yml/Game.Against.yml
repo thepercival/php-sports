@@ -2,6 +2,8 @@ Sports\Game\Against:
   exclusion_policy: ALL
   exclude: false
   properties:
+    gameRoundNumber:
+      type: integer
     places:
       type: ArrayCollection<Sports\Game\Place\Against>
     scores:

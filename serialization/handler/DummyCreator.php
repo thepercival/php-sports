@@ -66,10 +66,9 @@ class DummyCreator
                     $sport->getDefaultGameMode(),
                     $defaultNrOfSidePlaces,
                     $defaultNrOfSidePlaces,
-                    $defaultNrOfSidePlaces <= 2 ? 1 : 0,
-                    $defaultNrOfSidePlaces > 2 ? 1 : 0,
                     0,
-                    0
+                    $defaultNrOfSidePlaces <= 2 ? 1 : 0,
+                    $defaultNrOfSidePlaces > 2 ? 1 : 0
                 )
             );
             $competitionSport->setId($competitionSportId);

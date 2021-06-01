@@ -18,6 +18,8 @@ class Config extends Identifiable
 
     public function __construct(
         protected RoundNumber $roundNumber,
+        protected int $editMode,
+        protected int $gamePlaceStrategy,
         protected bool $extension,
         protected bool $enableTime,
         protected int $minutesPerGame,
@@ -25,12 +27,29 @@ class Config extends Identifiable
         protected int $minutesBetweenGames,
         protected int $minutesAfter,
         protected int $selfReferee
-    )
-    {
+    ) {
         $this->roundNumber->setPlanningConfig($this);
     }
 
+    public function getEditMode(): int
+    {
+        return $this->editMode;
+    }
 
+    public function setEditMode(int $editMode): void
+    {
+        $this->editMode = $editMode;
+    }
+
+    public function getGamePlaceStrategy(): int
+    {
+        return $this->gamePlaceStrategy;
+    }
+
+    public function setGamePlaceStrategy(int $gamePlaceStrategy): void
+    {
+        $this->gamePlaceStrategy = $gamePlaceStrategy;
+    }
 
     public function getExtension(): bool
     {

@@ -9,7 +9,7 @@ use Doctrine\ORM\PersistentCollection;
 use Exception;
 use InvalidArgumentException;
 use Sports\Competition\Sport as CompetitionSport;
-use Sports\Qualify\AgainstConfig as QualifyAgainstConfig;
+use Sports\Qualify\AgainstConfig as AgainstQualifyConfig;
 use Sports\Qualify\Group as QualifyGroup;
 use Sports\Poule\Horizontal as HorizontalPoule;
 use Sports\Score\Config as ScoreConfig;
@@ -43,10 +43,10 @@ class Round extends Identifiable
      */
     protected ArrayCollection $winnersHorizontalPoules;
     /**
-     * @phpstan-var ArrayCollection<int|string, QualifyAgainstConfig>|PersistentCollection<int|string, QualifyAgainstConfig>
-     * @psalm-var ArrayCollection<int|string, QualifyAgainstConfig>
+     * @phpstan-var ArrayCollection<int|string, AgainstQualifyConfig>|PersistentCollection<int|string, AgainstQualifyConfig>
+     * @psalm-var ArrayCollection<int|string, AgainstQualifyConfig>
      */
-    protected ArrayCollection|PersistentCollection $qualifyAgainstConfigs;
+    protected ArrayCollection|PersistentCollection $againstQualifyConfigs;
     /**
      * @phpstan-var ArrayCollection<int|string, ScoreConfig>|PersistentCollection<int|string, ScoreConfig>
      * @psalm-var ArrayCollection<int|string, ScoreConfig>
@@ -78,7 +78,7 @@ class Round extends Identifiable
         $this->structurePathNode = $this->constructStructurePathNode();
         $this->poules = new ArrayCollection();
         $this->qualifyGroups = new ArrayCollection();
-        $this->qualifyAgainstConfigs = new ArrayCollection();
+        $this->againstQualifyConfigs = new ArrayCollection();
         $this->scoreConfigs = new ArrayCollection();
         $this->winnersHorizontalPoules = new ArrayCollection();
         $this->losersHorizontalPoules = new ArrayCollection();
@@ -536,17 +536,17 @@ class Round extends Identifiable
     }
 
     /**
-     * @phpstan-return ArrayCollection<int|string, QualifyAgainstConfig>|PersistentCollection<int|string, QualifyAgainstConfig>
-     * @psalm-return ArrayCollection<int|string, QualifyAgainstConfig>
+     * @phpstan-return ArrayCollection<int|string, AgainstQualifyConfig>|PersistentCollection<int|string, AgainstQualifyConfig>
+     * @psalm-return ArrayCollection<int|string, AgainstQualifyConfig>
      */
-    public function getQualifyAgainstConfigs(): ArrayCollection|PersistentCollection
+    public function getAgainstQualifyConfigs(): ArrayCollection|PersistentCollection
     {
-        return $this->qualifyAgainstConfigs;
+        return $this->againstQualifyConfigs;
     }
 
-    public function getQualifyAgainstConfig(CompetitionSport $competitionSport): QualifyAgainstConfig|null
+    public function getAgainstQualifyConfig(CompetitionSport $competitionSport): AgainstQualifyConfig|null
     {
-        $qualifyConfigs = $this->qualifyAgainstConfigs->filter(function (QualifyAgainstConfig $qualifyConfigIt) use ($competitionSport): bool {
+        $qualifyConfigs = $this->againstQualifyConfigs->filter(function (AgainstQualifyConfig $qualifyConfigIt) use ($competitionSport): bool {
             return $qualifyConfigIt->getCompetitionSport() === $competitionSport;
         });
         $qualifyConfig = $qualifyConfigs->first();
@@ -558,12 +558,12 @@ class Round extends Identifiable
 
     /**
      * @param CompetitionSport $competitionSport
-     * @return QualifyAgainstConfig
+     * @return AgainstQualifyConfig
      * @throws Exception
      */
-    public function getValidQualifyAgainstConfig(CompetitionSport $competitionSport): QualifyAgainstConfig
+    public function getValidAgainstQualifyConfig(CompetitionSport $competitionSport): AgainstQualifyConfig
     {
-        $qualifyConfig = $this->getQualifyAgainstConfig($competitionSport);
+        $qualifyConfig = $this->getAgainstQualifyConfig($competitionSport);
         if ($qualifyConfig !== null) {
             return $qualifyConfig;
         }
@@ -571,17 +571,17 @@ class Round extends Identifiable
         if ($parent === null) {
             throw new Exception('de score-instellingen kunnen niet gevonden worden', E_ERROR);
         }
-        return $parent->getValidQualifyAgainstConfig($competitionSport);
+        return $parent->getValidAgainstQualifyConfig($competitionSport);
     }
 
     /**
-     * @return list<QualifyAgainstConfig>
+     * @return list<AgainstQualifyConfig>
      */
-    public function getValidQualifyAgainstConfigs(): array
+    public function getValidAgainstQualifyConfigs(): array
     {
         return array_values($this->number->getCompetitionSports()->map(
-            function (CompetitionSport $competitionSport): QualifyAgainstConfig {
-                return $this->getValidQualifyAgainstConfig($competitionSport);
+            function (CompetitionSport $competitionSport): AgainstQualifyConfig {
+                return $this->getValidAgainstQualifyConfig($competitionSport);
             },
         )->toArray());
     }
@@ -603,11 +603,14 @@ class Round extends Identifiable
         );
     }
 
+    /**
+     * @throws Exception
+     */
     public function createPouleStructure(): BalancedPouleStructure
     {
         $nrOfPlaces = $this->getPoules()->map(function (Poule $poule): int {
             return $poule->getPlaces()->count();
-        });
+        })->toArray();
         return new BalancedPouleStructure(...$nrOfPlaces);
     }
 

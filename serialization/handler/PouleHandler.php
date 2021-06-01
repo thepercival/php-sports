@@ -11,11 +11,12 @@ use JMS\Serializer\Context;
 use Sports\Competition\Sport as CompetitionSport;
 use Sports\Place;
 use Sports\Poule;
+use Sports\Qualify\AgainstConfig\Service as AgainstQualifyConfigService;
 use Sports\Qualify\Group as QualifyGroup;
 use Sports\Round;
 use Sports\Round\Number as RoundNumber;
 use Sports\Score\Config as ScoreConfig;
-use Sports\Qualify\AgainstConfig as QualifyAgainstConfig;
+use Sports\Qualify\AgainstConfig as AgainstQualifyConfig;
 
 class PouleHandler extends Handler implements SubscribingHandlerInterface
 {
@@ -82,15 +83,15 @@ class PouleHandler extends Handler implements SubscribingHandlerInterface
 //                $this->createScoreConfig($arrScoreConfig, $competitionSport, $round);
 //            }
 //        }
-////        if (isset($fieldValue["qualifyAgainstConfigs"])) {
+////        if (isset($fieldValue["againstQualifyConfigs"])) {
 ////            $competitionSportCreator = new CompetitionSportCreator();
-////            foreach ($fieldValue["qualifyAgainstConfigs"] as $arrQualifyAgainstConfig) {
+////            foreach ($fieldValue["againstQualifyConfigs"] as $arrAgainstQualifyConfig) {
 ////                $competitionSport = $competitionSportCreator->create(
 ////                    $round->getCompetition(),
-////                    (int) $arrQualifyAgainstConfig["competitionSport"]["id"],
-////                    (int) $arrQualifyAgainstConfig["competitionSport"]["sport"]["id"]
+////                    (int) $arrAgainstQualifyConfig["competitionSport"]["id"],
+////                    (int) $arrAgainstQualifyConfig["competitionSport"]["sport"]["id"]
 ////                );
-////                $this->createQualifyAgainstConfig($arrQualifyAgainstConfig, $competitionSport, $round);
+////                $this->createAgainstQualifyConfig($arrAgainstQualifyConfig, $competitionSport, $round);
 ////            }
 ////        }
 //
@@ -160,15 +161,15 @@ class PouleHandler extends Handler implements SubscribingHandlerInterface
      * @param array<string, int|bool|array<string, int|bool>> $arrConfig
      * @param CompetitionSport $competitionSport
      * @param Round $round
-     * @return QualifyAgainstConfig
+     * @return AgainstQualifyConfig
      */
-    protected function createQualifyAgainstConfig(
+    protected function createAgainstQualifyConfig(
         array $arrConfig,
         CompetitionSport $competitionSport,
         Round $round
-    ): QualifyAgainstConfig
+    ): AgainstQualifyConfig
     {
-        $config = new QualifyAgainstConfig($competitionSport, $round, $arrConfig["pointsCalculation"]);
+        $config = new AgainstQualifyConfig($competitionSport, $round, $arrConfig["pointsCalculation"]);
         $config->setWinPoints($arrConfig["winPoints"]);
         $config->setWinPointsExt($arrConfig["winPointsExt"]);
         $config->setDrawPoints($arrConfig["drawPoints"]);

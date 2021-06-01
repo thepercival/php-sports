@@ -67,21 +67,21 @@ class Against extends Calculator
         if ($finalScore === null) {
             return 0;
         }
-        $qualifyAgainstConfig = $game->getQualifyAgainstConfig();
+        $againstQualifyConfig = $game->getAgainstQualifyConfig();
         if ($finalScore->getResult($side) === AgainstResult::WIN) {
             if ($game->getFinalPhase() === Game::PHASE_REGULARTIME) {
-                return $qualifyAgainstConfig->getWinPoints();
+                return $againstQualifyConfig->getWinPoints();
             } elseif ($game->getFinalPhase() === Game::PHASE_EXTRATIME) {
-                return $qualifyAgainstConfig->getWinPointsExt();
+                return $againstQualifyConfig->getWinPointsExt();
             }
         } elseif ($finalScore->getResult($side) === AgainstResult::DRAW) {
             if ($game->getFinalPhase() === Game::PHASE_REGULARTIME) {
-                return $qualifyAgainstConfig->getDrawPoints();
+                return $againstQualifyConfig->getDrawPoints();
             } elseif ($game->getFinalPhase() === Game::PHASE_EXTRATIME) {
-                return $qualifyAgainstConfig->getDrawPointsExt();
+                return $againstQualifyConfig->getDrawPointsExt();
             }
         } elseif ($game->getFinalPhase() === Game::PHASE_EXTRATIME) {
-            return $qualifyAgainstConfig->getLosePointsExt();
+            return $againstQualifyConfig->getLosePointsExt();
         }
         return 0;
     }

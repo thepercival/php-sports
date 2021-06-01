@@ -13,11 +13,12 @@ use Sports\Round;
 use Sports\Qualify\Group as QualifyGroup;
 use Sports\Round\Number as RoundNumber;
 use Sports\Score\Config as ScoreConfig;
-use Sports\Qualify\AgainstConfig as QualifyAgainstConfig;
+use Sports\Qualify\AgainstConfig as AgainstQualifyConfig;
 
 class RoundHandler extends Handler implements SubscribingHandlerInterface
 {
-    public function __construct(protected DummyCreator $dummyCreator) {
+    public function __construct(protected DummyCreator $dummyCreator)
+    {
     }
 
     /**
@@ -42,7 +43,7 @@ class RoundHandler extends Handler implements SubscribingHandlerInterface
         Context $context
     ): Round {
         $parentQualifyGroup = null;
-        if( isset($fieldValue["parentQualifyGroup"]) ) {
+        if (isset($fieldValue["parentQualifyGroup"])) {
             $parentQualifyGroup = $fieldValue["parentQualifyGroup"];
         }
         $round = null;
@@ -63,14 +64,14 @@ class RoundHandler extends Handler implements SubscribingHandlerInterface
                 $this->createScoreConfig($arrScoreConfig, $competitionSport, $round);
             }
         }
-        if (isset($fieldValue["qualifyAgainstConfigs"])) {
-            foreach ($fieldValue["qualifyAgainstConfigs"] as $arrQualifyAgainstConfig) {
+        if (isset($fieldValue["againstQualifyConfigs"])) {
+            foreach ($fieldValue["againstQualifyConfigs"] as $arrAgainstQualifyConfig) {
                 $competitionSport = $this->dummyCreator->createCompetitionSport(
                     $round->getCompetition(),
-                    (int) $arrQualifyAgainstConfig["competitionSport"]["id"],
-                    (int) $arrQualifyAgainstConfig["competitionSport"]["sport"]["id"]
+                    (int) $arrAgainstQualifyConfig["competitionSport"]["id"],
+                    (int) $arrAgainstQualifyConfig["competitionSport"]["sport"]["id"]
                 );
-                $this->createQualifyAgainstConfig($arrQualifyAgainstConfig, $competitionSport, $round);
+                $this->createAgainstQualifyConfig($arrAgainstQualifyConfig, $competitionSport, $round);
             }
         }
 
@@ -155,14 +156,14 @@ class RoundHandler extends Handler implements SubscribingHandlerInterface
      * @param array<string, int|bool|array<string, int|bool>> $arrConfig
      * @param CompetitionSport $competitionSport
      * @param Round $round
-     * @return QualifyAgainstConfig
+     * @return AgainstQualifyConfig
      */
-    protected function createQualifyAgainstConfig(
+    protected function createAgainstQualifyConfig(
         array $arrConfig,
         CompetitionSport $competitionSport,
         Round $round
-    ): QualifyAgainstConfig {
-        $config = new QualifyAgainstConfig($competitionSport, $round, $arrConfig["pointsCalculation"]);
+    ): AgainstQualifyConfig {
+        $config = new AgainstQualifyConfig($competitionSport, $round, $arrConfig["pointsCalculation"]);
         $config->setWinPoints($arrConfig["winPoints"]);
         $config->setWinPointsExt($arrConfig["winPointsExt"]);
         $config->setDrawPoints($arrConfig["drawPoints"]);

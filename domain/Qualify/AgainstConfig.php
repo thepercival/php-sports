@@ -28,7 +28,7 @@ class AgainstConfig extends Identifiable
     {
         $this->competitionSport = $competitionSport;
         $this->round = $round;
-        $this->round->getQualifyAgainstConfigs()->add($this);
+        $this->round->getAgainstQualifyConfigs()->add($this);
         $this->pointsCalculation = $pointsCalculation;
     }
 

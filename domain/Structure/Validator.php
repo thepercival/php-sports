@@ -4,15 +4,12 @@ declare(strict_types=1);
 namespace Sports\Structure;
 
 use Sports\Qualify\Target as QualifyTarget;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Exception;
 use Sports\NameService;
 use Sports\Place;
 use Sports\Qualify\Group as QualifyGroup;
 use Sports\Poule;
 use Sports\Round;
-use Sports\Association;
 use Sports\Round\Number as RoundNumber;
 use Sports\Competition;
 use Sports\Structure;
@@ -95,7 +92,7 @@ class Validator
                 if ($round->getScoreConfig($competitionSport) === null) {
                     throw new Exception($prefix . " bevat geen geldige scoreConfig", E_ERROR);
                 }
-                if ($round->getQualifyAgainstConfig($competitionSport) === null) {
+                if ($round->getAgainstQualifyConfig($competitionSport) === null) {
                     throw new Exception($prefix . " bevat geen geldige puntenconfig", E_ERROR);
                 }
             }

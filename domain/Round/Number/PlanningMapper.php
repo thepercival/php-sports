@@ -79,15 +79,14 @@ class PlanningMapper
         $maxNrOfFields = $input->getMaxNrOfBatchGames();
         $this->competitionSportMap = [];
         $competitionSports = array_values($roundNumber->getCompetitionSports()->toArray());
+
         foreach ($input->getSports() as $sport) {
-            $filtered = array_filter($competitionSports, function (CompetitionSport $competitionSport) use ($sport, $maxNrOfFields): bool {
+            $planningSportVariant = $sport->createVariant();
+            $filtered = array_filter($competitionSports, function (CompetitionSport $competitionSport) use ($sport, $maxNrOfFields, $roundNumber, $planningSportVariant): bool {
+                $competitionSportVariant = $roundNumber->getValidGameAmountConfig($competitionSport)->createVariant();
                 return ($competitionSport->getFields()->count() === $sport->getFields()->count()
                         || $competitionSport->getFields()->count() > $maxNrOfFields)
-                    && $competitionSport->getNrOfHomePlaces() === $sport->getNrOfHomePlaces()
-                    && $competitionSport->getNrOfAwayPlaces() === $sport->getNrOfAwayPlaces()
-                    && $competitionSport->getNrOfGamePlaces() === $sport->getNrOfGamePlaces()
-                    && $competitionSport->getNrOfH2H() === $sport->getNrOfH2H()
-                    && $competitionSport->getNrOfGamesPerPlace() === $sport->getNrOfGamesPerPlace();
+                    && $planningSportVariant == $competitionSportVariant;
             });
 
             $filteredCompetitionSport = reset($filtered);

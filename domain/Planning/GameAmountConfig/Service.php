@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Sports\Planning\GameAmountConfig;
 
@@ -6,7 +7,6 @@ use Sports\Planning\Config as PlanningConfig;
 use Sports\Planning\GameAmountConfig;
 use Sports\Round\Number as RoundNumber;
 use Sports\Competition\Sport as CompetitionSport;
-use SportsHelpers\GameMode;
 
 class Service
 {
@@ -16,7 +16,7 @@ class Service
         return $nrOfGamePlaces > 2 ? 0 : PlanningConfig::DEFAULTGAMEAMOUNT;
     }
 
-    public function getDefaultPartials(CompetitionSport $competitionSport): int
+    public function getDefaultNrOfGamesPerPlace(CompetitionSport $competitionSport): int
     {
         $nrOfGamePlaces = $competitionSport->getNrOfHomePlaces() + $competitionSport->getNrOfAwayPlaces();
         return $nrOfGamePlaces > 2 ? PlanningConfig::DEFAULTGAMEAMOUNT : 0;
@@ -28,7 +28,7 @@ class Service
             $competitionSport,
             $roundNumber,
             $this->getDefaultAmount($competitionSport),
-            $this->getDefaultPartials($competitionSport)
+            $this->getDefaultNrOfGamesPerPlace($competitionSport)
         );
     }
 }

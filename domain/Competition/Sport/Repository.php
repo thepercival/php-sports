@@ -9,8 +9,8 @@ use SportsHelpers\Repository as BaseRepository;
 use Sports\Score\Config as ScoreConfig;
 use Sports\Planning\GameAmountConfig;
 use Sports\Planning\GameAmountConfig\Repository as GameAmountConfigRepos;
-use Sports\Qualify\AgainstConfig as QualifyAgainstConfig;
-use Sports\Qualify\AgainstConfig\Repository as QualifyAgainstConfigRepos;
+use Sports\Qualify\AgainstConfig as AgainstQualifyConfig;
+use Sports\Qualify\AgainstConfig\Repository as AgainstQualifyConfigRepos;
 use Sports\Score\Config\Repository as ScoreConfigRepos;
 use Sports\Competition\Sport as CompetitionSport;
 use Sports\Structure;
@@ -36,8 +36,8 @@ class Repository extends EntityRepository implements SaveRemoveRepository
             $scoreRepos = new ScoreConfigRepos($this->_em, $this->_em->getClassMetadata(ScoreConfig::class));
             $scoreRepos->addObjects($competitionSport, $rootRound);
             /** @psalm-suppress MixedArgumentTypeCoercion */
-            $qualifyAgainstConfigRepos = new QualifyAgainstConfigRepos($this->_em, $this->_em->getClassMetadata(QualifyAgainstConfig::class));
-            $qualifyAgainstConfigRepos->addObjects($competitionSport, $rootRound);
+            $againstQualifyConfigRepos = new AgainstQualifyConfigRepos($this->_em, $this->_em->getClassMetadata(AgainstQualifyConfig::class));
+            $againstQualifyConfigRepos->addObjects($competitionSport, $rootRound);
 
             $firstRoundNumber = $structure->getFirstRoundNumber();
             /** @psalm-suppress MixedArgumentTypeCoercion */

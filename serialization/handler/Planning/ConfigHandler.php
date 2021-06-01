@@ -45,6 +45,8 @@ class ConfigHandler extends Handler implements SubscribingHandlerInterface
         }
         $planningConfig = new PlanningConfig(
             $fieldValue["roundNumber"],
+            $fieldValue["editMode"],
+            $fieldValue["gamePlaceStrategy"],
             $fieldValue["extension"],
             $fieldValue["enableTime"],
             $fieldValue["minutesPerGame"],

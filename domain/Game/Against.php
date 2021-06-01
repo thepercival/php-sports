@@ -42,10 +42,14 @@ class Against extends GameBase
      * @psalm-var ArrayCollection<int|string, Participation>
      */
     protected ArrayCollection|PersistentCollection $participations;
-    protected int $gameRoundNumber = 0;
 
-    public function __construct(Poule $poule, int $batchNr, DateTimeImmutable $startDateTime, CompetitionSport $competitionSport)
-    {
+    public function __construct(
+        Poule $poule,
+        int $batchNr,
+        DateTimeImmutable $startDateTime,
+        CompetitionSport $competitionSport,
+        protected int $gameRoundNumber
+    ) {
         parent::__construct($poule, $batchNr, $startDateTime, $competitionSport);
         $this->places = new ArrayCollection();
         $this->scores = new ArrayCollection();
@@ -55,15 +59,10 @@ class Against extends GameBase
         }
     }
 
-//    public function getGameRoundNumber(): int
-//    {
-//        return $this->gameRoundNumber;
-//    }
-//
-//    public function setGameRoundNumber(int $gameRoundNumber)
-//    {
-//        $this->gameRoundNumber = $gameRoundNumber;
-//    }
+    public function getGameRoundNumber(): int
+    {
+        return $this->gameRoundNumber;
+    }
 
     /**
      * @phpstan-return ArrayCollection<int|string, AgainstScore>|PersistentCollection<int|string, AgainstScore>
@@ -123,9 +122,9 @@ class Against extends GameBase
         })->toArray());
     }
 
-    public function getQualifyAgainstConfig(): QualifyConfig
+    public function getAgainstQualifyConfig(): QualifyConfig
     {
-        return $this->getRound()->getValidQualifyAgainstConfig($this->getCompetitionSport());
+        return $this->getRound()->getValidAgainstQualifyConfig($this->getCompetitionSport());
     }
 
     /**

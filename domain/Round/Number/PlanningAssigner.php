@@ -52,7 +52,8 @@ class PlanningAssigner
     protected function assignPlanningBatchGames(
         Batch|SelfRefereeBatch $batch,
         DateTimeImmutable $gameStartDateTime,
-        PlanningMapper $mapper): void
+        PlanningMapper $mapper
+    ): void
     {
         foreach ($batch->getGames() as $planningGame) {
             $game = $this->createGameFromPlanningGame($planningGame, $gameStartDateTime, $mapper);
@@ -81,9 +82,14 @@ class PlanningAssigner
         DateTimeImmutable $startDateTime,
         CompetitionSport $competitionSport,
         PlanningMapper $mapper
-    ): AgainstGame
-    {
-        $game = new AgainstGame($poule, $planningGame->getBatchNr(), $startDateTime, $competitionSport);
+    ): AgainstGame {
+        $game = new AgainstGame(
+            $poule,
+            $planningGame->getBatchNr(),
+            $startDateTime,
+            $competitionSport,
+            $planningGame->getGameRoundNumber()
+        );
         foreach ($planningGame->getPlaces() as $planningGamePlace) {
             $this->createAgainstGamePlace($game, $planningGamePlace, $mapper);
         }
@@ -94,8 +100,7 @@ class PlanningAssigner
         AgainstGame $game,
         AgainstPlanningGamePlace $planningGamePlace,
         PlanningMapper $mapper
-    ): void
-    {
+    ): void {
         new AgainstGamePlace(
             $game,
             $mapper->getPlace($planningGamePlace->getPlace()),
@@ -109,8 +114,7 @@ class PlanningAssigner
         DateTimeImmutable $startDateTime,
         CompetitionSport $competitionSport,
         PlanningMapper $mapper
-    ): TogetherGame
-    {
+    ): TogetherGame {
         $game = new TogetherGame($poule, $planningGame->getBatchNr(), $startDateTime, $competitionSport);
         foreach ($planningGame->getPlaces() as $planningGamePlace) {
             $this->createTogetherGamePlace($game, $planningGamePlace, $mapper);

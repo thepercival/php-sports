@@ -7,6 +7,7 @@ use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\PersistentCollection;
+use Exception;
 use Sports\Competition;
 use Sports\Game as GameBase;
 use Sports\Place;
@@ -21,7 +22,9 @@ use Sports\Game\Against as AgainstGame;
 use Sports\Game\Together as TogetherGame;
 use SportsHelpers\Identifiable;
 use SportsHelpers\PouleStructure;
-use SportsHelpers\Sport\VariantWithFields as SportVariantWithFields;
+use SportsHelpers\Sport\Variant\Single as SingleSportVariant;
+use SportsHelpers\Sport\Variant\Against as AgainstSportVariant;
+use SportsHelpers\Sport\Variant\AllInOneGame as AllInOneGameSportVariant;
 
 class Number extends Identifiable
 {
@@ -261,6 +264,9 @@ class Number extends Identifiable
         $this->planningConfig = $config;
     }
 
+    /**
+     * @throws Exception
+     */
     public function getValidPlanningConfig(): PlanningConfig
     {
         if ($this->planningConfig !== null) {
@@ -268,7 +274,7 @@ class Number extends Identifiable
         }
         $previous = $this->getPrevious();
         if ($previous === null) {
-            throw new \Exception('de plannings-instellingen kunnen niet gevonden worden', E_ERROR);
+            throw new Exception('de plannings-instellingen kunnen niet gevonden worden', E_ERROR);
         }
         return $previous->getValidPlanningConfig();
     }
@@ -301,7 +307,7 @@ class Number extends Identifiable
         $games = $this->getGames(GameBase::ORDER_BY_BATCH);
         $firstGame = reset($games);
         if ($firstGame === false) {
-            throw new \Exception('er zijn geen wedstrijden voor dit rondenummer', E_ERROR);
+            throw new Exception('er zijn geen wedstrijden voor dit rondenummer', E_ERROR);
         }
         return $firstGame->getStartDateTime();
     }
@@ -311,7 +317,7 @@ class Number extends Identifiable
         $games = $this->getGames(GameBase::ORDER_BY_BATCH);
         $lastRecentGame = end($games);
         if ($lastRecentGame === false) {
-            throw new \Exception('er zijn geen wedstrijden voor dit rondenummer', E_ERROR);
+            throw new Exception('er zijn geen wedstrijden voor dit rondenummer', E_ERROR);
         }
         return $lastRecentGame->getStartDateTime();
     }
@@ -334,6 +340,9 @@ class Number extends Identifiable
         return $gameAmountConfig !== false ? $gameAmountConfig : null;
     }
 
+    /**
+     * @throws Exception
+     */
     public function getValidGameAmountConfig(CompetitionSport $competitionSport): GameAmountConfig
     {
         $gameAmountConfig = $this->getGameAmountConfig($competitionSport);
@@ -342,7 +351,7 @@ class Number extends Identifiable
         }
         $previous = $this->getPrevious();
         if ($previous === null) {
-            throw new \Exception('het aantal ingestelde wedstrijden kan niet gevonden worden', E_ERROR);
+            throw new Exception('het aantal ingestelde wedstrijden kan niet gevonden worden', E_ERROR);
         }
         return $previous->getValidGameAmountConfig($competitionSport);
     }
@@ -358,6 +367,18 @@ class Number extends Identifiable
             }
         )->toArray());
     }
+
+    /**
+     * @return list<AgainstSportVariant|AllInOneGameSportVariant|SingleSportVariant>
+     */
+    public function createSportVariants(): array
+    {
+        return array_values(array_map(
+            fn (GameAmountConfig $gameAmountConfig): AgainstSportVariant|AllInOneGameSportVariant|SingleSportVariant => $gameAmountConfig->createVariant(),
+            $this->getValidGameAmountConfigs()
+        ));
+    }
+
 
     public function createPouleStructure(): PouleStructure
     {

@@ -21,7 +21,7 @@ class Field extends Identifiable implements Prioritizable
     {
         $this->competitionSport->getFields()->add($this);
         if ($priority === null || $priority === 0) {
-            $priority = count($this->getCompetition()->getFields());
+            $priority = count($this->competitionSport->getFields());
         }
         $this->setPriority($priority);
     }

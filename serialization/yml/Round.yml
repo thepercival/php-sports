@@ -9,7 +9,7 @@ Sports\Round:
     gameAmountConfigs:
       type: ArrayCollection<Sports\Planning\GameAmountConfig>
       read_only: true
-    qualifyAgainstConfigs:
+    againstQualifyConfigs:
       type: ArrayCollection<Sports\Qualify\AgainstConfig>
       read_only: true
   virtual_properties:

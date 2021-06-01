@@ -12,7 +12,6 @@ use Sports\Qualify\AgainstConfig as QualifyConfig;
 use Sports\Score\Config\Service as ScoreConfigService;
 use Sports\Planning\GameAmountConfig\Service as GameAmountConfigService;
 use Sports\Qualify\AgainstConfig\Service as QualifyConfigService;
-use Sports\Competition;
 use Sports\Competition\Sport as CompetitionSport;
 use Sports\Structure;
 use SportsHelpers\GameMode;
@@ -68,7 +67,7 @@ class Service
                 if ($round->isRoot() || $round->getScoreConfigs()->count() > 0) {
                     $this->scoreConfigService->createDefault($competitionSport, $round);
                 }
-                if ($round->isRoot() || $round->getQualifyAgainstConfigs()->count() > 0) {
+                if ($round->isRoot() || $round->getAgainstQualifyConfigs()->count() > 0) {
                     $this->qualifyConfigService->createDefault($competitionSport, $round);
                 }
                 /** @var Closure(list<Round>):void $addToRounds */
@@ -108,7 +107,7 @@ class Service
                     $scoreConfigs->removeElement($scoreConfig);
                 }
 
-                $qualifyConfigs = $round->getQualifyAgainstConfigs()->filter(
+                $qualifyConfigs = $round->getAgainstQualifyConfigs()->filter(
                     function (QualifyConfig $qualifyConfigIt) use ($competitionSport): bool {
                         return $qualifyConfigIt->getCompetitionSport() === $competitionSport;
                     }
@@ -123,14 +122,16 @@ class Service
         $removeFromRounds([$structure->getRootRound()]);
     }
 
-    protected function getDefaultSportVariant(Sport $sport): SportVariant {
-        if( $sport->getDefaultGameMode() === GameMode::AGAINST ) {
+    protected function getDefaultSportVariant(Sport $sport): SportVariant
+    {
+        if ($sport->getDefaultGameMode() === GameMode::AGAINST) {
             return new AgainstSportVariant(
                 $sport->getDefaultNrOfSidePlaces(),
                 $sport->getDefaultNrOfSidePlaces(),
                 $sport->getDefaultNrOfSidePlaces() > 1 ? 0 : 1,
-                $sport->getDefaultNrOfSidePlaces() > 1 ? 1 : 0);
-        } else if( $sport->getDefaultGameMode() === GameMode::SINGLE ) {
+                $sport->getDefaultNrOfSidePlaces() > 1 ? 1 : 0
+            );
+        } elseif ($sport->getDefaultGameMode() === GameMode::SINGLE) {
             return new SingleSportVariant(1, 1);
         }
         return new AllInOneGameSportVariant(1);
