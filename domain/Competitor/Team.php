@@ -1,14 +1,16 @@
 <?php
+declare(strict_types=1);
 
 namespace Sports\Competitor;
 
 use Sports\Competition;
 use Sports\Competitor as CompetitorInterface;
 use Sports\Place\Location as PlaceLocation;
+use Sports\Place\LocationInterface;
 use Sports\Team as TeamBase;
 use SportsHelpers\Identifiable;
 
-class Team extends Identifiable implements PlaceLocation, CompetitorInterface
+class Team extends Identifiable implements LocationInterface, CompetitorInterface
 {
     use Base;
 

@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Sports\Game;
 
@@ -9,7 +10,7 @@ abstract class Place extends Identifiable
 {
     protected PlaceBase $place;
 
-    public function __construct(PlaceBase $place )
+    public function __construct(PlaceBase $place)
     {
         $this->place = $place;
     }
@@ -17,10 +18,5 @@ abstract class Place extends Identifiable
     public function getPlace(): PlaceBase
     {
         return $this->place;
-    }
-
-    public function getPlaceNr(): int
-    {
-        return $this->getPlace()->getNumber();
     }
 }

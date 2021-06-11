@@ -5,7 +5,9 @@ namespace Sports\Round\Number;
 
 use DateTimeImmutable;
 use League\Period\Period;
-use Sports\Game;
+use Sports\Game\Order as GameOrder;
+use Sports\Game\Together as TogetherGame;
+use Sports\Game\Against as AgainstGame;
 use Sports\Planning\Config as PlanningConfig;
 use Sports\Round\Number as RoundNumber;
 
@@ -26,11 +28,10 @@ class PlanningScheduler
         $previousBatchNr = 1;
         $gameDates[] = $gameStartDateTime;
 
-        $games = $roundNumber->getGames(Game::ORDER_BY_BATCH);
+        $games = $roundNumber->getGames(GameOrder::ByBatch);
         if (count($games) === 0) {
             throw new \Exception("roundnumber has no games", E_ERROR);
         }
-        /** @var Game $game */
         foreach ($games as $game) {
             if ($previousBatchNr !== $game->getBatchNr()) {
                 $gameStartDateTime = $this->getNextGameStartDateTime($roundNumber->getValidPlanningConfig(), $gameStartDateTime);

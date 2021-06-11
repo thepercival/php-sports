@@ -1,8 +1,6 @@
 Sports\Team\Player:
   exclusion_policy: ALL
   exclude: false
-  access_type: public_method
-
   properties:
     line:
       type: integer

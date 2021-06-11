@@ -78,7 +78,7 @@ class Service
         QualifyReservationService $reservationService
     ): void {
         $poule = $qualifyPlaceMapping->getFromPlace()->getPoule();
-        $rank = $qualifyPlaceMapping->getFromPlace()->getNumber();
+        $rank = $qualifyPlaceMapping->getFromPlace()->getPlaceNr();
         $qualifiedPlace = $this->getQualifiedPlace($poule, $rank);
         $qualifyPlaceMapping->getToPlace()->setQualifiedPlace($qualifiedPlace);
         $reservationService->reserve($qualifyPlaceMapping->getToPlace()->getPoule()->getNumber(), $poule);
@@ -131,7 +131,7 @@ class Service
         if ($rankingItem === null) {
             return null;
         }
-        return $poule->getPlace($rankingItem->getPlace()->getNumber());
+        return $poule->getPlace($rankingItem->getPlace()->getPlaceNr());
     }
 
     protected function isRoundFinished(): bool

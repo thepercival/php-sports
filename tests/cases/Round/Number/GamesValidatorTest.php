@@ -8,6 +8,7 @@ use League\Period\Period;
 use PHPUnit\Framework\TestCase;
 use Sports\Competition\Field;
 use Sports\Competition\Referee;
+use Sports\Game\Order;
 use Sports\Output\Game\Against as AgainstGameOutput;
 use Sports\TestHelper\StructureEditorCreator;
 use SportsHelpers\Against\Side as AgainstSide;
@@ -17,8 +18,6 @@ use Sports\Game\Place\Against as AgainstGamePlace;
 use Sports\TestHelper\CompetitionCreator;
 use Sports\TestHelper\GamesCreator;
 use Sports\Round\Number\GamesValidator;
-use Sports\Structure\Editor as StructureService;
-use SportsHelpers\PouleStructure;
 use SportsHelpers\SelfReferee;
 
 class GamesValidatorTest extends TestCase
@@ -295,7 +294,7 @@ class GamesValidatorTest extends TestCase
         $blockedPeriod = new Period($start, $start->modify("+30 minutes"));
         (new GamesCreator())->createStructureGames($structure);
 
-        $games = $firstRoundNumber->getGames(AgainstGame::ORDER_BY_BATCH);
+        $games = $firstRoundNumber->getGames(Order::ByBatch);
         $game = reset($games);
         self::assertInstanceOf(AgainstGame::class, $game);
         $game->setStartDateTime($start->modify("+10 minutes"));

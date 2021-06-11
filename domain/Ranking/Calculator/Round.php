@@ -148,7 +148,7 @@ class Round
         usort($cumulativeRoundRankingItems, function (RoundRankingItem $a, RoundRankingItem $b): int {
             if ($a->getCumulativeRank() === $b->getCumulativeRank()) {
                 if ($a->getPlace()->getPouleNr() === $b->getPlace()->getPouleNr()) {
-                    return $a->getPlace()->getNumber() - $b->getPlace()->getNumber();
+                    return $a->getPlace()->getPlaceNr() - $b->getPlace()->getPlaceNr();
                 }
                 return $a->getPlace()->getPouleNr() - $b->getPlace()->getPouleNr();
             }

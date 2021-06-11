@@ -8,6 +8,7 @@ use Exception;
 use League\Period\Period;
 use Sports\Game;
 use Sports\Game\Against as AgainstGame;
+use Sports\Game\Order;
 use Sports\Game\Together as TogetherGame;
 use Sports\Game\Place\Against as AgainstGamePlace;
 use Sports\Game\Place\Together as TogetherGamePlace;
@@ -49,7 +50,7 @@ class GamesValidator
 
     protected function validateEnoughTotalNrOfGames(RoundNumber $roundNumber): void
     {
-        if (count($roundNumber->getGames()) === 0) {
+        if (count($roundNumber->getGames(Order::ByPoule)) === 0) {
             throw new Exception("the planning has not enough games", E_ERROR);
         }
     }
@@ -57,7 +58,7 @@ class GamesValidator
 
     protected function validateFields(RoundNumber $roundNumber): void
     {
-        foreach ($roundNumber->getGames() as $game) {
+        foreach ($roundNumber->getGames(Order::ByPoule) as $game) {
             if ($game->getField() === null) {
                 throw new Exception("there is at least one game without a field", E_ERROR);
             }
@@ -70,7 +71,7 @@ class GamesValidator
         if ($selfReferee !== SelfReferee::DISABLED || $nrOfReferees === 0) {
             return;
         }
-        foreach ($roundNumber->getGames() as $game) {
+        foreach ($roundNumber->getGames(Order::ByPoule) as $game) {
             if ($game->getReferee() === null) {
                 throw new Exception("the game should have a referee", E_ERROR);
             }
@@ -85,7 +86,7 @@ class GamesValidator
         if (!$pouleStructure->isSelfRefereeBeAvailable($selfReferee, $sportVariants)) {
             return;
         }
-        foreach ($roundNumber->getGames() as $game) {
+        foreach ($roundNumber->getGames(Order::ByPoule) as $game) {
             if ($game->getRefereePlace() === null) {
                 throw new Exception("the game should have a refereeplace", E_ERROR);
             }
@@ -95,7 +96,7 @@ class GamesValidator
     protected function validateGameNotInBlockedPeriod(RoundNumber $roundNumber, Period $blockedPeriod): void
     {
         $maxNrOfMinutesPerGame = $roundNumber->getValidPlanningConfig()->getMaxNrOfMinutesPerGame();
-        foreach ($roundNumber->getGames() as $game) {
+        foreach ($roundNumber->getGames(Order::ByPoule) as $game) {
             $gamePeriod = new Period(
                 $game->getStartDateTime(),
                 $game->getStartDateTime()->modify("+" . $maxNrOfMinutesPerGame . " minutes")
@@ -161,7 +162,7 @@ class GamesValidator
     protected function validateResourcesPerBatchHelper(RoundNumber $roundNumber): bool
     {
         $batchesResources = [];
-        foreach ($roundNumber->getGames() as $game) {
+        foreach ($roundNumber->getGames(Order::ByPoule) as $game) {
             if (array_key_exists($game->getBatchNr(), $batchesResources) === false) {
                 $batchesResources[$game->getBatchNr()] = array("fields" => [], "referees" => [], "places" => []);
             }
@@ -206,7 +207,7 @@ class GamesValidator
         $referees = [];
         $refereePlaces = [];
 
-        foreach ($roundNumber->getGames() as $game) {
+        foreach ($roundNumber->getGames(Order::ByPoule) as $game) {
             $field = $game->getField();
             if ($field !== null) {
                 if (array_key_exists($field->getPriority(), $fields) === false) {
@@ -288,7 +289,7 @@ class GamesValidator
 
     protected function validatePriorityOfFieldsAndReferees(RoundNumber $roundNumber): void
     {
-        $orderedGames = $roundNumber->getGames(Game::ORDER_BY_BATCH);
+        $orderedGames = $roundNumber->getGames(Order::ByBatch);
         $gamesFirstBatch = $this->getGamesForBatch($roundNumber, $orderedGames);
         $priority = 1;
         foreach ($gamesFirstBatch as $game) {

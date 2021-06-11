@@ -135,7 +135,7 @@ class Copier
     {
         $newPoule = new Poule($newRound, $number);
         foreach ($places as $place) {
-            new Place($newPoule, $place->getNumber());
+            new Place($newPoule, $place->getPlaceNr());
         }
     }
 

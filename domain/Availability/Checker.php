@@ -10,7 +10,7 @@ use Sports\Competition\Field;
 use Sports\Priority\Prioritizable;
 use Sports\Competition\Referee;
 use Sports\Competition\Sport as CompetitionSport;
-use Sports\Place\Location as PlaceLocation;
+use Sports\Place\LocationInterface as PlaceLocationInterface;
 
 class Checker
 {
@@ -129,12 +129,12 @@ class Checker
 
     /**
      * @param list<Competitor> $competitors
-     * @param PlaceLocation $placeLocation
+     * @param PlaceLocationInterface $placeLocation
      * @param Competitor|null $competitorToCheck
      * @throws Exception
      * @return void
      */
-    public function checkCompetitorPlaceLocation(array $competitors, PlaceLocation $placeLocation, Competitor $competitorToCheck = null): void
+    public function checkCompetitorPlaceLocation(array $competitors, PlaceLocationInterface $placeLocation, Competitor $competitorToCheck = null): void
     {
         $nonUniqueFields = array_filter(
             $competitors,

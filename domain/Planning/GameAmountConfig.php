@@ -17,7 +17,7 @@ class GameAmountConfig extends Identifiable
         protected CompetitionSport $competitionSport,
         protected RoundNumber $roundNumber,
         protected int $amount,
-        protected int $nrOfGamesPerPlace
+        protected int $nrOfGamesPerPlaceMixed
     ) {
         $this->roundNumber->getGameAmountConfigs()->add($this);
     }
@@ -42,14 +42,14 @@ class GameAmountConfig extends Identifiable
         $this->amount = $amount;
     }
 
-    public function getNrOfGamesPerPlace(): int
+    public function getNrOfGamesPerPlaceMixed(): int
     {
-        return $this->nrOfGamesPerPlace;
+        return $this->nrOfGamesPerPlaceMixed;
     }
 
-    public function setNrOfGamesPerPlace(int $nrOfGamesPerPlace): void
+    public function setNrOfGamesPerPlaceMixed(int $nrOfGamesPerPlaceMixed): void
     {
-        $this->nrOfGamesPerPlace = $nrOfGamesPerPlace;
+        $this->nrOfGamesPerPlaceMixed = $nrOfGamesPerPlaceMixed;
     }
 
     public function createVariant(): SingleSportVariant|AgainstSportVariant|AllInOneGameSportVariant
@@ -65,7 +65,7 @@ class GameAmountConfig extends Identifiable
             $competitionSport->getNrOfHomePlaces(),
             $competitionSport->getNrOfAwayPlaces(),
             $this->getAmount(),
-            $this->getNrOfGamesPerPlace(),
+            $this->getNrOfGamesPerPlaceMixed(),
         );
     }
 }

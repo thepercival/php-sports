@@ -80,19 +80,23 @@ class Creator
             $places = array_merge($places, $poule->getPlaces()->toArray());
         }
         uasort($places, function (Place $placeA, Place $placeB): int {
-            if ($placeA->getNumber() > $placeB->getNumber()) {
-                return 1;
+            if($placeA->getPlaceNr() === $placeB->getPlaceNr()) {
+                return $placeA->getPouleNr() - $placeB->getPouleNr();
             }
-            if ($placeA->getNumber() < $placeB->getNumber()) {
-                return -1;
-            }
-            if ($placeA->getPoule()->getNumber() > $placeB->getPoule()->getNumber()) {
-                return 1;
-            }
-            if ($placeA->getPoule()->getNumber() < $placeB->getPoule()->getNumber()) {
-                return -1;
-            }
-            return 0;
+            return $placeA->getPlaceNr() - $placeB->getPlaceNr();
+//            if ($placeA->getPlaceNr() > $placeB->getPlaceNr()) {
+//                return 1;
+//            }
+//            if ($placeA->getPlaceNr() < $placeB->getPlaceNr()) {
+//                return -1;
+//            }
+//            if ($placeA->getPouleNr() > $placeB->getPouleNr()) {
+//                return 1;
+//            }
+//            if ($placeA->getPouleNr() < $placeB->getPouleNr()) {
+//                return -1;
+//            }
+//            return 0;
         });
         return array_values($places);
     }

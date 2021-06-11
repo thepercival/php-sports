@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Sports\Round\Number;
 
+use Sports\Game\Order;
 use SportsHelpers\Repository\SaveRemove as SaveRemoveRepository;
 use SportsHelpers\Repository as BaseRepository;
 use Doctrine\ORM\EntityRepository;
@@ -38,7 +39,7 @@ class Repository extends EntityRepository implements SaveRemoveRepository
 
     public function savePlanning(RoundNumber $roundNumber, bool $hasPlanning = null): void
     {
-        foreach ($roundNumber->getGames() as $game) {
+        foreach ($roundNumber->getGames(Order::ByPoule) as $game) {
             $this->_em->persist($game);
         }
         if ($hasPlanning !== null) {

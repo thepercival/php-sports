@@ -364,7 +364,7 @@ class Round extends Identifiable
         return $places;
     }
 
-    public function getPlace(PlaceLocation $placeLocation): ?Place
+    public function getPlace(PlaceLocation $placeLocation): Place
     {
         return $this->getPoule($placeLocation->getPouleNr())->getPlace($placeLocation->getPlaceNr());
     }

@@ -181,7 +181,7 @@ class Validator
     {
         $startNumber = 1;
         foreach ($places as $place) {
-            if ($place->getNumber() !== $startNumber++) {
+            if ($place->getPlaceNr() !== $startNumber++) {
                 throw new Exception("het nummer van de plek in de poule is onjuist", E_ERROR);
             }
         }

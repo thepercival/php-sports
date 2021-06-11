@@ -14,7 +14,5 @@ Sports\Game:
       type: DateTimeImmutable<'Y-m-d\TH:i:s.u\Z'>
     competitionSport:
       type: Sports\Competition\Sport
-  virtual_properties:
-    getRefereePlace:
-      type: Sports\Place\Location
-      serialized_name: refereeRoundLocation
+    refereePlace:
+      type: Sports\Place

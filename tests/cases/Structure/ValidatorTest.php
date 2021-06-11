@@ -197,7 +197,7 @@ final class ValidatorTest extends TestCase
 
         $place = $rootRound->getPoule(1)->getPlace(1);
         $refCl = new \ReflectionClass($place);
-        $refClPropNumber = $refCl->getProperty("number");
+        $refClPropNumber = $refCl->getProperty("placeNr");
         $refClPropNumber->setAccessible(true);
         $refClPropNumber->setValue($place, 0);
         $refClPropNumber->setAccessible(false);

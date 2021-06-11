@@ -107,14 +107,9 @@ class Config extends Identifiable
         return !$this->hasNext();
     }
 
-    public function getCalculate(): Config|null
-    {
-        $first = $this->getFirst();
-        $nextAfterFirst = $first->getNext();
-        if ($nextAfterFirst !== null && $nextAfterFirst->getEnabled()) {
-            return $nextAfterFirst;
-        }
-        return $this;
+    public function getCalculate(): Config {
+        $firstNext = $this->getFirst()->getNext();
+        return $firstNext !== null && $firstNext->getEnabled() ? $firstNext : $this;
     }
 
     public function useSubScore(): bool

@@ -24,9 +24,6 @@ abstract class Game extends Identifiable
     public const PHASE_EXTRATIME = 2;
     public const PHASE_PENALTIES = 4;
 
-    public const ORDER_BY_BATCH = 1;
-    public const ORDER_BY_GAMEROUNDNUMBER = 2;
-
     public function __construct(
         protected Poule $poule,
         protected int $batchNr,
@@ -101,11 +98,6 @@ abstract class Game extends Identifiable
     public function setRefereePlace(Place $refereePlace = null): void
     {
         $this->refereePlace = $refereePlace;
-    }
-
-    public function getRefereePlaceLocId(): string|null
-    {
-        return $this->refereePlace !== null ? $this->refereePlace->getRoundLocationId() : null;
     }
 
     public function getField(): ?Field

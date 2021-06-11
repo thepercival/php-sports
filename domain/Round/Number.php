@@ -9,7 +9,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\PersistentCollection;
 use Exception;
 use Sports\Competition;
-use Sports\Game as GameBase;
+use Sports\Game\Order as GameOrder;
 use Sports\Place;
 use Sports\Poule;
 use Sports\Competition\Sport as CompetitionSport;
@@ -204,17 +204,17 @@ class Number extends Identifiable
     }
 
     /**
-     * @param int|null $order
+     * @param int $order
      * @return list<AgainstGame|TogetherGame>
      */
-    public function getGames(int $order = null): array
+    public function getGames(int $order): array
     {
         $games = [];
         foreach ($this->getPoules() as $poule) {
             $games = array_merge($games, $poule->getGames());
         }
 
-        if ($order === GameBase::ORDER_BY_BATCH) {
+        if ($order === GameOrder::ByBatch) {
             uasort(
                 $games,
                 function (TogetherGame|AgainstGame $g1, TogetherGame|AgainstGame $g2): int {
@@ -227,6 +227,23 @@ class Number extends Identifiable
                         }
                     }
                     return $g1->getBatchNr() - $g2->getBatchNr();
+                }
+            );
+        } elseif ($order === GameOrder::ByDate) {
+            uasort(
+                $games,
+                function (TogetherGame|AgainstGame $g1, TogetherGame|AgainstGame $g2): int {
+                    $start1 = $g1->getStartDateTime()->getTimestamp();
+                    $start2 = $g2->getStartDateTime()->getTimestamp();
+                    if ($start1 === $start2) {
+                        $field1 = $g1->getField();
+                        $field2 = $g2->getField();
+                        if ($field1 !== null && $field2 !== null) {
+                            $retVal = $field1->getPriority() - $field2->getPriority();
+                            return $this->isFirst() ? $retVal : -$retVal;
+                        }
+                    }
+                    return $start1 - $start2;
                 }
             );
         }
@@ -304,7 +321,7 @@ class Number extends Identifiable
 
     public function getFirstStartDateTime(): DateTimeImmutable
     {
-        $games = $this->getGames(GameBase::ORDER_BY_BATCH);
+        $games = $this->getGames(GameOrder::ByDate);
         $firstGame = reset($games);
         if ($firstGame === false) {
             throw new Exception('er zijn geen wedstrijden voor dit rondenummer', E_ERROR);
@@ -314,7 +331,7 @@ class Number extends Identifiable
 
     public function getLastStartDateTime(): DateTimeImmutable
     {
-        $games = $this->getGames(GameBase::ORDER_BY_BATCH);
+        $games = $this->getGames(GameOrder::ByDate);
         $lastRecentGame = end($games);
         if ($lastRecentGame === false) {
             throw new Exception('er zijn geen wedstrijden voor dit rondenummer', E_ERROR);

@@ -78,7 +78,7 @@ abstract class Game extends OutputBase
             $retVal = substr($retVal, 0, 10);
         }
         $useColors = $this->useColors() && $place->getPoule()->getNumber() === 1;
-        $placeColor = $useColors ? ($place->getNumber() % 10) : -1;
+        $placeColor = $useColors ? ($place->getPlaceNr() % 10) : -1;
         return $this->outputColor($placeColor, $retVal);
     }
 
@@ -123,7 +123,7 @@ abstract class Game extends OutputBase
             return $refNr;
         }
         if ($refPlace !== null) {
-            return $refPlace->getNumber();
+            return $refPlace->getPlaceNr();
         }
         return $referee->getPriority();
     }

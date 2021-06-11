@@ -63,14 +63,14 @@ abstract class Sport
 
     /**
      * @param MultipleQualifyRule $multipleRule
-     * @return list<Place|null>
+     * @return list<Place>
      */
     public function getPlacesForMultipleRule(MultipleQualifyRule $multipleRule): array
     {
         $fromRound = $multipleRule->getFromHorizontalPoule()->getRound();
         $sportRankingItems = $this->getItemsForHorizontalPoule($multipleRule->getFromHorizontalPoule());
         return array_values(
-            array_map(function (SportRoundRankingItem $rankingSportItem) use ($fromRound): Place|null {
+            array_map(function (SportRoundRankingItem $rankingSportItem) use ($fromRound): Place {
                 return $fromRound->getPlace($rankingSportItem->getPerformance()->getPlace());
             }, $sportRankingItems)
         );
@@ -85,7 +85,7 @@ abstract class Sport
         $performances = [];
         foreach ($horizontalPoule->getPlaces() as $place) {
             $sportRankingItems = $this->getItemsForPoule($place->getPoule());
-            $sportRankingItem = $this->getItemByRank($sportRankingItems, $place->getNumber());
+            $sportRankingItem = $this->getItemByRank($sportRankingItems, $place->getPlaceNr());
             if ($sportRankingItem === null) {
                 continue;
             }

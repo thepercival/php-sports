@@ -1,8 +1,6 @@
 Sports\Competitor\Team:
   exclusion_policy: ALL
   exclude: false
-  access_type: public_method
-
   properties:
     team:
       type: Sports\Team

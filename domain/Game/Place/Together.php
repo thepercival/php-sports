@@ -38,7 +38,7 @@ class Together extends GamePlaceBase
 
     public function getPlaceNr(): int
     {
-        return $this->getPlace()->getNumber();
+        return $this->getPlace()->getPlaceNr();
     }
 
     public function getGameRoundNumber(): int

@@ -1,10 +1,26 @@
 <?php
+declare(strict_types=1);
 
 namespace Sports\Place;
 
-interface Location
+class Location implements LocationInterface
 {
-    public function getPouleNr(): int;
-    public function getPlaceNr(): int;
-    public function getRoundLocationId(): string;
+    public function __construct(protected int $pouleNr, protected int $placeNr)
+    {
+    }
+
+    public function getPouleNr(): int
+    {
+        return $this->pouleNr;
+    }
+
+    public function getPlaceNr(): int
+    {
+        return $this->placeNr;
+    }
+
+    public function getRoundLocationId(): string
+    {
+        return $this->getPouleNr() . '.' . $this->getPlaceNr();
+    }
 }

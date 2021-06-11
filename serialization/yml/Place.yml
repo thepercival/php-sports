@@ -2,11 +2,12 @@ Sports\Place:
   exclusion_policy: ALL
   exclude: false
   properties:
-    number:
+    id:
       type: integer
+      groups: [structure, noReference]
     penaltyPoints:
       type: integer
-  virtual_properties:
-    getQualifiedPlaceLocation:
-      type: Sports\Place\LocationBase
-      serialized_name: qualifiedPlaceLocation
+      groups: [structure, noReference]
+    qualifiedPlace:
+      type: Sports\Place
+      groups: [structure]

@@ -1,8 +1,6 @@
 Sports\Team\Role:
   exclusion_policy: ALL
   exclude: false
-  access_type: public_method
-
   properties:
     id:
       type: integer

@@ -113,7 +113,7 @@ class Poule extends Identifiable
     public function getPlace(int $number): Place
     {
         $places = array_filter($this->getPlaces()->toArray(), function (Place $place) use ($number): bool {
-            return $place->getNumber() === $number;
+            return $place->getPlaceNr() === $number;
         });
         $place = reset($places);
         if ($place === false) {

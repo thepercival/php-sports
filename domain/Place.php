@@ -4,19 +4,18 @@ declare(strict_types=1);
 namespace Sports;
 
 use InvalidArgumentException;
+use Sports\Game\Place\Together as TogetherGamePlace;
 use Sports\Place\Location as PlaceLocation;
-use Sports\Place\LocationBase as PlaceLocationBase;
 use Sports\Qualify\Target as QualifyTarget;
 use Sports\Poule\Horizontal as HorizontalPoule;
-use SportsHelpers\Identifiable;
 use Sports\Game\Against as AgainstGame;
 use Sports\Game\Together as TogetherGame;
 
-class Place extends Identifiable implements PlaceLocation
+class Place extends PlaceLocation
 {
+    protected int|string|null $id = null;
+
     protected string|null $name = null;
-    protected int $number;
-    protected string|null $roundLocationId = null;
     protected int $penaltyPoints;
     protected Place|null $qualifiedPlace = null;
     protected Competitor|null $competitorDep = null;
@@ -28,11 +27,22 @@ class Place extends Identifiable implements PlaceLocation
         if ($number === null) {
             $number = $poule->getPlaces()->count() + 1;
         }
-        $this->number = $number;
+        parent::__construct($poule->getNumber(), $number);
+
         if (!$poule->getPlaces()->contains($this)) {
             $poule->getPlaces()->add($this) ;
         }
         $this->setPenaltyPoints(0);
+    }
+
+    public function getId(): int|string|null
+    {
+        return $this->id;
+    }
+
+    public function setId(int|string|null $id): void
+    {
+        $this->id = $id;
     }
 
     public function getPoule(): Poule
@@ -45,19 +55,18 @@ class Place extends Identifiable implements PlaceLocation
         return $this->getPoule()->getRound();
     }
 
-    public function getNumber(): int
-    {
-        return $this->number;
-    }
-
     public function getPouleNr(): int
     {
+//        if ($this->pouleNr !== null) {
+//            return $this->pouleNr;
+//        }
         return $this->getPoule()->getNumber();
     }
 
-    public function getPlaceNr(): int
+    // json serialize
+    public function setPouleNr(int $pouleNr): void
     {
-        return $this->getNumber();
+        $this->pouleNr = $pouleNr;
     }
 
     public function getPenaltyPoints(): int
@@ -92,24 +101,17 @@ class Place extends Identifiable implements PlaceLocation
         $this->name = $name;
     }
 
-    private function getHorizontalNumber(string $qualifyTarget): int {
-        if ($qualifyTarget === QualifyTarget::WINNERS) {
-            return $this->getNumber();
-        }
-        return $this->getPoule()->getPlaces()->count() + 1 - $this->getNumber();
-    }
-
-    public function  getHorizontalPoule(string $qualifyTarget): HorizontalPoule {
-        return $this->getRound()->getHorizontalPoule($qualifyTarget, $this->getHorizontalNumber($qualifyTarget));
-    }
-
-
-    public function getRoundLocationId(): string
+    private function getHorizontalNumber(string $qualifyTarget): int
     {
-        if ($this->roundLocationId === null) {
-            $this->roundLocationId = $this->getPoule()->getNumber() . '.' . $this->getNumber();
+        if ($qualifyTarget === QualifyTarget::WINNERS) {
+            return $this->getPlaceNr();
         }
-        return $this->roundLocationId;
+        return $this->getPoule()->getPlaces()->count() + 1 - $this->getPlaceNr();
+    }
+
+    public function getHorizontalPoule(string $qualifyTarget): HorizontalPoule
+    {
+        return $this->getRound()->getHorizontalPoule($qualifyTarget, $this->getHorizontalNumber($qualifyTarget));
     }
 
     /**
@@ -125,6 +127,48 @@ class Place extends Identifiable implements PlaceLocation
         ));
     }
 
+    /**
+     * @return list<AgainstGame>
+     */
+    public function getAgainstGames(): array
+    {
+        return array_values(
+            $this->getPoule()->getAgainstGames()->filter(function (AgainstGame $game): bool {
+                return $game->isParticipating($this);
+            })->toArray()
+        );
+    }
+
+    /**
+     * @return list<TogetherGame>
+     */
+    public function getTogetherGames(): array
+    {
+        return array_values(
+            $this->getPoule()->getTogetherGames()->filter(function (TogetherGame $game): bool {
+                return $game->isParticipating($this);
+            })->toArray()
+        );
+    }
+
+    /**
+     * @return list<TogetherGamePlace>
+     */
+    public function getTogetherGamePlaces(): array
+    {
+        return array_values(array_map(
+            function (TogetherGame $game): TogetherGamePlace {
+                foreach ($game->getPlaces() as $gamePlace) {
+                    if ($gamePlace->getPlace() === $this) {
+                        return $gamePlace;
+                    }
+                }
+                throw new \Exception('place should be in own games', E_ERROR);
+            },
+            $this->getTogetherGames()
+        ));
+    }
+
     public function getQualifiedPlace(): ?Place
     {
         return $this->qualifiedPlace;
@@ -133,17 +177,6 @@ class Place extends Identifiable implements PlaceLocation
     public function setQualifiedPlace(Place $place = null): void
     {
         $this->qualifiedPlace = $place;
-    }
-
-    public function getQualifiedPlaceLocation(): ?PlaceLocationBase
-    {
-        if ($this->qualifiedPlace === null) {
-            return null;
-        }
-        return new PlaceLocationBase(
-            $this->qualifiedPlace->getPoule()->getNumber(),
-            $this->qualifiedPlace->getNumber()
-        );
     }
 
     public function getStartLocation(): PlaceLocation

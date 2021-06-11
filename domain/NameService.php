@@ -89,10 +89,10 @@ class NameService
             }
         }
         if ($longName === true) {
-            return $this->getPouleName($place->getPoule(), true) . ' nr. ' . $place->getNumber();
+            return $this->getPouleName($place->getPoule(), true) . ' nr. ' . $place->getPlaceNr();
         }
         $name = $this->getPouleName($place->getPoule(), false);
-        return $name . $place->getNumber();
+        return $name . $place->getPlaceNr();
     }
 
     public function getPlaceFromName(Place $place, bool $competitorName, bool $longName = false): string
@@ -128,7 +128,7 @@ class NameService
             return $this->getPlaceName($fromPlace, false, $longName);
         }
         $name = $this->getQualifyTargetDescription(
-            $fromPlace->getNumber() === 1 ? QualifyTarget::WINNERS : QualifyTarget::LOSERS
+            $fromPlace->getPlaceNr() === 1 ? QualifyTarget::WINNERS : QualifyTarget::LOSERS
         );
         return $name . ' ' . $this->getPouleName($fromPlace->getPoule(), false);
     }
