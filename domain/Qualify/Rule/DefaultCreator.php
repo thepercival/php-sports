@@ -30,7 +30,7 @@ class DefaultCreator
      */
     public function createRules(array $fromHorPoules, QualifyGroup $qualifyGroup): void
     {
-        $childRoundPlaces = $this->getChildRoundPlaces($qualifyGroup);
+        $childRoundPlaces = $this->getChildRoundPlacesLikeSnake($qualifyGroup);
         $fromHorPoule = array_shift($fromHorPoules);
         $previousRule = null;
         while ($fromHorPoule !== null && count($childRoundPlaces) > 0) {
@@ -50,13 +50,21 @@ class DefaultCreator
      * @param QualifyGroup $qualifyGroup
      * @return list<Place>
      */
-    protected function getChildRoundPlaces(QualifyGroup $qualifyGroup): array
+    protected function getChildRoundPlacesLikeSnake(QualifyGroup $qualifyGroup): array
     {
-        $childRoundPlaces = $qualifyGroup->getChildRound()->getPlaces(Round::ORDER_NUMBER_POULE);
-        if ($qualifyGroup->getTarget() === QualifyTarget::WINNERS) {
-            return array_values($childRoundPlaces);
+        $horPoules = $qualifyGroup->getChildRound()->getHorizontalPoules($qualifyGroup->getTarget());
+        $places = [];
+        $reverse = false;
+        foreach( $horPoules as $horPoule) {
+            $horPoulePlaces = $horPoule->getPlaces()->toArray();
+            $horPoulePlace = $reverse ? array_pop($horPoulePlaces) : array_shift($horPoulePlaces);
+            while ($horPoulePlace !== null) {
+                array_push($places, $horPoulePlace);
+                $horPoulePlace = $reverse ? array_pop($horPoulePlaces) : array_shift($horPoulePlaces);
+            }
+            $reverse = !$reverse;
         }
-        return array_values(array_reverse($childRoundPlaces));
+        return $places;
     }
 
     /**
@@ -70,7 +78,7 @@ class DefaultCreator
         $mappings = new ArrayCollection();
         $fromHorPoulePlaces = array_values($fromHorPoule->getPlaces()->slice(0));
         while ($childRoundPlace = array_shift($childRoundPlaces)) {
-            $fromHorPoulePlace = $this->getBestPick($childRoundPlace, $fromHorPoulePlaces);
+            $fromHorPoulePlace = $this->getBestPick($childRoundPlace, $fromHorPoulePlaces, array_values($childRoundPlaces));
             $idx = array_search($fromHorPoulePlace, $fromHorPoulePlaces, true);
             if ($idx === false) {
                 continue;
@@ -84,9 +92,13 @@ class DefaultCreator
     /**
      * @param Place $childRoundPlace
      * @param list<Place> $fromHorPoulePlaces
+     * @param list<Place> $otherChildRoundPlaces
      * @return Place
      */
-    protected function getBestPick(Place $childRoundPlace, array $fromHorPoulePlaces): Place
+    protected function getBestPick(
+        Place $childRoundPlace,
+        array $fromHorPoulePlaces,
+        array $otherChildRoundPlaces): Place
     {
         $fromHorPoulePlacesWithFewestPouleOrigins = $this->getFewestOverlappingPouleOrigins(
             $childRoundPlace->getPoule(),
@@ -99,7 +111,7 @@ class DefaultCreator
                 return $fromHorPoulePlaceWithFewestPouleOrigins;
             }
         }
-        $otherChildRoundPoules = $this->getOtherChildRoundPoules($childRoundPlace->getPoule());
+        $otherChildRoundPoules = $this->getOtherChildRoundPoules($otherChildRoundPlaces);
         $fromHorPoulePlacesWithMostOtherPouleOrigins = $this->getMostOtherOverlappingPouleOrigins(
             $otherChildRoundPoules,
             $fromHorPoulePlacesWithFewestPouleOrigins
@@ -133,14 +145,18 @@ class DefaultCreator
     }
 
     /**
-     * @param Poule $poule
+     * @param list<Place> $otherChildRoundPlaces
      * @return list<Poule>
      */
-    protected function getOtherChildRoundPoules(Poule $poule): array
+    protected function getOtherChildRoundPoules(array $otherChildRoundPlaces): array
     {
-        return array_values($poule->getRound()->getPoules()->filter(function (Poule $pouleIt) use ($poule): bool {
-            return $pouleIt !== $poule;
-        })->toArray());
+        $poules = [];
+        foreach( $otherChildRoundPlaces as $place) {
+            if (array_search($place->getPoule(), $poules, true) !== false) {
+                array_push($poules, $place->getPoule());
+            }
+        }
+        return $poules;
     }
 
     /**

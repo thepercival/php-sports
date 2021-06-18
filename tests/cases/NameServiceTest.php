@@ -216,7 +216,7 @@ final class NameServiceTest extends TestCase
             self::assertSame('poule C nr. 3',$nameService->getPlaceFromName($lastPlace, true, true));
 
 
-            $winnersLastPlace = $winnersRound->getLastPoule()->getPlace(2);
+            $winnersLastPlace = $winnersRound->getFirstPoule()->getPlace(2);
 
             self::assertSame('?2', $nameService->getPlaceFromName($winnersLastPlace, false, false));
             self::assertSame('beste nummer 2', $nameService->getPlaceFromName($winnersLastPlace, false, true));

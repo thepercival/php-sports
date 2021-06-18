@@ -53,8 +53,7 @@ class PlanningAssigner
         Batch|SelfRefereeBatch $batch,
         DateTimeImmutable $gameStartDateTime,
         PlanningMapper $mapper
-    ): void
-    {
+    ): void {
         foreach ($batch->getGames() as $planningGame) {
             $game = $this->createGameFromPlanningGame($planningGame, $gameStartDateTime, $mapper);
             $game->setField($mapper->getField($planningGame->getField()));

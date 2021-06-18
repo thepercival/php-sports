@@ -97,9 +97,19 @@ class Config extends Identifiable
         return $this->maximum;
     }
 
+    public function setMaximum(int $maximum): void
+    {
+        $this->maximum = $maximum;
+    }
+
     public function getEnabled(): bool
     {
         return $this->enabled;
+    }
+
+    public function setEnabled(bool $enabled): void
+    {
+        $this->enabled = $enabled;
     }
 
     public function isLast(): bool

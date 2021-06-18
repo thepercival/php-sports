@@ -293,10 +293,10 @@ class GamesValidator
         $gamesFirstBatch = $this->getGamesForBatch($roundNumber, $orderedGames);
         $priority = 1;
         foreach ($gamesFirstBatch as $game) {
-            $field = $game->getField();
-            if ($field !== null && $field->getPriority() !== $priority) {
-                throw new Exception("fields are not prioritized", E_ERROR);
-            }
+//            $field = $game->getField();
+//            if ($field !== null && $field->getPriority() !== $priority) {
+//                throw new Exception("fields are not prioritized", E_ERROR);
+//            }
             $referee = $game->getReferee();
             if ($referee !== null && $referee->getPriority() !== $priority) {
                 throw new Exception("referees are not prioritized", E_ERROR);

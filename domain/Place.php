@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Sports;
 
+use Exception;
 use InvalidArgumentException;
 use Sports\Game\Place\Together as TogetherGamePlace;
 use Sports\Place\Location as PlaceLocation;
@@ -18,7 +19,7 @@ class Place extends PlaceLocation
     protected string|null $name = null;
     protected int $penaltyPoints;
     protected Place|null $qualifiedPlace = null;
-    protected Competitor|null $competitorDep = null;
+    protected int|null $competitorDep = null;
 
     const MAX_LENGTH_NAME = 10;
 
@@ -153,6 +154,7 @@ class Place extends PlaceLocation
 
     /**
      * @return list<TogetherGamePlace>
+     * @throws Exception
      */
     public function getTogetherGamePlaces(): array
     {
@@ -163,7 +165,7 @@ class Place extends PlaceLocation
                         return $gamePlace;
                     }
                 }
-                throw new \Exception('place should be in own games', E_ERROR);
+                throw new Exception('place should be in own games', E_ERROR);
             },
             $this->getTogetherGames()
         ));

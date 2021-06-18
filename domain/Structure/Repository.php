@@ -152,7 +152,9 @@ class Repository
     }
 
     protected function addHorizontalPoulesAndQualifyRules(Round $parentRound): void {
+        $this->horPouleCreator->remove($parentRound);
         $this->horPouleCreator->create($parentRound);
+        $this->qualifyRuleCreator->remove($parentRound);
         $this->qualifyRuleCreator->create($parentRound);
         foreach($parentRound->getChildren() as $childRound) {
             $this->addHorizontalPoulesAndQualifyRules($childRound);

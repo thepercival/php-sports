@@ -61,7 +61,7 @@ final class EditorTest extends TestCase
         $fromPlace = $qualifyGroup->getFromPlace($losersRound->getPoule(1)->getPlace(1));
         self::assertNotNull($fromPlace);
 
-        self::assertSame(2, $fromPlace->getPouleNr());
+        self::assertSame(3, $fromPlace->getPouleNr());
         self::assertSame(4, $fromPlace->getPlaceNr());
         self::assertSame(17, $rootRound->getNrOfPlaces());
     }
@@ -87,8 +87,8 @@ final class EditorTest extends TestCase
         self::assertNotNull($qualifyGroup);
         $fromPlace = $qualifyGroup->getFromPlace($losersRound->getPoule(1)->getPlace(1));
         self::assertNotNull($fromPlace);
-        self::assertSame(4, $fromPlace->getPouleNr());
-        self::assertSame(3, $fromPlace->getPlaceNr());
+        self::assertSame(1, $fromPlace->getPouleNr());
+        self::assertSame(4, $fromPlace->getPlaceNr());
         self::assertSame(15, $rootRound->getNrOfPlaces());
     }
 
