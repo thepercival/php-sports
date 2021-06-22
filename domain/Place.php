@@ -188,4 +188,9 @@ class Place extends PlaceLocation
         }
         return $this->qualifiedPlace->getStartLocation();
     }
+
+    public function getStructureLocation(): string
+    {
+        return $this->poule->getStructureLocation() . '.' . $this->getPlaceNr();
+    }
 }

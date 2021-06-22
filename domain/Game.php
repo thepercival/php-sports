@@ -24,13 +24,14 @@ abstract class Game extends Identifiable
     public const PHASE_EXTRATIME = 2;
     public const PHASE_PENALTIES = 4;
 
+    private string|null $refereeStructureLocation = null; // json
+
     public function __construct(
         protected Poule $poule,
         protected int $batchNr,
         protected DateTimeImmutable $startDateTime,
         protected CompetitionSport $competitionSport
-    )
-    {
+    ) {
         $this->setState(State::Created);
     }
 
@@ -75,7 +76,7 @@ abstract class Game extends Identifiable
         return $this->state;
     }
 
-    public function setState(int $state): void
+    final public function setState(int $state): void
     {
         $this->state = $state;
     }
@@ -127,5 +128,19 @@ abstract class Game extends Identifiable
     public function getPeriod(): Period
     {
         return new Period($this->getStartDateTime(), $this->getEndDateTime());
+    }
+
+    public function getRefereeStructureLocation(): string|null
+    {
+        $refereePlace = $this->getRefereePlace();
+        if ($refereePlace !== null) {
+            return $refereePlace->getStructureLocation();
+        }
+        return $this->refereeStructureLocation;
+    }
+
+    public function setRefereeStructureLocation(string|null $refereeStructureLocation): void
+    {
+        $this->refereeStructureLocation = $refereeStructureLocation;
     }
 }

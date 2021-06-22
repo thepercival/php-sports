@@ -48,54 +48,54 @@ abstract class Sport
     abstract public function getItemsForPoule(Poule $poule): array;
 
 
-    /**
-     * @param MultipleQualifyRule $multipleRule
-     * @return list<PlaceLocation>
-     */
-    public function getPlaceLocationsForMultipleRule(MultipleQualifyRule $multipleRule): array
-    {
-        $sportRoundRankingItems = $this->getItemsForHorizontalPoule($multipleRule->getFromHorizontalPoule());
-
-        return array_map(function (SportRoundRankingItem $rankingItem): PlaceLocation {
-            return $rankingItem->getPlaceLocation();
-        }, $sportRoundRankingItems);
-    }
-
-    /**
-     * @param MultipleQualifyRule $multipleRule
-     * @return list<Place>
-     */
-    public function getPlacesForMultipleRule(MultipleQualifyRule $multipleRule): array
-    {
-        $fromRound = $multipleRule->getFromHorizontalPoule()->getRound();
-        $sportRankingItems = $this->getItemsForHorizontalPoule($multipleRule->getFromHorizontalPoule());
-        return array_values(
-            array_map(function (SportRoundRankingItem $rankingSportItem) use ($fromRound): Place {
-                return $fromRound->getPlace($rankingSportItem->getPerformance()->getPlace());
-            }, $sportRankingItems)
-        );
-    }
-
-    /**
-     * @param HorizontalPoule $horizontalPoule
-     * @return list<SportRoundRankingItem>
-     */
-    public function getItemsForHorizontalPoule(HorizontalPoule $horizontalPoule): array
-    {
-        $performances = [];
-        foreach ($horizontalPoule->getPlaces() as $place) {
-            $sportRankingItems = $this->getItemsForPoule($place->getPoule());
-            $sportRankingItem = $this->getItemByRank($sportRankingItems, $place->getPlaceNr());
-            if ($sportRankingItem === null) {
-                continue;
-            }
-            $performances[] = $sportRankingItem->getPerformance();
-        }
-        $scoreConfig = $horizontalPoule->getRound()->getValidScoreConfig($this->competitionSport);
-        $ruleSet = $this->competitionSport->getCompetition()->getRankingRuleSet();
-        $rankingRules = $this->rankingRuleGetter->getRules($ruleSet, $scoreConfig->useSubScore());
-        return $this->rankItems($performances, $rankingRules);
-    }
+//    /**
+//     * @param MultipleQualifyRule $multipleRule
+//     * @return list<PlaceLocation>
+//     */
+//    public function getPlaceLocationsForMultipleRule(MultipleQualifyRule $multipleRule): array
+//    {
+//        $sportRoundRankingItems = $this->getItemsForHorizontalPoule($multipleRule->getFromHorizontalPoule());
+//
+//        return array_map(function (SportRoundRankingItem $rankingItem): PlaceLocation {
+//            return $rankingItem->getPlaceLocation();
+//        }, $sportRoundRankingItems);
+//    }
+//
+//    /**
+//     * @param MultipleQualifyRule $multipleRule
+//     * @return list<Place>
+//     */
+//    public function getPlacesForMultipleRule(MultipleQualifyRule $multipleRule): array
+//    {
+//        $fromRound = $multipleRule->getFromHorizontalPoule()->getRound();
+//        $sportRankingItems = $this->getItemsForHorizontalPoule($multipleRule->getFromHorizontalPoule());
+//        return array_values(
+//            array_map(function (SportRoundRankingItem $rankingSportItem) use ($fromRound): Place {
+//                return $fromRound->getPlace($rankingSportItem->getPerformance()->getPlace());
+//            }, $sportRankingItems)
+//        );
+//    }
+//
+//    /**
+//     * @param HorizontalPoule $horizontalPoule
+//     * @return list<SportRoundRankingItem>
+//     */
+//    public function getItemsForHorizontalPoule(HorizontalPoule $horizontalPoule): array
+//    {
+//        $performances = [];
+//        foreach ($horizontalPoule->getPlaces() as $place) {
+//            $sportRankingItems = $this->getItemsForPoule($place->getPoule());
+//            $sportRankingItem = $this->getItemByRank($sportRankingItems, $place->getPlaceNr());
+//            if ($sportRankingItem === null) {
+//                continue;
+//            }
+//            $performances[] = $sportRankingItem->getPerformance();
+//        }
+//        $scoreConfig = $horizontalPoule->getRound()->getValidScoreConfig($this->competitionSport);
+//        $ruleSet = $this->competitionSport->getCompetition()->getRankingRuleSet();
+//        $rankingRules = $this->rankingRuleGetter->getRules($ruleSet, $scoreConfig->useSubScore());
+//        return $this->rankItems($performances, $rankingRules);
+//    }
 
 
 

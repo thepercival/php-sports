@@ -51,6 +51,65 @@ class RoundTest extends TestCase
         }
     }
 
+    public function testMultipleRuleThirdPlaceAgainstSportDiff(): void
+    {
+        $competition = $this->createCompetition();
+
+        $structureEditor = $this->createStructureEditor();
+        $structure = $structureEditor->create($competition, [3,3]);
+        $rootRound = $structure->getRootRound();
+
+        (new GamesCreator())->createStructureGames($structure);
+
+        $pouleOne = $rootRound->getPoule(1);
+        $this->setScoreSingle($pouleOne, 1, 2, 1, 0);
+        $this->setScoreSingle($pouleOne, 1, 3, 1, 0);
+        $this->setScoreSingle($pouleOne, 2, 3, 0, 1);
+
+        $pouleTwo = $rootRound->getPoule(2);
+        $this->setScoreSingle($pouleTwo, 1, 2, 1, 0);
+        $this->setScoreSingle($pouleTwo, 1, 3, 1, 0);
+        $this->setScoreSingle($pouleTwo, 2, 3, 0, 2);
+
+        $roundRankingCalculator = new RoundRankingCalculator();
+        $nrsTwo = $rootRound->getHorizontalPoule(QualifyTarget::WINNERS, 2);
+        $rankingItems = $roundRankingCalculator->getItemsForHorizontalPoule($nrsTwo);
+
+        $thirdPlacedItem = $roundRankingCalculator->getItemByRank($rankingItems, 1);
+
+
+        self::assertSame($thirdPlacedItem->getPlace(), $pouleTwo->getPlace(3));
+    }
+
+    public function testMultipleRuleThirdPlaceAgainstSportTotallyEqual(): void
+    {
+        $competition = $this->createCompetition();
+
+        $structureEditor = $this->createStructureEditor();
+        $structure = $structureEditor->create($competition, [3,3]);
+        $rootRound = $structure->getRootRound();
+
+        (new GamesCreator())->createStructureGames($structure);
+
+        $pouleOne = $rootRound->getPoule(1);
+        $this->setScoreSingle($pouleOne, 1, 2, 1, 0);
+        $this->setScoreSingle($pouleOne, 1, 3, 1, 0);
+        $this->setScoreSingle($pouleOne, 2, 3, 0, 1);
+
+        $pouleTwo = $rootRound->getPoule(2);
+        $this->setScoreSingle($pouleTwo, 1, 2, 1, 0);
+        $this->setScoreSingle($pouleTwo, 1, 3, 1, 0);
+        $this->setScoreSingle($pouleTwo, 2, 3, 0, 1);
+
+        $roundRankingCalculator = new RoundRankingCalculator();
+        $nrsTwo = $rootRound->getHorizontalPoule(QualifyTarget::WINNERS, 2);
+        $rankingItems = $roundRankingCalculator->getItemsForHorizontalPoule($nrsTwo);
+
+        $thirdPlacedItem = $roundRankingCalculator->getItemByRank($rankingItems, 1);
+
+        self::assertSame($thirdPlacedItem->getPlace(), $pouleOne->getPlace(3));
+    }
+
     public function testSingleRankedStateFinished(): void
     {
         $competition = $this->createCompetition();

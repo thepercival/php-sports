@@ -32,6 +32,44 @@ class Service
      * @param Poule|null $filterPoule
      * @return list<Place>
      */
+    public function resetQualifiers(Poule $filterPoule = null): array
+    {
+        /** @var array<int|string, Place> $changedPlaces */
+        $changedPlaces = [];
+        $resetQualifiersForSingleRule = function (SingleQualifyRule $singleQualifyRule) use ($filterPoule, &$changedPlaces): void {
+            foreach ($singleQualifyRule->getMappings() as $qualifyPlaceMapping) {
+                $fromPlace = $qualifyPlaceMapping->getFromPlace();
+                if ($filterPoule !== null && $fromPlace->getPoule() !== $filterPoule) {
+                    return;
+                }
+                $qualifyPlaceMapping->getToPlace()->setQualifiedPlace(null);
+                /** @var array<int|string, Place> $changedPlaces */
+                array_push($changedPlaces, $qualifyPlaceMapping->getToPlace());
+            }
+        };
+        foreach ($this->round->getQualifyGroups() as $qualifyGroup) {
+            $singleRule = $qualifyGroup->getFirstSingleRule();
+            while ($singleRule !== null) {
+                $resetQualifiersForSingleRule($singleRule);
+                $singleRule = $singleRule->getNext();
+            }
+            $multipleRule = $qualifyGroup->getMultipleRule();
+            /** @var array<int|string, Place> $changedPlaces */
+            if ($multipleRule !== null) {
+                foreach ($multipleRule->getToPlaces() as $toPlace) {
+                    $toPlace->setQualifiedPlace(null);
+                    array_push($changedPlaces, $toPlace);
+                }
+            }
+        }
+        /** @var array<int|string, Place> $changedPlaces */
+        return array_values($changedPlaces);
+    }
+
+    /**
+     * @param Poule|null $filterPoule
+     * @return list<Place>
+     */
     public function setQualifiers(Poule $filterPoule = null): array
     {
         /** @var array<int|string, Place> $changedPlaces */

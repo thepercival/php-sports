@@ -183,11 +183,12 @@ final class DrawHelper
             $losersColor = $this->getQualifyGroupColor($qualifyGroup);
             $singleRule = $qualifyGroup->getFirstSingleRule();
             while ($singleRule !== null) {
-                $currentCoordinate = $this->drawer->drawVertToOrigin(
+                $this->drawer->drawVertToOrigin(
                     $currentCoordinate,
                     $this->getQualifyRuleString($singleRule),
                     $losersColor
-                )->decrementY();
+                );
+                $currentCoordinate = $currentCoordinate->decrementY();
                 $singleRule = $singleRule->getNext();
             }
             $multipleRule = $qualifyGroup->getMultipleRule();

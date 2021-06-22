@@ -105,7 +105,8 @@ class Repository
         }
         $structure = new StructureBase($firstRoundNumber, $rootRound);
 
-        $this->addHorizontalPoulesAndQualifyRules($rootRound);
+        $this->addHorizontalPoules($rootRound);
+        $this->addQualifyRules($rootRound);
 
         return $structure;
     }
@@ -151,15 +152,22 @@ class Repository
         $this->em->flush();
     }
 
-    protected function addHorizontalPoulesAndQualifyRules(Round $parentRound): void {
+    protected function addHorizontalPoules(Round $parentRound): void {
         $this->horPouleCreator->remove($parentRound);
         $this->horPouleCreator->create($parentRound);
+        foreach($parentRound->getChildren() as $childRound) {
+            $this->addHorizontalPoules($childRound);
+        }
+    }
+
+    protected function addQualifyRules(Round $parentRound): void {
         $this->qualifyRuleCreator->remove($parentRound);
         $this->qualifyRuleCreator->create($parentRound);
         foreach($parentRound->getChildren() as $childRound) {
-            $this->addHorizontalPoulesAndQualifyRules($childRound);
+            $this->addQualifyRules($childRound);
         }
     }
+
     /*public function remove(Structure $structure, int $roundNumberValue = null )
     {
         $conn = $this->em->getConnection();

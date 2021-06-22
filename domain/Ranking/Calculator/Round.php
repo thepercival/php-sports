@@ -57,6 +57,24 @@ class Round
     }
 
     /**
+     * @param HorizontalPoule $horPoule
+     * @return list<RoundRankingItem>
+     */
+    public function getItemsForHorizontalPoule(HorizontalPoule $horPoule): array
+    {
+        $rankingItems = [];
+        foreach( $horPoule->getPlaces() as $place) {
+            $pouleRannkingItems = $this->getItemsForPoule($place->getPoule());
+            $pouleRankingItem = $this->getItemByRank($pouleRannkingItems, $place->getPlaceNr());
+            if ($pouleRankingItem === null) {
+                continue;
+            }
+            array_push($rankingItems, $pouleRankingItem);
+        }
+        return $this->rankItems($rankingItems);
+    }
+
+    /**
      * @param MultipleQualifyRule $multipleRule
      * @return list<Place>
      */
@@ -74,23 +92,6 @@ class Round
         return array_values(array_map(function (RoundRankingItem $rankingItem): Place {
             return $rankingItem->getPlace();
         }, $this->getItemsForHorizontalPoule($horizontalPoule)));
-    }
-
-    /**
-     * @param HorizontalPoule $horizontalPoule
-     * @return list<RoundRankingItem>
-     */
-    public function getItemsForHorizontalPoule(HorizontalPoule $horizontalPoule): array
-    {
-        $competitionSports = $horizontalPoule->getRound()->getNumber()->getCompetitionSports();
-        $sportRoundRankingItems = $competitionSports->map(function (CompetitionSport $competitionSport) use ($horizontalPoule): array {
-            $calculator = $this->getSportRoundRankingCalculator($competitionSport);
-            return $calculator->getItemsForHorizontalPoule($horizontalPoule);
-        })->toArray();
-        return $this->convertSportRoundRankingsToRoundItems(
-            array_values($horizontalPoule->getPlaces()->toArray()),
-            array_values($sportRoundRankingItems)
-        );
     }
 
     /**
@@ -147,10 +148,14 @@ class Round
     {
         usort($cumulativeRoundRankingItems, function (RoundRankingItem $a, RoundRankingItem $b): int {
             if ($a->getCumulativeRank() === $b->getCumulativeRank()) {
-                if ($a->getPlace()->getPouleNr() === $b->getPlace()->getPouleNr()) {
-                    return $a->getPlace()->getPlaceNr() - $b->getPlace()->getPlaceNr();
+                $cmp = $a->compareCumulativePerformances($b);
+                if ($cmp === 0.0) {
+                    if ($a->getPlace()->getPouleNr() === $b->getPlace()->getPouleNr()) {
+                        return $a->getPlace()->getPlaceNr() - $b->getPlace()->getPlaceNr();
+                    }
+                    return $a->getPlace()->getPouleNr() - $b->getPlace()->getPouleNr();
                 }
-                return $a->getPlace()->getPouleNr() - $b->getPlace()->getPouleNr();
+                return $cmp > 0 ? 1 : -1;
             }
             return $a->getCumulativeRank() < $b->getCumulativeRank() ? -1 : 1;
         });
@@ -158,13 +163,15 @@ class Round
         $roundRankingItems = [];
         $nrOfIterations = 0;
         $rank = 0;
-        $previousCumulativeRank = 0;
+        $previousCumulative = null;
         while ($cumulativeRoundRankingItem = array_shift($cumulativeRoundRankingItems)) {
-            if ($previousCumulativeRank < $cumulativeRoundRankingItem->getCumulativeRank()) {
+            if ($previousCumulative === null || $previousCumulative->getCumulativeRank() < $cumulativeRoundRankingItem->getCumulativeRank() ||
+                $previousCumulative->getCumulativeRank() === $cumulativeRoundRankingItem->getCumulativeRank()
+                && $cumulativeRoundRankingItem->compareCumulativePerformances($previousCumulative) < 0) {
                 $rank++;
             }
             $cumulativeRoundRankingItem->setRank($rank, ++$nrOfIterations);
-            $previousCumulativeRank = $cumulativeRoundRankingItem->getCumulativeRank();
+            $previousCumulative = $cumulativeRoundRankingItem;
             $roundRankingItems[] = $cumulativeRoundRankingItem;
         }
         return $roundRankingItems;
