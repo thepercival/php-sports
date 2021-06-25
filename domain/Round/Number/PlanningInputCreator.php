@@ -32,7 +32,7 @@ class PlanningInputCreator
             $roundNumber->createSportVariants(),
             $pouleStructure
         );
-        $efficientSportVariants = $this->reduceFields($pouleStructure, $sportVariantsWithFields, $selfReferee !== SelfReferee::DISABLED);
+        $efficientSportVariants = $this->reduceFields($pouleStructure, $sportVariantsWithFields, $nrOfReferees, $selfReferee !== SelfReferee::DISABLED);
         return new PlanningInput(
             $pouleStructure,
             $efficientSportVariants,
@@ -93,12 +93,13 @@ class PlanningInputCreator
      * @param PouleStructure $pouleStructure
      * @param list<SportVariantWithFields> $sportVariantsWithFields
      * @param bool $selfReferee
+     * @param int $nrOfReferees
      * @return list<SportVariantWithFields>
      */
-    protected function reduceFields(PouleStructure $pouleStructure, array $sportVariantsWithFields, bool $selfReferee): array
+    protected function reduceFields(PouleStructure $pouleStructure, array $sportVariantsWithFields, int $nrOfReferees, bool $selfReferee): array
     {
         $inputCalculator = new InputCalculator();
-        $maxNrOfGamesPerBatch = $inputCalculator->getMaxNrOfGamesPerBatch($pouleStructure, $sportVariantsWithFields, $selfReferee);
+        $maxNrOfGamesPerBatch = $inputCalculator->getMaxNrOfGamesPerBatch($pouleStructure, $sportVariantsWithFields, $nrOfReferees, $selfReferee);
         $reducedSportVariants = [];
         foreach ($sportVariantsWithFields as $sportVariantWithField) {
             $reducedNrOfFields = $sportVariantWithField->getNrOfFields();

@@ -21,7 +21,7 @@ class Repository
         private HorizontalPouleCreator $horPouleCreator,
         private QualifyRuleCreator $qualifyRuleCreator)
     {
-        /** @psalm-suppress MixedArgumentTypeCoercion */
+        /** @psalm-suppress ArgumentTypeCoercion */
         $this->roundNumberRepos = new RoundNumberRepository($em, $em->getClassMetadata(RoundNumber::class));
     }
 
