@@ -65,7 +65,7 @@ class PlanningMapper
                     if ($pouleA->getPlaces()->count() === $pouleB->getPlaces()->count()) {
                         $pouleAStructureNumber = $pouleStructureNumberMap->get($pouleA);
                         $pouleBStructureNumber = $pouleStructureNumberMap->get($pouleB);
-                        return $pouleAStructureNumber >= $pouleBStructureNumber ? -1 : 1;
+                        return $pouleAStructureNumber < $pouleBStructureNumber ? -1 : 1;
                     }
                     return $pouleA->getPlaces()->count() >= $pouleB->getPlaces()->count() ? -1 : 1;
                 }
