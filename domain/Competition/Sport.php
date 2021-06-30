@@ -74,6 +74,6 @@ class Sport extends PersistVariant implements \Stringable
 
     public function __toString(): string
     {
-        return $this->createVariant() . ' f(' . $this->getFields()->count() . ')';
+        return $this->createVariant() . ' f=>' . $this->getFields()->count();
     }
 }

@@ -82,8 +82,9 @@ class NameService
 
     public function getPlaceName(Place $place, bool $competitorName = false, ?bool $longName = false): string
     {
-        if ($competitorName && $this->competitorMap !== null) {
-            $competitor = $this->competitorMap->getCompetitor($place->getStartLocation());
+        $startLocation = $place->getStartLocation();
+        if ($competitorName && $this->competitorMap !== null && $startLocation !== null) {
+            $competitor = $this->competitorMap->getCompetitor($startLocation);
             if ($competitor !== null) {
                 return $competitor->getName();
             }
@@ -97,8 +98,9 @@ class NameService
 
     public function getPlaceFromName(Place $place, bool $competitorName, bool $longName = false): string
     {
-        if ($competitorName && $this->competitorMap !== null) {
-            $competitor = $this->competitorMap->getCompetitor($place->getStartLocation());
+        $startLocation = $place->getStartLocation();
+        if ($competitorName && $this->competitorMap !== null && $startLocation !== null) {
+            $competitor = $this->competitorMap->getCompetitor($startLocation);
             if ($competitor !== null) {
                 return $competitor->getName();
             }

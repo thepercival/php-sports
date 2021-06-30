@@ -32,8 +32,7 @@ final class PlanningMapperTest extends TestCase
         $winnersRound = $structureEditor->addChildRound($rootRound, QualifyTarget::WINNERS, [2]);
         $losersRound = $structureEditor->addChildRound($rootRound, QualifyTarget::LOSERS, [2]);
 
-        $firstRoundNumber = $structure->getFirstRoundNumber();
-        $secondRoundNumber = $firstRoundNumber->getNext();
+        $secondRoundNumber = $losersRound->getNumber();
 
         $input = new Input(
             new PouleStructure(2, 2),

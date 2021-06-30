@@ -181,10 +181,13 @@ class Place extends PlaceLocation
         $this->qualifiedPlace = $place;
     }
 
-    public function getStartLocation(): PlaceLocation
+    public function getStartLocation(): PlaceLocation|null
     {
         if ($this->qualifiedPlace === null) {
-            return $this;
+            if ($this->getRound()->isRoot()) {
+                return $this;
+            }
+            return null;
         }
         return $this->qualifiedPlace->getStartLocation();
     }

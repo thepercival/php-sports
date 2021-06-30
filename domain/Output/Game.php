@@ -65,8 +65,9 @@ abstract class Game extends OutputBase
     protected function getPlaceAsString(Place $place): string
     {
         $retVal = $this->nameService->getPlaceFromName($place, false, false);
-        if ($this->competitorMap !== null) {
-            $competitor = $this->competitorMap->getCompetitor($place->getStartLocation());
+        $startLocation = $place->getStartLocation();
+        if ($this->competitorMap !== null && $startLocation !== null) {
+            $competitor = $this->competitorMap->getCompetitor($startLocation);
             if ($competitor !== null) {
                 $retVal .= ' ' . $competitor->getName();
             }

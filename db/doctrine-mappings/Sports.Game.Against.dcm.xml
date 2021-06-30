@@ -14,7 +14,7 @@
         <cascade-remove/>
       </cascade>
     </one-to-many>
-    <one-to-many field="participations" target-entity="Sports\Game\Participation" mapped-by="game" orphan-removal="true">
+    <one-to-many field="participations" target-entity="Sports\Game\Participation" mapped-by="againstGame" orphan-removal="true">
       <cascade>
         <cascade-persist/>
         <cascade-remove/>

@@ -101,28 +101,6 @@ class RoundHandler extends Handler implements SubscribingHandlerInterface
             }
         }
         return $round;
-
-
-
-        // set poules
-//        foreach ($arrRound["poules"] as $arrPoule) {
-//            $poule = new Poule($round, $arrPoule["number"]);
-//            foreach ($arrPoule["places"] as $arrPlace) {
-//                $place = new Place($poule, $arrPlace["number"]);
-//                $place->setPenaltyPoints($arrPlace["penaltyPoints"]);
-//
-//                if (!isset($arrPlace["qualifiedPlace"])) {
-//                    continue;
-//                }
-        // @TODO DEPRECATED
-//                $round->getParentQualifyGroup()->getRound()->getPoule()
-//                $competitor = new Competitor($association, "dummy");
-//                $competitor->setName($arrPlace["competitor"]["name"]);
-//                if (array_key_exists("registered", $arrPlace["competitor"])) {
-//                    $competitor->setRegistered($arrPlace["competitor"]["registered"]);
-//                }
-//                $place->setQualifiedPlace($qualifiedPlace);
-//            }
     }
 
     /**

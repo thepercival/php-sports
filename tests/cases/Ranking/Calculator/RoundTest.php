@@ -76,7 +76,7 @@ class RoundTest extends TestCase
         $rankingItems = $roundRankingCalculator->getItemsForHorizontalPoule($nrsTwo);
 
         $thirdPlacedItem = $roundRankingCalculator->getItemByRank($rankingItems, 1);
-
+        self::assertNotNull($thirdPlacedItem);
 
         self::assertSame($thirdPlacedItem->getPlace(), $pouleTwo->getPlace(3));
     }
@@ -106,6 +106,7 @@ class RoundTest extends TestCase
         $rankingItems = $roundRankingCalculator->getItemsForHorizontalPoule($nrsTwo);
 
         $thirdPlacedItem = $roundRankingCalculator->getItemByRank($rankingItems, 1);
+        self::assertNotNull($thirdPlacedItem);
 
         self::assertSame($thirdPlacedItem->getPlace(), $pouleOne->getPlace(3));
     }
