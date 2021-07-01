@@ -3,8 +3,8 @@ declare(strict_types=1);
 
 namespace Sports\Place\SportPerformance\Calculator;
 
-use Sports\Game;
 use Sports\Competition\Sport as CompetitionSport;
+use Sports\Game\Phase as GamePhase;
 use Sports\Score\Against as AgainstGameScore;
 use Sports\Score\AgainstHelper as AgainstScoreHelper;
 use Sports\Score\Against as AgainstScore;
@@ -69,18 +69,18 @@ class Against extends Calculator
         }
         $againstQualifyConfig = $game->getAgainstQualifyConfig();
         if ($finalScore->getResult($side) === AgainstResult::WIN) {
-            if ($game->getFinalPhase() === Game::PHASE_REGULARTIME) {
+            if ($game->getFinalPhase() === GamePhase::RegularTime) {
                 return $againstQualifyConfig->getWinPoints();
-            } elseif ($game->getFinalPhase() === Game::PHASE_EXTRATIME) {
+            } elseif ($game->getFinalPhase() === GamePhase::ExtraTime) {
                 return $againstQualifyConfig->getWinPointsExt();
             }
         } elseif ($finalScore->getResult($side) === AgainstResult::DRAW) {
-            if ($game->getFinalPhase() === Game::PHASE_REGULARTIME) {
+            if ($game->getFinalPhase() === GamePhase::RegularTime) {
                 return $againstQualifyConfig->getDrawPoints();
-            } elseif ($game->getFinalPhase() === Game::PHASE_EXTRATIME) {
+            } elseif ($game->getFinalPhase() === GamePhase::ExtraTime) {
                 return $againstQualifyConfig->getDrawPointsExt();
             }
-        } elseif ($game->getFinalPhase() === Game::PHASE_EXTRATIME) {
+        } elseif ($game->getFinalPhase() === GamePhase::ExtraTime) {
             return $againstQualifyConfig->getLosePointsExt();
         }
         return 0;

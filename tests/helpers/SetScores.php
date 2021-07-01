@@ -1,10 +1,12 @@
 <?php
+declare(strict_types=1);
 
 namespace Sports\TestHelper;
 
 use Sports\Poule;
 use Sports\Place;
 use Sports\Game\Against as AgainstGame;
+use Sports\Game\Phase as GamePhase;
 use Sports\Game\Place\Against as AgainstGamPlace;
 use Sports\Score\Against as AgainstGameScore;
 use SportsHelpers\Against\Side as AgainstSide;
@@ -63,7 +65,7 @@ trait SetScores
         $newHomeGoals = $foundGame->getSide($homePlace) === AgainstSide::HOME ? $homeGoals : $awayGoals;
         $newAwayGoals = $foundGame->getSide($awayPlace) === AgainstSide::AWAY ? $awayGoals : $homeGoals;
 
-        $foundGame->getScores()->add(new AgainstGameScore($foundGame, $newHomeGoals, $newAwayGoals, AgainstGame::PHASE_REGULARTIME));
+        $foundGame->getScores()->add(new AgainstGameScore($foundGame, $newHomeGoals, $newAwayGoals, GamePhase::RegularTime));
         $foundGame->setState($state !== null ? $state : State::Finished);
     }
 }

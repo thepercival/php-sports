@@ -20,10 +20,6 @@ abstract class Game extends Identifiable
     protected Field|null $field = null;
     protected int $state;
 
-    public const PHASE_REGULARTIME = 1;
-    public const PHASE_EXTRATIME = 2;
-    public const PHASE_PENALTIES = 4;
-
     private string|null $refereeStructureLocation = null; // json
 
     public function __construct(

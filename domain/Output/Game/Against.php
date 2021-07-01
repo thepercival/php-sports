@@ -7,11 +7,10 @@ use Psr\Log\LoggerInterface;
 use Sports\Output\Game as OutputGame;
 use Sports\Game\Against as AgainstGame;
 use SportsHelpers\Against\Side as AgainstSide;
-use Sports\Game\Together as TogetherGame;
+use Sports\Game\Phase as GamePhase;
 use Sports\Competitor\Map as CompetitorMap;
 use Sports\Place\SportPerformance\Calculator\Against as AgainstSportPerformanceCalculator;
 use Sports\State;
-use Sports\Game;
 
 class Against extends OutputGame
 {
@@ -55,7 +54,7 @@ class Against extends OutputGame
             return $score;
         }
         $retVal = $finalScore->getHome() . $score . $finalScore->getAway();
-        if ($game->getFinalPhase() === Game::PHASE_EXTRATIME) {
+        if ($game->getFinalPhase() === GamePhase::ExtraTime) {
             $retVal .= ' nv';
         }
         while (strlen($retVal) < 10) {
