@@ -5,6 +5,7 @@ namespace Sports\Tests\Ranking\Calculator;
 
 use Sports\Qualify\Target as QualifyTarget;
 use PHPUnit\Framework\TestCase;
+use Sports\Ranking\AgainstRuleSet;
 use Sports\Ranking\Item\End as EndRankingItem;
 use Sports\Place\Location as PlaceLocation;
 use Sports\TestHelper\CompetitionCreator;
@@ -12,9 +13,7 @@ use Sports\TestHelper\GamesCreator;
 use Sports\TestHelper\SetScores;
 use Sports\Qualify\Service as QualifyService;
 use Sports\Ranking\Calculator\End as EndRankingCalculator;
-use Sports\Ranking\RuleSet as RankingRuleSet;
 use Sports\TestHelper\StructureEditorCreator;
-use SportsHelpers\PouleStructure;
 
 class EndTest extends TestCase
 {
@@ -36,7 +35,7 @@ class EndTest extends TestCase
         $this->setScoreSingle($pouleOne, 1, 3, 3, 1);
         $this->setScoreSingle($pouleOne, 2, 3, 3, 2);
 
-        $calculator = new EndRankingCalculator($structure, RankingRuleSet::Against);
+        $calculator = new EndRankingCalculator($structure, AgainstRuleSet::DiffFirst);
         $items = $calculator->getItems();
 
         for ($rank = 1; $rank <= count($items); $rank++) {
@@ -65,7 +64,7 @@ class EndTest extends TestCase
         $this->setScoreSingle($pouleOne, 1, 3, 3, 1);
         // $this->setScoreSingle($pouleOne, 2, 3, 3, 2);
 
-        $calculator = new EndRankingCalculator($structure, RankingRuleSet::Against);
+        $calculator = new EndRankingCalculator($structure, AgainstRuleSet::DiffFirst);
         $items = $calculator->getItems();
 
         for ($rank = 1; $rank <= count($items); $rank++) {
@@ -109,7 +108,7 @@ class EndTest extends TestCase
         $qualifyService = new QualifyService($rootRound);
         $qualifyService->setQualifiers();
 
-        $calculator = new EndRankingCalculator($structure, RankingRuleSet::Against);
+        $calculator = new EndRankingCalculator($structure, AgainstRuleSet::DiffFirst);
         $items = $calculator->getItems();
 
         for ($rank = 1; $rank <= count($items); $rank++) {

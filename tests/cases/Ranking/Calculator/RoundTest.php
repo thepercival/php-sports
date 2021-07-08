@@ -7,16 +7,14 @@ use Sports\Qualify\Target as QualifyTarget;
 use Exception;
 use PHPUnit\Framework\TestCase;
 use Sports\Poule\Horizontal as HorizontalPoule;
+use Sports\Ranking\AgainstRuleSet;
 use Sports\TestHelper\CompetitionCreator;
 use Sports\TestHelper\GamesCreator;
 use Sports\TestHelper\SetScores;
 use Sports\Structure\Editor as StructureService;
-use Sports\Qualify\Group as QualifyGroup;
 use Sports\Ranking\Calculator\Round as RoundRankingCalculator;
 use Sports\State;
-use Sports\Ranking\RuleSet as RankingRuleSet;
 use Sports\TestHelper\StructureEditorCreator;
-use SportsHelpers\PouleStructure;
 
 class RoundTest extends TestCase
 {
@@ -210,7 +208,7 @@ class RoundTest extends TestCase
         self::assertSame(2, $placeLocations[0]->getPouleNr());
         self::assertSame(1, $placeLocations[1]->getPouleNr());
 
-        $competition->setRankingRuleSet(RankingRuleSet::AgainstAmong);
+        $competition->setAgainstRuleSet(AgainstRuleSet::AmongFirst);
         $roundRankingCalculator2 = new RoundRankingCalculator();
         $placeLocations2 = $roundRankingCalculator2->getPlacesForHorizontalPoule($firstHorizontalPoule);
 
@@ -277,7 +275,7 @@ class RoundTest extends TestCase
         self::assertSame($roundRankingItem1->getPlace(), $pouleOne->getPlace(2));
         self::assertSame($roundRankingItem2->getPlace(), $pouleOne->getPlace(1));
 
-        $competition->setRankingRuleSet(RankingRuleSet::AgainstAmong);
+        $competition->setAgainstRuleSet(AgainstRuleSet::AmongFirst);
         $roundRankingCalculatorAmong = new RoundRankingCalculator();
         $itemsEC = $roundRankingCalculatorAmong->getItemsForPoule($pouleOne);
 

@@ -2,6 +2,7 @@
 
 namespace Sports\Round\Number;
 
+use Sports\Game\Order as GameOrder;
 use Sports\Round\Number\PlanningInputCreator as PlanningInputService;
 use SportsPlanning\Planning;
 use SportsPlanning\Planning\Repository as PlanningRepository;
@@ -51,7 +52,7 @@ class PlanningCreator
         if ($previous === null) {
             return true;
         }
-        if ($previous->getHasPlanning() === false) {
+        if (count($previous->getGames(GameOrder::ByPoule)) === 0) {
             return false;
         }
         return $this->allPreviousRoundNumbersHavePlanning($previous);
@@ -63,7 +64,7 @@ class PlanningCreator
         Period $blockedPeriod = null
     ): void {
         $scheduler = new PlanningScheduler($blockedPeriod);
-        if ($roundNumber->getHasPlanning()) { // reschedule
+        if (count($roundNumber->getGames(GameOrder::ByPoule)) > 0) {
             $scheduler->rescheduleGames($roundNumber);
         } else {
             $inputService = new PlanningInputService();
@@ -92,7 +93,7 @@ class PlanningCreator
             $planningAssigner = new PlanningAssigner($scheduler);
             $planningAssigner->assignPlanningToRoundNumber($roundNumber, $planning);
         }
-        $this->roundNumberRepos->savePlanning($roundNumber, true);
+        $this->roundNumberRepos->savePlanning($roundNumber);
         $nextRoundNumber = $roundNumber->getNext();
         if ($nextRoundNumber !== null) {
             $this->createFrom($createPlanningEvent, $nextRoundNumber, $blockedPeriod);

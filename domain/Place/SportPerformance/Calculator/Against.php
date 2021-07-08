@@ -26,7 +26,7 @@ class Against extends Calculator
 
     /**
      * @param list<Place> $places
-     * @param list<AgainstGame> $games
+     * @param list<AgainstGame|TogetherGame> $games
      * @return list<SportPerformance>
      */
     public function getPerformances(array $places, array $games): array

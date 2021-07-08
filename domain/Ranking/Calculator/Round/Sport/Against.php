@@ -1,5 +1,4 @@
 <?php
-
 declare(strict_types=1);
 
 namespace Sports\Ranking\Calculator\Round\Sport;
@@ -7,7 +6,8 @@ namespace Sports\Ranking\Calculator\Round\Sport;
 use Sports\Competition\Sport as CompetitionSport;
 use Sports\Ranking\Calculator\Round\Sport as SportRoundRankingCalculator;
 use Sports\Ranking\FunctionMapCreator\Against as AgainstRankingFunctionMapCreator;
-use Sports\Place\SportPerformance\Calculator\Against as PlaceAgainstPerformanceCalculator;
+use Sports\Place\SportPerformance\Calculator\Against as AgainstPerformanceCalculator;
+use Sports\Place\SportPerformance\Calculator as PerformanceCalculator;
 use Sports\Ranking\Item\Round\Sport as SportRoundRankingItem;
 use Sports\State;
 use Sports\Round;
@@ -52,28 +52,9 @@ class Against extends SportRoundRankingCalculator
         return $this->getItems($poule->getRound(), $places, $games);
     }
 
-    /**
-     * @param Round $round
-     * @param list<Place> $places
-     * @param list<AgainstGame> $games
-     * @return list<SportRoundRankingItem>
-     */
-    protected function getItems(Round $round, array $places, array $games): array
+    protected function getCalculator(Round $round): PerformanceCalculator
     {
-        $calculator = new PlaceAgainstPerformanceCalculator($round, $this->competitionSport);
-        $performances = $calculator->getPerformances($places, $this->getFilteredGames($games));
-        return $this->getItemsHelper($round, $performances);
-    }
-
-    /**
-     * @param list<AgainstGame> $games
-     * @return list<AgainstGame>
-     */
-    protected function getFilteredGames(array $games): array
-    {
-        return array_values(array_filter($games, function (AgainstGame $game): bool {
-            return array_key_exists($game->getState(), $this->gameStateMap);
-        }));
+        return new AgainstPerformanceCalculator($round, $this->competitionSport);
     }
 
     /**

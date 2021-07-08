@@ -35,7 +35,6 @@ class Number extends Identifiable
      * @psalm-var ArrayCollection<int|string, Round>
      */
     protected ArrayCollection|PersistentCollection $rounds;
-    protected bool $hasPlanning;
     protected PlanningConfig|null $planningConfig = null;
     /**
      * @phpstan-var ArrayCollection<int|string, GameAmountConfig>|PersistentCollection<int|string, GameAmountConfig>
@@ -46,7 +45,6 @@ class Number extends Identifiable
     public function __construct(protected Competition $competition, protected RoundNumber|null $previous = null)
     {
         $this->number = $previous === null ? 1 : $previous->getNumber() + 1;
-        $this->hasPlanning = false;
         $this->rounds = new ArrayCollection();
         $this->gameAmountConfigs = new ArrayCollection();
     }
@@ -294,16 +292,6 @@ class Number extends Identifiable
             throw new Exception('de plannings-instellingen kunnen niet gevonden worden', E_ERROR);
         }
         return $previous->getValidPlanningConfig();
-    }
-
-    public function getHasPlanning(): bool
-    {
-        return $this->hasPlanning;
-    }
-
-    public function setHasPlanning(bool $hasPlanning): void
-    {
-        $this->hasPlanning = $hasPlanning;
     }
 
     public function hasMultipleSports(): bool

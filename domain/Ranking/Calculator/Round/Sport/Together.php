@@ -1,5 +1,4 @@
 <?php
-
 declare(strict_types=1);
 
 namespace Sports\Ranking\Calculator\Round\Sport;
@@ -10,7 +9,9 @@ use Sports\Place;
 use Sports\Round;
 use Sports\Game\Together as TogetherGame;
 use Sports\Ranking\Item\Round\Sport as SportRoundRankingItem;
+use Sports\Ranking\FunctionMapCreator as RankingFunctionMapCreator;
 use Sports\Place\SportPerformance\Calculator\Together as PlaceTogetherPerformanceCalculator;
+use Sports\Place\SportPerformance\Calculator as PerformanceCalculator;
 use Sports\State;
 use Sports\Ranking\Calculator\Round\Sport as SportRoundRankingCalculator;
 
@@ -23,6 +24,8 @@ class Together extends SportRoundRankingCalculator
     public function __construct(CompetitionSport $competitionSport, array $gameStates = null)
     {
         parent::__construct($competitionSport, $gameStates ?? [State::Finished]);
+        $functionMapCreator = new RankingFunctionMapCreator();
+        $this->rankFunctionMap = $functionMapCreator->getMap();
     }
 
     /**
@@ -37,27 +40,8 @@ class Together extends SportRoundRankingCalculator
             array_values($poule->getTogetherGames()->toArray()));
     }
 
-    /**
-     * @param Round $round
-     * @param list<Place> $places
-     * @param list<TogetherGame> $games
-     * @return list<SportRoundRankingItem>
-     */
-    protected function getItems(Round $round, array $places, array $games): array
+    protected function getCalculator(Round $round): PerformanceCalculator
     {
-        $calculator = new PlaceTogetherPerformanceCalculator($round, $this->competitionSport);
-        $performances = $calculator->getPerformances($places, $this->getFilteredGames($games));
-        return $this->getItemsHelper($round, $performances);
-    }
-
-    /**
-     * @param list<TogetherGame> $games
-     * @return list<TogetherGame>
-     */
-    protected function getFilteredGames(array $games): array
-    {
-        return array_values(array_filter($games, function (TogetherGame $game): bool {
-            return array_key_exists($game->getState(), $this->gameStateMap);
-        }));
+        return new PlaceTogetherPerformanceCalculator($round, $this->competitionSport);
     }
 }

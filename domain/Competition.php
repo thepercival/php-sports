@@ -8,8 +8,7 @@ use \Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use \Doctrine\ORM\PersistentCollection;
 use Exception;
-use Sports\Game\CreationStrategy;
-use Sports\Ranking\RuleSet as RankingRuleSet;
+use Sports\Ranking\AgainstRuleSet;
 use Sports\Competition\Sport as CompetitionSport;
 use Sports\Competition\Field as CompetitionField;
 use SportsHelpers\Identifiable;
@@ -24,7 +23,7 @@ class Competition extends Identifiable
 {
     private League $league;
     private DateTimeImmutable $startDateTime;
-    private int $rankingRuleSet;
+    private int $againstRuleSet;
     private int $state;
     /**
      * @phpstan-var ArrayCollection<int|string, Round\Number>|PersistentCollection<int|string, Round\Number>
@@ -54,7 +53,7 @@ class Competition extends Identifiable
     {
         $this->setLeague($league);
         $this->setStartDateTime($season->getStartDateTime());
-        $this->rankingRuleSet = RankingRuleSet::Against;
+        $this->againstRuleSet = AgainstRuleSet::DiffFirst;
         $this->state = State::Created;
         $this->roundNumbers = new ArrayCollection();
         $this->referees = new ArrayCollection();
@@ -96,14 +95,14 @@ class Competition extends Identifiable
         $this->startDateTime = $datetime;
     }
 
-    public function getRankingRuleSet(): int
+    public function getAgainstRuleSet(): int
     {
-        return $this->rankingRuleSet;
+        return $this->againstRuleSet;
     }
 
-    public function setRankingRuleSet(int $rankingRuleSet): void
+    public function setAgainstRuleSet(int $againstRuleSet): void
     {
-        $this->rankingRuleSet = $rankingRuleSet;
+        $this->againstRuleSet = $againstRuleSet;
     }
 
     public function getState(): int

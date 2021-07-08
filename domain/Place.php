@@ -5,6 +5,7 @@ namespace Sports;
 
 use Exception;
 use InvalidArgumentException;
+use Sports\Competition\Sport as CompetitionSport;
 use Sports\Game\Place\Together as TogetherGamePlace;
 use Sports\Place\Location as PlaceLocation;
 use Sports\Qualify\Target as QualifyTarget;
@@ -129,34 +130,39 @@ class Place extends PlaceLocation
     }
 
     /**
+     * @param CompetitionSport|null $competitionSport
      * @return list<AgainstGame>
      */
-    public function getAgainstGames(): array
+    public function getAgainstGames(CompetitionSport|null $competitionSport = null): array
     {
         return array_values(
-            $this->getPoule()->getAgainstGames()->filter(function (AgainstGame $game): bool {
-                return $game->isParticipating($this);
+            $this->getPoule()->getAgainstGames()->filter(function (AgainstGame $game) use ($competitionSport): bool {
+                return $game->isParticipating($this)
+                    && ($competitionSport === null || $competitionSport === $game->getCompetitionSport());
             })->toArray()
         );
     }
 
     /**
+     * @param CompetitionSport|null $competitionSport
      * @return list<TogetherGame>
      */
-    public function getTogetherGames(): array
+    public function getTogetherGames(CompetitionSport|null $competitionSport = null): array
     {
         return array_values(
-            $this->getPoule()->getTogetherGames()->filter(function (TogetherGame $game): bool {
-                return $game->isParticipating($this);
+            $this->getPoule()->getTogetherGames()->filter(function (TogetherGame $game) use ($competitionSport): bool {
+                return $game->isParticipating($this)
+                    && ($competitionSport === null || $competitionSport === $game->getCompetitionSport());
             })->toArray()
         );
     }
 
     /**
+     * @param CompetitionSport|null $competitionSport
      * @return list<TogetherGamePlace>
      * @throws Exception
      */
-    public function getTogetherGamePlaces(): array
+    public function getTogetherGamePlaces(CompetitionSport|null $competitionSport = null): array
     {
         return array_values(array_map(
             function (TogetherGame $game): TogetherGamePlace {
@@ -167,7 +173,7 @@ class Place extends PlaceLocation
                 }
                 throw new Exception('place should be in own games', E_ERROR);
             },
-            $this->getTogetherGames()
+            $this->getTogetherGames($competitionSport)
         ));
     }
 

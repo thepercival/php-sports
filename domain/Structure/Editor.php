@@ -383,7 +383,7 @@ class Editor
             $nrOfPoules++;
             $nrOfToPlaces -= $nrOfPoulePlaces;
         }
-        if ($nrOfToPlaces === 1) {
+        if ($nrOfToPlaces === 1 && $nrOfPoules > 1) {
             $nrOfPoules--;
         }
         return $nrOfPoules;

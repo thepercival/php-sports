@@ -3,19 +3,19 @@ declare(strict_types=1);
 
 namespace Sports\Ranking\Rule;
 
-use Sports\Ranking\RuleSet as RankingRuleSet;
+use Sports\Ranking\AgainstRuleSet;
 use Sports\Ranking\Rule as RankingRule;
 
 class Getter
 {
     /**
-     * @param int $ruleSet
+     * @param int|null $ruleSet
      * @param bool $useSubScore
      * @return list<int>
      */
-    public function getRules(int $ruleSet, bool $useSubScore): array
+    public function getRules(int|null $ruleSet, bool $useSubScore): array
     {
-        if ($ruleSet === RankingRuleSet::Together) {
+        if ($ruleSet === null) {
             return $this->getTogetherRules($useSubScore);
         }
         return $this->getAgainstRules($ruleSet, $useSubScore);
@@ -29,7 +29,7 @@ class Getter
     protected function getAgainstRules(int $ruleSet, bool $useSubScore): array
     {
         $rules = [RankingRule::MostPoints, RankingRule::FewestGames];
-        if ($ruleSet === RankingRuleSet::AgainstAmong) {
+        if ($ruleSet === AgainstRuleSet::AmongFirst) {
             $rules[] = RankingRule::BestAmongEachOther;
         }
         $rules[] = RankingRule::BestUnitDifference;
@@ -38,7 +38,7 @@ class Getter
             $rules[] = RankingRule::BestSubUnitDifference;
             $rules[] = RankingRule::MostSubUnitsScored;
         }
-        if ($ruleSet === RankingRuleSet::Against) {
+        if ($ruleSet === AgainstRuleSet::DiffFirst) {
             $rules[] = RankingRule::BestAmongEachOther;
         }
         return $rules;

@@ -4,12 +4,12 @@ declare(strict_types=1);
 namespace Sports\Place\SportPerformance;
 
 use Sports\Competition\Sport as CompetitionSport;
+use Sports\Game\Against as AgainstGame;
+use Sports\Game\Together as TogetherGame;
 use Sports\Score\Config\Service as ScoreConfigService;
 use Sports\Place;
 use Sports\Round;
 use Sports\Place\SportPerformance;
-use Sports\Game\Together as TogetherGame;
-use Sports\Game\Against as AgainstGame;
 
 abstract class Calculator
 {
@@ -20,10 +20,12 @@ abstract class Calculator
         $this->scoreConfigService = new ScoreConfigService();
     }
 
-    /*protected static function getIndex(Place $place): string
-    {
-        return $place->getPoule()->getNumber() . '-' . $place->getNumber();
-    }*/
+    /**
+     * @param list<Place> $places
+     * @param list<TogetherGame|AgainstGame> $games
+     * @return list<SportPerformance>
+     */
+    abstract public function getPerformances(array $places, array $games): array;
 
     /**
      * @param list<Place> $places

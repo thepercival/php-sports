@@ -31,21 +31,21 @@ class Repository extends EntityRepository implements SaveRemoveRepository
                 $this->_em->remove($game);
             }
         }
-        $roundNumber->setHasPlanning(false);
-        $this->_em->persist($roundNumber);
+        // $roundNumber->setHasPlanning(false);
+        // $this->_em->persist($roundNumber);
 
         $this->_em->flush();
     }
 
-    public function savePlanning(RoundNumber $roundNumber, bool $hasPlanning = null): void
+    public function savePlanning(RoundNumber $roundNumber): void
     {
         foreach ($roundNumber->getGames(Order::ByPoule) as $game) {
             $this->_em->persist($game);
         }
-        if ($hasPlanning !== null) {
-            $roundNumber->setHasPlanning($hasPlanning);
-            $this->_em->persist($roundNumber);
-        }
+//        if ($hasPlanning !== null) {
+//            $roundNumber->setHasPlanning($hasPlanning);
+//            $this->_em->persist($roundNumber);
+//        }
 
         $this->_em->flush();
     }

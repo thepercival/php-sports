@@ -2,7 +2,7 @@ Sports\Competition:
   exclusion_policy: ALL
   exclude: false
   properties:
-    rankingRuleSet:
+    againstRuleSet:
       type: integer
     state:
       type: integer

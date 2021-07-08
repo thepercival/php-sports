@@ -9,7 +9,7 @@ use InvalidArgumentException;
 use SportsHelpers\Identifiable;
 use Sports\Game\Against as AgainstGame;
 use Sports\Game\Together as TogetherGame;
-use SportsHelpers\Sport\Variant as SportVariant;
+use Sports\Competition\Sport as CompetitionSport;
 
 class Poule extends Identifiable
 {
@@ -123,11 +123,16 @@ class Poule extends Identifiable
     }
 
     /**
+     * @param CompetitionSport|null $competitionSport
      * @return array<int|string, AgainstGame|TogetherGame>
      */
-    public function getGames(): array
+    public function getGames(CompetitionSport|null $competitionSport = null): array
     {
-        return array_merge($this->againstGames->toArray(), $this->togetherGames->toArray());
+        $games = array_merge($this->againstGames->toArray(), $this->togetherGames->toArray());
+        if ($competitionSport !== null) {
+            return array_filter($games, fn (AgainstGame|TogetherGame $game) => $game->getCompetitionSport() === $competitionSport);
+        }
+        return $games;
     }
 
     /**
@@ -171,19 +176,20 @@ class Poule extends Identifiable
         return (int)(($nrOfPlaces - $rest) / $sportVariant->getNrOfGamePlaces());
     }*/
 
-    public function getState(): int
+    public function getState(CompetitionSport|null $competitionSport = null): int
     {
         $allPlayed = true;
-        foreach ($this->getGames() as $game) {
+        $games = $this->getGames($competitionSport);
+        foreach ($games as $game) {
             if ($game->getState() !== State::Finished) {
                 $allPlayed = false;
                 break;
             }
         }
-        if (count($this->getGames()) > 0 && $allPlayed) {
+        if (count($games) > 0 && $allPlayed) {
             return State::Finished;
         }
-        foreach ($this->getGames() as $game) {
+        foreach ($games as $game) {
             if ($game->getState() !== State::Created) {
                 return State::InProgress;
             }

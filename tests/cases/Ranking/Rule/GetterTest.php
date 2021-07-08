@@ -4,8 +4,8 @@ declare(strict_types=1);
 namespace Sports\Tests\Ranking\Rule;
 
 use PHPUnit\Framework\TestCase;
+use Sports\Ranking\AgainstRuleSet;
 use Sports\Ranking\Rule\Getter as RankingRuleGetter;
-use Sports\Ranking\RuleSet as RankingRuleSet;
 
 class GetterTest extends TestCase
 {
@@ -13,7 +13,7 @@ class GetterTest extends TestCase
     {
         $ruleGetter = new RankingRuleGetter();
         $useSubScore = true;
-        $rules = $ruleGetter->getRules(RankingRuleSet::Against, $useSubScore);
+        $rules = $ruleGetter->getRules(AgainstRuleSet::DiffFirst, $useSubScore);
         self::assertCount(7, $rules);
     }
 
@@ -21,7 +21,7 @@ class GetterTest extends TestCase
     {
         $ruleGetter = new RankingRuleGetter();
         $useSubScore = false;
-        $rules = $ruleGetter->getRules(RankingRuleSet::Against, $useSubScore);
+        $rules = $ruleGetter->getRules(AgainstRuleSet::DiffFirst, $useSubScore);
         self::assertCount(5, $rules);
     }
 
@@ -29,7 +29,7 @@ class GetterTest extends TestCase
     {
         $ruleGetter = new RankingRuleGetter();
         $useSubScore = true;
-        $rules = $ruleGetter->getRules(RankingRuleSet::AgainstAmong, $useSubScore);
+        $rules = $ruleGetter->getRules(AgainstRuleSet::AmongFirst, $useSubScore);
         self::assertCount(7, $rules);
     }
 
@@ -37,7 +37,7 @@ class GetterTest extends TestCase
     {
         $ruleGetter = new RankingRuleGetter();
         $useSubScore = false;
-        $rules = $ruleGetter->getRules(RankingRuleSet::AgainstAmong, $useSubScore);
+        $rules = $ruleGetter->getRules(AgainstRuleSet::AmongFirst, $useSubScore);
         self::assertCount(5, $rules);
     }
 
@@ -45,7 +45,7 @@ class GetterTest extends TestCase
     {
         $ruleGetter = new RankingRuleGetter();
         $useSubScore = true;
-        $rules = $ruleGetter->getRules(RankingRuleSet::Together, $useSubScore);
+        $rules = $ruleGetter->getRules(null, $useSubScore);
         self::assertCount(3, $rules);
     }
 
@@ -53,7 +53,7 @@ class GetterTest extends TestCase
     {
         $ruleGetter = new RankingRuleGetter();
         $useSubScore = false;
-        $rules = $ruleGetter->getRules(RankingRuleSet::Together, $useSubScore);
+        $rules = $ruleGetter->getRules(null, $useSubScore);
         self::assertCount(2, $rules);
     }
 }

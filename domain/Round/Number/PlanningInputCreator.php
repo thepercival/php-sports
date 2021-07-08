@@ -5,7 +5,9 @@ namespace Sports\Round\Number;
 
 use SportsHelpers\GameMode;
 use SportsHelpers\PouleStructure;
-use SportsHelpers\Sport\Variant as SportVariant;
+use SportsHelpers\Sport\Variant\AllInOneGame as AllInOneGameSportVariant;
+use SportsHelpers\Sport\Variant\Against as AgainstSportVariant;
+use SportsHelpers\Sport\Variant\Single as SingleSportVariant;
 use SportsPlanning\Input as PlanningInput;
 use Sports\Round\Number as RoundNumber;
 use Sports\Planning\GameAmountConfig;
@@ -58,7 +60,7 @@ class PlanningInputCreator
 
     /**
      * @param PlanningConfig $planningConfig
-     * @param list<SportVariant> $sportVariants
+     * @param list<AgainstSportVariant|SingleSportVariant|AllInOneGameSportVariant> $sportVariants
      * @param PouleStructure $pouleStructure
      * @return int
      */

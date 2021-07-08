@@ -4,8 +4,10 @@ declare(strict_types=1);
 namespace Sports\Ranking\Calculator\Round;
 
 use Closure;
-use Sports\Qualify\Rule\Single as SingleQualifyRule;
-use Sports\Qualify\Rule\Multiple as MultipleQualifyRule;
+use Sports\Game\Together as TogetherGame;
+use Sports\Game\Against as AgainstGame;
+use Sports\Place\SportPerformance\Calculator as PerformanceCalculator;
+use SportsHelpers\Sport\Variant\Against as AgainstSportVariant;
 use Sports\Poule;
 use Sports\Poule\Horizontal as HorizontalPoule;
 use Sports\Place;
@@ -46,6 +48,17 @@ abstract class Sport
      * @return list<SportRoundRankingItem>
      */
     abstract public function getItemsForPoule(Poule $poule): array;
+
+    /**
+     * @param list<AgainstGame|TogetherGame> $games
+     * @return list<AgainstGame|TogetherGame>
+     */
+    protected function getFilteredGames(array $games): array
+    {
+        return array_values(array_filter($games, function (AgainstGame|TogetherGame $game): bool {
+            return array_key_exists($game->getState(), $this->gameStateMap);
+        }));
+    }
 
 
 //    /**
@@ -92,7 +105,7 @@ abstract class Sport
 //            $performances[] = $sportRankingItem->getPerformance();
 //        }
 //        $scoreConfig = $horizontalPoule->getRound()->getValidScoreConfig($this->competitionSport);
-//        $ruleSet = $this->competitionSport->getCompetition()->getRankingRuleSet();
+//        $ruleSet = $this->competitionSport->getCompetition()->getAgainstRuleSet();
 //        $rankingRules = $this->rankingRuleGetter->getRules($ruleSet, $scoreConfig->useSubScore());
 //        return $this->rankItems($performances, $rankingRules);
 //    }
@@ -132,16 +145,32 @@ abstract class Sport
 
     /**
      * @param Round $round
-     * @param list<SportPerformance> $performances
+     * @param list<Place> $places
+     * @param list<AgainstGame|TogetherGame> $games
      * @return list<SportRoundRankingItem>
      */
-    protected function getItemsHelper(Round $round, array $performances): array
+    protected function getItems(Round $round, array $places, array $games): array
     {
+        $calculator = $this->getCalculator($round);
+        $performances = $calculator->getPerformances($places, $this->getFilteredGames($games));
+
         $scoreConfig = $round->getValidScoreConfig($this->competitionSport);
-        $ruleSet = $this->competitionSport->getCompetition()->getRankingRuleSet();
-        $rankingRules = $this->rankingRuleGetter->getRules($ruleSet, $scoreConfig->useSubScore());
+
+        $rankingRules = $this->rankingRuleGetter->getRules($this->getRuleSet(), $scoreConfig->useSubScore());
         return $this->rankItems($performances, $rankingRules);
     }
+
+    protected function getRuleSet(): int|null
+    {
+        $sportVariant = $this->competitionSport->createVariant();
+        if ($sportVariant instanceof AgainstSportVariant) {
+            return $this->competitionSport->getCompetition()->getAgainstRuleSet();
+        }
+        return null;
+    }
+
+    abstract protected function getCalculator(Round $round): PerformanceCalculator;
+
 
     /**
      * @param list<SportRoundRankingItem> $rankingItems

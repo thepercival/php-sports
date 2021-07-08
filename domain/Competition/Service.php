@@ -31,7 +31,7 @@ class Service
         }
 
         $competition = new Competition($league, $season);
-        $competition->setRankingRuleSet($ruleSet);
+        $competition->setAgainstRuleSet($ruleSet);
         $competition->setStartDateTime($startDateTime);
 
         return $competition;
@@ -64,13 +64,13 @@ class Service
      * @return Competition
      * @throws Exception
      */
-    public function changeRuleSet(Competition $competition, int $ruleSet)
+    public function changeAgainstRuleSet(Competition $competition, int $ruleSet)
     {
         if ($competition->getState() > State::Created) {
             throw new Exception("de competitie kan niet worden gewijzigd, omdat deze al gespeelde wedstrijden heeft", E_ERROR);
         }
 
-        $competition->setRankingRuleSet($ruleSet);
+        $competition->setAgainstRuleSet($ruleSet);
 
         return $competition;
     }

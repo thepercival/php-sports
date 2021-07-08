@@ -13,6 +13,3 @@ Sports\Round\Number:
       type: Sports\Planning\Config
     gameAmountConfigs:
       type: ArrayCollection<Sports\Planning\GameAmountConfig>
-    hasPlanning:
-      type: boolean
-      read_only: true

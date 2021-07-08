@@ -112,7 +112,7 @@ class Repository extends EntityRepository implements SaveRemoveRepository
         return $results;
     }
 
-    public function findNrWithoutPlanning(): int
+    /*public function findNrWithoutPlanning(): int
     {
         $queryBuilder = $this->_em->createQueryBuilder()
             ->select('count(c.id)')
@@ -122,8 +122,8 @@ class Repository extends EntityRepository implements SaveRemoveRepository
             ->where('rn.hasPlanning = false');
 
         // echo $queryBuilder->getQuery()->getSQL();
-        /** @var int $result */
+        // @var int $result
         $result = $queryBuilder->getQuery()->getSingleScalarResult();
         return $result;
-    }
+    }*/
 }

@@ -2,7 +2,6 @@
 <doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
   <entity name="Sports\Round\Number" table="roundNumbers" repository-class="Sports\Round\Number\Repository">
     <field name="number" column="number" type="smallint" nullable="false" unique="false"/>
-    <field name="hasPlanning" column="hasPlanning" type="boolean" nullable="false" unique="false"/>
     <one-to-one field="previous" target-entity="Sports\Round\Number">
       <cascade>
         <cascade-remove/>
