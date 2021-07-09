@@ -248,6 +248,18 @@ class Number extends Identifiable
         return array_values($games);
     }
 
+    public function allPoulesHaveGames(): bool
+    {
+        foreach ($this->getRounds() as $round) {
+            foreach ($round->getPoules() as $poule) {
+                if ($poule->getAgainstGames()->count() + $poule->getTogetherGames()->count() === 0) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
     /**
      * @return list<Place>
      */

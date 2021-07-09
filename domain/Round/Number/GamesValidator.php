@@ -50,7 +50,7 @@ class GamesValidator
 
     protected function validateEnoughTotalNrOfGames(RoundNumber $roundNumber): void
     {
-        if (count($roundNumber->getGames(Order::ByPoule)) === 0) {
+        if (!$roundNumber->allPoulesHaveGames()) {
             throw new Exception("the planning has not enough games", E_ERROR);
         }
     }

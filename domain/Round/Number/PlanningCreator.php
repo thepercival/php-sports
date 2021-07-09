@@ -52,7 +52,7 @@ class PlanningCreator
         if ($previous === null) {
             return true;
         }
-        if (count($previous->getGames(GameOrder::ByPoule)) === 0) {
+        if (!$previous->allPoulesHaveGames()) {
             return false;
         }
         return $this->allPreviousRoundNumbersHavePlanning($previous);
@@ -64,7 +64,7 @@ class PlanningCreator
         Period $blockedPeriod = null
     ): void {
         $scheduler = new PlanningScheduler($blockedPeriod);
-        if (count($roundNumber->getGames(GameOrder::ByPoule)) > 0) {
+        if ($roundNumber->allPoulesHaveGames()) {
             $scheduler->rescheduleGames($roundNumber);
         } else {
             $inputService = new PlanningInputService();
