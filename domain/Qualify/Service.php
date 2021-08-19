@@ -40,7 +40,7 @@ class Service
             foreach ($singleQualifyRule->getMappings() as $qualifyPlaceMapping) {
                 $fromPlace = $qualifyPlaceMapping->getFromPlace();
                 if ($filterPoule !== null && $fromPlace->getPoule() !== $filterPoule) {
-                    return;
+                    continue;
                 }
                 $qualifyPlaceMapping->getToPlace()->setQualifiedPlace(null);
                 /** @var array<int|string, Place> $changedPlaces */
@@ -81,7 +81,7 @@ class Service
             foreach ($singleQualifyRule->getMappings() as $qualifyPlaceMapping) {
                 $fromPlace = $qualifyPlaceMapping->getFromPlace();
                 if ($filterPoule !== null && $fromPlace->getPoule() !== $filterPoule) {
-                    return;
+                    continue;
                 }
                 /** @var array<int|string, Place> $changedPlaces */
                 $this->setQualifierForPlaceMappingAndReserve($qualifyPlaceMapping, $reservationService);

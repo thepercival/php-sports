@@ -106,7 +106,8 @@ class ServiceTest extends TestCase
 
         // (new StructureOutput())->output($structure);
 
-        self::assertNull($loserssPoule->getPlace(1)->getQualifiedPlace());
+        self::assertNotNull($loserssPoule->getPlace(1)->getQualifiedPlace());
+        self::assertSame($pouleOne->getPlace(3), $loserssPoule->getPlace(1)->getQualifiedPlace());
         self::assertNull($loserssPoule->getPlace(2)->getQualifiedPlace());
     }
 
