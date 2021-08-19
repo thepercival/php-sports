@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Sports\Output\ConsoleTable;
 
-use DateTime;
+use DateTimeInterface;
 use LucidFrame\Console\ConsoleTable;
 use Sports\Competition;
 use Sports\Game\Against as AgainstGame;
@@ -34,7 +34,7 @@ class AgainstGames
                 $competition->getSeason()->getName(),
                 $game->getBatchNr(),
                 $game->getId(),
-                $game->getStartDateTime()->format(DateTime::ATOM),
+                $game->getStartDateTime()->format(DateTimeInterface::ATOM),
                 (new State($game->getState()))->getDescription(),
                 $nameService->getPlacesFromName($game->getSidePlaces(AgainstSide::HOME), true, true),
                 $this->getScore($game),

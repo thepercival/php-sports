@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Sports\Output\ConsoleTable;
 
-use DateTime;
+use DateTimeInterface;
 use LucidFrame\Console\ConsoleTable;
 use Sports\Competition;
 use Sports\Game\Against as AgainstGameBase;
@@ -276,7 +276,7 @@ class AgainstGame
         return [
             $competition->getLeague()->getName(),
             $competition->getSeason()->getName(),
-            $game->getBatchNr() . ' : ' . $game->getStartDateTime()->format(DateTime::ATOM)
+            $game->getBatchNr() . ' : ' . $game->getStartDateTime()->format(DateTimeInterface::ATOM)
         ];
     }
 

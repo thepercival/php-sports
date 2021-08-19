@@ -508,7 +508,7 @@ class Round extends Identifiable
         }
         $parent = $this->getParent();
         if ($parent === null) {
-            throw new Exception('de score-instellingen kunnen niet gevonden worden', E_ERROR);
+            throw new Exception('de score-regels kunnen niet gevonden worden', E_ERROR);
         }
         return $parent->getValidScoreConfig($competitionSport);
     }
@@ -569,7 +569,7 @@ class Round extends Identifiable
         }
         $parent = $this->getParent();
         if ($parent === null) {
-            throw new Exception('de score-instellingen kunnen niet gevonden worden', E_ERROR);
+            throw new Exception('de punten-regels kunnen niet gevonden worden', E_ERROR);
         }
         return $parent->getValidAgainstQualifyConfig($competitionSport);
     }

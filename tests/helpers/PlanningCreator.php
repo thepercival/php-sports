@@ -33,6 +33,8 @@ class PlanningCreator
         }
         $planning = new Planning($input, $range, 0);
         $gameCreator = new GameCreator($this->getLogger());
+        // CDK TODO //
+        $gameCreator->disableThrowOnTimeout();
         $gameCreator->createAssignedGames($planning);
         if (Planning::STATE_SUCCEEDED !== $planning->getState()) {
             throw new Exception("planning could not be created", E_ERROR);

@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Sports\Output\ConsoleTable;
 
+use DateTimeInterface;
 use LucidFrame\Console\ConsoleTable;
 use Sports\Competition;
 
@@ -26,7 +27,7 @@ class Competitions
                 $competition->getId(),
                 $competition->getLeague()->getName(),
                 $competition->getSeason()->getName(),
-                $competition->getStartDateTime()->format(\DateTime::ATOM),
+                $competition->getStartDateTime()->format(DateTimeInterface::ATOM),
                 $competition->getLeague()->getAssociation()->getName()
             );
             $table->addRow($row);
