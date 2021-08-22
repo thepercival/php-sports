@@ -20,7 +20,6 @@ class Place extends PlaceLocation
     protected string|null $name = null;
     protected int $penaltyPoints;
     protected Place|null $qualifiedPlace = null;
-    protected int|null $competitorDep = null;
 
     const MAX_LENGTH_NAME = 10;
 

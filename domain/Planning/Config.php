@@ -9,9 +9,6 @@ use SportsHelpers\SelfReferee;
 
 class Config extends Identifiable
 {
-    protected bool $teamupDep = false;
-    protected int $nrOfHeadtoheadDep = 1;
-
     const DEFAULTEXTENSION = false;
     const DEFAULTENABLETIME = true;
     const DEFAULTGAMEAMOUNT = 1;

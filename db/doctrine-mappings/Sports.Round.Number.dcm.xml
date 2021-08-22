@@ -30,12 +30,6 @@
         <cascade-remove/>
       </cascade>
     </one-to-many>
-<!--    <one-to-many field="scoreConfigsDep" target-entity="Sports\Score\Config" mapped-by="roundNumber">-->
-<!--      <cascade>-->
-<!--        <cascade-persist/>-->
-<!--        <cascade-remove/>-->
-<!--      </cascade>-->
-<!--    </one-to-many>-->
     <one-to-many field="gameAmountConfigs" target-entity="Sports\Planning\GameAmountConfig" mapped-by="roundNumber">
       <cascade>
         <cascade-persist/>

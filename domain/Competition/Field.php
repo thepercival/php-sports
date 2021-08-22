@@ -12,7 +12,6 @@ class Field extends Identifiable implements Prioritizable
 {
     protected int $priority;
     private string|null $name = null;
-    private object|null $sportConfigDep = null;
 
     const MIN_LENGTH_NAME = 1;
     const MAX_LENGTH_NAME = 3;

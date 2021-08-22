@@ -134,7 +134,6 @@ class Round extends Identifiable
     {
         $this->qualifyGroups->add($qualifyGroup);
         // @TODO should automatically sort
-        // @TODO should automatically sort
         // $this->sortQualifyGroups();
     }
 
