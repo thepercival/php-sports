@@ -17,6 +17,7 @@ use Sports\Poule;
 use Sports\Structure;
 use Sports\Round\Number as RoundNumber;
 use SportsHelpers\SelfReferee;
+use SportsPlanning\Combinations\GamePlaceStrategy;
 
 class GamesValidator
 {
@@ -109,6 +110,9 @@ class GamesValidator
 
     protected function validateAllPlacesSameNrOfGames(RoundNumber $roundNumber): void
     {
+        if( $roundNumber->getValidPlanningConfig()->getGamePlaceStrategy() !== GamePlaceStrategy::EquallyAssigned) {
+            return;
+        }
         foreach ($roundNumber->getPoules() as $poule) {
             if ($this->allPlacesInPouleSameNrOfGames($poule) === false) {
                 throw new Exception("not all places within poule have same number of games", E_ERROR);
