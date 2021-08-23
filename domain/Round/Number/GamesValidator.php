@@ -259,7 +259,18 @@ class GamesValidator
 
     protected function arePoulesEquallySized(RoundNumber $roundNumber): bool
     {
-        return ($roundNumber->getNrOfPlaces() % count($roundNumber->getPoules())) === 0;
+        $nrOfPlaces = null;
+        foreach ($roundNumber->getPoules() as $poule) {
+            $nrOfPoulePlaces = $poule->getPlaces()->count();
+            if ($nrOfPlaces === null) {
+                $nrOfPlaces = $nrOfPoulePlaces;
+                continue;
+            }
+            if ($nrOfPlaces !== $nrOfPoulePlaces) {
+                return false;
+            }
+        }
+        return true;
     }
 
     /**
