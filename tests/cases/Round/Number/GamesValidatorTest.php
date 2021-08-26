@@ -307,7 +307,7 @@ class GamesValidatorTest extends TestCase
         $gamesValidator = new GamesValidator();
         self::expectException(Exception::class);
         $nrOfReferees = $competition->getReferees()->count();
-        $gamesValidator->validate($firstRoundNumber, $nrOfReferees, $blockedPeriod);
+        $gamesValidator->validate($firstRoundNumber, $nrOfReferees, true, $blockedPeriod);
     }
 
     public function testValid(): void

@@ -22,11 +22,8 @@ abstract class Custom
     const IceHockey = 14;
     const Shuffleboard = 15;
     const Jass = 16;
-    const BadmintonDouble = 17;
-    const SquashDouble = 18;
-    const TennisDouble = 19;
-    const TableTennisDouble = 20;
-    const Max = 20;
+    const Padel = 17;
+    const Max = 17;
 
     const Football_Line_GoalKepeer = 1;
     const Football_Line_Defense = 2;
@@ -56,10 +53,7 @@ abstract class Custom
             Custom::IceHockey,
             Custom::Shuffleboard,
             Custom::Jass,
-            Custom::BadmintonDouble,
-            Custom::SquashDouble,
-            Custom::TennisDouble,
-            Custom::TableTennisDouble,
+            Custom::Padel,
         ];
     }
 }

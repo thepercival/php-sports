@@ -6,7 +6,7 @@ namespace Sports\Round\Number;
 use DateTimeImmutable;
 use Exception;
 use League\Period\Period;
-use Sports\Game;
+use Sports\Competition\Sport as CompetitionSport;
 use Sports\Game\Against as AgainstGame;
 use Sports\Game\Order;
 use Sports\Game\Together as TogetherGame;
@@ -17,7 +17,7 @@ use Sports\Poule;
 use Sports\Structure;
 use Sports\Round\Number as RoundNumber;
 use SportsHelpers\SelfReferee;
-use SportsPlanning\Combinations\GamePlaceStrategy;
+use SportsHelpers\Sport\Variant\Against as AgainstSportVariant;
 
 class GamesValidator
 {
@@ -25,17 +25,25 @@ class GamesValidator
     {
     }
 
-    public function validateStructure(Structure $structure, int $nrOfReferees, Period $period = null): void
-    {
+    public function validateStructure(
+        Structure $structure,
+        int $nrOfReferees,
+        bool $validatePriority = true,
+        Period $period = null
+    ): void {
         $roundNumber = $structure->getFirstRoundNumber();
         while ($roundNumber !== null) {
-            $this->validate($roundNumber, $nrOfReferees, $period);
+            $this->validate($roundNumber, $nrOfReferees, $validatePriority, $period);
             $roundNumber = $roundNumber->getNext();
         }
     }
 
-    public function validate(RoundNumber $roundNumber, int $nrOfReferees, Period|null $blockedPeriod = null): void
-    {
+    public function validate(
+        RoundNumber $roundNumber,
+        int $nrOfReferees,
+        bool $validatePriority = true,
+        Period|null $blockedPeriod = null
+    ): void {
         $this->validateEnoughTotalNrOfGames($roundNumber);
         $this->validateFields($roundNumber);
         $this->validateReferee($roundNumber, $nrOfReferees);
@@ -46,7 +54,9 @@ class GamesValidator
         $this->validateAllPlacesSameNrOfGames($roundNumber);
         $this->validateResourcesPerBatch($roundNumber);
         $this->validateEquallyAssigned($roundNumber, $nrOfReferees);
-        $this->validatePriorityOfFieldsAndReferees($roundNumber);
+        if ($validatePriority) {
+            $this->validatePriorityOfFieldsAndReferees($roundNumber);
+        }
     }
 
     protected function validateEnoughTotalNrOfGames(RoundNumber $roundNumber): void
@@ -110,20 +120,23 @@ class GamesValidator
 
     protected function validateAllPlacesSameNrOfGames(RoundNumber $roundNumber): void
     {
-        if( $roundNumber->getValidPlanningConfig()->getGamePlaceStrategy() !== GamePlaceStrategy::EquallyAssigned) {
-            return;
-        }
-        foreach ($roundNumber->getPoules() as $poule) {
-            if ($this->allPlacesInPouleSameNrOfGames($poule) === false) {
-                throw new Exception("not all places within poule have same number of games", E_ERROR);
+        foreach ($roundNumber->getCompetitionSports() as $competitionSport) {
+            $sportVariant = $competitionSport->createVariant();
+            if ($sportVariant instanceof AgainstSportVariant && $sportVariant->isMixed()) {
+                continue;
+            }
+            foreach ($roundNumber->getPoules() as $poule) {
+                if ($this->allPlacesInPouleSameNrOfGames($poule, $competitionSport) === false) {
+                    throw new Exception("not all places within poule have same number of games", E_ERROR);
+                }
             }
         }
     }
 
-    protected function allPlacesInPouleSameNrOfGames(Poule $poule): bool
+    protected function allPlacesInPouleSameNrOfGames(Poule $poule, CompetitionSport $competitionSport): bool
     {
         $nrOfGames = [];
-        foreach ($poule->getGames() as $game) {
+        foreach ($poule->getGames($competitionSport) as $game) {
             /** @var array|Place[] $places */
             $places = $this->getPlaces($game);
             /** @var Place $place */
