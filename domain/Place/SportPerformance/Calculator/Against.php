@@ -49,7 +49,11 @@ class Against extends Calculator
                 }
 
                 foreach ($game->getSidePlaces($side) as $gamePlace) {
-                    $performance = $performanceMap[$gamePlace->getPlace()->getRoundLocationId()];
+                    $roundLocationId = $gamePlace->getPlace()->getRoundLocationId();
+                    if (!isset($performanceMap[$roundLocationId])) {
+                        continue;
+                    }
+                    $performance = $performanceMap[$roundLocationId];
                     $performance->addGame();
                     $performance->addPoints($points);
                     $performance->addScored($scored);
