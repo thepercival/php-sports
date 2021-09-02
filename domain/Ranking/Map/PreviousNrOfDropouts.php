@@ -20,7 +20,7 @@ class PreviousNrOfDropouts
 
     public function get(Round $round): int
     {
-        return $this->map[$round->getStructurePathNode()->pathToString()];
+        return $this->map[(string)$round->getStructurePathNode()];
     }
 
     private function constructMap(Round $startRound): void
@@ -34,7 +34,7 @@ class PreviousNrOfDropouts
                 $setDropouts($qualifyGroup->getChildRound());
             }
             /** @var int $nrOfDropoutPlaces */
-            $this->map[$round->getStructurePathNode()->pathToString()] = $nrOfDropoutPlaces;
+            $this->map[(string)$round->getStructurePathNode()] = $nrOfDropoutPlaces;
             $nrOfDropoutPlaces += $round->getNrOfDropoutPlaces();
             $losers = $round->getTargetQualifyGroups(QualifyTarget::LOSERS)->toArray();
 

@@ -10,6 +10,11 @@ use Sports\Qualify\Rule\Single as SingleQualifyRule;
 
 class OriginCalculator
 {
+    /**
+     * @var array<string, list<Poule>>
+     */
+    private array $possiblePreviousPoulesCache = [];
+
     public function getPossibleOverlapses(Poule $poule1, Poule $poule2): int
     {
         $possibleOriginsMap = [];
@@ -86,18 +91,26 @@ class OriginCalculator
      */
     protected function getPossiblePreviousPoules(Poule $poule): array
     {
+        $strucureLocation = $poule->getStructureLocation();
+        if (isset($this->possiblePreviousPoulesCache[$strucureLocation])) {
+            return $this->possiblePreviousPoulesCache[$strucureLocation];
+        }
+
         $parentQualifyGroup = $poule->getRound()->getParentQualifyGroup();
         if ($parentQualifyGroup !== null && $parentQualifyGroup->getMultipleRule() !== null) {
-            return array_values($parentQualifyGroup->getParentRound()->getPoules()->toArray());
+            $possiblePreviousPoules = $parentQualifyGroup->getParentRound()->getPoules()->toArray();
+        } else {
+            $possiblePreviousPoules = [];
+            foreach ($poule->getPlaces() as $place) {
+                $possiblePreviousPoules = array_merge(
+                    $possiblePreviousPoules,
+                    $this->getPlacePossiblePreviousPoules($place)
+                );
+            }
         }
-        $possiblePreviousPoules = [];
-        foreach ($poule->getPlaces() as $place) {
-            $possiblePreviousPoules = array_merge(
-                $possiblePreviousPoules,
-                $this->getPlacePossiblePreviousPoules($place)
-            );
-        }
-        return array_values($possiblePreviousPoules);
+        $possiblePreviousPoules = array_values($possiblePreviousPoules);
+        $this->possiblePreviousPoulesCache[$strucureLocation] = $possiblePreviousPoules;
+        return $possiblePreviousPoules;
     }
 
     /**

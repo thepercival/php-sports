@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Sports\Structure;
 
-class PathNode
+class PathNode implements \Stringable
 {
     public function __construct(
         private string|null $qualifyTarget,
@@ -20,21 +20,9 @@ class PathNode
         return $path;
     }
 
-    public function nodeToString(): string
+    public function __toString()
     {
-        return $this->qualifyTargettoString() . $this->qualifyGroupNumber;
-    }
-
-    public function pathToString(): string
-    {
-        if ($this->previous === null) {
-            return $this->nodeToString();
-        }
-        return $this->previous->pathToString() . $this->nodeToString();
-    }
-
-    protected function qualifyTargettoString(): string
-    {
-        return $this->qualifyTarget ?? '';
+        $val = $this->qualifyTarget ?? '' . $this->qualifyGroupNumber;
+        return $this->previous === null ? $val : $this->previous . $val;
     }
 }

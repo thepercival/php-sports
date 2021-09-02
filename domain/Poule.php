@@ -31,6 +31,8 @@ class Poule extends Identifiable
      */
     protected ArrayCollection|PersistentCollection $togetherGames;
 
+    protected string|null $structureLocation = null;
+
     const MAX_LENGTH_NAME = 10;
 
     public function __construct(protected Round $round, int $number = null)
@@ -88,7 +90,10 @@ class Poule extends Identifiable
 
     public function getStructureLocation(): string
     {
-        return $this->getRound()->getStructurePathNode()->pathToString() . '.' . $this->getNumber();
+        if( $this->structureLocation === null ) {
+            $this->structureLocation = $this->round->getStructurePathNode() . '.' . $this->getNumber();
+        }
+        return $this->structureLocation;
     }
 
     /**

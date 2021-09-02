@@ -27,6 +27,7 @@ class Creator
 
     public function create(Round | null ...$parentRounds): void
     {
+        $c = new DefaultCreator();
         foreach ([QualifyTarget::WINNERS, QualifyTarget::LOSERS] as $target) {
             foreach ($parentRounds as $parentRound) {
                 if ($parentRound === null) {
@@ -44,7 +45,6 @@ class Creator
                         array_push($fromHorPoules, $fromRoundHorPoule);
                         $nrOfChildRoundPlaces -= $fromRoundHorPoule->getPlaces()->count();
                     }
-                    $c = new DefaultCreator();
                     $c->createRules($fromHorPoules, $qualifyGroup);
                 }
             }
