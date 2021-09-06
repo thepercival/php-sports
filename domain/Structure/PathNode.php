@@ -22,7 +22,7 @@ class PathNode implements \Stringable
 
     public function __toString()
     {
-        $val = $this->qualifyTarget ?? '' . $this->qualifyGroupNumber;
+        $val = $this->qualifyTarget === null ? '' : $this->qualifyTarget . $this->qualifyGroupNumber;
         return $this->previous === null ? $val : $this->previous . $val;
     }
 }
