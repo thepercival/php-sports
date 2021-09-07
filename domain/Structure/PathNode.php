@@ -9,8 +9,7 @@ class PathNode implements \Stringable
         private string|null $qualifyTarget,
         private int $qualifyGroupNumber,
         private PathNode|null $previous
-    )
-    {
+    ) {
     }
 
     public function createNext(string $qualifyTarget, int $qualifyGroupNumber): PathNode
@@ -22,7 +21,9 @@ class PathNode implements \Stringable
 
     public function __toString()
     {
-        $val = $this->qualifyTarget === null ? '' : $this->qualifyTarget . $this->qualifyGroupNumber;
-        return $this->previous === null ? $val : $this->previous . $val;
+        if( $this->previous === null ) {
+            return (string)$this->qualifyGroupNumber;
+        }
+        return (string)$this->previous . (string)$this->qualifyTarget . $this->qualifyGroupNumber;
     }
 }
