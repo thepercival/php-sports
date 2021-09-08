@@ -38,12 +38,13 @@ class PlanningCreator
     public function addFrom(
         CreatePlanningsEvent $createPlanningEvent,
         RoundNumber $roundNumber,
-        Period $blockedPeriod = null
+        Period|null $blockedPeriod,
+        int|null $eventPriority
     ): void {
         if (!$this->allPreviousRoundNumbersHavePlanning($roundNumber)) {
             return;
         }
-        $this->createFrom($createPlanningEvent, $roundNumber, $blockedPeriod);
+        $this->createFrom($createPlanningEvent, $roundNumber, $blockedPeriod, $eventPriority);
     }
 
     public function allPreviousRoundNumbersHavePlanning(RoundNumber $roundNumber): bool
@@ -61,7 +62,8 @@ class PlanningCreator
     protected function createFrom(
         CreatePlanningsEvent $createPlanningEvent,
         RoundNumber $roundNumber,
-        Period $blockedPeriod = null
+        Period|null $blockedPeriod,
+        int|null $eventPriority
     ): void {
         $scheduler = new PlanningScheduler($blockedPeriod);
         if ($roundNumber->allPoulesHaveGames()) {
@@ -80,7 +82,8 @@ class PlanningCreator
                 $createPlanningEvent->sendCreatePlannings(
                     $defaultPlanningInput,
                     $roundNumber->getCompetition(),
-                    $roundNumber->getNumber()
+                    $roundNumber->getNumber(),
+                    $eventPriority
                 );
                 return;
             }
@@ -96,7 +99,8 @@ class PlanningCreator
         $this->roundNumberRepos->savePlanning($roundNumber);
         $nextRoundNumber = $roundNumber->getNext();
         if ($nextRoundNumber !== null) {
-            $this->createFrom($createPlanningEvent, $nextRoundNumber, $blockedPeriod);
+            $nextEventPriority = $eventPriority === null ? $eventPriority : $eventPriority - 1;
+            $this->createFrom($createPlanningEvent, $nextRoundNumber, $blockedPeriod, $nextEventPriority);
         }
     }
 }

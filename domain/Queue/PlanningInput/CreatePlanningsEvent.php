@@ -11,5 +11,7 @@ interface CreatePlanningsEvent
     public function sendCreatePlannings(
         PlanningInput $input,
         Competition $competition = null,
-        int $startRoundNumber = null): void;
+        int $startRoundNumber = null,
+        int $priority = null
+    ): void;
 }
