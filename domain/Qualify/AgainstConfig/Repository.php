@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace Sports\Qualify\AgainstConfig;
 
-use SportsHelpers\Repository\SaveRemove as SaveRemoveRepository;
 use Sports\Competition\Sport as CompetitionSport;
 use Sports\Qualify\AgainstConfig as AgainstQualifyConfig;
 use SportsHelpers\Repository as BaseRepository;
@@ -12,10 +11,12 @@ use Doctrine\ORM\EntityRepository;
 
 /**
  * @template-extends EntityRepository<AgainstQualifyConfig>
- * @template-implements SaveRemoveRepository<AgainstQualifyConfig>
  */
-class Repository extends EntityRepository implements SaveRemoveRepository
+class Repository extends EntityRepository
 {
+    /**
+     * @use BaseRepository<AgainstQualifyConfig>
+     */
     use BaseRepository;
 
     public function addObjects(CompetitionSport $competitionSport, Round $round): void

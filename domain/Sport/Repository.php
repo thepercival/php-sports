@@ -3,17 +3,18 @@ declare(strict_types=1);
 
 namespace Sports\Sport;
 
-use SportsHelpers\Repository\SaveRemove as SaveRemoveRepository;
 use SportsHelpers\Repository as BaseRepository;
 use Sports\Sport as SportBase;
 use Doctrine\ORM\EntityRepository;
 
 /**
  * @template-extends EntityRepository<SportBase>
- * @template-implements SaveRemoveRepository<SportBase>
  */
-class Repository extends EntityRepository implements SaveRemoveRepository
+class Repository extends EntityRepository
 {
+    /**
+     * @use BaseRepository<SportBase>
+     */
     use BaseRepository;
 
     /**

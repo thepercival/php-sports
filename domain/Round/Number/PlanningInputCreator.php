@@ -34,6 +34,9 @@ class PlanningInputCreator
             $roundNumber->createSportVariants(),
             $pouleStructure
         );
+        if( $selfReferee !== SelfReferee::DISABLED ) {
+            $nrOfReferees = 0;
+        }
         $efficientSportVariants = $this->reduceFields($pouleStructure, $sportVariantsWithFields, $nrOfReferees, $selfReferee !== SelfReferee::DISABLED);
         return new PlanningInput(
             $pouleStructure,

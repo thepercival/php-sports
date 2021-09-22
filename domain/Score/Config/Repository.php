@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace Sports\Score\Config;
 
-use SportsHelpers\Repository\SaveRemove as SaveRemoveRepository;
 use SportsHelpers\Repository as BaseRepository;
 use Doctrine\ORM\EntityRepository;
 use Sports\Competition\Sport as CompetitionSport;
@@ -12,10 +11,12 @@ use Sports\Score\Config as ScoreConfig;
 
 /**
  * @template-extends EntityRepository<ScoreConfig>
- * @template-implements SaveRemoveRepository<ScoreConfig>
  */
-class Repository extends EntityRepository implements SaveRemoveRepository
+class Repository extends EntityRepository
 {
+    /**
+     * @use BaseRepository<ScoreConfig>
+     */
     use BaseRepository;
 
     public function addObjects(CompetitionSport $competitionSport, Round $round): void

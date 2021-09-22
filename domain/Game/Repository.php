@@ -3,11 +3,9 @@ declare(strict_types=1);
 
 namespace Sports\Game;
 
-use SportsHelpers\Repository\SaveRemove as SaveRemoveRepository;
 use SportsHelpers\Repository as BaseRepository;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\QueryBuilder;
-use Sports\Game as GameBase;
 use Sports\Round\Number as RoundNumber;
 use Sports\Game\Against as AgainstGame;
 use Sports\Game\Place as GamePlace;
@@ -18,10 +16,12 @@ use League\Period\Period;
 /**
  * @template T
  * @template-extends EntityRepository<T>
- * @template-implements SaveRemoveRepository<T>
  */
-class Repository extends EntityRepository implements SaveRemoveRepository
+class Repository extends EntityRepository
 {
+    /**
+     * @use BaseRepository<T>
+     */
     use BaseRepository;
 
     /**
@@ -29,7 +29,7 @@ class Repository extends EntityRepository implements SaveRemoveRepository
      * @param int|null $gameStates
      * @param int|null $batchNr
      * @param Period|null $period
-     * @return list<GameBase>
+     * @return list<T>
      */
     public function getCompetitionGames(
         Competition $competition,
@@ -39,7 +39,7 @@ class Repository extends EntityRepository implements SaveRemoveRepository
     ): array {
         $qb = $this->getCompetitionGamesQuery($competition, $gameStates, $batchNr, $period);
         $qb = $qb->orderBy('g.startDateTime', 'ASC');
-        /** @var list<GameBase> $games */
+        /** @var list<T> $games */
         $games = $qb->getQuery()->getResult();
         return $games;
     }
@@ -50,7 +50,7 @@ class Repository extends EntityRepository implements SaveRemoveRepository
         int $batchNr = null,
         Period $period = null
     ): bool {
-        /** @var list<GameBase> $games */
+        /** @var list<T> $games */
         $games = $this->getCompetitionGamesQuery(
             $competition,
             $gameStates,
@@ -115,19 +115,18 @@ class Repository extends EntityRepository implements SaveRemoveRepository
      * @param RoundNumber $roundNumber
      * @param int|null $gameStates
      * @param int|null $batchNr
-     * @return list<GameBase>
+     * @return list<T>
      */
     public function getRoundNumberGames(RoundNumber $roundNumber, int $gameStates = null, int $batchNr = null): array
     {
-        /** @var list<GameBase> $games */
+        /** @var list<T> $games */
         $games = $this->getRoundNumberGamesQuery($roundNumber, $gameStates, $batchNr)->getQuery()->getResult();
-        ;
         return $games;
     }
 
     public function hasRoundNumberGames(RoundNumber $roundNumber, int $gameStates = null, int $batchNr = null): bool
     {
-        /** @var list<GameBase> $games */
+        /** @var list<T> $games */
         $games = $this->getRoundNumberGamesQuery(
             $roundNumber,
             $gameStates,
@@ -183,6 +182,7 @@ class Repository extends EntityRepository implements SaveRemoveRepository
             $game->getPoule()->getTogetherGames()->removeElement($game);
         }
 
-        $this->remove($game);
+        $this->_em->remove($game);
+        $this->_em->flush();
     }
 }

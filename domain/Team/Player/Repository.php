@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace Sports\Team\Player;
 
-use SportsHelpers\Repository\SaveRemove as SaveRemoveRepository;
 use SportsHelpers\Repository as BaseRepository;
 use Doctrine\ORM\EntityRepository;
 use League\Period\Period;
@@ -12,10 +11,12 @@ use Sports\Team\Player as PlayerBase;
 
 /**
  * @template-extends EntityRepository<PlayerBase>
- * @template-implements SaveRemoveRepository<PlayerBase>
  */
-class Repository extends EntityRepository implements SaveRemoveRepository
+class Repository extends EntityRepository
 {
+    /**
+     * @use BaseRepository<PlayerBase>
+     */
     use BaseRepository;
 
     /**

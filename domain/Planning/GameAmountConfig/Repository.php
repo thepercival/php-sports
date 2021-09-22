@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace Sports\Planning\GameAmountConfig;
 
-use SportsHelpers\Repository\SaveRemove as SaveRemoveRepository;
 use SportsHelpers\Repository as BaseRepository;
 use Sports\Competition\Sport as CompetitionSport;
 use Sports\Round\Number as RoundNumber;
@@ -12,10 +11,12 @@ use Sports\Planning\GameAmountConfig as GameAmountConfigBase;
 
 /**
  * @template-extends EntityRepository<GameAmountConfigBase>
- * @template-implements SaveRemoveRepository<GameAmountConfigBase>
  */
-class Repository extends EntityRepository implements SaveRemoveRepository
+class Repository extends EntityRepository
 {
+    /**
+     * @use BaseRepository<GameAmountConfigBase>
+     */
     use BaseRepository;
 
     public function addObjects(CompetitionSport $competitionSport, RoundNumber $roundNumber): void

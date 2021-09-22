@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace Sports\Competition\Sport;
 
-use SportsHelpers\Repository\SaveRemove as SaveRemoveRepository;
 use Exception;
 use SportsHelpers\Repository as BaseRepository;
 use Sports\Score\Config as ScoreConfig;
@@ -18,10 +17,12 @@ use Doctrine\ORM\EntityRepository;
 
 /**
  * @template-extends EntityRepository<CompetitionSport>
- * @template-implements SaveRemoveRepository<CompetitionSport>
  */
-class Repository extends EntityRepository implements SaveRemoveRepository
+class Repository extends EntityRepository
 {
+    /**
+     * @use BaseRepository<CompetitionSport>
+     */
     use BaseRepository;
 
     public function customAdd(CompetitionSport $competitionSport, Structure $structure): void
@@ -59,7 +60,7 @@ class Repository extends EntityRepository implements SaveRemoveRepository
         try {
             while ($field = $competitionSport->getFields()->first()) {
                 $competitionSport->getFields()->removeElement($field);
-                $this->remove($field);
+                $this->_em->remove($field);
             }
 
             // $scoreRepos = new ScoreConfigRepos($this->_em, $this->_em->getClassMetadata(ScoreConfig::class));
@@ -72,7 +73,7 @@ class Repository extends EntityRepository implements SaveRemoveRepository
             $this->remove($competitionSport);
 
             if ($this->findOneBy(["sport" => $sport ]) === null) {
-                $this->remove($sport);
+                $this->_em->remove($sport);
             }
 
             $this->_em->flush();

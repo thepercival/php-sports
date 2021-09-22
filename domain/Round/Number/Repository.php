@@ -4,17 +4,18 @@ declare(strict_types=1);
 namespace Sports\Round\Number;
 
 use Sports\Game\Order;
-use SportsHelpers\Repository\SaveRemove as SaveRemoveRepository;
 use SportsHelpers\Repository as BaseRepository;
 use Doctrine\ORM\EntityRepository;
 use Sports\Round\Number as RoundNumber;
 
 /**
  * @template-extends EntityRepository<RoundNumber>
- * @template-implements SaveRemoveRepository<RoundNumber>
  */
-class Repository extends EntityRepository implements SaveRemoveRepository
+class Repository extends EntityRepository
 {
+    /**
+     * @use BaseRepository<RoundNumber>
+     */
     use BaseRepository;
 
     public function removePlanning(RoundNumber $roundNumber): void
