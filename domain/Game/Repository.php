@@ -185,4 +185,10 @@ class Repository extends EntityRepository
         $this->_em->remove($game);
         $this->_em->flush();
     }
+
+    public function customSave(AgainstGame|TogetherGame $game): void
+    {
+        $this->_em->persist($game);
+        $this->_em->flush();
+    }
 }
