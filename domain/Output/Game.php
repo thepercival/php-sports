@@ -30,6 +30,13 @@ abstract class Game extends OutputBase
         $this->scoreConfigService = new ScoreConfigService();
     }
 
+    protected function getGameRoundNrAsString(int $gameRoundNr): string
+    {
+        $gameRoundNrColor = $this->useColors() ? ($gameRoundNr % 10) : -1;
+        $retVal = 'gameRoundNr ' . ($gameRoundNr < 10 ? ' ' : '') . $gameRoundNr;
+        return $this->outputColor($gameRoundNrColor, $retVal);
+    }
+
     protected function getBatchNrAsString(int $batchNr): string
     {
         $batchColor = $this->useColors() ? ($batchNr % 10) : -1;

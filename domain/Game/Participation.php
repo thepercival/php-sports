@@ -7,7 +7,8 @@ use Doctrine\Common\Collections\Collection;
 use Sports\Competitor\Team as TeamCompetitor;
 use Sports\Game\Event\Goal as GoalEvent;
 use Sports\Game\Event\Card as CardEvent;
-use Sports\Game\Against as AgainstGame;
+use Sports\Game\Place\Against as AgainstGamePlace;
+use Sports\Sport;
 use Sports\Team\Player;
 use SportsHelpers\Identifiable;
 
@@ -23,12 +24,12 @@ class Participation extends Identifiable
     private ArrayCollection $goalsAndAssists;
 
     public function __construct(
-        protected AgainstGame $againstGame,
+        protected AgainstGamePlace $againstGamePlace,
         protected Player $player,
         protected int $beginMinute, protected int $endMinute)
     {
-        if (!$againstGame->getParticipations()->contains($this)) {
-            $againstGame->getParticipations()->add($this) ;
+        if (!$againstGamePlace->getParticipations()->contains($this)) {
+            $againstGamePlace->getParticipations()->add($this) ;
         }
         $this->cards = new ArrayCollection();
         $this->goalsAndAssists = new ArrayCollection();
@@ -39,9 +40,9 @@ class Participation extends Identifiable
         return $this->player;
     }
 
-    public function getGame(): AgainstGame
+    public function getAgainstGamePlace(): AgainstGamePlace
     {
-        return $this->againstGame;
+        return $this->againstGamePlace;
     }
 
     public function getBeginMinute(): int
@@ -54,7 +55,7 @@ class Participation extends Identifiable
         $this->beginMinute = $minute;
     }
 
-    public function isBeginning(): bool
+    public function isStarting(): bool
     {
         return $this->beginMinute === 0;
     }
@@ -75,17 +76,26 @@ class Participation extends Identifiable
     }
 
     /**
-     * @param int|null $type
      * @return ArrayCollection<int|string, CardEvent>
      */
-    public function getCards(int $type = null): ArrayCollection
+    public function getCards(): ArrayCollection
     {
-        if ($type === null) {
-            return $this->cards;
-        }
-        return $this->cards->filter(function (CardEvent $cardEvent) use ($type) : bool {
-            return $cardEvent->getType() === $type;
-        });
+        return $this->cards;
+    }
+
+    /**
+     * @return ArrayCollection<int|string, CardEvent>
+     */
+    public function getWarnings(): ArrayCollection
+    {
+        return $this->cards->filter(fn (CardEvent $card) => $card->getType() === Sport::WARNING);
+    }
+
+    public function getSendoff(): CardEvent|null
+    {
+        $sendOffCards = $this->cards->filter(fn (CardEvent $card) => $card->getType() === Sport::SENDOFF);
+        $sendOffCard = $sendOffCards->first();
+        return $sendOffCard === false ? null : $sendOffCard;
     }
 
     /**
@@ -99,11 +109,35 @@ class Participation extends Identifiable
     /**
      * @return ArrayCollection<int|string, GoalEvent>
      */
-    public function getGoals(int $type = null): ArrayCollection
+    public function getGoals(): ArrayCollection
     {
-        return $this->goalsAndAssists->filter(function (GoalEvent $goalEvent) use ($type): bool {
-            return $goalEvent->getGameParticipation() === $this && ($type === null || $goalEvent->isType($type));
+        return $this->goalsAndAssists->filter(function (GoalEvent $goalEvent): bool {
+            return $goalEvent->getGameParticipation() === $this;
         });
+    }
+
+    /**
+     * @return ArrayCollection<int|string, GoalEvent>
+     */
+    public function getOwnGoals(): ArrayCollection
+    {
+        return $this->getGoals()->filter(fn (GoalEvent $goalEvent) => $goalEvent->getOwn());
+    }
+
+    /**
+     * @return ArrayCollection<int|string, GoalEvent>
+     */
+    public function getPenalties(): ArrayCollection
+    {
+        return $this->getPenalties()->filter(fn (GoalEvent $goalEvent) => $goalEvent->getPenalty());
+    }
+
+    /**
+     * @return ArrayCollection<int|string, GoalEvent>
+     */
+    public function getFieldGoals(): ArrayCollection
+    {
+        return $this->getGoals()->filter(fn (GoalEvent $goal) => !$goal->getOwn() && !$goal->getPenalty());
     }
 
     /**
@@ -115,4 +149,6 @@ class Participation extends Identifiable
             return $goalEvent->getAssistGameParticipation() === $this;
         });
     }
+
+
 }

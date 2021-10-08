@@ -26,6 +26,7 @@ class Against extends OutputGame
         $this->logger->info(
             ($prefix !== null ? $prefix : '') .
             $game->getStartDateTime()->format("Y-m-d H:i") . " " .
+            $this->getGameRoundNrAsString($game->getGameRoundNumber()) . " " .
             $this->getBatchNrAsString($game->getBatchNr()) . " " .
             'poule ' . $game->getPoule()->getNumber()
             . ', ' . $this->getDescriptionAsString($game)

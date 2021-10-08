@@ -6,6 +6,7 @@ namespace Sports;
 use Doctrine\Common\Collections\ArrayCollection;
 use Sports\Team\Player;
 use SportsHelpers\Identifiable;
+use Doctrine\ORM\PersistentCollection;
 
 class Team extends Identifiable
 {
@@ -15,9 +16,9 @@ class Team extends Identifiable
     protected string|null $imageUrl = null;
     protected string|null $countryCode = null;
     /**
-     * @var ArrayCollection<int|string, Player>
+     * @var ArrayCollection<int|string, Player>|PersistentCollection<int|string, Player>
      */
-    protected ArrayCollection $players;
+    protected ArrayCollection|PersistentCollection $players;
 
     const MIN_LENGTH_NAME = 2;
     const MAX_LENGTH_NAME = 30;
@@ -118,9 +119,9 @@ class Team extends Identifiable
     }
 
     /**
-     * @return ArrayCollection<int|string, Player>
+     * @return ArrayCollection<int|string, Player>|PersistentCollection<int|string, Player>
      */
-    public function getPlayers(): ArrayCollection
+    public function getPlayers(): ArrayCollection|PersistentCollection
     {
         return $this->players;
     }

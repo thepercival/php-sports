@@ -6,7 +6,6 @@ namespace Sports;
 use \Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\PersistentCollection;
 use InvalidArgumentException;
-use Sports\Competition\Sport as CompetitionSport;
 use SportsHelpers\Identifiable;
 
 class League extends Identifiable

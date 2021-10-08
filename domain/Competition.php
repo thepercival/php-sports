@@ -152,6 +152,18 @@ class Competition extends Identifiable
         return $this->teamCompetitors;
     }
 
+    public function getTeamCompetitor(Team $team): TeamCompetitor
+    {
+        $foundCompetitors = $this->teamCompetitors->filter(function (TeamCompetitor $teamCompetitor) use ($team): bool {
+            return $teamCompetitor->getTeam() === $team;
+        });
+        $foundCompetitor = $foundCompetitors->first();
+        if( $foundCompetitor === false) {
+            throw new \Exception('the competitor for team "' . $team->getName() . '" was not found', E_ERROR);
+        }
+        return $foundCompetitor;
+    }
+
     /**
      * @phpstan-return ArrayCollection<int|string, CompetitionSport>|PersistentCollection<int|string, CompetitionSport>
      * @psalm-return ArrayCollection<int|string, CompetitionSport>

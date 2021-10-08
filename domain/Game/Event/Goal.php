@@ -10,9 +10,9 @@ use SportsHelpers\Identifiable;
 
 class Goal extends Identifiable implements GameEvent
 {
-    public const FIELD = 1;
-    public const PENALTY = 2;
-    public const OWN = 4;
+//    public const FIELD = 1;
+//    public const PENALTY = 2;
+//    public const OWN = 4;
 
     private bool $own;
     private bool $penalty;
@@ -37,17 +37,17 @@ class Goal extends Identifiable implements GameEvent
         return $this->gameParticipation;
     }
 
-    public function isType(int $type): bool
-    {
-        if ($type == self::FIELD) {
-            return !$this->getOwn() && !$this->getPenalty();
-        } elseif ($type == self::PENALTY) {
-            return $this->getPenalty();
-        } elseif ($type == self::OWN) {
-            return $this->getOwn();
-        }
-        return false;
-    }
+//    public function isType(int $type): bool
+//    {
+//        if ($type == self::FIELD) {
+//            return !$this->getOwn() && !$this->getPenalty();
+//        } elseif ($type == self::PENALTY) {
+//            return $this->getPenalty();
+//        } elseif ($type == self::OWN) {
+//            return $this->getOwn();
+//        }
+//        return false;
+//    }
 
     public function getOwn(): bool
     {

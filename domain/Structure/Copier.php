@@ -23,10 +23,19 @@ use Sports\Qualify\Rule\Creator as QualifyRuleCreator;
 
 class Copier
 {
+    private const SPORT_MAPPING_PROP_ID = 1;
+    private const SPORT_MAPPING_PROP_NAME = 2;
+
+    protected int $sportMappingProperty = self::SPORT_MAPPING_PROP_ID;
+
     public function __construct(
         private HorizontalPouleCreator $horPouleCreator,
         private QualifyRuleCreator $qualifyRuleCreator
     ){}
+
+    public function setSportMappingPropertyToName(): void {
+        $this->sportMappingProperty = self::SPORT_MAPPING_PROP_NAME;
+    }
 
     public function copy(Structure $structure, Competition $newCompetition): Structure
     {
@@ -63,8 +72,14 @@ class Copier
     protected function getNewCompetitionSport(CompetitionSport $sourceCompetitionSport, Competition $newCompetition): CompetitionSport
     {
         foreach ($newCompetition->getSports() as $competitionSport) {
-            if ($competitionSport->getSport()->getId() === $sourceCompetitionSport->getSport()->getId()) {
-                return $competitionSport;
+            if ($this->sportMappingProperty === self::SPORT_MAPPING_PROP_ID) {
+                if ($competitionSport->getSport()->getId() === $sourceCompetitionSport->getSport()->getId()) {
+                    return $competitionSport;
+                }
+            } else {
+                if ($competitionSport->getSport()->getName() === $sourceCompetitionSport->getSport()->getName()) {
+                    return $competitionSport;
+                }
             }
         }
         throw new Exception("een sport kon niet gevonden worden", E_ERROR);
@@ -138,17 +153,4 @@ class Copier
             new Place($newPoule, $place->getPlaceNr());
         }
     }
-
-//    protected function getSportFromCompetition(CompetitionSport $competitionSport, Competition $competition): Sport
-//    {
-//        $foundSports = $competition->getSports()->filter(
-//            function (CompetitionSport $competitionSportIt) use ($competitionSport): bool {
-//                return $competitionSportIt->getSport()->getName() === $competitionSport->getSport()->getName();
-//            }
-//        );
-//        if ($foundSports->count() !== 1) {
-//            throw new Exception("Er kon geen overeenkomende sport worden gevonden", E_ERROR);
-//        }
-//        return $foundSports->first();
-//    }
 }

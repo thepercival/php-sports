@@ -23,7 +23,8 @@ class Together extends OutputGame
 
         $this->logger->info(
             ($prefix !== null ? $prefix : '') .
-            $game->getStartDateTime()->format("Y-m-d H:i") . " " .
+            $game->getStartDateTime()->format("Y-m-d H:i") . ' ' .
+            ' - ' . // gameRoundNumber
             $this->getBatchNrAsString($game->getBatchNr()) . " " .
             'poule ' . $game->getPoule()->getNumber()
             . ', ' . $this->getDescriptionAsString($game)

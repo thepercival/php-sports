@@ -93,13 +93,13 @@ class Repository extends EntityRepository
     {
         $qb = $this->createQueryBuilder('c')
             ->distinct()
-            ->join('Sports\Sport\Config', 'sc', 'WITH', 'c = sc.competition')
-            ->join('sc.sport', 's')
+            ->join('Sports\Competition\Sport', 'cs', 'WITH', 'c = cs.competition')
+            ->join('cs.sport', 's')
             ->join('c.season', 'season')
         ;
 
         if ($sport !== null) {
-            $qb = $qb->andWhere('sc.sport = :sport');
+            $qb = $qb->andWhere('cs.sport = :sport');
             $qb = $qb->setParameter('sport', $sport);
         }
         if ($period !== null) {

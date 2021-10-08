@@ -24,7 +24,7 @@ class AgainstGames
     public function display(Competition $competition, array $games, array $teamCompetitors): void
     {
         $table = new ConsoleTable();
-        $table->setHeaders(array('league', 'season', 'batchNr', 'id', 'datetime', 'state', 'home', 'score', 'away' ));
+        $table->setHeaders(array('league', 'season', 'gameRoundNr', 'batchNr', 'id', 'datetime', 'state', 'home', 'score', 'away' ));
 
         $nameService = new NameService(new CompetitorMap($teamCompetitors));
 
@@ -32,6 +32,7 @@ class AgainstGames
             $row = array(
                 $competition->getLeague()->getName(),
                 $competition->getSeason()->getName(),
+                $game->getGameRoundNumber(),
                 $game->getBatchNr(),
                 $game->getId(),
                 $game->getStartDateTime()->format(DateTimeInterface::ATOM),

@@ -38,21 +38,20 @@ class AgainstGame
         $table->addRow($this->getScoreRow($game, $nameService));
         $table->addRow(["", "", ""]);
 
-        $this->displayLineups($table, $game, $competitorMap);
+        $this->displayLineups($table, $game);
         $table->addRow(["", "", ""]);
 
-        $this->displayEvents($table, $game, $competitorMap);
+        $this->displayEvents($table, $game);
 
         $table->display();
     }
 
     protected function displayLineups(
         ConsoleTable $table,
-        AgainstGameBase $game,
-        CompetitorMap $competitorMap): void
+        AgainstGameBase $game): void
     {
-        $homeParticipations = $this->getLineup(AgainstSide::HOME, $game, $competitorMap);
-        $awayParticipations = $this->getLineup(AgainstSide::AWAY, $game, $competitorMap);
+        $homeParticipations = $this->getLineup(AgainstSide::HOME, $game);
+        $awayParticipations = $this->getLineup(AgainstSide::AWAY, $game);
         while (count($homeParticipations) > 0 || count($awayParticipations) > 0) {
             $homeParticipationName = "";
             $homeParticipation = array_pop($homeParticipations);
@@ -71,10 +70,10 @@ class AgainstGame
         }
     }
 
-    protected function displayEvents(ConsoleTable $table, AgainstGameBase $game, CompetitorMap $competitorMap): void
+    protected function displayEvents(ConsoleTable $table, AgainstGameBase $game): void
     {
         foreach ($game->getEvents() as $event) {
-            foreach ($this->getEventRows($event, $game, $competitorMap) as $eventRow) {
+            foreach ($this->getEventRows($event) as $eventRow) {
                 $table->addRow($eventRow);
             }
         }
@@ -82,42 +81,20 @@ class AgainstGame
 
     /**
      * @param GoalEvent|CardEvent|SubstitutionEvent $event
-     * @param AgainstGameBase $game
-     * @param CompetitorMap $competitorMap
-     * @return list<list<string>>
-     */
-    protected function getEventRows(
-        GoalEvent|CardEvent|SubstitutionEvent $event,
-        AgainstGameBase $game,
-        CompetitorMap $competitorMap): array
-    {
-        $rows = [];
-        foreach ([AgainstSide::HOME,AgainstSide::AWAY] as $side) {
-            foreach ($game->getCompetitors($competitorMap, $side) as $competitor) {
-                if (!($competitor instanceof TeamCompetitor) || $competitor->getTeam() !== $event->getTeam()) {
-                    continue;
-                }
-                $rows = array_merge($rows, $this->getEventRowsHelper($event, $side));
-            }
-        }
-        return array_values($rows);
-    }
-
-    /**
-     * @param GoalEvent|CardEvent|SubstitutionEvent $event
      * @param int $side
      * @return list<list<string>>
      */
-    protected function getEventRowsHelper($event, int $side): array
+    protected function getEventRows($event): array
     {
         if ($event instanceof GoalEvent) {
+            $side = $event->getGameParticipation()->getAgainstGamePlace()->getSide();
             return $this->getGoalEventRows($event, $side);
         } elseif ($event instanceof CardEvent) {
+            $side = $event->getGameParticipation()->getAgainstGamePlace()->getSide();
             return $this->getCardEventRows($event, $side);
         } // else if( $event instanceof SubstitutionEvent ) {
+        $side = $event->getOut()->getAgainstGamePlace()->getSide();
         return $this->getSubstituteEventRows($event, $side);
-        // }
-        // return [];
     }
 
     /**
@@ -209,24 +186,16 @@ class AgainstGame
     /**
      * @param int $side
      * @param AgainstGameBase $game
-     * @param CompetitorMap $competitorMap
      * @return list<GameParticipation>
      */
-    protected function getLineup(
-        int $side,
-        AgainstGameBase $game,
-        CompetitorMap $competitorMap): array
+    protected function getLineup(int $side, AgainstGameBase $game): array
     {
+        $sideGamePlaces = $game->getSidePlaces($side);
         $participations = [];
-        $homeCompetitors = $game->getCompetitors($competitorMap, $side);
-        foreach ($homeCompetitors as $homeTeamCompetitor) {
-            if (!($homeTeamCompetitor instanceof TeamCompetitor)) {
-                continue;
+        foreach( $sideGamePlaces as $sideGamePlace) {
+            foreach( $sideGamePlace->getParticipations() as $sideGameParticipation) {
+                $participations[] = $sideGameParticipation;
             }
-            $participations = array_merge(
-                $participations,
-                $game->getLineup($homeTeamCompetitor)
-            );
         }
         return array_values($participations);
     }
@@ -276,7 +245,7 @@ class AgainstGame
         return [
             $competition->getLeague()->getName(),
             $competition->getSeason()->getName(),
-            $game->getBatchNr() . ' : ' . $game->getStartDateTime()->format(DateTimeInterface::ATOM)
+            $game->getGameRoundNumber() . ' : ' . $game->getStartDateTime()->format(DateTimeInterface::ATOM)
         ];
     }
 
