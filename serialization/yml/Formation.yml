@@ -1,0 +1,6 @@
+Sports\Formation:
+  exclusion_policy: ALL
+  exclude: false
+  properties:
+    lines:
+      type: ArrayCollection<Sports\Formation\Line>

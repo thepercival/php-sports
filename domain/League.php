@@ -1,9 +1,10 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Sports;
 
-use \Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\PersistentCollection;
 use InvalidArgumentException;
 use SportsHelpers\Identifiable;
@@ -13,16 +14,16 @@ class League extends Identifiable
     protected string $name;
     protected string|null $abbreviation;
     /**
-     * @phpstan-var ArrayCollection<int|string, Competition>|PersistentCollection<int|string, Competition>
+     * @var ArrayCollection<int|string, Competition>|PersistentCollection<int|string, Competition>
      * @psalm-var ArrayCollection<int|string, Competition>
      */
     protected ArrayCollection|PersistentCollection $competitions;
     protected Association $association;
 
-    const MIN_LENGTH_NAME = 3;
-    const MAX_LENGTH_NAME = 60;
-    const MAX_LENGTH_ABBREVIATION = 7;
-    const MAX_LENGTH_SPORT = 30;
+    public const MIN_LENGTH_NAME = 3;
+    public const MAX_LENGTH_NAME = 60;
+    public const MAX_LENGTH_ABBREVIATION = 7;
+    public const MAX_LENGTH_SPORT = 30;
 
     public function __construct(Association $association, string $name, string |null $abbreviation = null)
     {

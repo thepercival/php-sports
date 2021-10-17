@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Sports\Output\ConsoleTable;
@@ -7,6 +8,7 @@ use DateTimeInterface;
 use LucidFrame\Console\ConsoleTable;
 use Sports\Competition;
 use Sports\Game\Against as AgainstGameBase;
+use Sports\Game\Participation;
 use Sports\Game\Participation as GameParticipation;
 use Sports\Game\Event\Goal as GoalEvent;
 use Sports\Game\Event\Card as CardEvent;
@@ -36,151 +38,74 @@ class AgainstGame
 
         $table->addRow($this->getGameRow($competition, $game));
         $table->addRow($this->getScoreRow($game, $nameService));
-        $table->addRow(["", "", ""]);
+        $table->addRow(["", "", "", "", "", "", ""]);
 
         $this->displayLineups($table, $game);
-        $table->addRow(["", "", ""]);
+        $table->addRow(["", "", "", "", "", "", ""]);
 
         $this->displayEvents($table, $game);
 
         $table->display();
     }
 
+    /**
+     * @param Competition $competition
+     * @param AgainstGameBase $game
+     * @return list<string>
+     */
+    protected function getGameRow(Competition $competition, AgainstGameBase $game): array
+    {
+        return [
+            $competition->getLeague()->getName(), '', '',
+            $competition->getSeason()->getName(),
+            $game->getStartDateTime()->format(DateTimeInterface::ATOM), 'GR ' . $game->getGameRoundNumber(), ''
+        ];
+    }
+
+    /**
+     * @param AgainstGameBase $game
+     * @param NameService $nameService
+     * @return list<string>
+     */
+    protected function getScoreRow(
+        AgainstGameBase $game,
+        NameService $nameService
+    ): array {
+        $scoreConfigService = new ScoreConfigService();
+        $finalScore = $scoreConfigService->getFinalAgainstScore($game);
+
+        $score = " - ";
+        if ($finalScore !== null) {
+            $score = $finalScore->getHome() . $score . $finalScore->getAway();
+        }
+        $homePlaces = $game->getSidePlaces(AgainstSide::HOME);
+        $awayPlaces = $game->getSidePlaces(AgainstSide::AWAY);
+        return [
+            $nameService->getPlacesFromName($homePlaces, true, true),
+            '', '',
+            '  ' . $score,
+            $nameService->getPlacesFromName($awayPlaces, true, true),
+            '', ''
+        ];
+    }
+
     protected function displayLineups(
         ConsoleTable $table,
-        AgainstGameBase $game): void
-    {
+        AgainstGameBase $game
+    ): void {
         $homeParticipations = $this->getLineup(AgainstSide::HOME, $game);
         $awayParticipations = $this->getLineup(AgainstSide::AWAY, $game);
         while (count($homeParticipations) > 0 || count($awayParticipations) > 0) {
-            $homeParticipationName = "";
-            $homeParticipation = array_pop($homeParticipations);
-            if ($homeParticipation !== null) {
-                $homeParticipationName = $homeParticipation->getPlayer()->getLineLetter() . " ";
-                $homeParticipationName .= $homeParticipation->getPlayer()->getPerson()->getName();
-            }
-            $awayParticipationName = "";
-            $awayParticipation = array_pop($awayParticipations);
-            if ($awayParticipation !== null) {
-                $awayParticipationName = $awayParticipation->getPlayer()->getLineLetter() . " ";
-                $awayParticipationName .= $awayParticipation->getPlayer()->getPerson()->getName();
-                // $awayParticipationName .= " : " . $awayParticipation->getBeginMinute() . " => " . $awayParticipation->getEndMinute();
-            }
-            $table->addRow([  $homeParticipationName, "", $awayParticipationName ]);
+            $homeParticipationValues = $this->getParticipation(array_pop($homeParticipations));
+            $awayParticipationValues = $this->getParticipation(array_pop($awayParticipations));
+            $table->addRow(array_values(array_merge($homeParticipationValues, [''], $awayParticipationValues)));
         }
-    }
 
-    protected function displayEvents(ConsoleTable $table, AgainstGameBase $game): void
-    {
-        foreach ($game->getEvents() as $event) {
-            foreach ($this->getEventRows($event) as $eventRow) {
-                $table->addRow($eventRow);
-            }
-        }
-    }
-
-    /**
-     * @param GoalEvent|CardEvent|SubstitutionEvent $event
-     * @param int $side
-     * @return list<list<string>>
-     */
-    protected function getEventRows($event): array
-    {
-        if ($event instanceof GoalEvent) {
-            $side = $event->getGameParticipation()->getAgainstGamePlace()->getSide();
-            return $this->getGoalEventRows($event, $side);
-        } elseif ($event instanceof CardEvent) {
-            $side = $event->getGameParticipation()->getAgainstGamePlace()->getSide();
-            return $this->getCardEventRows($event, $side);
-        } // else if( $event instanceof SubstitutionEvent ) {
-        $side = $event->getOut()->getAgainstGamePlace()->getSide();
-        return $this->getSubstituteEventRows($event, $side);
-    }
-
-    /**
-     * @param GoalEvent $event
-     * @param int $side
-     * @return list<list<string>>
-     */
-    protected function getGoalEventRows(GoalEvent $event, int $side): array
-    {
-        $valueHome = "";
-        $valueAway = "";
-        $rows = [];
-        if ($side === AgainstSide::HOME) {
-            $valueHome .= "GL  ";
-            $valueHome .= $event->getMinute() . "' ";
-            $valueHome .= $event->getGameParticipation()->getPlayer()->getPerson()->getName();
-        } else {
-            $valueAway .= $event->getGameParticipation()->getPlayer()->getPerson()->getName();
-            $valueAway .= " " . $event->getMinute() . "'";
-            $valueAway .= "  GL";
-        }
-        $rows[] = [  $valueHome, "", $valueAway ];
-        return $rows;
-    }
-
-    /**
-     * @param CardEvent $event
-     * @param int $side
-     * @return list<list<string>>
-     */
-    protected function getCardEventRows(CardEvent $event, int $side): array
-    {
-        $valueHome = "";
-        $valueAway = "";
-        $rows = [];
-        if ($side === AgainstSide::HOME) {
-            if ($event->getType() === Sport::WARNING) {
-                $valueHome .= "YC  ";
-            } else {
-                $valueHome .= "RC  ";
-            }
-            $valueHome .= $event->getMinute() . "' ";
-            $valueHome .= $event->getGameParticipation()->getPlayer()->getPerson()->getName();
-        } else {
-            $valueAway .= $event->getGameParticipation()->getPlayer()->getPerson()->getName();
-            $valueAway .= " " . $event->getMinute() . "'";
-            if ($event->getType() === Sport::WARNING) {
-                $valueAway .= "  YC";
-            } else {
-                $valueAway .= "  RC  ";
-            }
-        }
-        $rows[] = [  $valueHome, "", $valueAway ];
-        return $rows;
-    }
-
-    /**
-     * @param SubstitutionEvent $event
-     * @param int $side
-     * @return list<list<string>>
-     */
-    protected function getSubstituteEventRows(SubstitutionEvent $event, int $side): array
-    {
-        $valueHomeOut = "";
-        $valueAwayOut = "";
-        $valueHomeIn = "";
-        $valueAwayIn = "";
-        $rows = [];
-        if ($side === AgainstSide::HOME) {
-            $valueHomeOut .= "OUT ";
-            $valueHomeOut .= $event->getMinute() . "' ";
-            $valueHomeOut .= $event->getOut()->getPlayer()->getPerson()->getName();
-            $valueHomeIn .= "IN  ";
-            $valueHomeIn .= $event->getMinute() . "' ";
-            $valueHomeIn .= $event->getIn()->getPlayer()->getPerson()->getName();
-        } else {
-            $valueAwayOut .= $event->getOut()->getPlayer()->getPerson()->getName();
-            $valueAwayOut .= " " . $event->getMinute() . "'";
-            $valueAwayOut .= " OUT";
-            $valueAwayIn .= $event->getIn()->getPlayer()->getPerson()->getName();
-            $valueAwayIn .= " " . $event->getMinute() . "'";
-            $valueAwayIn .= "  IN";
-        }
-        $rows[] = [  $valueHomeIn, "", $valueAwayIn ];
-        $rows[] = [  $valueHomeOut, "", $valueAwayOut ];
-        return $rows;
+//        while (count($homeParticipations) > 0 || count($awayParticipations) > 0) {
+//            $homeParticipationValues = $this->getParticipation(array_pop($homeParticipations));
+//            $awayParticipationValues = $this->getParticipation(array_pop($awayParticipations));
+//            $table->addRow(array_merge($homeParticipationValues, [''], '', $awayParticipationValues));
+//        }
     }
 
     /**
@@ -192,14 +117,166 @@ class AgainstGame
     {
         $sideGamePlaces = $game->getSidePlaces($side);
         $participations = [];
-        foreach( $sideGamePlaces as $sideGamePlace) {
-            foreach( $sideGamePlace->getParticipations() as $sideGameParticipation) {
-                $participations[] = $sideGameParticipation;
+        foreach ($sideGamePlaces as $sideGamePlace) {
+            foreach ($sideGamePlace->getParticipations() as $sideGameParticipation) {
+                if( $sideGameParticipation->isStarting()) {
+                    $participations[] = $sideGameParticipation;
+                }
             }
         }
+        uasort($participations, function (Participation $participationA, Participation $participationB): int {
+            return $participationA->getPlayer()->getLine() > $participationB->getPlayer()->getLine() ? -1 : 1;
+        });
         return array_values($participations);
     }
 
+    /**
+     * @param GameParticipation $participation
+     * @return list<string>
+     */
+    protected function getParticipation(GameParticipation|null $participation): array
+    {
+        if ($participation === null) {
+            return ['','',''];
+        }
+
+        $playerLineLetter = $participation->getPlayer()->getLineLetter();
+        $playerName = $participation->getPlayer()->getPerson()->getName();
+
+        $beginMinute = $participation->getBeginMinute();
+        $begin = $beginMinute > 0 ? $beginMinute : ($beginMinute === 0 ? 'B' : '');
+        $endMinute = $participation->getEndMinute();
+        $end = $endMinute > 0 ? $endMinute : '';
+        return [  $playerLineLetter . ' ' . $playerName, (string)$begin, (string)$end ];
+    }
+
+    protected function displayEvents(ConsoleTable $table, AgainstGameBase $game): void
+    {
+        $currentScore = [ AgainstSide::HOME => 0, AgainstSide::AWAY => 0 ];
+        foreach ($game->getEvents() as $event) {
+            foreach ($this->getEventRows($event, $currentScore) as $eventRow) {
+                $table->addRow($eventRow);
+            }
+        }
+    }
+
+    /**
+     * @param GoalEvent|CardEvent|SubstitutionEvent $event
+     * @param int $side
+     * @param array<int, int> $currentScore
+     * @return list<list<string>>
+     */
+    protected function getEventRows($event, array &$currentScore): array
+    {
+        if ($event instanceof GoalEvent) {
+            $side = $event->getGameParticipation()->getAgainstGamePlace()->getSide();
+            return $this->getGoalEventRows($event, $side, $currentScore);
+        } elseif ($event instanceof CardEvent) {
+            $side = $event->getGameParticipation()->getAgainstGamePlace()->getSide();
+            return $this->getCardEventRows($event, $side);
+        } // else if( $event instanceof SubstitutionEvent ) {
+        $side = $event->getOut()->getAgainstGamePlace()->getSide();
+        return $this->getSubstituteEventRows($event, $side);
+    }
+
+    /**
+     * @param GoalEvent $event
+     * @param int $side
+     * @param array<int, int> $currentScore
+     * @return list<list<string>>
+     */
+    protected function getGoalEventRows(GoalEvent $event, int $side, array &$currentScore): array
+    {
+        $valueHome = ['','',''];
+        $valueAway = ['','',''];
+        $rows = [];
+        if ($side === AgainstSide::HOME) {
+            $side = $event->getOwn() ? AgainstSide::AWAY : AgainstSide::HOME;
+            $valueHome = [
+                $event->getGameParticipation()->getPlayer()->getPerson()->getName(),
+                $event->getPenalty() ? "PEN  " : ($event->getOwn() ? "O GL" : "GOAL"),
+                $event->getMinute() . "' ",
+            ];
+        } else {
+            $side = $event->getOwn() ? AgainstSide::HOME : AgainstSide::AWAY;
+            $valueAway = [
+                $event->getGameParticipation()->getPlayer()->getPerson()->getName(),
+                $event->getPenalty() ? "PEN  " : ($event->getOwn() ? "O GL" : "GOAL"),
+                " " . $event->getMinute() . "'",
+            ];
+        }
+        $currentScore[$side]++;
+        $score = '  ' . $currentScore[AgainstSide::HOME] . ' - ' . $currentScore[AgainstSide::AWAY];
+        $rows[] = array_values(array_merge($valueHome, [$score], $valueAway));
+        return $rows;
+    }
+
+    /**
+     * @param CardEvent $event
+     * @param int $side
+     * @return list<list<string>>
+     */
+    protected function getCardEventRows(CardEvent $event, int $side): array
+    {
+        $valueHome = ['','',''];
+        $valueAway = ['','',''];
+        $rows = [];
+        if ($side === AgainstSide::HOME) {
+            $valueHome = [
+                $event->getGameParticipation()->getPlayer()->getPerson()->getName(),
+                $event->getMinute() . "' ",
+                $valueHome[] = $event->getType() === Sport::WARNING ? "YC  " : "RC  "
+            ];
+        } else {
+            $valueAway = [
+                $event->getGameParticipation()->getPlayer()->getPerson()->getName(),
+                $event->getMinute() . "' ",
+                $valueAway[] = $event->getType() === Sport::WARNING ? "YC  " : "RC  "
+            ];
+        }
+        $rows[] = array_values(array_merge($valueHome, [''], $valueAway));
+        return $rows;
+    }
+
+    /**
+     * @param SubstitutionEvent $event
+     * @param int $side
+     * @return list<list<string>>
+     */
+    protected function getSubstituteEventRows(SubstitutionEvent $event, int $side): array
+    {
+        $valueHomeOut = ['','',''];
+        $valueHomeIn = ['','',''];
+        $valueAwayOut = ['','',''];
+        $valueAwayIn = ['','',''];
+        $rows = [];
+        if ($side === AgainstSide::HOME) {
+            $valueHomeOut = [
+                $event->getOut()->getPlayer()->getPerson()->getName(),
+                $event->getMinute() . "' ",
+                "OUT "
+            ];
+            $valueHomeIn = [
+                $event->getIn()->getPlayer()->getPerson()->getName(),
+                $event->getMinute() . "' ",
+                "IN  "
+            ];
+        } else {
+            $valueAwayOut = [
+                $event->getOut()->getPlayer()->getPerson()->getName(),
+                $event->getMinute() . "' ",
+                "OUT "
+            ];
+            $valueAwayIn = [
+                $event->getIn()->getPlayer()->getPerson()->getName(),
+                $event->getMinute() . "' ",
+                "IN  "
+            ];
+        }
+        $rows[] = array_values(array_merge($valueHomeOut, [''], $valueAwayOut));
+        $rows[] = array_values(array_merge($valueHomeIn, [''], $valueAwayIn));
+        return $rows;
+    }
 
     //| Fortuna Sittard                               | 1 - 3   | Heerenveen                                    |
     //|                                               |         |                                               |
@@ -235,44 +312,7 @@ class AgainstGame
     // |                                               |         | 90"  OUT Arjen Van Der Heide                  |
     //|                                               |         |      IN  Couhaib Driouech                     |
 
-    /**
-     * @param Competition $competition
-     * @param AgainstGameBase $game
-     * @return list<string>
-     */
-    protected function getGameRow(Competition $competition, AgainstGameBase $game): array
-    {
-        return [
-            $competition->getLeague()->getName(),
-            $competition->getSeason()->getName(),
-            $game->getGameRoundNumber() . ' : ' . $game->getStartDateTime()->format(DateTimeInterface::ATOM)
-        ];
-    }
 
-    /**
-     * @param AgainstGameBase $game
-     * @param NameService $nameService
-     * @return list<string>
-     */
-    protected function getScoreRow(
-        AgainstGameBase $game,
-        NameService $nameService
-    ): array {
-        $scoreConfigService = new ScoreConfigService();
-        $finalScore = $scoreConfigService->getFinalAgainstScore($game);
-
-        $score = " - ";
-        if ($finalScore !== null) {
-            $score = $finalScore->getHome() . $score . $finalScore->getAway();
-        }
-        $homePlaces = $game->getSidePlaces(AgainstSide::HOME);
-        $awayPlaces = $game->getSidePlaces(AgainstSide::AWAY);
-        return [
-            $nameService->getPlacesFromName($homePlaces, true, true),
-            $score,
-            $nameService->getPlacesFromName($awayPlaces, true, true)
-        ];
-    }
 
 //    function getGame( Voetbal_Competition $oCompetition, Voetbal_Season $oSeason, int $nGameId) {
 //        $externSystem = getExternalLib();

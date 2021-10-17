@@ -21,7 +21,7 @@ class PlanningCreator
         $processor = new UidProcessor();
         $logger->pushProcessor($processor);
 
-        $handler = new StreamHandler('php://stdout', LOG_INFO);
+        $handler = new StreamHandler('php://stdout', Logger::INFO);
         $logger->pushHandler($handler);
         return $logger;
     }

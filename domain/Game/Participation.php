@@ -4,6 +4,7 @@ namespace Sports\Game;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\ORM\PersistentCollection;
 use Sports\Competitor\Team as TeamCompetitor;
 use Sports\Game\Event\Goal as GoalEvent;
 use Sports\Game\Event\Card as CardEvent;
@@ -15,18 +16,22 @@ use SportsHelpers\Identifiable;
 class Participation extends Identifiable
 {
     /**
-     * @var ArrayCollection<int|string, CardEvent>
+     * @phpstan-var ArrayCollection<int|string, CardEvent>|PersistentCollection<int|string, CardEvent>
+     * @psalm-var ArrayCollection<int|string, CardEvent>
      */
-    private ArrayCollection $cards;
+    protected ArrayCollection|PersistentCollection $cards;
     /**
-     * @var ArrayCollection<int|string, GoalEvent>
+     * @phpstan-var ArrayCollection<int|string, GoalEvent>|PersistentCollection<int|string, GoalEvent>
+     * @psalm-var ArrayCollection<int|string, GoalEvent>
      */
-    private ArrayCollection $goalsAndAssists;
+    protected ArrayCollection|PersistentCollection $goalsAndAssists;
 
     public function __construct(
         protected AgainstGamePlace $againstGamePlace,
         protected Player $player,
-        protected int $beginMinute, protected int $endMinute)
+        protected int $beginMinute,
+        protected int $endMinute
+    )
     {
         if (!$againstGamePlace->getParticipations()->contains($this)) {
             $againstGamePlace->getParticipations()->add($this) ;
@@ -75,10 +80,16 @@ class Participation extends Identifiable
         return $this->endMinute > 0;
     }
 
+    public function hasAppeared(): bool
+    {
+        return $this->beginMinute > -1;
+    }
+
     /**
-     * @return ArrayCollection<int|string, CardEvent>
+     * @phpstan-return ArrayCollection<int|string, CardEvent>|PersistentCollection<int|string, CardEvent>
+     * @psalm-return ArrayCollection<int|string, CardEvent>
      */
-    public function getCards(): ArrayCollection
+    public function getCards(): ArrayCollection|PersistentCollection
     {
         return $this->cards;
     }
@@ -99,9 +110,10 @@ class Participation extends Identifiable
     }
 
     /**
-     * @return ArrayCollection<int|string, GoalEvent>
+     * @phpstan-return ArrayCollection<int|string, GoalEvent>|PersistentCollection<int|string, GoalEvent>
+     * @psalm-return ArrayCollection<int|string, GoalEvent>
      */
-    public function getGoalsAndAssists(): ArrayCollection
+    public function getGoalsAndAssists(): ArrayCollection|PersistentCollection
     {
         return $this->goalsAndAssists;
     }
@@ -129,7 +141,7 @@ class Participation extends Identifiable
      */
     public function getPenalties(): ArrayCollection
     {
-        return $this->getPenalties()->filter(fn (GoalEvent $goalEvent) => $goalEvent->getPenalty());
+        return $this->getGoals()->filter(fn (GoalEvent $goalEvent) => $goalEvent->getPenalty());
     }
 
     /**
@@ -149,6 +161,4 @@ class Participation extends Identifiable
             return $goalEvent->getAssistGameParticipation() === $this;
         });
     }
-
-
 }

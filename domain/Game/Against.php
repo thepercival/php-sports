@@ -1,11 +1,12 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Sports\Game;
 
 use Closure;
 use DateTimeImmutable;
-use \Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 
 use Doctrine\ORM\PersistentCollection;
@@ -167,13 +168,13 @@ class Against extends GameBase
     }
 
     /**
-     * @return array<GoalEvent|CardEvent|SubstitutionEvent>
+     * @return list<GoalEvent|CardEvent|SubstitutionEvent>
      */
     public function getEvents(): array
     {
         $events = [];
-        foreach( $this->getPlaces() as $gamePlace ) {
-            foreach( $gamePlace->getEvents() as $gamePlaceEvent ) {
+        foreach ($this->getPlaces() as $gamePlace) {
+            foreach ($gamePlace->getEvents() as $gamePlaceEvent) {
                 $events[] = $gamePlaceEvent;
             }
         }
@@ -183,14 +184,14 @@ class Against extends GameBase
         ): int {
             return $eventA->getMinute() < $eventB->getMinute() ? -1 : 1;
         });
-        return $events;
+        return array_values($events);
     }
 
     public function getParticipation(Person $person): Participation|null
     {
-        foreach( $this->getPlaces() as $gamePlace ) {
+        foreach ($this->getPlaces() as $gamePlace) {
             $participation = $gamePlace->getParticipation($person);
-            if( $participation !== null ) {
+            if ($participation !== null) {
                 return $participation;
             }
         }

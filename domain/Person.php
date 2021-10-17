@@ -1,11 +1,12 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Sports;
 
 use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
+use Doctrine\ORM\PersistentCollection;
 use League\Period\Period;
 use SportsHelpers\Identifiable;
 use Sports\Team\Player;
@@ -17,18 +18,19 @@ class Person extends Identifiable
     protected string $lastName;
     protected DateTimeImmutable|null $dateOfBirth = null;
     /**
-     * @var ArrayCollection<int|string,Player>
+     * @var ArrayCollection<int|string, Player>|PersistentCollection<int|string, Player>
+     * @psalm-var ArrayCollection<int|string, Player>
      */
-    protected $players;
+    protected ArrayCollection|PersistentCollection $players;
     protected string|null $imageUrl = null;
-    
-    const MIN_LENGTH_FIRSTNAME = 2;
-    const MAX_LENGTH_FIRSTNAME = 50;
-    const MIN_LENGTH_NAMEINSERTION = 1;
-    const MAX_LENGTH_NAMEINSERTION = 10;
-    const MIN_LENGTH_LASTNAME = 2;
-    const MAX_LENGTH_LASTNAME = 50;
-    
+
+    public const MIN_LENGTH_FIRSTNAME = 2;
+    public const MAX_LENGTH_FIRSTNAME = 50;
+    public const MIN_LENGTH_NAMEINSERTION = 1;
+    public const MAX_LENGTH_NAMEINSERTION = 10;
+    public const MIN_LENGTH_LASTNAME = 2;
+    public const MAX_LENGTH_LASTNAME = 50;
+
     public function __construct(string $firstName, string|null $nameInsertion, string $lastName)
     {
         $this->setFirstName($firstName);
@@ -121,10 +123,14 @@ class Person extends Identifiable
      * @param Team|null $team
      * @param Period|null $period
      * @param int|null $line
-     * @return ArrayCollection<int|string,Player>
+     * @return ArrayCollection<int|string, Player>|PersistentCollection<int|string, Player>
+     * @psalm-return ArrayCollection<int|string, Player>
      */
-    public function getPlayers(Team $team = null, Period|null $period = null, int|null $line = null): ArrayCollection
-    {
+    public function getPlayers(
+        Team $team = null,
+        Period|null $period = null,
+        int|null $line = null
+    ): ArrayCollection|PersistentCollection {
         $filters = [];
         if ($team !== null) {
             $filters[] = function (Player $player) use ($team): bool {

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Sports\Game\Place;
@@ -51,7 +52,7 @@ class Against extends GamePlaceBase
      */
     public function getParticipations(Closure|null $filter = null): ArrayCollection|PersistentCollection
     {
-        if( $filter === null ) {
+        if ($filter === null) {
             return $this->participations;
         }
         return $this->participations->filter($filter);
@@ -89,10 +90,8 @@ class Against extends GamePlaceBase
     public function getGoalEvents(TeamCompetitor $teamCompetitor = null): array
     {
         $goalEvents = [];
-        if ($teamCompetitor === null) {
-            return $goalEvents;
-        }
-        foreach ($this->getTeamParticipations($teamCompetitor) as $participation) {
+        $participations = $teamCompetitor !== null ? $this->getTeamParticipations($teamCompetitor) : $this->getParticipations();
+        foreach ($participations as $participation) {
             $goalEvents = array_merge($goalEvents, $participation->getGoals()->toArray());
         }
         return array_values($goalEvents);
@@ -105,10 +104,8 @@ class Against extends GamePlaceBase
     public function getCardEvents(TeamCompetitor $teamCompetitor = null): array
     {
         $cardEvents = [];
-        if ($teamCompetitor === null) {
-            return $cardEvents;
-        }
-        foreach ($this->getTeamParticipations($teamCompetitor) as $participation) {
+        $participations = $teamCompetitor !== null ? $this->getTeamParticipations($teamCompetitor) : $this->getParticipations();
+        foreach ($participations as $participation) {
             $cardEvents = array_merge($cardEvents, $participation->getCards()->toArray());
         }
         return array_values($cardEvents);
@@ -122,7 +119,7 @@ class Against extends GamePlaceBase
     {
         $substituteEvents = [];
         $substitutes = $this->getSubstitutes($teamCompetitor);
-        $fncRemoveSubstitute = function (int $minute) use (&$substitutes) : Participation|null {
+        $fncRemoveSubstitute = function (int $minute) use (&$substitutes): Participation|null {
             /** @var list<Participation> $substitutes */
             foreach ($substitutes as $substitute) {
                 if ($substitute->getBeginMinute() === $minute) {
@@ -154,11 +151,11 @@ class Against extends GamePlaceBase
      */
     public function getEvents(TeamCompetitor $teamCompetitor = null): array
     {
-        return array_values( array_merge(
+        return array_values(array_merge(
             $this->getGoalEvents($teamCompetitor),
             $this->getCardEvents($teamCompetitor),
             $this->getSubstituteEvents($teamCompetitor)
-        ) );
+        ));
     }
 
 
@@ -207,8 +204,4 @@ class Against extends GamePlaceBase
         });
         return array_values($substitutes);
     }
-
-
-
-
 }

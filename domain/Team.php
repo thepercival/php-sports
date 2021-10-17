@@ -16,7 +16,8 @@ class Team extends Identifiable
     protected string|null $imageUrl = null;
     protected string|null $countryCode = null;
     /**
-     * @var ArrayCollection<int|string, Player>|PersistentCollection<int|string, Player>
+     * @phpstan-var ArrayCollection<int|string, Player>|PersistentCollection<int|string, Player>
+     * @psalm-var ArrayCollection<int|string, Player>
      */
     protected ArrayCollection|PersistentCollection $players;
 
@@ -119,7 +120,8 @@ class Team extends Identifiable
     }
 
     /**
-     * @return ArrayCollection<int|string, Player>|PersistentCollection<int|string, Player>
+     * @phpstan-return ArrayCollection<int|string, Player>|PersistentCollection<int|string, Player>
+     * @psalm-return ArrayCollection<int|string, Player>
      */
     public function getPlayers(): ArrayCollection|PersistentCollection
     {
