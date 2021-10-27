@@ -2,12 +2,20 @@
 <doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
   <entity name="Sports\Round\Number" table="roundNumbers" repository-class="Sports\Round\Number\Repository">
     <field name="number" column="number" type="smallint" nullable="false" unique="false"/>
-    <one-to-one field="previous" target-entity="Sports\Round\Number">
+    <one-to-one field="previous" target-entity="Sports\Round\Number" inversed-by="next">
       <cascade>
         <cascade-remove/>
       </cascade>
       <join-columns>
         <join-column name="previousId" referenced-column-name="id" nullable="true" on-delete="CASCADE"/>
+      </join-columns>
+    </one-to-one>
+    <one-to-one field="next" target-entity="Sports\Round\Number" mapped-by="previous">
+      <cascade>
+        <cascade-remove/>
+      </cascade>
+      <join-columns>
+        <join-column name="nextId" referenced-column-name="id" nullable="true" on-delete="CASCADE"/>
       </join-columns>
     </one-to-one>
     <one-to-one field="planningConfig" target-entity="Sports\Planning\Config" fetch="EAGER">

@@ -66,16 +66,6 @@ class Number extends Identifiable
         return $next;
     }
 
-    public function removeNext(): void
-    {
-        $this->next = null;
-    }
-
-    public function setNext(RoundNumber $roundNumber): void
-    {
-        $this->next = $roundNumber;
-    }
-
     public function detachFromNext(): void
     {
         $this->next = null;
@@ -86,7 +76,7 @@ class Number extends Identifiable
         if ($this->previous === null) {
             return;
         }
-        $this->previous->removeNext();
+        $this->previous->detachFromNext();
         $this->previous = null;
     }
 

@@ -89,15 +89,10 @@ class Repository
     public function getStructure(Competition $competition): StructureBase
     {
         $roundNumbers = $this->roundNumberRepos->findBy(array("competition" => $competition), array("number" => "asc"));
-        if (count($roundNumbers) === 0) {
+        $firstRoundNumber = reset($roundNumbers);
+        if ($firstRoundNumber === false) {
             throw new \Exception('mallformed structure, no roundnumbers', E_ERROR);
         }
-        $roundNumber = reset($roundNumbers);
-        while ($nextRoundNumber = next($roundNumbers)) {
-            $roundNumber->setNext($nextRoundNumber);
-            $roundNumber = $nextRoundNumber;
-        }
-        $firstRoundNumber = reset($roundNumbers);
 
         $rootRound = $firstRoundNumber->getRounds()->first();
         if ($rootRound === false) {
