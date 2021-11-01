@@ -4,7 +4,6 @@
     <field name="name" column="name" type="string" length="30" nullable="false" unique="false"/>
     <field name="abbreviation" column="abbreviation" type="string" length="3" nullable="true" unique="false"/>
     <field name="countryCode" column="countryCode" type="string" length="2" nullable="true" unique="false"/>
-    <field name="imageUrl" column="imageUrl" type="string" length="150" nullable="true" unique="false"/>
     <many-to-one field="association" target-entity="Sports\Association" inversed-by="teams">
       <cascade>
         <cascade-persist/>

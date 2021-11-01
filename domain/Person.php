@@ -22,7 +22,6 @@ class Person extends Identifiable
      * @psalm-var ArrayCollection<int|string, Player>
      */
     protected ArrayCollection|PersistentCollection $players;
-    protected string|null $imageUrl = null;
 
     public const MIN_LENGTH_FIRSTNAME = 2;
     public const MAX_LENGTH_FIRSTNAME = 50;
@@ -183,22 +182,5 @@ class Person extends Identifiable
         });
         $filteredPlayer = $filteredPlayers->first();
         return $filteredPlayer !== false ? $filteredPlayer : null;
-    }
-
-    public function getImageUrl(): ?string
-    {
-        return $this->imageUrl;
-    }
-
-    public function setImageUrl(string|null $imageUrl = null): void
-    {
-        if ($imageUrl !== null && strlen($imageUrl) === 0) {
-            $imageUrl = null;
-        }
-
-        if ($imageUrl !== null && strlen($imageUrl) > Team::MAX_LENGTH_IMAGEURL) {
-            throw new \InvalidArgumentException("de imageUrl mag maximaal ".Team::MAX_LENGTH_IMAGEURL." karakters bevatten", E_ERROR);
-        }
-        $this->imageUrl = $imageUrl;
     }
 }

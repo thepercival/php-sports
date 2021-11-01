@@ -6,5 +6,3 @@ Sports\Team:
       type: string
     abbreviation:
       type: string
-    imageUrl:
-      type: string

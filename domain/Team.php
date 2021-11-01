@@ -13,7 +13,6 @@ class Team extends Identifiable
     protected Association $association;
     protected string $name;
     protected string|null $abbreviation = null;
-    protected string|null $imageUrl = null;
     protected string|null $countryCode = null;
     /**
      * @phpstan-var ArrayCollection<int|string, Player>|PersistentCollection<int|string, Player>
@@ -24,7 +23,6 @@ class Team extends Identifiable
     const MIN_LENGTH_NAME = 2;
     const MAX_LENGTH_NAME = 30;
     const MAX_LENGTH_ABBREVIATION = 3;
-    const MAX_LENGTH_IMAGEURL = 150;
 
     // Every team should must have a club, a association or a country
     const TYPE_ASSOCIATION = 1;
@@ -70,23 +68,6 @@ class Team extends Identifiable
             throw new \InvalidArgumentException("de afkorting mag maximaal ".self::MAX_LENGTH_ABBREVIATION." karakters bevatten", E_ERROR);
         }
         $this->abbreviation = $abbreviation;
-    }
-
-    public function getImageUrl(): ?string
-    {
-        return $this->imageUrl;
-    }
-
-    public function setImageUrl(string $imageUrl = null): void
-    {
-        if ($imageUrl !== null && strlen($imageUrl) === 0) {
-            $imageUrl = null;
-        }
-
-        if ($imageUrl !== null &&  strlen($imageUrl) > self::MAX_LENGTH_IMAGEURL) {
-            throw new \InvalidArgumentException("de imageUrl mag maximaal ".self::MAX_LENGTH_IMAGEURL." karakters bevatten", E_ERROR);
-        }
-        $this->imageUrl = $imageUrl;
     }
 
     public function getAssociation(): Association
