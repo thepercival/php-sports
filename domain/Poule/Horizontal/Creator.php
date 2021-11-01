@@ -1,11 +1,13 @@
 <?php
+declare(strict_types=1);
 
 namespace Sports\Poule\Horizontal;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Sports\Place;
-use Sports\Qualify\Target as QualifyTarget;
 use Sports\Poule\Horizontal as HorizontalPoule;
+use Sports\Qualify\Target as QualifyTarget;
 use Sports\Round;
 
 class Creator
@@ -46,9 +48,9 @@ class Creator
     /**
      * @param Round $round
      * @param string $qualifyTarget
-     * @return ArrayCollection<int|string, HorizontalPoule>
+     * @return Collection<int|string, HorizontalPoule>
      */
-    protected function createRoundHorizontalPoules(Round $round, string $qualifyTarget): ArrayCollection
+    protected function createRoundHorizontalPoules(Round $round, string $qualifyTarget): Collection
     {
         $horizontalPoules = $round->getHorizontalPoules($qualifyTarget);
 
@@ -61,7 +63,7 @@ class Creator
         $horPlaces = array_values(array_splice($placesHorizontalOrdered, 0, $nrOfPoules));
         $previous = null;
         while (count($horPlaces) > 0) {
-            /** @var ArrayCollection<int|string, Place> $horPlacesCollection */
+            /** @var Collection<int|string, Place> $horPlacesCollection */
             $horPlacesCollection = new ArrayCollection($horPlaces);
             $previous = new HorizontalPoule($round, $qualifyTarget, $previous, $horPlacesCollection);
             $horPlaces = array_splice($placesHorizontalOrdered, 0, $nrOfPoules);

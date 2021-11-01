@@ -1,15 +1,16 @@
 <?php
+declare(strict_types=1);
 
 namespace Sports\Poule;
 
-use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Exception;
-use Sports\Poule\Horizontal as HorizontalPoule;
-use Sports\Round;
 use Sports\Place;
-use Sports\Qualify\Target as QualifyTarget;
+use Sports\Poule\Horizontal as HorizontalPoule;
 use Sports\Qualify\Rule\Multiple as MultipleQualifyRule;
 use Sports\Qualify\Rule\Single as SingleQualifyRule;
+use Sports\Qualify\Target as QualifyTarget;
+use Sports\Round;
 
 /**
  * QualifyGroup->WINNERS
@@ -32,13 +33,13 @@ class Horizontal
      * @param Round $round
      * @param string $qualifyTarget
      * @param Horizontal|null $previous
-     * @param ArrayCollection<int|string, Place> $places
+     * @param Collection<int|string, Place> $places
      */
     public function __construct(
         protected Round $round,
         protected string $qualifyTarget,
         protected HorizontalPoule | null $previous,
-        protected ArrayCollection $places
+        protected Collection $places
     ) {
         $round->getHorizontalPoules($qualifyTarget)->add($this);
         $this->number = $previous !== null ? $previous->getNumber() + 1 : 1;
@@ -80,9 +81,9 @@ class Horizontal
     }
 
     /**
-     * @return ArrayCollection<int|string, Place>
+     * @return Collection<int|string, Place>
      */
-    public function getPlaces(): ArrayCollection
+    public function getPlaces(): Collection
     {
         return $this->places;
     }

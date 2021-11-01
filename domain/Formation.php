@@ -4,17 +4,16 @@ declare(strict_types=1);
 namespace Sports;
 
 use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\ORM\PersistentCollection;
-use SportsHelpers\Identifiable;
+use Doctrine\Common\Collections\Collection;
 use Sports\Formation\Line;
+use SportsHelpers\Identifiable;
 
 class Formation extends Identifiable
 {
     /**
-     * @var ArrayCollection<int|string, Line>|PersistentCollection<int|string, Line>
-     * @psalm-var ArrayCollection<int|string, Line>
+     * @var Collection<int|string, Line>
      */
-    protected ArrayCollection|PersistentCollection $lines;
+    protected Collection $lines;
 
     public function __construct()
     {
@@ -22,10 +21,9 @@ class Formation extends Identifiable
     }
 
     /**
-     * @return ArrayCollection<int|string, Line>|PersistentCollection<int|string, Line>
-     * @psalm-return ArrayCollection<int|string, Line>
+     * @return Collection<int|string, Line>
      */
-    public function getLines(): ArrayCollection|PersistentCollection
+    public function getLines(): Collection
     {
         return $this->lines;
     }

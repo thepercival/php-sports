@@ -3,30 +3,30 @@ declare(strict_types=1);
 
 namespace Sports\Qualify\Rule;
 
-use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Exception;
 use Sports\Place;
+use Sports\Poule\Horizontal as HorizontalPoule;
+use Sports\Qualify\Group as QualifyGroup;
 use Sports\Qualify\PlaceMapping as QualifyPlaceMapping;
 use Sports\Qualify\Rule as QualifyRule;
 use Sports\Qualify\Target as QualifyTarget;
-use Sports\Poule\Horizontal as HorizontalPoule;
-use Sports\Qualify\Group as QualifyGroup;
 
 class Single extends QualifyRule
 {
-    private Single | null $next = null;
+    private Single|null $next = null;
 
     /**
      * @param HorizontalPoule $fromHorizontalPoule
      * @param QualifyGroup $group
-     * @param ArrayCollection<int|string, QualifyPlaceMapping> $placeMappings
+     * @param Collection<int|string, QualifyPlaceMapping> $placeMappings
      * @param Single|null $previous
      */
     public function __construct(
         HorizontalPoule $fromHorizontalPoule,
         QualifyGroup $group,
-        private ArrayCollection $placeMappings,
-        private Single | null $previous
+        private Collection $placeMappings,
+        private Single|null $previous
     )
     {
         parent::__construct($fromHorizontalPoule);
@@ -39,9 +39,9 @@ class Single extends QualifyRule
     }
 
     /**
-     * @return ArrayCollection<int|string, QualifyPlaceMapping>
+     * @return Collection<int|string, QualifyPlaceMapping>
      */
-    public function getMappings(): ArrayCollection
+    public function getMappings(): Collection
     {
         return $this->placeMappings;
     }

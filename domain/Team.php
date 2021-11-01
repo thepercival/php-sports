@@ -4,9 +4,9 @@ declare(strict_types=1);
 namespace Sports;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Sports\Team\Player;
 use SportsHelpers\Identifiable;
-use Doctrine\ORM\PersistentCollection;
 
 class Team extends Identifiable
 {
@@ -15,10 +15,9 @@ class Team extends Identifiable
     protected string|null $abbreviation = null;
     protected string|null $countryCode = null;
     /**
-     * @phpstan-var ArrayCollection<int|string, Player>|PersistentCollection<int|string, Player>
-     * @psalm-var ArrayCollection<int|string, Player>
+     * @var Collection<int|string, Player>
      */
-    protected ArrayCollection|PersistentCollection $players;
+    protected Collection $players;
 
     const MIN_LENGTH_NAME = 2;
     const MAX_LENGTH_NAME = 30;
@@ -101,10 +100,9 @@ class Team extends Identifiable
     }
 
     /**
-     * @phpstan-return ArrayCollection<int|string, Player>|PersistentCollection<int|string, Player>
-     * @psalm-return ArrayCollection<int|string, Player>
+     * @return Collection<int|string, Player>
      */
-    public function getPlayers(): ArrayCollection|PersistentCollection
+    public function getPlayers(): Collection
     {
         return $this->players;
     }

@@ -1,15 +1,14 @@
 <?php
-
 declare(strict_types=1);
 
 namespace Sports;
 
 use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\ORM\PersistentCollection;
+use Doctrine\Common\Collections\Collection;
 use League\Period\Period;
-use SportsHelpers\Identifiable;
 use Sports\Team\Player;
+use SportsHelpers\Identifiable;
 
 class Person extends Identifiable
 {
@@ -18,10 +17,9 @@ class Person extends Identifiable
     protected string $lastName;
     protected DateTimeImmutable|null $dateOfBirth = null;
     /**
-     * @var ArrayCollection<int|string, Player>|PersistentCollection<int|string, Player>
-     * @psalm-var ArrayCollection<int|string, Player>
+     * @var Collection<int|string, Player>
      */
-    protected ArrayCollection|PersistentCollection $players;
+    protected Collection $players;
 
     public const MIN_LENGTH_FIRSTNAME = 2;
     public const MAX_LENGTH_FIRSTNAME = 50;
@@ -122,14 +120,13 @@ class Person extends Identifiable
      * @param Team|null $team
      * @param Period|null $period
      * @param int|null $line
-     * @return ArrayCollection<int|string, Player>|PersistentCollection<int|string, Player>
-     * @psalm-return ArrayCollection<int|string, Player>
+     * @return Collection<int|string, Player>
      */
     public function getPlayers(
         Team $team = null,
         Period|null $period = null,
         int|null $line = null
-    ): ArrayCollection|PersistentCollection {
+    ): Collection {
         $filters = [];
         if ($team !== null) {
             $filters[] = function (Player $player) use ($team): bool {

@@ -7,24 +7,22 @@ namespace Sports\Game\Place;
 use Closure;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-use Doctrine\ORM\PersistentCollection;
 use Sports\Competitor\Team as TeamCompetitor;
 use Sports\Game\Against as AgainstGame;
 use Sports\Game\Event\Card as CardEvent;
 use Sports\Game\Event\Goal as GoalEvent;
 use Sports\Game\Event\Substitution as SubstitutionEvent;
 use Sports\Game\Participation;
+use Sports\Game\Place as GamePlaceBase;
 use Sports\Person;
 use Sports\Place as PlaceBase;
-use Sports\Game\Place as GamePlaceBase;
 
 class Against extends GamePlaceBase
 {
     /**
-     * @phpstan-var ArrayCollection<int|string, Participation>|PersistentCollection<int|string, Participation>
-     * @psalm-var ArrayCollection<int|string, Participation>
+     * @var Collection<int|string, Participation>
      */
-    protected ArrayCollection|PersistentCollection $participations;
+    protected Collection $participations;
 
     public function __construct(private AgainstGame $game, PlaceBase $place, private int $side)
     {
@@ -47,10 +45,10 @@ class Against extends GamePlaceBase
 
     /**
      * @param Closure|null $filter
-     * @phpstan-return ArrayCollection<int|string, Participation>|PersistentCollection<int|string, Participation>
-     * @psalm-return ArrayCollection<int|string, Participation>
+     * @psalm-param Closure(Participation=):bool|null $filter
+     * @return Collection<int|string, Participation>
      */
-    public function getParticipations(Closure|null $filter = null): ArrayCollection|PersistentCollection
+    public function getParticipations(Closure|null $filter = null): Collection
     {
         if ($filter === null) {
             return $this->participations;

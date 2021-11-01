@@ -1,20 +1,20 @@
 {
-    "_readme": [
-        "This file locks the dependencies of your project to a known state",
-        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
-        "This file is @generated automatically"
-    ],
-    "content-hash": "26a088dbb01d164c46b8e47241702c71",
-    "packages": [
-        {
-            "name": "composer/package-versions-deprecated",
-            "version": "1.11.99.4",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/composer/package-versions-deprecated.git",
-                "reference": "b174585d1fe49ceed21928a945138948cb394600"
-            },
-            "dist": {
+  "_readme": [
+    "This file locks the dependencies of your project to a known state",
+    "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
+    "This file is @generated automatically"
+  ],
+  "content-hash": "174491d4901b925504a79f0e1df703f7",
+  "packages": [
+    {
+      "name": "composer/package-versions-deprecated",
+      "version": "1.11.99.4",
+      "source": {
+        "type": "git",
+        "url": "https://github.com/composer/package-versions-deprecated.git",
+        "reference": "b174585d1fe49ceed21928a945138948cb394600"
+      },
+      "dist": {
                 "type": "zip",
                 "url": "https://api.github.com/repos/composer/package-versions-deprecated/zipball/b174585d1fe49ceed21928a945138948cb394600",
                 "reference": "b174585d1fe49ceed21928a945138948cb394600",
@@ -3284,20 +3284,20 @@
             },
             "time": "2021-10-28T09:13:36+00:00"
         },
-        {
-            "name": "thepercival/php-sports-planning",
-            "version": "v1.0.29",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/thepercival/php-sports-planning.git",
-                "reference": "e1d33a2cd57b09a9b89424a080b8f8ccec6e9ab2"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/thepercival/php-sports-planning/zipball/e1d33a2cd57b09a9b89424a080b8f8ccec6e9ab2",
-                "reference": "e1d33a2cd57b09a9b89424a080b8f8ccec6e9ab2",
-                "shasum": ""
-            },
+    {
+      "name": "thepercival/php-sports-planning",
+      "version": "v1.0.30",
+      "source": {
+        "type": "git",
+        "url": "https://github.com/thepercival/php-sports-planning.git",
+        "reference": "045492acd7ec890fd365ed419fcfa49a84107889"
+      },
+      "dist": {
+        "type": "zip",
+        "url": "https://api.github.com/repos/thepercival/php-sports-planning/zipball/045492acd7ec890fd365ed419fcfa49a84107889",
+        "reference": "045492acd7ec890fd365ed419fcfa49a84107889",
+        "shasum": ""
+      },
             "require": {
                 "doctrine/orm": "^2.7",
                 "drupol/phpermutations": "^1.4",
@@ -3317,7 +3317,7 @@
                 "phpunit/phpunit": "^9.5",
                 "psalm/plugin-phpunit": "^0.15",
                 "vimeo/psalm": "^4.6",
-                "weirdan/doctrine-psalm-plugin": "^1.0"
+              "weirdan/doctrine-psalm-plugin": "^2.0"
             },
             "type": "library",
             "extra": {
@@ -3351,9 +3351,9 @@
             "support": {
                 "email": "coendunnink@gmail.com",
                 "issues": "https://github.com/thepercival/php-sports-planning/issues",
-                "source": "https://github.com/thepercival/php-sports-planning/tree/v1.0.29"
+              "source": "https://github.com/thepercival/php-sports-planning/tree/v1.0.30"
             },
-            "time": "2021-11-01T16:03:18+00:00"
+      "time": "2021-11-01T21:24:15+00:00"
         }
     ],
     "packages-dev": [
@@ -7104,38 +7104,40 @@
             },
             "time": "2015-12-17T08:42:14+00:00"
         },
-        {
-            "name": "weirdan/doctrine-psalm-plugin",
-            "version": "v1.2.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/psalm/psalm-plugin-doctrine.git",
-                "reference": "b24dcfd4815eed489800e97c0b605932800aabec"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/psalm/psalm-plugin-doctrine/zipball/b24dcfd4815eed489800e97c0b605932800aabec",
-                "reference": "b24dcfd4815eed489800e97c0b605932800aabec",
-                "shasum": ""
-            },
+      {
+        "name": "weirdan/doctrine-psalm-plugin",
+        "version": "v2.0.0",
+        "source": {
+          "type": "git",
+          "url": "https://github.com/psalm/psalm-plugin-doctrine.git",
+          "reference": "a9b88920d9945c55b4f46e7bc9a07385bb50594a"
+        },
+        "dist": {
+          "type": "zip",
+          "url": "https://api.github.com/repos/psalm/psalm-plugin-doctrine/zipball/a9b88920d9945c55b4f46e7bc9a07385bb50594a",
+          "reference": "a9b88920d9945c55b4f46e7bc9a07385bb50594a",
+          "shasum": ""
+        },
             "require": {
                 "composer/semver": "^1.4 || ^2.0 || ^3.0",
                 "php": "^7.2 || ^8",
                 "vimeo/psalm": "^4.9 || dev-master"
             },
             "conflict": {
-                "doctrine/collections": "<1.6",
-                "doctrine/orm": "<2.6"
+              "doctrine/collections": "<1.6",
+              "doctrine/orm": "<2.6",
+              "doctrine/persistence": "<2.0"
             },
             "require-dev": {
-                "codeception/codeception": "^4.0",
-                "doctrine/coding-standard": "^9.0",
-                "doctrine/collections": "^1.0",
-                "doctrine/doctrine-bundle": "^1.11 || ^2.0",
-                "doctrine/orm": "^2.6",
-                "phly/keep-a-changelog": "^2.1",
-                "squizlabs/php_codesniffer": "^3.3",
-                "weirdan/codeception-psalm-module": "^0.13.1"
+              "codeception/codeception": "^4.0",
+              "doctrine/coding-standard": "^9.0",
+              "doctrine/collections": "^1.0",
+              "doctrine/doctrine-bundle": "^1.11 || ^2.0",
+              "doctrine/orm": "^2.6",
+              "doctrine/persistence": "^2.0",
+              "phly/keep-a-changelog": "^2.1",
+              "squizlabs/php_codesniffer": "^3.3",
+              "weirdan/codeception-psalm-module": "^0.13.1"
             },
             "type": "psalm-plugin",
             "extra": {
@@ -7176,9 +7178,9 @@
             ],
             "support": {
                 "issues": "https://github.com/psalm/psalm-plugin-doctrine/issues",
-                "source": "https://github.com/psalm/psalm-plugin-doctrine/tree/v1.2.0"
+              "source": "https://github.com/psalm/psalm-plugin-doctrine/tree/v2.0.0"
             },
-            "time": "2021-10-31T17:59:51+00:00"
+        "time": "2021-11-01T08:11:36+00:00"
         }
     ],
     "aliases": [],

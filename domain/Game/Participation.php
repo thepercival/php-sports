@@ -4,10 +4,8 @@ namespace Sports\Game;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-use Doctrine\ORM\PersistentCollection;
-use Sports\Competitor\Team as TeamCompetitor;
-use Sports\Game\Event\Goal as GoalEvent;
 use Sports\Game\Event\Card as CardEvent;
+use Sports\Game\Event\Goal as GoalEvent;
 use Sports\Game\Place\Against as AgainstGamePlace;
 use Sports\Sport;
 use Sports\Team\Player;
@@ -16,15 +14,13 @@ use SportsHelpers\Identifiable;
 class Participation extends Identifiable
 {
     /**
-     * @phpstan-var ArrayCollection<int|string, CardEvent>|PersistentCollection<int|string, CardEvent>
-     * @psalm-var ArrayCollection<int|string, CardEvent>
+     * @var Collection<int|string, CardEvent>
      */
-    protected ArrayCollection|PersistentCollection $cards;
+    protected Collection $cards;
     /**
-     * @phpstan-var ArrayCollection<int|string, GoalEvent>|PersistentCollection<int|string, GoalEvent>
-     * @psalm-var ArrayCollection<int|string, GoalEvent>
+     * @var Collection<int|string, GoalEvent>
      */
-    protected ArrayCollection|PersistentCollection $goalsAndAssists;
+    protected Collection $goalsAndAssists;
 
     public function __construct(
         protected AgainstGamePlace $againstGamePlace,
@@ -86,20 +82,19 @@ class Participation extends Identifiable
     }
 
     /**
-     * @phpstan-return ArrayCollection<int|string, CardEvent>|PersistentCollection<int|string, CardEvent>
-     * @psalm-return ArrayCollection<int|string, CardEvent>
+     * @return Collection<int|string, CardEvent>
      */
-    public function getCards(): ArrayCollection|PersistentCollection
+    public function getCards(): Collection
     {
         return $this->cards;
     }
 
     /**
-     * @return ArrayCollection<int|string, CardEvent>
+     * @return Collection<int|string, CardEvent>
      */
-    public function getWarnings(): ArrayCollection
+    public function getWarnings(): Collection
     {
-        return $this->cards->filter(fn (CardEvent $card) => $card->getType() === Sport::WARNING);
+        return $this->cards->filter(fn(CardEvent $card) => $card->getType() === Sport::WARNING);
     }
 
     public function getSendoff(): CardEvent|null
@@ -110,18 +105,17 @@ class Participation extends Identifiable
     }
 
     /**
-     * @phpstan-return ArrayCollection<int|string, GoalEvent>|PersistentCollection<int|string, GoalEvent>
-     * @psalm-return ArrayCollection<int|string, GoalEvent>
+     * @return Collection<int|string, GoalEvent>
      */
-    public function getGoalsAndAssists(): ArrayCollection|PersistentCollection
+    public function getGoalsAndAssists(): Collection
     {
         return $this->goalsAndAssists;
     }
 
     /**
-     * @return ArrayCollection<int|string, GoalEvent>
+     * @return Collection<int|string, GoalEvent>
      */
-    public function getGoals(): ArrayCollection
+    public function getGoals(): Collection
     {
         return $this->goalsAndAssists->filter(function (GoalEvent $goalEvent): bool {
             return $goalEvent->getGameParticipation() === $this;
@@ -129,33 +123,33 @@ class Participation extends Identifiable
     }
 
     /**
-     * @return ArrayCollection<int|string, GoalEvent>
+     * @return Collection<int|string, GoalEvent>
      */
-    public function getOwnGoals(): ArrayCollection
+    public function getOwnGoals(): Collection
     {
-        return $this->getGoals()->filter(fn (GoalEvent $goalEvent) => $goalEvent->getOwn());
+        return $this->getGoals()->filter(fn(GoalEvent $goalEvent) => $goalEvent->getOwn());
     }
 
     /**
-     * @return ArrayCollection<int|string, GoalEvent>
+     * @return Collection<int|string, GoalEvent>
      */
-    public function getPenalties(): ArrayCollection
+    public function getPenalties(): Collection
     {
-        return $this->getGoals()->filter(fn (GoalEvent $goalEvent) => $goalEvent->getPenalty());
+        return $this->getGoals()->filter(fn(GoalEvent $goalEvent) => $goalEvent->getPenalty());
     }
 
     /**
-     * @return ArrayCollection<int|string, GoalEvent>
+     * @return Collection<int|string, GoalEvent>
      */
-    public function getFieldGoals(): ArrayCollection
+    public function getFieldGoals(): Collection
     {
-        return $this->getGoals()->filter(fn (GoalEvent $goal) => !$goal->getOwn() && !$goal->getPenalty());
+        return $this->getGoals()->filter(fn(GoalEvent $goal) => !$goal->getOwn() && !$goal->getPenalty());
     }
 
     /**
-     * @return ArrayCollection<int|string, GoalEvent>
+     * @return Collection<int|string, GoalEvent>
      */
-    public function getAssists(): ArrayCollection
+    public function getAssists(): Collection
     {
         return $this->goalsAndAssists->filter(function (GoalEvent $goalEvent): bool {
             return $goalEvent->getAssistGameParticipation() === $this;

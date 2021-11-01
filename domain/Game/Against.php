@@ -4,40 +4,34 @@ declare(strict_types=1);
 
 namespace Sports\Game;
 
-use Closure;
 use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-
-use Doctrine\ORM\PersistentCollection;
-use SportsHelpers\Against\Side as AgainstSide;
+use Sports\Competition\Sport as CompetitionSport;
 use Sports\Competitor;
-use Sports\Competitor\Team as TeamCompetitor;
+use Sports\Competitor\Map as CompetitorMap;
+use Sports\Game as GameBase;
 use Sports\Game\Event\Card as CardEvent;
 use Sports\Game\Event\Goal as GoalEvent;
 use Sports\Game\Event\Substitution as SubstitutionEvent;
+use Sports\Game\Place\Against as AgainstGamePlace;
 use Sports\Person;
 use Sports\Place;
-use Sports\Game as GameBase;
-use Sports\Game\Place\Against as AgainstGamePlace;
-use Sports\Competitor\Map as CompetitorMap;
 use Sports\Poule;
 use Sports\Qualify\AgainstConfig as QualifyConfig;
 use Sports\Score\Against as AgainstScore;
-use Sports\Competition\Sport as CompetitionSport;
+use SportsHelpers\Against\Side as AgainstSide;
 
 class Against extends GameBase
 {
     /**
-     * @phpstan-var ArrayCollection<int|string, AgainstGamePlace>|PersistentCollection<int|string, AgainstGamePlace>
-     * @psalm-var ArrayCollection<int|string, AgainstGamePlace>
+     * @var Collection<int|string, AgainstGamePlace>
      */
-    protected ArrayCollection|PersistentCollection $places;
+    protected Collection $places;
     /**
-     * @phpstan-var ArrayCollection<int|string, AgainstScore>|PersistentCollection<int|string, AgainstScore>
-     * @psalm-var ArrayCollection<int|string, AgainstScore>
+     * @var Collection<int|string, AgainstScore>
      */
-    protected ArrayCollection|PersistentCollection $scores;
+    protected Collection $scores;
 
     public function __construct(
         Poule $poule,
@@ -60,19 +54,17 @@ class Against extends GameBase
     }
 
     /**
-     * @phpstan-return ArrayCollection<int|string, AgainstScore>|PersistentCollection<int|string, AgainstScore>
-     * @psalm-return ArrayCollection<int|string, AgainstScore>
+     * @return Collection<int|string, AgainstScore>
      */
-    public function getScores(): ArrayCollection|PersistentCollection
+    public function getScores(): Collection
     {
         return $this->scores;
     }
 
     /**
-     * @phpstan-return ArrayCollection<int|string, AgainstGamePlace>|PersistentCollection<int|string, AgainstGamePlace>
-     * @psalm-return ArrayCollection<int|string, AgainstGamePlace>
+     * @return Collection<int|string, AgainstGamePlace>
      */
-    public function getPlaces(): ArrayCollection|PersistentCollection
+    public function getPlaces(): Collection
     {
         return $this->places;
     }

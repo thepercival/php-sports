@@ -1,21 +1,21 @@
 <?php
+declare(strict_types=1);
 
 namespace Sports\Game\Place;
 
 use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\ORM\PersistentCollection;
-use Sports\Game\Together as TogetherGame;
-use Sports\Score\Together as TogetherScore;
-use Sports\Place as PlaceBase;
+use Doctrine\Common\Collections\Collection;
 use Sports\Game\Place as GamePlaceBase;
+use Sports\Game\Together as TogetherGame;
+use Sports\Place as PlaceBase;
+use Sports\Score\Together as TogetherScore;
 
 class Together extends GamePlaceBase
 {
     /**
-     * @phpstan-var ArrayCollection<int|string, TogetherScore>|PersistentCollection<int|string, TogetherScore>
-     * @psalm-var ArrayCollection<int|string, TogetherScore>
+     * @var Collection<int|string, TogetherScore>
      */
-    protected ArrayCollection|PersistentCollection $scores;
+    protected Collection $scores;
 
     public function __construct(protected TogetherGame $game, PlaceBase $place, protected int $gameRoundNumber)
     {
@@ -47,10 +47,10 @@ class Together extends GamePlaceBase
     }
 
     /**
-     * @phpstan-return ArrayCollection<int|string, TogetherScore>|PersistentCollection<int|string, TogetherScore>
-     * @psalm-return ArrayCollection<int|string, TogetherScore>
+     * @return Collection<int|string, TogetherScore>
      */
-    public function getScores(): ArrayCollection|PersistentCollection {
+    public function getScores(): Collection
+    {
         return $this->scores;
     }
 }

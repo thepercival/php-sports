@@ -6,41 +6,38 @@ namespace Sports\Round;
 use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-use Doctrine\ORM\PersistentCollection;
 use Exception;
 use Sports\Competition;
-use Sports\Game\Order as GameOrder;
-use Sports\Place;
-use Sports\Poule;
 use Sports\Competition\Sport as CompetitionSport;
-use Sports\Planning\GameAmountConfig as GameAmountConfig;
+use Sports\Game\Against as AgainstGame;
+use Sports\Game\Order as GameOrder;
+use Sports\Game\Together as TogetherGame;
+use Sports\Place;
 use Sports\Planning\Config as PlanningConfig;
+use Sports\Planning\GameAmountConfig as GameAmountConfig;
+use Sports\Poule;
 use Sports\Round;
 use Sports\Round\Number as RoundNumber;
 use Sports\State;
-use Sports\Game\Against as AgainstGame;
-use Sports\Game\Together as TogetherGame;
 use SportsHelpers\Identifiable;
 use SportsHelpers\PouleStructure;
-use SportsHelpers\Sport\Variant\Single as SingleSportVariant;
 use SportsHelpers\Sport\Variant\Against as AgainstSportVariant;
 use SportsHelpers\Sport\Variant\AllInOneGame as AllInOneGameSportVariant;
+use SportsHelpers\Sport\Variant\Single as SingleSportVariant;
 
 class Number extends Identifiable
 {
     protected int $number;
     protected RoundNumber|null $next = null;
     /**
-     * @phpstan-var ArrayCollection<int|string, Round>|PersistentCollection<int|string, Round>
-     * @psalm-var ArrayCollection<int|string, Round>
+     * @var Collection<int|string, Round>
      */
-    protected ArrayCollection|PersistentCollection $rounds;
+    protected Collection $rounds;
     protected PlanningConfig|null $planningConfig = null;
     /**
-     * @phpstan-var ArrayCollection<int|string, GameAmountConfig>|PersistentCollection<int|string, GameAmountConfig>
-     * @psalm-var ArrayCollection<int|string, GameAmountConfig>
+     * @var Collection<int|string, GameAmountConfig>
      */
-    protected ArrayCollection|PersistentCollection $gameAmountConfigs;
+    protected Collection $gameAmountConfigs;
 
     public function __construct(protected Competition $competition, protected RoundNumber|null $previous = null)
     {
@@ -124,10 +121,9 @@ class Number extends Identifiable
     }
 
     /**
-     * @phpstan-return ArrayCollection<int|string, Round>|PersistentCollection<int|string, Round>
-     * @psalm-return ArrayCollection<int|string, Round>
+     * @return Collection<int|string, Round>
      */
-    public function getRounds(): ArrayCollection|PersistentCollection
+    public function getRounds(): Collection
     {
         return $this->rounds;
     }
@@ -330,10 +326,9 @@ class Number extends Identifiable
     }
 
     /**
-     * @phpstan-return ArrayCollection<int|string, GameAmountConfig>|PersistentCollection<int|string, GameAmountConfig>
-     * @psalm-return ArrayCollection<int|string, GameAmountConfig>
+     * @return Collection<int|string, GameAmountConfig>
      */
-    public function getGameAmountConfigs(): ArrayCollection|PersistentCollection
+    public function getGameAmountConfigs(): Collection
     {
         return $this->gameAmountConfigs;
     }

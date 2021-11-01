@@ -4,16 +4,15 @@ declare(strict_types=1);
 namespace Sports\Qualify\Rule;
 
 use Doctrine\Common\Collections\ArrayCollection;
-use Sports\Poule;
+use Doctrine\Common\Collections\Collection;
 use Sports\Place;
+use Sports\Poule;
 use Sports\Poule\Horizontal as HorizontalPoule;
-use Sports\Qualify\OriginCalculator as QualifyOriginCalculator;
 use Sports\Qualify\Group as QualifyGroup;
-use Sports\Qualify\Target as QualifyTarget;
-use Sports\Qualify\Rule\Single as SingleQualifyRule;
-use Sports\Qualify\Rule\Multiple as MultipleQualifyRule;
+use Sports\Qualify\OriginCalculator as QualifyOriginCalculator;
 use Sports\Qualify\PlaceMapping as QualifyPlaceMapping;
-use Sports\Round;
+use Sports\Qualify\Rule\Multiple as MultipleQualifyRule;
+use Sports\Qualify\Rule\Single as SingleQualifyRule;
 
 class DefaultCreator
 {
@@ -70,15 +69,19 @@ class DefaultCreator
     /**
      * @param HorizontalPoule $fromHorPoule
      * @param list<Place> $childRoundPlaces
-     * @return ArrayCollection<int|string, QualifyPlaceMapping>
+     * @return Collection<int|string, QualifyPlaceMapping>
      */
-    public function createPlaceMappings(HorizontalPoule $fromHorPoule, array $childRoundPlaces): ArrayCollection
+    public function createPlaceMappings(HorizontalPoule $fromHorPoule, array $childRoundPlaces): Collection
     {
-        /** @var ArrayCollection<int|string, QualifyPlaceMapping> $mappings */
+        /** @var Collection<int|string, QualifyPlaceMapping> $mappings */
         $mappings = new ArrayCollection();
         $fromHorPoulePlaces = array_values($fromHorPoule->getPlaces()->slice(0));
         while ($childRoundPlace = array_shift($childRoundPlaces)) {
-            $fromHorPoulePlace = $this->getBestPick($childRoundPlace, $fromHorPoulePlaces, array_values($childRoundPlaces));
+            $fromHorPoulePlace = $this->getBestPick(
+                $childRoundPlace,
+                $fromHorPoulePlaces,
+                array_values($childRoundPlaces)
+            );
             $idx = array_search($fromHorPoulePlace, $fromHorPoulePlaces, true);
             if ($idx === false) {
                 continue;

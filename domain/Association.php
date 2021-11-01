@@ -3,8 +3,8 @@ declare(strict_types=1);
 
 namespace Sports;
 
-use \Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\ORM\PersistentCollection;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use SportsHelpers\Identifiable;
 
 class Association extends Identifiable
@@ -14,20 +14,17 @@ class Association extends Identifiable
     protected string|null $countryCode = null;
     protected Association|null $parent = null;
     /**
-     * @phpstan-var ArrayCollection<int|string, Association>|PersistentCollection<int|string, Association>
-     * @psalm-var ArrayCollection<int|string, Association>
+     * @var Collection<int|string, Association>
      */
-    protected ArrayCollection|PersistentCollection $children;
+    protected Collection $children;
     /**
-     * @phpstan-var ArrayCollection<int|string, League>|PersistentCollection<int|string, League>
-     * @psalm-var ArrayCollection<int|string, League>
+     * @var Collection<int|string, League>
      */
-    protected ArrayCollection|PersistentCollection $leagues;
+    protected Collection $leagues;
     /**
-     * @phpstan-var ArrayCollection<int|string, Team>|PersistentCollection<int|string, Team>
-     * @psalm-var ArrayCollection<int|string, Team>
+     * @var Collection<int|string, Team>
      */
-    protected ArrayCollection|PersistentCollection $teams;
+    protected Collection $teams;
 
     const MIN_LENGTH_NAME = 2;
     const MAX_LENGTH_NAME = 30;
@@ -122,29 +119,27 @@ class Association extends Identifiable
     }
 
     // In case the object is not created with the constructor, children can be null
+
     /**
-     * @phpstan-return ArrayCollection<int|string, Association>|PersistentCollection<int|string, Association>
-     * @psalm-return ArrayCollection<int|string, Association>
+     * @return Collection<int|string, Association>
      */
-    public function getChildren(): ArrayCollection|PersistentCollection
+    public function getChildren(): Collection
     {
         return $this->children;
     }
 
     /**
-     * @phpstan-return ArrayCollection<int|string, League>|PersistentCollection<int|string, League>
-     * @psalm-return ArrayCollection<int|string, League>
+     * @return Collection<int|string, League>
      */
-    public function getLeagues(): ArrayCollection|PersistentCollection
+    public function getLeagues(): Collection
     {
         return $this->leagues;
     }
 
     /**
-     * @phpstan-return ArrayCollection<int|string, Team>|PersistentCollection<int|string, Team>
-     * @psalm-return ArrayCollection<int|string, Team>
+     * @return Collection<int|string, Team>
      */
-    public function getTeams(): ArrayCollection|PersistentCollection
+    public function getTeams(): Collection
     {
         return $this->teams;
     }

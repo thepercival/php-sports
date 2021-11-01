@@ -3,20 +3,19 @@ declare(strict_types=1);
 
 namespace Sports;
 
-use \Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-use Doctrine\ORM\PersistentCollection;
 use Exception;
 use InvalidArgumentException;
 use Sports\Competition\Sport as CompetitionSport;
-use Sports\Qualify\AgainstConfig as AgainstQualifyConfig;
-use Sports\Qualify\Group as QualifyGroup;
-use Sports\Poule\Horizontal as HorizontalPoule;
-use Sports\Score\Config as ScoreConfig;
 use Sports\Game\Against as AgainstGame;
 use Sports\Game\Together as TogetherGame;
 use Sports\Place\Location as PlaceLocation;
+use Sports\Poule\Horizontal as HorizontalPoule;
+use Sports\Qualify\AgainstConfig as AgainstQualifyConfig;
+use Sports\Qualify\Group as QualifyGroup;
 use Sports\Qualify\Target as QualifyTarget;
+use Sports\Score\Config as ScoreConfig;
 use Sports\Structure\PathNode as StructurePathNode;
 use SportsHelpers\Identifiable;
 use SportsHelpers\PouleStructure\Balanced as BalancedPouleStructure;
@@ -25,33 +24,29 @@ class Round extends Identifiable
 {
     protected string|null $name = null;
     /**
-     * @phpstan-var ArrayCollection<int|string, Poule>|PersistentCollection<int|string, Poule>
-     * @psalm-var ArrayCollection<int|string, Poule>
+     * @var Collection<int|string, Poule>
      */
-    protected ArrayCollection|PersistentCollection $poules;
+    protected Collection $poules;
     /**
-     * @phpstan-var ArrayCollection<int|string, QualifyGroup>|PersistentCollection<int|string, QualifyGroup>
-     * @psalm-var ArrayCollection<int|string, QualifyGroup>
+     * @var Collection<int|string, QualifyGroup>
      */
-    protected ArrayCollection|PersistentCollection $qualifyGroups;
+    protected Collection $qualifyGroups;
     /**
-     * @var ArrayCollection<int|string, HorizontalPoule>
+     * @var Collection<int|string, HorizontalPoule>
      */
-    protected ArrayCollection $losersHorizontalPoules;
+    protected Collection $losersHorizontalPoules;
     /**
-     * @var ArrayCollection<int|string, HorizontalPoule>
+     * @var Collection<int|string, HorizontalPoule>
      */
-    protected ArrayCollection $winnersHorizontalPoules;
+    protected Collection $winnersHorizontalPoules;
     /**
-     * @phpstan-var ArrayCollection<int|string, AgainstQualifyConfig>|PersistentCollection<int|string, AgainstQualifyConfig>
-     * @psalm-var ArrayCollection<int|string, AgainstQualifyConfig>
+     * @psalm-var Collection<int|string, AgainstQualifyConfig>
      */
-    protected ArrayCollection|PersistentCollection $againstQualifyConfigs;
+    protected Collection $againstQualifyConfigs;
     /**
-     * @phpstan-var ArrayCollection<int|string, ScoreConfig>|PersistentCollection<int|string, ScoreConfig>
-     * @psalm-var ArrayCollection<int|string, ScoreConfig>
+     * @var Collection<int|string, ScoreConfig>
      */
-    protected ArrayCollection|PersistentCollection $scoreConfigs;
+    protected Collection $scoreConfigs;
     protected StructurePathNode $structurePathNode;
 
     const MAX_LENGTH_NAME = 20;
@@ -111,10 +106,9 @@ class Round extends Identifiable
     }
 
     /**
-     * @phpstan-return ArrayCollection<int|string, QualifyGroup>|PersistentCollection<int|string, QualifyGroup>
-     * @psalm-return ArrayCollection<int|string, QualifyGroup>
+     * @return Collection<int|string, QualifyGroup>
      */
-    public function getQualifyGroups(): ArrayCollection|PersistentCollection
+    public function getQualifyGroups(): Collection
     {
         return $this->qualifyGroups;
     }
@@ -211,10 +205,9 @@ class Round extends Identifiable
     }
 
     /**
-     * @phpstan-return ArrayCollection<int|string, Poule>|PersistentCollection<int|string, Poule>
-     * @psalm-return ArrayCollection<int|string, Poule>
+     * @return Collection<int|string, Poule>
      */
-    public function getPoules(): ArrayCollection|PersistentCollection
+    public function getPoules(): Collection
     {
         return $this->poules;
     }
@@ -310,9 +303,9 @@ class Round extends Identifiable
 
     /**
      * @param string $qualifyTarget
-     * @return ArrayCollection<int|string, HorizontalPoule>
+     * @return Collection<int|string, HorizontalPoule>
      */
-    public function getHorizontalPoules(string $qualifyTarget): ArrayCollection
+    public function getHorizontalPoules(string $qualifyTarget): Collection
     {
         if ($qualifyTarget === QualifyTarget::WINNERS) {
             return $this->winnersHorizontalPoules;
@@ -473,10 +466,9 @@ class Round extends Identifiable
     }
 
     /**
-     * @phpstan-return ArrayCollection<int|string, ScoreConfig>|PersistentCollection<int|string, ScoreConfig>
-     * @psalm-return ArrayCollection<int|string, ScoreConfig>
+     * @return Collection<int|string, ScoreConfig>
      */
-    public function getScoreConfigs(): ArrayCollection|PersistentCollection
+    public function getScoreConfigs(): Collection
     {
         return $this->scoreConfigs;
     }
@@ -535,10 +527,9 @@ class Round extends Identifiable
     }
 
     /**
-     * @phpstan-return ArrayCollection<int|string, AgainstQualifyConfig>|PersistentCollection<int|string, AgainstQualifyConfig>
-     * @psalm-return ArrayCollection<int|string, AgainstQualifyConfig>
+     * @return Collection<int|string, AgainstQualifyConfig>
      */
-    public function getAgainstQualifyConfigs(): ArrayCollection|PersistentCollection
+    public function getAgainstQualifyConfigs(): Collection
     {
         return $this->againstQualifyConfigs;
     }

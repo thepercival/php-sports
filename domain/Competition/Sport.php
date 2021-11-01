@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Sports\Competition;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Sports\Competition;
 use Sports\Sport as SportsSport;
 use SportsHelpers\Sport\PersistVariant;
@@ -12,7 +13,7 @@ use SportsHelpers\Sport\VariantWithFields as SportVariantWithFields;
 class Sport extends PersistVariant implements \Stringable
 {
     /**
-     * @var ArrayCollection<int|string,Field>
+     * @var Collection<int|string,Field>
      */
     protected $fields;
 
@@ -45,7 +46,7 @@ class Sport extends PersistVariant implements \Stringable
     }
 
     /**
-     * @return ArrayCollection<int|string,Field>
+     * @return Collection<int|string,Field>
      */
     public function getFields()
     {

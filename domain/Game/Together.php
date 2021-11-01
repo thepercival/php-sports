@@ -5,10 +5,9 @@ namespace Sports\Game;
 
 use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\ORM\PersistentCollection;
+use Doctrine\Common\Collections\Collection;
 use Sports\Competition\Sport as CompetitionSport;
 use Sports\Game as GameBase;
-use Sports\Game\Place\Against as AgainstGamePlace;
 use Sports\Game\Place\Together as TogetherGamePlace;
 use Sports\Place;
 use Sports\Poule;
@@ -16,10 +15,9 @@ use Sports\Poule;
 class Together extends GameBase
 {
     /**
-     * @phpstan-var ArrayCollection<int|string, TogetherGamePlace>|PersistentCollection<int|string, TogetherGamePlace>
-     * @psalm-var ArrayCollection<int|string, TogetherGamePlace>
+     * @var Collection<int|string, TogetherGamePlace>
      */
-    protected ArrayCollection|PersistentCollection $places;
+    protected Collection $places;
 
     public function __construct(
         Poule $poule,
@@ -36,10 +34,9 @@ class Together extends GameBase
     }
 
     /**
-     * @phpstan-return ArrayCollection<int|string, TogetherGamePlace>|PersistentCollection<int|string, TogetherGamePlace>
-     * @psalm-return ArrayCollection<int|string, TogetherGamePlace>
+     * @return Collection<int|string, TogetherGamePlace>
      */
-    public function getPlaces(): ArrayCollection|PersistentCollection
+    public function getPlaces(): Collection
     {
         return $this->places;
     }
