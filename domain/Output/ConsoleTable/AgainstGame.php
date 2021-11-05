@@ -162,11 +162,10 @@ class AgainstGame
 
     /**
      * @param GoalEvent|CardEvent|SubstitutionEvent $event
-     * @param int $side
      * @param array<int, int> $currentScore
      * @return list<list<string>>
      */
-    protected function getEventRows($event, array &$currentScore): array
+    protected function getEventRows(GoalEvent|CardEvent|SubstitutionEvent $event, array &$currentScore): array
     {
         if ($event instanceof GoalEvent) {
             $side = $event->getGameParticipation()->getAgainstGamePlace()->getSide();

@@ -62,7 +62,7 @@ class Editor
         }
         // end editing
         $this->horPouleCreator->create($rootRound);
-        $this->rulesCreator->create($rootRound);
+        $this->rulesCreator->create($rootRound, null, true);
         return $structure;
     }
 
@@ -87,7 +87,7 @@ class Editor
         );
         // end editing
         $this->horPouleCreator->create($qualifyGroup->getChildRound());
-        $this->rulesCreator->create($parentRound);
+        $this->rulesCreator->create($parentRound, null, true);
         return $qualifyGroup->getChildRound();
     }
 
@@ -130,7 +130,7 @@ class Editor
         $rootRound->addPlace();
         // end editing
         $this->horPouleCreator->create($rootRound);
-        $this->rulesCreator->create($rootRound);
+        $this->rulesCreator->create($rootRound, null, true);
     
         return $rootRound->getFirstPlace(QualifyTarget::LOSERS);
     }
@@ -149,7 +149,7 @@ class Editor
         $rootRound->removePlace();
         // end editing
         $this->horPouleCreator->create($rootRound);
-        $this->rulesCreator->create($rootRound);
+        $this->rulesCreator->create($rootRound, null, true);
     }
 
     public function addPouleToRootRound(Round $rootRound): Poule
@@ -164,7 +164,7 @@ class Editor
         $rootRound->addPoule();
         // end editing
         $this->horPouleCreator->create($rootRound);
-        $this->rulesCreator->create($rootRound);
+        $this->rulesCreator->create($rootRound, null, true);
 
         return $rootRound->getLastPoule();
     }
@@ -189,7 +189,7 @@ class Editor
         $rootRound->removePoule();
         // end editing
         $this->horPouleCreator->create($rootRound);
-        $this->rulesCreator->create($rootRound);
+        $this->rulesCreator->create($rootRound, null, true);
     }
 
     public function incrementNrOfPoules(Round $round): void
@@ -205,7 +205,7 @@ class Editor
         }
         // end editing
         $this->horPouleCreator->create($round);
-        $this->rulesCreator->create($round->getParent(), $round);
+        $this->rulesCreator->create($round, $round->getParent(), true);
     }
 
     public function decrementNrOfPoules(Round $round): void
@@ -224,7 +224,7 @@ class Editor
         }
         // end editing
         $this->horPouleCreator->create($round);
-        $this->rulesCreator->create($round->getParent(), $round);
+        $this->rulesCreator->create($round, $round->getParent(), true);
     }
 
     public function addQualifiers(Round $parentRound, string $qualifyTarget, int $nrOfToPlacesToAdd): void
@@ -254,7 +254,7 @@ class Editor
             }
             // end editing
             $this->horPouleCreator->create($parentRound, $childRound);
-            $this->rulesCreator->create($parentRound, $childRound);
+            $this->rulesCreator->create($childRound, $parentRound, true);
         } else {
             $childRound = $qualifyGroup->getChildRound();
             $this->validate($childRound->getNrOfPlaces() + $nrOfToPlacesToAdd, $childRound->getPoules()->count());
@@ -266,7 +266,7 @@ class Editor
             }
             // end editing
             $this->horPouleCreator->create($childRound);
-            $this->rulesCreator->create($parentRound, $childRound);
+            $this->rulesCreator->create($childRound, $parentRound, true);
         }
     }
 
@@ -285,7 +285,7 @@ class Editor
             $this->removePlaceFromRound($childRound);
         }
         // end editing
-        $this->rulesCreator->create($parentRound);
+        $this->rulesCreator->create($parentRound, null, true);
         return true;
     }
 
@@ -358,7 +358,7 @@ class Editor
         $this->fillRound($newChildRound, $balancedPouleStructure);
         $this->horPouleCreator->create($newChildRound);
         // end editing
-        $this->rulesCreator->create($parentRound);
+        $this->rulesCreator->create($parentRound, null, true);
     }
 
     // horizontalPoule is split-points, from which qualifyGroup
@@ -406,7 +406,7 @@ class Editor
             $childQualifyTarget = $losersBorderQualifyGroup !== null ? QualifyTarget::LOSERS : QualifyTarget::WINNERS;
             $this->removeQualifier($round, $childQualifyTarget);
         } else {
-            $this->rulesCreator->create($round);
+            $this->rulesCreator->create($round, null, true);
         }
     }
 
@@ -431,7 +431,7 @@ class Editor
         }
         // end editing
         $this->horPouleCreator->create($childRound);
-        $this->rulesCreator->create($parentRound);
+        $this->rulesCreator->create($parentRound, null, true);
     }
 
     protected function renumber(Round $round, string $qualifyTarget): void

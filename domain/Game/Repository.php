@@ -5,13 +5,8 @@ namespace Sports\Game;
 
 use SportsHelpers\Repository as BaseRepository;
 use Doctrine\ORM\EntityRepository;
-use Doctrine\ORM\QueryBuilder;
-use Sports\Round\Number as RoundNumber;
 use Sports\Game\Against as AgainstGame;
-use Sports\Game\Place as GamePlace;
 use Sports\Game\Together as TogetherGame;
-use Sports\Competition;
-use League\Period\Period;
 
 /**
  * @template T

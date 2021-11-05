@@ -127,8 +127,8 @@ class Group extends Identifiable
                 $singleRule->getFromPlace($toPlace);
                 return $singleRule;
             } catch (Exception $e) {
+                $singleRule = $singleRule->getNext();
             }
-            $singleRule = $singleRule->getNext();
         }
         $multipleRule = $this->getMultipleRule();
         if ($multipleRule === null || !$multipleRule->hasToPlace($toPlace)) {

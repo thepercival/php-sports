@@ -1,26 +1,30 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Sports\Qualify\Rule;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Exception;
 use Sports\Place;
 use Sports\Poule;
 use Sports\Poule\Horizontal as HorizontalPoule;
+use Sports\Qualify\FromPoulePicker;
 use Sports\Qualify\Group as QualifyGroup;
-use Sports\Qualify\OriginCalculator as QualifyOriginCalculator;
 use Sports\Qualify\PlaceMapping as QualifyPlaceMapping;
+use Sports\Qualify\PossibleFromMap;
 use Sports\Qualify\Rule\Multiple as MultipleQualifyRule;
 use Sports\Qualify\Rule\Single as SingleQualifyRule;
+use Sports\Round;
 
 class DefaultCreator
 {
-    private QualifyOriginCalculator $qualifyOriginCalculator;
+    private PossibleFromMap $possibleFromMap;
 
-    public function __construct()
+    public function __construct(Round $leafRound)
     {
-        $this->qualifyOriginCalculator = new QualifyOriginCalculator();
+        $this->possibleFromMap = new PossibleFromMap($leafRound);
     }
 
     /**
@@ -32,16 +36,18 @@ class DefaultCreator
         $childRoundPlaces = $this->getChildRoundPlacesLikeSnake($qualifyGroup);
         $fromHorPoule = array_shift($fromHorPoules);
         $previousRule = null;
-        while ($fromHorPoule !== null && count($childRoundPlaces) > 0) {
+        $toPlaces = null;
+        while ($fromHorPoule !== null && count($childRoundPlaces) >= $fromHorPoule->getPlaces()->count()) {
+            $nrOfFromPlaces = $fromHorPoule->getPlaces()->count();
             /** @var list<Place> $toPlaces */
-            $toPlaces = array_values(array_splice($childRoundPlaces, 0, count($fromHorPoule->getPlaces())));
-            if ($fromHorPoule->getPlaces()->count() > count($toPlaces)) {
-                new MultipleQualifyRule($fromHorPoule, $qualifyGroup, $toPlaces);
-            } else {
-                $placeMappings = $this->createPlaceMappings($fromHorPoule, $toPlaces);
-                $previousRule = new SingleQualifyRule($fromHorPoule, $qualifyGroup, $placeMappings, $previousRule);
-            }
+            $toPlaces = array_values(array_splice($childRoundPlaces, 0, $nrOfFromPlaces));
+            $placeMappings = $this->createQualifyPlaceMappings($fromHorPoule, $toPlaces);
+            $previousRule = new SingleQualifyRule($fromHorPoule, $qualifyGroup, $placeMappings, $previousRule);
             $fromHorPoule = array_shift($fromHorPoules);
+        }
+        if ($fromHorPoule !== null && count($childRoundPlaces) > 0 && $toPlaces !== null) {
+            /*$rule = */new MultipleQualifyRule($fromHorPoule, $qualifyGroup, $childRoundPlaces);
+            /*$this->possibleFromMap->addRule($rule);*/
         }
     }
 
@@ -54,7 +60,7 @@ class DefaultCreator
         $horPoules = $qualifyGroup->getChildRound()->getHorizontalPoules($qualifyGroup->getTarget());
         $places = [];
         $reverse = false;
-        foreach( $horPoules as $horPoule) {
+        foreach ($horPoules as $horPoule) {
             $horPoulePlaces = $horPoule->getPlaces()->toArray();
             $horPoulePlace = $reverse ? array_pop($horPoulePlaces) : array_shift($horPoulePlaces);
             while ($horPoulePlace !== null) {
@@ -69,133 +75,48 @@ class DefaultCreator
     /**
      * @param HorizontalPoule $fromHorPoule
      * @param list<Place> $childRoundPlaces
-     * @return Collection<int|string, QualifyPlaceMapping>
+     * @return Collection<int, QualifyPlaceMapping>
      */
-    public function createPlaceMappings(HorizontalPoule $fromHorPoule, array $childRoundPlaces): Collection
-    {
-        /** @var Collection<int|string, QualifyPlaceMapping> $mappings */
+    public function createQualifyPlaceMappings(
+        HorizontalPoule $fromHorPoule,
+        array $childRoundPlaces
+    ): Collection {
+        $fromPoulePicker = new FromPoulePicker($this->possibleFromMap);
+        /** @var Collection<int, QualifyPlaceMapping> $mappings */
         $mappings = new ArrayCollection();
-        $fromHorPoulePlaces = array_values($fromHorPoule->getPlaces()->slice(0));
+        $fromHorizontalPlaces = array_values($fromHorPoule->getPlaces()->slice(0));
         while ($childRoundPlace = array_shift($childRoundPlaces)) {
-            $fromHorPoulePlace = $this->getBestPick(
-                $childRoundPlace,
-                $fromHorPoulePlaces,
-                array_values($childRoundPlaces)
+            $bestFromPoule = $fromPoulePicker->getBestFromPoule(
+                $childRoundPlace->getPoule(),
+                array_values(array_map(fn (Place $place) => $place->getPoule(), $fromHorizontalPlaces)),
+                array_values(array_map(fn (Place $place) => $place->getPoule(), $childRoundPlaces))
             );
-            $idx = array_search($fromHorPoulePlace, $fromHorPoulePlaces, true);
-            if ($idx === false) {
-                continue;
-            }
-            array_splice($fromHorPoulePlaces, $idx, 1);
-            $mappings->add(new QualifyPlaceMapping($fromHorPoulePlace, $childRoundPlace));
+            $bestFromPlace = $this->removeBestHorizontalPlace($fromHorizontalPlaces, $bestFromPoule);
+            $placeMapping = new QualifyPlaceMapping($bestFromPlace, $childRoundPlace);
+            $mappings->add($placeMapping);
+            $this->possibleFromMap->addPlaceMapping($placeMapping);
         }
         return $mappings;
     }
 
     /**
-     * @param Place $childRoundPlace
-     * @param list<Place> $fromHorPoulePlaces
-     * @param list<Place> $otherChildRoundPlaces
-     * @return Place
+     * @param list<Place> $fromHorizontalPlaces
+     * @param Poule $bestFromPoule
+     * @throws Exception
      */
-    protected function getBestPick(
-        Place $childRoundPlace,
-        array $fromHorPoulePlaces,
-        array $otherChildRoundPlaces): Place
+    protected function removeBestHorizontalPlace(array &$fromHorizontalPlaces, Poule $bestFromPoule): Place
     {
-        $fromHorPoulePlacesWithFewestPouleOrigins = $this->getFewestOverlappingPouleOrigins(
-            $childRoundPlace->getPoule(),
-            $fromHorPoulePlaces
-        );
-
-        if (count($fromHorPoulePlacesWithFewestPouleOrigins) < 2) {
-            $fromHorPoulePlaceWithFewestPouleOrigins = reset($fromHorPoulePlacesWithFewestPouleOrigins);
-            if ($fromHorPoulePlaceWithFewestPouleOrigins !== false) {
-                return $fromHorPoulePlaceWithFewestPouleOrigins;
-            }
+        $bestPouleNr = $bestFromPoule->getNumber();
+        $fromPlaces = array_filter($fromHorizontalPlaces, fn ($place) => $place->getPouleNr() === $bestPouleNr);
+        $bestFromPlace = reset($fromPlaces);
+        if ($bestFromPlace === false) {
+            throw new Exception('fromPlace should be found', E_ERROR);
         }
-        $otherChildRoundPoules = $this->getOtherChildRoundPoules($otherChildRoundPlaces);
-        $fromHorPoulePlacesWithMostOtherPouleOrigins = $this->getMostOtherOverlappingPouleOrigins(
-            $otherChildRoundPoules,
-            $fromHorPoulePlacesWithFewestPouleOrigins
-        );
-        $fromHorPoulePlaceWithMostOtherPouleOrigins = reset($fromHorPoulePlacesWithMostOtherPouleOrigins);
-        if( $fromHorPoulePlaceWithMostOtherPouleOrigins === false ) {
-            throw new \Exception('could not find best pick', E_ERROR );
+        $idx = array_search($bestFromPlace, $fromHorizontalPlaces, true);
+        if ($idx === false) {
+            throw new Exception('fromPlace should be found', E_ERROR);
         }
-        return $fromHorPoulePlaceWithMostOtherPouleOrigins;
-    }
-
-    /**
-     * @param Poule $toPoule
-     * @param list<Place> $fromHorPoulePlaces
-     * @return list<Place>
-     */
-    protected function getFewestOverlappingPouleOrigins(Poule $toPoule, array $fromHorPoulePlaces): array
-    {
-        $bestFromPlaces = [];
-        $fewestOverlappingOrigins = null;
-        foreach ($fromHorPoulePlaces as $fromHorPoulePlace) {
-            $nrOfOverlappingOrigins = $this->getPossibleOverlapses($fromHorPoulePlace->getPoule(), [$toPoule]);
-            if ($fewestOverlappingOrigins === null || $nrOfOverlappingOrigins < $fewestOverlappingOrigins) {
-                $bestFromPlaces = [$fromHorPoulePlace];
-                $fewestOverlappingOrigins = $nrOfOverlappingOrigins;
-            } elseif ($fewestOverlappingOrigins === $nrOfOverlappingOrigins) {
-                array_push($bestFromPlaces, $fromHorPoulePlace);
-            }
-        }
-        return $bestFromPlaces;
-    }
-
-    /**
-     * @param list<Place> $otherChildRoundPlaces
-     * @return list<Poule>
-     */
-    protected function getOtherChildRoundPoules(array $otherChildRoundPlaces): array
-    {
-        $poules = [];
-        foreach( $otherChildRoundPlaces as $place) {
-            if (array_search($place->getPoule(), $poules, true) !== false) {
-                array_push($poules, $place->getPoule());
-            }
-        }
-        return $poules;
-    }
-
-    /**
-     * @param list<Poule> $otherChildRoundPoules
-     * @param list<Place> $fromHorPoulePlaces
-     * @return list<Place>
-     */
-    protected function getMostOtherOverlappingPouleOrigins(
-        array $otherChildRoundPoules,
-        array $fromHorPoulePlaces
-    ): array {
-        $bestFromPlaces = [];
-        $mostOverlappingOrigins = null;
-        foreach ($fromHorPoulePlaces as $fromHorPoulePlace) {
-            $nrOfOverlappingOrigins = $this->getPossibleOverlapses($fromHorPoulePlace->getPoule(), $otherChildRoundPoules);
-            if ($mostOverlappingOrigins === null || $nrOfOverlappingOrigins > $mostOverlappingOrigins) {
-                $bestFromPlaces = [$fromHorPoulePlace];
-                $mostOverlappingOrigins = $nrOfOverlappingOrigins;
-            } elseif ($mostOverlappingOrigins === $nrOfOverlappingOrigins) {
-                array_push($bestFromPlaces, $fromHorPoulePlace);
-            }
-        }
-        return $bestFromPlaces;
-    }
-
-    /**
-     * @param Poule $fromPoule
-     * @param list<Poule> $toPoules
-     * @return int
-     */
-    protected function getPossibleOverlapses(Poule $fromPoule, array $toPoules): int
-    {
-        $nrOfOverlapses = 0;
-        foreach ($toPoules as $toPoule) {
-            $nrOfOverlapses += $this->qualifyOriginCalculator->getPossibleOverlapses($fromPoule, $toPoule);
-        }
-        return $nrOfOverlapses;
+        array_splice($fromHorizontalPlaces, $idx, 1);
+        return $bestFromPlace;
     }
 }

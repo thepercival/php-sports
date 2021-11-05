@@ -157,7 +157,7 @@ class Repository
 
     protected function addQualifyRules(Round $parentRound): void {
         $this->qualifyRuleCreator->remove($parentRound);
-        $this->qualifyRuleCreator->create($parentRound);
+        $this->qualifyRuleCreator->create($parentRound, null, true);
         foreach($parentRound->getChildren() as $childRound) {
             $this->addQualifyRules($childRound);
         }

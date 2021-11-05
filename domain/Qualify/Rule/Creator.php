@@ -1,15 +1,16 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Sports\Qualify\Rule;
 
 use Exception;
+use Sports\Qualify\PossibleFromMap;
 use Sports\Round;
 use Sports\Qualify\Target as QualifyTarget;
 
 class Creator
 {
-
     /**
      * @param Round|null ...$parentRounds
      */
@@ -25,28 +26,32 @@ class Creator
         }
     }
 
-    public function create(Round | null ...$parentRounds): void
+    public function create(Round $parentRound, Round|null $grandParentRound, bool $tpyeCheckTmp): void
     {
-        $c = new DefaultCreator();
+        if ($grandParentRound !== null) {
+            $this->createForParentRound($grandParentRound);
+        }
+        $this->createForParentRound($parentRound);
+    }
+
+    public function createForParentRound(Round $parentRound): void
+    {
         foreach ([QualifyTarget::WINNERS, QualifyTarget::LOSERS] as $target) {
-            foreach ($parentRounds as $parentRound) {
-                if ($parentRound === null) {
-                    continue;
-                }
-                $fromRoundHorPoules = $parentRound->getHorizontalPoules($target)->slice(0);
-                foreach ($parentRound->getTargetQualifyGroups($target) as $qualifyGroup) {
-                    $nrOfChildRoundPlaces = $qualifyGroup->getChildRound()->getNrOfPlaces();
-                    $fromHorPoules = [];
-                    while ($nrOfChildRoundPlaces > 0) {
-                        $fromRoundHorPoule = array_shift($fromRoundHorPoules);
-                        if ($fromRoundHorPoule === null) {
-                            throw new Exception('fromRoundHorPoule should not be null', E_ERROR);
-                        }
-                        array_push($fromHorPoules, $fromRoundHorPoule);
-                        $nrOfChildRoundPlaces -= $fromRoundHorPoule->getPlaces()->count();
+            $fromRoundHorPoules = $parentRound->getHorizontalPoules($target)->slice(0);
+            foreach ($parentRound->getTargetQualifyGroups($target) as $qualifyGroup) {
+                $childRound = $qualifyGroup->getChildRound();
+                $defaultRuleCreator = new DefaultCreator($childRound);
+                $nrOfChildRoundPlaces = $childRound->getNrOfPlaces();
+                $fromHorPoules = [];
+                while ($nrOfChildRoundPlaces > 0) {
+                    $fromRoundHorPoule = array_shift($fromRoundHorPoules);
+                    if ($fromRoundHorPoule === null) {
+                        throw new Exception('fromRoundHorPoule should not be null', E_ERROR);
                     }
-                    $c->createRules($fromHorPoules, $qualifyGroup);
+                    array_push($fromHorPoules, $fromRoundHorPoule);
+                    $nrOfChildRoundPlaces -= $fromRoundHorPoule->getPlaces()->count();
                 }
+                $defaultRuleCreator->createRules($fromHorPoules, $qualifyGroup);
             }
         }
     }

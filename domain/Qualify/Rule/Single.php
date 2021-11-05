@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Sports\Qualify\Rule;
@@ -19,7 +20,7 @@ class Single extends QualifyRule
     /**
      * @param HorizontalPoule $fromHorizontalPoule
      * @param QualifyGroup $group
-     * @param Collection<int|string, QualifyPlaceMapping> $placeMappings
+     * @param Collection<int, QualifyPlaceMapping> $placeMappings
      * @param Single|null $previous
      */
     public function __construct(
@@ -27,8 +28,7 @@ class Single extends QualifyRule
         QualifyGroup $group,
         private Collection $placeMappings,
         private Single|null $previous
-    )
-    {
+    ) {
         parent::__construct($fromHorizontalPoule);
         $this->fromHorizontalPoule->setQualifyRule($this);
         if ($this->previous !== null) {
@@ -39,7 +39,7 @@ class Single extends QualifyRule
     }
 
     /**
-     * @return Collection<int|string, QualifyPlaceMapping>
+     * @return Collection<int, QualifyPlaceMapping>
      */
     public function getMappings(): Collection
     {
@@ -139,11 +139,12 @@ class Single extends QualifyRule
         $this->setPrevious(null);
     }
 
-    public function getGroup(): QualifyGroup {
+    public function getGroup(): QualifyGroup
+    {
         $target = $this->getQualifyTarget();
         $firstSingleRule = $this->getFirst();
         $targetGroups = $this->getFromRound()->getTargetQualifyGroups($target);
-        $qualifGroups = $targetGroups->filter(function(QualifyGroup $qualifyGroup) use ($firstSingleRule): bool {
+        $qualifGroups = $targetGroups->filter(function (QualifyGroup $qualifyGroup) use ($firstSingleRule): bool {
             return $firstSingleRule === $qualifyGroup->getFirstSingleRule();
         });
         $qualifGroup = $qualifGroups->last();
