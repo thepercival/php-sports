@@ -1,13 +1,10 @@
 <?php
-
 declare(strict_types=1);
 
 namespace Sports\Qualify;
 
-use Sports\Output\StructureOutput;
-use Sports\Poule;
 use Sports\Place;
-use Sports\Qualify\PlaceMapping as QualifyPlaceMapping;
+use Sports\Poule;
 
 class FromPoulePicker
 {
@@ -19,17 +16,17 @@ class FromPoulePicker
 
     /**
      * @param Poule $childPoule
-     * @param list<Poule> $avaiableFromPoules
+     * @param list<Poule> $availableFromPoules
      * @param list<Poule> $otherChildRoundPoules
      * @return Poule
      */
     public function getBestFromPoule(
         Poule $childPoule,
-        array $avaiableFromPoules,
+        array $availableFromPoules,
         array $otherChildRoundPoules
     ): Poule {
         if ($this->possibleFromMap->isEmpty()) {
-            $bestFromPoule = reset($avaiableFromPoules);
+            $bestFromPoule = reset($availableFromPoules);
             if ($bestFromPoule !== false) {
                 return $bestFromPoule;
             }
@@ -43,7 +40,7 @@ class FromPoulePicker
 //            $erree = 12;
 //        }
 
-        $bestFromPoules = $this->getFewestOverlapses($childPoule, $avaiableFromPoules);
+        $bestFromPoules = $this->getFewestOverlapses($childPoule, $availableFromPoules);
 
         if (count($bestFromPoules) < 2) {
             $bestFromPoule = reset($bestFromPoules);
@@ -52,11 +49,11 @@ class FromPoulePicker
             }
         }
         $fromPlacesWithMostOtherPouleOrigins = $this->getMostOverlapses($otherChildRoundPoules, $bestFromPoules);
-        $fromPlacesWithMostOtherPouleOrigins = reset($fromPlacesWithMostOtherPouleOrigins);
-        if ($fromPlacesWithMostOtherPouleOrigins === false) {
+        $fromPlacesWithMostOtherPouleOrigin = reset($fromPlacesWithMostOtherPouleOrigins);
+        if ($fromPlacesWithMostOtherPouleOrigin === false) {
             throw new \Exception('could not find best pick', E_ERROR);
         }
-        return $fromPlacesWithMostOtherPouleOrigins;
+        return $fromPlacesWithMostOtherPouleOrigin;
     }
 
     /**
@@ -170,17 +167,21 @@ class FromPoulePicker
         $bestFromPoules = [];
         $mostOverlapses = null;
         // $possibleFromPoules = $this->possibleFromMap->getFromPoules($childPoule);
-        foreach ($availableFromPoules as $avaiableFromPoule) {
+        foreach ($availableFromPoules as $availableFromPoule) {
             foreach ($otherChildPoules as $otherChildPoule) {
-                $nrOfOverlapses = $this->getNrOfPossibleOverlapses($avaiableFromPoule, $otherChildPoule, $this->possibleFromMap);
-                //            $overlapses = array_filter($possibleFromPoules, function (Poule $possibleFromPoule) use ($avaiableFromPoule): bool {
-                //                return $possibleFromPoule === $avaiableFromPoule;
+                $nrOfOverlapses = $this->getNrOfPossibleOverlapses(
+                    $availableFromPoule,
+                    $otherChildPoule,
+                    $this->possibleFromMap
+                );
+                //            $overlapses = array_filter($possibleFromPoules, function (Poule $possibleFromPoule) use ($availableFromPoule): bool {
+                //                return $possibleFromPoule === $availableFromPoule;
                 //            });
                 if ($mostOverlapses === null || $nrOfOverlapses > $mostOverlapses) {
-                    $bestFromPoules = [$avaiableFromPoule];
+                    $bestFromPoules = [$availableFromPoule];
                     $mostOverlapses = $nrOfOverlapses;
                 } elseif ($mostOverlapses === $nrOfOverlapses) {
-                    array_push($bestFromPoules, $avaiableFromPoule);
+                    array_push($bestFromPoules, $availableFromPoule);
                 }
             }
         }

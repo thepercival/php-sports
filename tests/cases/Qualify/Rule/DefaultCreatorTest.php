@@ -4,11 +4,10 @@ declare(strict_types=1);
 
 namespace Sports\Tests\Qualify\Rule;
 
+use PHPUnit\Framework\TestCase;
 use Sports\Place;
 use Sports\Qualify\Group as QualifyGroup;
 use Sports\Qualify\Target as QualifyTarget;
-use Sports\Output\StructureOutput;
-use PHPUnit\Framework\TestCase;
 use Sports\TestHelper\CompetitionCreator;
 use Sports\TestHelper\SetScores;
 use Sports\TestHelper\StructureEditorCreator;
@@ -32,7 +31,7 @@ class DefaultCreatorTest extends TestCase
         $qualifyGroup = $rootRound->getQualifyGroup(QualifyTarget::WINNERS, 1);
         self::assertInstanceOf(QualifyGroup::class, $qualifyGroup);
 
-        (new StructureOutput())->output($structure);
+        // (new StructureOutput())->output($structure);
 
         foreach ($winnersRound->getPoules() as $poule) {
             $fromPlace1 = $qualifyGroup->getFromPlace($poule->getPlace(1));
@@ -54,7 +53,7 @@ class DefaultCreatorTest extends TestCase
         $qualifyGroup = $rootRound->getQualifyGroup(QualifyTarget::WINNERS, 1);
         self::assertInstanceOf(QualifyGroup::class, $qualifyGroup);
 
-        (new StructureOutput())->output($structure);
+        // (new StructureOutput())->output($structure);
 
         foreach ($winnersRound->getPoules() as $poule) {
             $fromPlace1 = $qualifyGroup->getFromPlace($poule->getPlace(1));
@@ -79,7 +78,7 @@ class DefaultCreatorTest extends TestCase
         $lastQualifyGroup = $winnersRound->getQualifyGroup(QualifyTarget::WINNERS, 1);
         self::assertInstanceOf(QualifyGroup::class, $lastQualifyGroup);
 
-        (new StructureOutput())->output($structure);
+        // (new StructureOutput())->output($structure);
 
         foreach ($quarterFinal->getPoules() as $poule) {
             $fromPlace1 = $lastQualifyGroup->getFromPlace($poule->getPlace(1));
@@ -125,7 +124,7 @@ class DefaultCreatorTest extends TestCase
 
         // (new StructureOutput())->output($structure);
 
-        echo 'Total Execution Time: '. (microtime(true) - $time_start);
+        // echo 'Total Execution Time: '. (microtime(true) - $time_start);
         self::assertTrue((microtime(true) - $time_start) < 0.3);
     }
 }

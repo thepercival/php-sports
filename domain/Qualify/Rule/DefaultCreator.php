@@ -36,7 +36,6 @@ class DefaultCreator
         $childRoundPlaces = $this->getChildRoundPlacesLikeSnake($qualifyGroup);
         $fromHorPoule = array_shift($fromHorPoules);
         $previousRule = null;
-        $toPlaces = null;
         while ($fromHorPoule !== null && count($childRoundPlaces) >= $fromHorPoule->getPlaces()->count()) {
             $nrOfFromPlaces = $fromHorPoule->getPlaces()->count();
             /** @var list<Place> $toPlaces */
@@ -45,9 +44,8 @@ class DefaultCreator
             $previousRule = new SingleQualifyRule($fromHorPoule, $qualifyGroup, $placeMappings, $previousRule);
             $fromHorPoule = array_shift($fromHorPoules);
         }
-        if ($fromHorPoule !== null && count($childRoundPlaces) > 0 && $toPlaces !== null) {
-            /*$rule = */new MultipleQualifyRule($fromHorPoule, $qualifyGroup, $childRoundPlaces);
-            /*$this->possibleFromMap->addRule($rule);*/
+        if ($fromHorPoule !== null && count($childRoundPlaces) > 0) {
+            new MultipleQualifyRule($fromHorPoule, $qualifyGroup, $childRoundPlaces);
         }
     }
 
@@ -84,14 +82,14 @@ class DefaultCreator
         $fromPoulePicker = new FromPoulePicker($this->possibleFromMap);
         /** @var Collection<int, QualifyPlaceMapping> $mappings */
         $mappings = new ArrayCollection();
-        $fromHorizontalPlaces = array_values($fromHorPoule->getPlaces()->slice(0));
+        $fromHorPoulePlaces = array_values($fromHorPoule->getPlaces()->slice(0));
         while ($childRoundPlace = array_shift($childRoundPlaces)) {
             $bestFromPoule = $fromPoulePicker->getBestFromPoule(
                 $childRoundPlace->getPoule(),
-                array_values(array_map(fn (Place $place) => $place->getPoule(), $fromHorizontalPlaces)),
-                array_values(array_map(fn (Place $place) => $place->getPoule(), $childRoundPlaces))
+                array_values(array_map(fn(Place $place) => $place->getPoule(), $fromHorPoulePlaces)),
+                array_values(array_map(fn(Place $place) => $place->getPoule(), $childRoundPlaces))
             );
-            $bestFromPlace = $this->removeBestHorizontalPlace($fromHorizontalPlaces, $bestFromPoule);
+            $bestFromPlace = $this->removeBestHorizontalPlace($fromHorPoulePlaces, $bestFromPoule);
             $placeMapping = new QualifyPlaceMapping($bestFromPlace, $childRoundPlace);
             $mappings->add($placeMapping);
             $this->possibleFromMap->addPlaceMapping($placeMapping);
@@ -100,23 +98,23 @@ class DefaultCreator
     }
 
     /**
-     * @param list<Place> $fromHorizontalPlaces
+     * @param list<Place> $fromHorPoulePlaces
      * @param Poule $bestFromPoule
      * @throws Exception
      */
-    protected function removeBestHorizontalPlace(array &$fromHorizontalPlaces, Poule $bestFromPoule): Place
+    protected function removeBestHorizontalPlace(array &$fromHorPoulePlaces, Poule $bestFromPoule): Place
     {
         $bestPouleNr = $bestFromPoule->getNumber();
-        $fromPlaces = array_filter($fromHorizontalPlaces, fn ($place) => $place->getPouleNr() === $bestPouleNr);
+        $fromPlaces = array_filter($fromHorPoulePlaces, fn($place) => $place->getPouleNr() === $bestPouleNr);
         $bestFromPlace = reset($fromPlaces);
         if ($bestFromPlace === false) {
             throw new Exception('fromPlace should be found', E_ERROR);
         }
-        $idx = array_search($bestFromPlace, $fromHorizontalPlaces, true);
+        $idx = array_search($bestFromPlace, $fromHorPoulePlaces, true);
         if ($idx === false) {
             throw new Exception('fromPlace should be found', E_ERROR);
         }
-        array_splice($fromHorizontalPlaces, $idx, 1);
+        array_splice($fromHorPoulePlaces, $idx, 1);
         return $bestFromPlace;
     }
 }
