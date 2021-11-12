@@ -4,8 +4,6 @@ declare(strict_types=1);
 namespace Sports\Output\Grid;
 
 use SportsHelpers\Output\Color;
-use Sports\Output\Coordinate;
-use Sports\Output\Grid;
 
 final class Cell implements \Stringable
 {
@@ -39,6 +37,6 @@ final class Cell implements \Stringable
 
     public function __toString()
     {
-        return $this->color === 0 ? $this->value : $this->outputColor( $this->color, $this->value);
+        return $this->color === 0 ? $this->value : $this->getColored($this->color, $this->value);
     }
 }
