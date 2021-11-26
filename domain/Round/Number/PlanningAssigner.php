@@ -5,20 +5,20 @@ namespace Sports\Round\Number;
 
 use DateTimeImmutable;
 use Sports\Competition\Sport as CompetitionSport;
-use Sports\Poule;
-use SportsPlanning\Batch;
-use SportsPlanning\Batch\SelfReferee as SelfRefereeBatch;
-use Sports\Planning\Config as PlanningConfig;
-use Sports\Round\Number as RoundNumber;
-use SportsPlanning\Planning;
 use Sports\Game\Against as AgainstGame;
 use Sports\Game\Place\Against as AgainstGamePlace;
-use Sports\Game\Together as TogetherGame;
 use Sports\Game\Place\Together as TogetherGamePlace;
+use Sports\Game\Together as TogetherGame;
+use Sports\Planning\Config as PlanningConfig;
+use Sports\Poule;
+use Sports\Round\Number as RoundNumber;
+use SportsPlanning\Batch;
+use SportsPlanning\Batch\SelfReferee as SelfRefereeBatch;
 use SportsPlanning\Game\Against as AgainstPlanningGame;
 use SportsPlanning\Game\Place\Against as AgainstPlanningGamePlace;
-use SportsPlanning\Game\Together as TogetherPlanningGame;
 use SportsPlanning\Game\Place\Together as TogetherPlanningGamePlace;
+use SportsPlanning\Game\Together as TogetherPlanningGame;
+use SportsPlanning\Planning;
 
 class PlanningAssigner
 {
@@ -28,8 +28,8 @@ class PlanningAssigner
 
     public function assignPlanningToRoundNumber(RoundNumber $roundNumber, Planning $planning): void
     {
-        $mapper = new PlanningMapper($roundNumber, $planning->getInput());
         $firstBatch = $planning->createFirstBatch();
+        $mapper = new PlanningMapper($roundNumber, $planning);
         $gameStartDateTime = $this->scheduler->getRoundNumberStartDateTime($roundNumber);
         $planningConfig = $roundNumber->getValidPlanningConfig();
         $this->assignPlanningBatch($firstBatch, $planningConfig, $gameStartDateTime, $mapper);

@@ -8,15 +8,16 @@ use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 use Monolog\Processor\UidProcessor;
 use Psr\Log\LoggerInterface;
-use Sports\Round\Number\PlanningAssigner;
-use Sports\Round\Number\PlanningScheduler;
-use SportsHelpers\SportRange;
-use SportsPlanning\Batch\SelfReferee\SamePoule as SelfRefereeBatchSamePoule;
-use SportsPlanning\Batch\SelfReferee\OtherPoule as SelfRefereeBatchOtherPoule;
-use SportsPlanning\Resource\RefereePlace\Service as RefereePlaceService;
-use Sports\Structure;
 use Sports\Round\Number as RoundNumber;
+use Sports\Round\Number\PlanningAssigner;
 use Sports\Round\Number\PlanningInputCreator;
+use Sports\Round\Number\PlanningScheduler;
+use Sports\Structure;
+use SportsHelpers\SportRange;
+use SportsPlanning\Batch\SelfReferee\OtherPoule as SelfRefereeBatchOtherPoule;
+use SportsPlanning\Batch\SelfReferee\SamePoule as SelfRefereeBatchSamePoule;
+use SportsPlanning\Planning;
+use SportsPlanning\Resource\RefereePlace\Service as RefereePlaceService;
 
 class GamesCreator
 {
@@ -43,14 +44,21 @@ class GamesCreator
         $this->createGamesHelper($roundNumber, $blockedPeriod, $range);
     }
 
-    private function createGamesHelper(RoundNumber $roundNumber, Period $blockedPeriod = null, SportRange $range = null): void
+    public function createPlanning(RoundNumber $roundNumber, SportRange $range = null): Planning
     {
-        // make trait to do job below!!
         $planningInputCreator = new PlanningInputCreator();
         $nrOfReferees = $roundNumber->getCompetition()->getReferees()->count();
         $planningInput = $planningInputCreator->create($roundNumber, $nrOfReferees);
         $planningCreator = new PlanningCreator();
-        $minIsMaxPlanning = $planningCreator->createPlanning($planningInput, $range);
+        return $planningCreator->createPlanning($planningInput, $range);
+    }
+
+    private function createGamesHelper(
+        RoundNumber $roundNumber,
+        Period $blockedPeriod = null,
+        SportRange $range = null
+    ): void {
+        $minIsMaxPlanning = $this->createPlanning($roundNumber, $range);
         $firstBatch = $minIsMaxPlanning->createFirstBatch();
         if ($firstBatch instanceof SelfRefereeBatchOtherPoule ||
             $firstBatch instanceof SelfRefereeBatchSamePoule) {

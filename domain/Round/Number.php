@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Sports\Round;
@@ -198,17 +199,22 @@ class Number extends Identifiable
             $games = array_merge($games, $poule->getGames());
         }
 
+        $baseSort = function (TogetherGame|AgainstGame $g1, TogetherGame|AgainstGame $g2): int {
+            $field1 = $g1->getField();
+            $field2 = $g2->getField();
+            if ($field1 === null || $field2 === null) {
+                return 0;
+            }
+            $retVal = $field1->getPriority() - $field2->getPriority();
+            return $this->isFirst() ? $retVal : -$retVal;
+        };
+
         if ($order === GameOrder::ByBatch) {
             uasort(
                 $games,
-                function (TogetherGame|AgainstGame $g1, TogetherGame|AgainstGame $g2): int {
+                function (TogetherGame|AgainstGame $g1, TogetherGame|AgainstGame $g2) use ($baseSort): int {
                     if ($g1->getBatchNr() === $g2->getBatchNr()) {
-                        $field1 = $g1->getField();
-                        $field2 = $g2->getField();
-                        if ($field1 !== null && $field2 !== null) {
-                            $retVal = $field1->getPriority() - $field2->getPriority();
-                            return $this->isFirst() ? $retVal : -$retVal;
-                        }
+                        return $baseSort($g1, $g2);
                     }
                     return $g1->getBatchNr() - $g2->getBatchNr();
                 }
@@ -216,16 +222,11 @@ class Number extends Identifiable
         } elseif ($order === GameOrder::ByDate) {
             uasort(
                 $games,
-                function (TogetherGame|AgainstGame $g1, TogetherGame|AgainstGame $g2): int {
+                function (TogetherGame|AgainstGame $g1, TogetherGame|AgainstGame $g2) use ($baseSort): int {
                     $start1 = $g1->getStartDateTime()->getTimestamp();
                     $start2 = $g2->getStartDateTime()->getTimestamp();
                     if ($start1 === $start2) {
-                        $field1 = $g1->getField();
-                        $field2 = $g2->getField();
-                        if ($field1 !== null && $field2 !== null) {
-                            $retVal = $field1->getPriority() - $field2->getPriority();
-                            return $this->isFirst() ? $retVal : -$retVal;
-                        }
+                        return $baseSort($g1, $g2);
                     }
                     return $start1 - $start2;
                 }

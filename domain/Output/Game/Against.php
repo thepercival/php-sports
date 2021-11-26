@@ -4,13 +4,13 @@ declare(strict_types=1);
 namespace Sports\Output\Game;
 
 use Psr\Log\LoggerInterface;
-use Sports\Output\Game as OutputGame;
-use Sports\Game\Against as AgainstGame;
-use SportsHelpers\Against\Side as AgainstSide;
-use Sports\Game\Phase as GamePhase;
 use Sports\Competitor\Map as CompetitorMap;
+use Sports\Game\Against as AgainstGame;
+use Sports\Game\Phase as GamePhase;
+use Sports\Output\Game as OutputGame;
 use Sports\Place\SportPerformance\Calculator\Against as AgainstSportPerformanceCalculator;
 use Sports\State;
+use SportsHelpers\Against\Side as AgainstSide;
 
 class Against extends OutputGame
 {
@@ -28,7 +28,7 @@ class Against extends OutputGame
             $game->getStartDateTime()->format("Y-m-d H:i") . " " .
             $this->getGameRoundNrAsString($game->getGameRoundNumber()) . " " .
             $this->getBatchNrAsString($game->getBatchNr()) . " " .
-            'poule ' . $game->getPoule()->getNumber()
+            'poule ' . $game->getPoule()->getStructureLocation()
             . ', ' . $this->getDescriptionAsString($game)
             . ' , ' . $this->getRefereeAsString($game)
             . ', ' . $this->getFieldAsString($field)

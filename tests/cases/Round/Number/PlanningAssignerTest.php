@@ -3,15 +3,12 @@ declare(strict_types=1);
 
 namespace Sports\Tests\Round\Number;
 
-use Sports\Qualify\Target as QualifyTarget;
 use PHPUnit\Framework\TestCase;
-use Sports\Qualify\Group as QualifyGroup;
+use Sports\Qualify\Target as QualifyTarget;
 use Sports\Round\Number\GamesValidator;
 use Sports\TestHelper\CompetitionCreator;
 use Sports\TestHelper\GamesCreator;
-use Sports\Structure\Editor as StructureService;
 use Sports\TestHelper\StructureEditorCreator;
-use SportsHelpers\PouleStructure;
 use SportsHelpers\SelfReferee;
 
 final class PlanningAssignerTest extends TestCase
@@ -28,7 +25,6 @@ final class PlanningAssignerTest extends TestCase
         $firstRoundNumber = $structure->getFirstRoundNumber();
 
         (new GamesCreator())->createGames($firstRoundNumber);
-
 
         $gamesValidator = new GamesValidator();
         $nrOfReferees = $competition->getReferees()->count();
