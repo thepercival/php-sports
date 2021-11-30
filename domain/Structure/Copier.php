@@ -3,23 +3,23 @@ declare(strict_types=1);
 
 namespace Sports\Structure;
 
-use \Exception;
+use Exception;
 use Sports\Competition;
-use Sports\Competition\Sport as CompetitionSport ;
-use Sports\Structure;
-use Sports\Round\Number as RoundNumber;
-use Sports\Qualify\Group as QualifyGroup;
-use Sports\Round;
+use Sports\Competition\Sport as CompetitionSport;
 use Sports\Place;
-use Sports\Poule;
-use Sports\Score\Config as ScoreConfig;
-use Sports\Qualify\AgainstConfig as AgainstQualifyConfig;
 use Sports\Planning\Config\Service as PlanningConfigService;
-use Sports\Score\Config\Service as ScoreConfigService;
 use Sports\Planning\GameAmountConfig\Service as GameAmountConfigService;
-use Sports\Qualify\AgainstConfig\Service as AgainstQualifyConfigService;
+use Sports\Poule;
 use Sports\Poule\Horizontal\Creator as HorizontalPouleCreator;
+use Sports\Qualify\AgainstConfig as AgainstQualifyConfig;
+use Sports\Qualify\AgainstConfig\Service as AgainstQualifyConfigService;
+use Sports\Qualify\Group as QualifyGroup;
 use Sports\Qualify\Rule\Creator as QualifyRuleCreator;
+use Sports\Round;
+use Sports\Round\Number as RoundNumber;
+use Sports\Score\Config as ScoreConfig;
+use Sports\Score\Config\Service as ScoreConfigService;
+use Sports\Structure;
 
 class Copier
 {
@@ -61,7 +61,9 @@ class Copier
                 $gameAmountConfig->getCompetitionSport(),
                 $newRoundNumber->getCompetition()
             );
-            $gameAmountConfigService->create($newCompetitionSport, $newRoundNumber);
+            $newGameAmountConfig = $gameAmountConfigService->create($newCompetitionSport, $newRoundNumber);
+            $newGameAmountConfig->setAmount($gameAmountConfig->getAmount());
+            $newGameAmountConfig->setNrOfGamesPerPlaceMixed($gameAmountConfig->getNrOfGamesPerPlaceMixed());
         }
         $nextRoundNumber = $roundNumber->getNext();
         if ($nextRoundNumber !== null) {
