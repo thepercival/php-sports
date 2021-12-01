@@ -3,13 +3,13 @@ declare(strict_types=1);
 
 namespace Sports\Ranking;
 
-class Rule
+enum Rule: int
 {
-    public const MostPoints = 1;
-    public const FewestGames = 2;
-    public const BestUnitDifference = 3;
-    public const MostUnitsScored = 4;
-    public const BestAmongEachOther = 5;
-    public const BestSubUnitDifference = 6;
-    public const MostSubUnitsScored = 7;
+    case MostPoints = 1;
+    case FewestGames = 2;
+    case BestUnitDifference = 3;
+    case MostUnitsScored = 4;
+    case BestAmongEachOther = 5;
+    case BestSubUnitDifference = 6;
+    case MostSubUnitsScored = 7;
 }

@@ -13,6 +13,7 @@ use Sports\Place;
 use Sports\Poule;
 use Sports\Qualify\AgainstConfig\Service as AgainstQualifyConfigService;
 use Sports\Qualify\Group as QualifyGroup;
+use Sports\Ranking\PointsCalculation;
 use Sports\Round;
 use Sports\Round\Number as RoundNumber;
 use Sports\Score\Config as ScoreConfig;
@@ -94,7 +95,7 @@ class PouleHandler extends Handler implements SubscribingHandlerInterface
     }
 
     /**
-     * @param array<string, int|bool|array<string, int|bool>> $arrConfig
+     * @param array<string, int|bool|array<string, int|bool|PointsCalculation>> $arrConfig
      * @param CompetitionSport $competitionSport
      * @param Round $round
      * @return AgainstQualifyConfig

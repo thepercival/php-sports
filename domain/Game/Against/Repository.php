@@ -51,9 +51,9 @@ class Repository extends GameRepository
                         ->getDQL()
                 )
             );
-        $query = $query->setParameter('home', AgainstSide::HOME);
+        $query = $query->setParameter('home', AgainstSide::Home);
         $query = $query->setParameter('homecompetitor', $homeCompetitor);
-        $query = $query->setParameter('away', AgainstSide::AWAY);
+        $query = $query->setParameter('away', AgainstSide::Away);
         $query = $query->setParameter('awaycompetitor', $awayCompetitor);
         $query = $this->applyExtraFilters($query, null, null, $period);
         /** @var list<AgainstGame> $games */

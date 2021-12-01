@@ -39,9 +39,9 @@ class Against extends OutputGame
 
     protected function getDescriptionAsString(AgainstGame $game): string
     {
-        return $this->getPlacesAsString($game->getSidePlaces(AgainstSide::HOME))
+        return $this->getPlacesAsString($game->getSidePlaces(AgainstSide::Home))
             . ' ' . $this->getScoreAsString($game) . ' '
-            . $this->getPlacesAsString($game->getSidePlaces(AgainstSide::AWAY));
+            . $this->getPlacesAsString($game->getSidePlaces(AgainstSide::Away));
     }
 
     protected function getScoreAsString(AgainstGame $game): string
@@ -75,8 +75,8 @@ class Against extends OutputGame
         if ($finalScore === null) {
             return $score;
         }
-        $homePoints = $performanceCalculator->getNrOfPoints($finalScore, AgainstSide::HOME, $game);
-        $awayPoints = $performanceCalculator->getNrOfPoints($finalScore, AgainstSide::AWAY, $game);
+        $homePoints = $performanceCalculator->getNrOfPoints($finalScore, AgainstSide::Home, $game);
+        $awayPoints = $performanceCalculator->getNrOfPoints($finalScore, AgainstSide::Away, $game);
         return $homePoints . 'p' . $score . $awayPoints . 'p';
     }
 }

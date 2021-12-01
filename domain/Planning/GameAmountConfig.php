@@ -55,10 +55,10 @@ class GameAmountConfig extends Identifiable
     public function createVariant(): SingleSportVariant|AgainstSportVariant|AllInOneGameSportVariant
     {
         $competitionSport = $this->getCompetitionSport();
-        if ($competitionSport->getGameMode() === GameMode::SINGLE) {
+        if ($competitionSport->getGameMode() === GameMode::Single) {
             return new SingleSportVariant($competitionSport->getNrOfGamePlaces(), $this->getAmount());
         }
-        if ($competitionSport->getGameMode() === GameMode::ALL_IN_ONE_GAME) {
+        if ($competitionSport->getGameMode() === GameMode::AllInOneGame) {
             return new AllInOneGameSportVariant($this->getAmount());
         }
         return new AgainstSportVariant(

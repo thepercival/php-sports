@@ -24,7 +24,7 @@ class Creator
         }
     }
 
-    protected function removeRound(Round $round, string $target): void
+    protected function removeRound(Round $round, QualifyTarget $target): void
     {
         $horizontalPoules = $round->getHorizontalPoules($target);
 
@@ -47,10 +47,10 @@ class Creator
 
     /**
      * @param Round $round
-     * @param string $qualifyTarget
+     * @param QualifyTarget $qualifyTarget
      * @return Collection<int|string, HorizontalPoule>
      */
-    protected function createRoundHorizontalPoules(Round $round, string $qualifyTarget): Collection
+    protected function createRoundHorizontalPoules(Round $round, QualifyTarget $qualifyTarget): Collection
     {
         $horizontalPoules = $round->getHorizontalPoules($qualifyTarget);
 

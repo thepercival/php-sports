@@ -102,7 +102,7 @@ class Place extends PlaceLocation
         $this->name = $name;
     }
 
-    private function getHorizontalNumber(string $qualifyTarget): int
+    private function getHorizontalNumber(QualifyTarget $qualifyTarget): int
     {
         if ($qualifyTarget === QualifyTarget::WINNERS) {
             return $this->getPlaceNr();
@@ -110,7 +110,7 @@ class Place extends PlaceLocation
         return $this->getPoule()->getPlaces()->count() + 1 - $this->getPlaceNr();
     }
 
-    public function getHorizontalPoule(string $qualifyTarget): HorizontalPoule
+    public function getHorizontalPoule(QualifyTarget $qualifyTarget): HorizontalPoule
     {
         return $this->getRound()->getHorizontalPoule($qualifyTarget, $this->getHorizontalNumber($qualifyTarget));
     }

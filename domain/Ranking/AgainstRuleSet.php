@@ -3,8 +3,8 @@ declare(strict_types=1);
 
 namespace Sports\Ranking;
 
-class AgainstRuleSet
+enum AgainstRuleSet: int
 {
-    public const DiffFirst = 1;
-    public const AmongFirst = 2;
+    case DiffFirst = 1;
+    case AmongFirst = 2;
 }

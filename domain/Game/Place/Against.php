@@ -16,6 +16,7 @@ use Sports\Game\Participation;
 use Sports\Game\Place as GamePlaceBase;
 use Sports\Person;
 use Sports\Place as PlaceBase;
+use SportsHelpers\Against\Side as AgainstSide;
 
 class Against extends GamePlaceBase
 {
@@ -24,7 +25,7 @@ class Against extends GamePlaceBase
      */
     protected Collection $participations;
 
-    public function __construct(private AgainstGame $game, PlaceBase $place, private int $side)
+    public function __construct(private AgainstGame $game, PlaceBase $place, private AgainstSide $side)
     {
         parent::__construct($place);
         if (!$game->getPlaces()->contains($this)) {
@@ -38,7 +39,7 @@ class Against extends GamePlaceBase
         return $this->game;
     }
 
-    public function getSide(): int
+    public function getSide(): AgainstSide
     {
         return $this->side;
     }

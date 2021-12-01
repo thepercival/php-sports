@@ -25,12 +25,12 @@ class Service
         return $qualifyConfig;
     }
 
-    protected function getDefaultPointCalculation(CompetitionSport $competitionSport): int
+    protected function getDefaultPointCalculation(CompetitionSport $competitionSport): PointsCalculation
     {
-        if ($competitionSport->getGameMode() === GameMode::AGAINST) {
-            return PointsCalculation::AGAINSTGAMEPOINTS;
+        if ($competitionSport->getGameMode() === GameMode::Against) {
+            return PointsCalculation::AgainstGamePoints;
         }
-        return PointsCalculation::SCORES;
+        return PointsCalculation::Scores;
     }
 
     protected function getDefaultWinPoints(Sport $sport): float

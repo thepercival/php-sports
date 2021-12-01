@@ -95,7 +95,7 @@ class Single extends QualifyRule
         $this->previous = $previous;
     }
 
-    public function getNeighbour(string $targetSide): Single | null
+    public function getNeighbour(QualifyTarget $targetSide): Single | null
     {
         return $targetSide === QualifyTarget::WINNERS ? $this->previous : $this->next;
     }
@@ -118,7 +118,7 @@ class Single extends QualifyRule
         return $this;
     }
 
-    public function getNrOfToPlacesTargetSide(string $targetSide): int
+    public function getNrOfToPlacesTargetSide(QualifyTarget $targetSide): int
     {
         $nrOfToPlacesTargetSide = 0;
         $neighBour = $this->getNeighbour($targetSide);

@@ -68,12 +68,12 @@ class Editor
 
     /**
      * @param Round $parentRound
-     * @param string $qualifyTarget
+     * @param QualifyTarget $qualifyTarget
      * @param list<int> $pouleStructure
      * @return Round
      * @throws Exception
      */
-    public function addChildRound(Round $parentRound, string $qualifyTarget, array $pouleStructure): Round
+    public function addChildRound(Round $parentRound, QualifyTarget $qualifyTarget, array $pouleStructure): Round
     {
         $balancedPouleStructure = new BalancedPouleStructure(...$pouleStructure);
         $this->placeRanges?->validateStructure($balancedPouleStructure);
@@ -93,7 +93,7 @@ class Editor
 
     private function addChildRoundHelper(
         Round $parentRound,
-        string $qualifyTarget,
+        QualifyTarget $qualifyTarget,
         BalancedPouleStructure $pouleStructure
     ): QualifyGroup {
         $nextRoundNumber = $parentRound->getNumber()->getNext();
@@ -227,7 +227,7 @@ class Editor
         $this->rulesCreator->create($round, $round->getParent(), true);
     }
 
-    public function addQualifiers(Round $parentRound, string $qualifyTarget, int $nrOfToPlacesToAdd): void
+    public function addQualifiers(Round $parentRound, QualifyTarget $qualifyTarget, int $nrOfToPlacesToAdd): void
     {
         $nrOfPlaces = $parentRound->getNrOfPlaces();
         $nrOfToPlaces = $parentRound->getNrOfPlacesChildren();
@@ -270,7 +270,7 @@ class Editor
         }
     }
 
-    public function removeQualifier(Round $parentRound, string $qualifyTarget): bool
+    public function removeQualifier(Round $parentRound, QualifyTarget $qualifyTarget): bool
     {
         $qualifyGroup = $parentRound->getBorderQualifyGroup($qualifyTarget);
         if ($qualifyGroup === null) {
@@ -434,7 +434,7 @@ class Editor
         $this->rulesCreator->create($parentRound, null, true);
     }
 
-    protected function renumber(Round $round, string $qualifyTarget): void
+    protected function renumber(Round $round, QualifyTarget $qualifyTarget): void
     {
         $number = 1;
         foreach ($round->getTargetQualifyGroups($qualifyTarget) as $qualifyGroup) {

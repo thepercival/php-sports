@@ -37,9 +37,9 @@ class AgainstGames
                 $game->getId(),
                 $game->getStartDateTime()->format(DateTimeInterface::ATOM),
                 (new State($game->getState()))->getDescription(),
-                $nameService->getPlacesFromName($game->getSidePlaces(AgainstSide::HOME), true, true),
+                $nameService->getPlacesFromName($game->getSidePlaces(AgainstSide::Home), true, true),
                 $this->getScore($game),
-                $nameService->getPlacesFromName($game->getSidePlaces(AgainstSide::AWAY), true, true),
+                $nameService->getPlacesFromName($game->getSidePlaces(AgainstSide::Away), true, true),
             );
             $table->addRow($row);
         }

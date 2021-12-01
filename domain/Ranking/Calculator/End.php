@@ -11,6 +11,7 @@ use Sports\Qualify\Target as QualifyTarget;
 use Sports\Qualify\Rule\Single as SingleQualifyRule;
 use Sports\Round;
 use Sports\Structure;
+use Sports\Ranking\AgainstRuleSet;
 use Sports\Ranking\Item\End as EndRankingItem;
 use Sports\Ranking\Calculator\Round as RoundRankingCalculator;
 
@@ -18,7 +19,7 @@ class End
 {
     private int $currentRank = 1;
 
-    public function __construct(private Structure $structure, private int $ruleSet)
+    public function __construct(private Structure $structure, private AgainstRuleSet $ruleSet)
     {
     }
 

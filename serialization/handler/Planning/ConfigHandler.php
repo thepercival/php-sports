@@ -12,6 +12,9 @@ use Sports\Round;
 use Sports\Round\Number as RoundNumber;
 use Sports\SerializationHandler\DummyCreator;
 use Sports\SerializationHandler\Handler;
+use SportsHelpers\GameMode;
+use SportsHelpers\SelfReferee;
+use SportsPlanning\Combinations\GamePlaceStrategy;
 
 class ConfigHandler extends Handler implements SubscribingHandlerInterface
 {
@@ -28,7 +31,7 @@ class ConfigHandler extends Handler implements SubscribingHandlerInterface
 
     /**
      * @param JsonDeserializationVisitor $visitor
-     * @param array<string, int|bool|RoundNumber> $fieldValue
+     * @param array<string, int|bool|RoundNumber|GameMode|SelfReferee|GamePlaceStrategy> $fieldValue
      * @param array<string, int|string> $type
      * @param Context $context
      * @return PlanningConfig

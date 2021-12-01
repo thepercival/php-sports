@@ -23,7 +23,7 @@ class Service
             $this->getDefaultMinutesPerGameExt(),
             $this->getDefaultMinutesBetweenGames(),
             $this->getDefaultMinutesAfter(),
-            SelfReferee::DISABLED
+            SelfReferee::Disabled
         );
     }
 

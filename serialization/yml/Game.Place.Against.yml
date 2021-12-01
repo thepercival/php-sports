@@ -3,4 +3,4 @@ Sports\Game\Place\Against:
   exclude: false
   properties:
     side:
-      type: int
+      type: SportsHelpers\Against\Side

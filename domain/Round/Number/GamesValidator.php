@@ -79,7 +79,7 @@ class GamesValidator
     protected function validateReferee(RoundNumber $roundNumber, int $nrOfReferees): void
     {
         $selfReferee = $roundNumber->getValidPlanningConfig()->getSelfReferee();
-        if ($selfReferee !== SelfReferee::DISABLED || $nrOfReferees === 0) {
+        if ($selfReferee !== SelfReferee::Disabled || $nrOfReferees === 0) {
             return;
         }
         foreach ($roundNumber->getGames(Order::ByPoule) as $game) {

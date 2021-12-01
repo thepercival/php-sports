@@ -5,7 +5,7 @@ Sports\Planning\Config:
     editMode:
       type: integer
     gamePlaceStrategy:
-      type: integer
+      type: SportsPlanning\Combinations\GamePlaceStrategy
     extension:
       type: boolean
     enableTime:
@@ -19,4 +19,4 @@ Sports\Planning\Config:
     minutesBetweenGames:
       type: integer
     selfReferee:
-      type: integer
+      type: SportsHelpers\SelfReferee

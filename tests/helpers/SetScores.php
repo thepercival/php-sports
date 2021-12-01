@@ -23,13 +23,13 @@ trait SetScores
                 function (AgainstGamPlace $gamePlace): Place {
                     return $gamePlace->getPlace();
                 },
-                $game->getSidePlaces(AgainstSide::HOME)
+                $game->getSidePlaces(AgainstSide::Home)
             );
             $awayPlaces = array_map(
                 function (AgainstGamPlace $gamePlace): Place {
                     return $gamePlace->getPlace();
                 },
-                $game->getSidePlaces(AgainstSide::AWAY)
+                $game->getSidePlaces(AgainstSide::Away)
             );
 
             $homePlacesHasHomePlace = count(array_filter(
@@ -62,8 +62,8 @@ trait SetScores
         if ($foundGame === false) {
             throw new \Exception('de wedstrijd kan niet gevonden worden', E_ERROR);
         }
-        $newHomeGoals = $foundGame->getSide($homePlace) === AgainstSide::HOME ? $homeGoals : $awayGoals;
-        $newAwayGoals = $foundGame->getSide($awayPlace) === AgainstSide::AWAY ? $awayGoals : $homeGoals;
+        $newHomeGoals = $foundGame->getSide($homePlace) === AgainstSide::Home ? $homeGoals : $awayGoals;
+        $newAwayGoals = $foundGame->getSide($awayPlace) === AgainstSide::Away ? $awayGoals : $homeGoals;
 
         $foundGame->getScores()->add(new AgainstGameScore($foundGame, $newHomeGoals, $newAwayGoals, GamePhase::RegularTime));
         $foundGame->setState($state !== null ? $state : State::Finished);

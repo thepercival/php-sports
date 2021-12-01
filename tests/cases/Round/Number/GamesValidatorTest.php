@@ -82,7 +82,7 @@ class GamesValidatorTest extends TestCase
         $firstPoule = $structure->getRootRound()->getPoule(1);
         $game = $firstPoule->getAgainstGames()->first();
         self::assertInstanceOf(AgainstGame::class, $game);
-        $homeGamePlaces = $game->getSidePlaces(AgainstSide::HOME);
+        $homeGamePlaces = $game->getSidePlaces(AgainstSide::Home);
         $firstHomeGamePlace = array_shift($homeGamePlaces);
         self::assertInstanceOf(AgainstGamePlace::class, $firstHomeGamePlace);
         $game->setRefereePlace($firstHomeGamePlace->getPlace());
@@ -219,7 +219,7 @@ class GamesValidatorTest extends TestCase
         $structure = $structureEditor->create($competition, [5]);
 
         $firstRoundNumber = $structure->getFirstRoundNumber();
-        $firstRoundNumber->getValidPlanningConfig()->setSelfReferee(SelfReferee::SAMEPOULE);
+        $firstRoundNumber->getValidPlanningConfig()->setSelfReferee(SelfReferee::SamePoule);
 
         (new GamesCreator())->createStructureGames($structure);
 
@@ -262,7 +262,7 @@ class GamesValidatorTest extends TestCase
         $structure = $structureEditor->create($competition, [5,4]);
 
         $firstRoundNumber = $structure->getFirstRoundNumber();
-        $firstRoundNumber->getValidPlanningConfig()->setSelfReferee(SelfReferee::OTHERPOULES);
+        $firstRoundNumber->getValidPlanningConfig()->setSelfReferee(SelfReferee::OtherPoules);
 
         (new GamesCreator())->createStructureGames($structure);
 
@@ -286,7 +286,7 @@ class GamesValidatorTest extends TestCase
         $structure = $structureEditor->create($competition, [5,4]);
 
         $firstRoundNumber = $structure->getFirstRoundNumber();
-        $firstRoundNumber->getValidPlanningConfig()->setSelfReferee(SelfReferee::OTHERPOULES);
+        $firstRoundNumber->getValidPlanningConfig()->setSelfReferee(SelfReferee::OtherPoules);
 
         // 2 pak vervolgend een wedstrijd en laatr deze in de pauze zijn
         // 3 en laat de validator de boel opsporen!

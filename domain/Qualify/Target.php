@@ -3,9 +3,13 @@ declare(strict_types=1);
 
 namespace Sports\Qualify;
 
-class Target
+enum Target: string
 {
-    public const WINNERS = 'W';
-    public const DROPOUTS = '';
-    public const LOSERS = 'L';
+    case WINNERS = 'W';
+    case DROPOUTS = '';
+    case LOSERS = 'L';
+
+    public function getOpposing(): self {
+        return $this === Target::WINNERS ? Target::LOSERS : Target::WINNERS;
+    }
 }

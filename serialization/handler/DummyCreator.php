@@ -55,7 +55,7 @@ class DummyCreator
             $sport = new Sport(
                 'dummy',
                 true,
-                GameMode::AGAINST,
+                GameMode::Against,
                 $defaultNrOfSidePlaces * 2
             );
             $sport->setId($sportId);

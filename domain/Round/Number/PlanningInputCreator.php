@@ -34,10 +34,10 @@ class PlanningInputCreator
             $roundNumber->createSportVariants(),
             $pouleStructure
         );
-        if( $selfReferee !== SelfReferee::DISABLED ) {
+        if( $selfReferee !== SelfReferee::Disabled ) {
             $nrOfReferees = 0;
         }
-        $efficientSportVariants = $this->reduceFields($pouleStructure, $sportVariantsWithFields, $nrOfReferees, $selfReferee !== SelfReferee::DISABLED);
+        $efficientSportVariants = $this->reduceFields($pouleStructure, $sportVariantsWithFields, $nrOfReferees, $selfReferee !== SelfReferee::Disabled);
         return new PlanningInput(
             $pouleStructure,
             $efficientSportVariants,
@@ -65,22 +65,22 @@ class PlanningInputCreator
      * @param PlanningConfig $planningConfig
      * @param list<AgainstSportVariant|SingleSportVariant|AllInOneGameSportVariant> $sportVariants
      * @param PouleStructure $pouleStructure
-     * @return int
+     * @return SelfReferee
      */
-    protected function getSelfReferee(PlanningConfig $planningConfig, array $sportVariants, PouleStructure $pouleStructure): int
+    protected function getSelfReferee(PlanningConfig $planningConfig, array $sportVariants, PouleStructure $pouleStructure): SelfReferee
     {
         $planningInputService = new PlanningInputService();
 
         $otherPoulesAvailable = $planningInputService->canSelfRefereeOtherPoulesBeAvailable($pouleStructure);
         $samePouleAvailable = $planningInputService->canSelfRefereeSamePouleBeAvailable($pouleStructure, $sportVariants);
         if (!$otherPoulesAvailable && !$samePouleAvailable) {
-            return SelfReferee::DISABLED;
+            return SelfReferee::Disabled;
         }
-        if ($planningConfig->getSelfReferee() === SelfReferee::OTHERPOULES && !$otherPoulesAvailable) {
-            return SelfReferee::SAMEPOULE;
+        if ($planningConfig->getSelfReferee() === SelfReferee::OtherPoules && !$otherPoulesAvailable) {
+            return SelfReferee::SamePoule;
         }
-        if ($planningConfig->getSelfReferee() === SelfReferee::SAMEPOULE && !$samePouleAvailable) {
-            return SelfReferee::OTHERPOULES;
+        if ($planningConfig->getSelfReferee() === SelfReferee::SamePoule && !$samePouleAvailable) {
+            return SelfReferee::OtherPoules;
         }
         return $planningConfig->getSelfReferee();
     }

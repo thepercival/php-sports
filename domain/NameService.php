@@ -6,6 +6,7 @@ namespace Sports;
 use Exception;
 use Sports\Competitor\Map as CompetitorMap;
 use Sports\Poule\Horizontal as HorizontalPoule;
+use Sports\Ranking\AgainstRuleSet;
 use Sports\Round\Number as RoundNumber;
 use Sports\Qualify\Target as QualifyTarget;
 use Sports\Game\Place as GamePlace;
@@ -26,7 +27,7 @@ class NameService
     ) {
     }
 
-    public function getQualifyTargetDescription(string $qualifyTarget, bool $multiple = false): string
+    public function getQualifyTargetDescription(QualifyTarget $qualifyTarget, bool $multiple = false): string
     {
         $description = $qualifyTarget === QualifyTarget::WINNERS ? 'winnaar' : ($qualifyTarget === QualifyTarget::LOSERS ? 'verliezer' : '');
         return (($multiple && ($description !== '')) ? $description . 's' : $description);
@@ -202,13 +203,13 @@ class NameService
     }
 
     /**
-     * @param int $ruleSet
+     * @param AgainstRuleSet $ruleSet
      * @return list<string>
      */
-    public function getRulesName(int $ruleSet): array
+    public function getRulesName(AgainstRuleSet $ruleSet): array
     {
         $rankingRuleGetter = new RankingRuleGetter();
-        return array_values(array_map(function (int $rule): string {
+        return array_values(array_map(function (RankingRule $rule): string {
             switch ($rule) {
                 case RankingRule::MostPoints:
                     return 'meeste aantal punten';

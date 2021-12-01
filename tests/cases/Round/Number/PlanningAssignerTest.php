@@ -61,7 +61,7 @@ final class PlanningAssignerTest extends TestCase
         $structureEditor->addChildRound($rootRound, QualifyTarget::WINNERS, [7]);
 
         $firstRoundNumber = $structure->getFirstRoundNumber();
-        $firstRoundNumber->getValidPlanningConfig()->setSelfReferee(SelfReferee::SAMEPOULE);
+        $firstRoundNumber->getValidPlanningConfig()->setSelfReferee(SelfReferee::SamePoule);
         $secondRoundNumber = $firstRoundNumber->getNext();
         self::assertNotNull($secondRoundNumber);
 

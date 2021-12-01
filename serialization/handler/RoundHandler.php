@@ -9,6 +9,7 @@ use JMS\Serializer\Context;
 
 use Sports\Competition\Sport as CompetitionSport;
 use Sports\Poule;
+use Sports\Ranking\PointsCalculation;
 use Sports\Round;
 use Sports\Qualify\Group as QualifyGroup;
 use Sports\Round\Number as RoundNumber;
@@ -131,7 +132,7 @@ class RoundHandler extends Handler implements SubscribingHandlerInterface
     }
 
     /**
-     * @param array<string, int|bool|array<string, int|bool>> $arrConfig
+     * @param array<string, int|bool|array<string, int|bool|PointsCalculation>> $arrConfig
      * @param CompetitionSport $competitionSport
      * @param Round $round
      * @return AgainstQualifyConfig

@@ -29,15 +29,14 @@ class Horizontal
     protected MultipleQualifyRule | SingleQualifyRule | null $qualifyRule = null;
 
     /**
-     * Horizontal constructor.
      * @param Round $round
-     * @param string $qualifyTarget
+     * @param QualifyTarget $qualifyTarget
      * @param Horizontal|null $previous
      * @param Collection<int|string, Place> $places
      */
     public function __construct(
         protected Round $round,
-        protected string $qualifyTarget,
+        protected QualifyTarget $qualifyTarget,
         protected HorizontalPoule | null $previous,
         protected Collection $places
     ) {
@@ -50,7 +49,7 @@ class Horizontal
         return $this->round;
     }
 
-    public function getQualifyTarget(): string
+    public function getQualifyTarget(): QualifyTarget
     {
         return $this->qualifyTarget;
     }

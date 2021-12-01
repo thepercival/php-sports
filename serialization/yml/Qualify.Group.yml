@@ -5,7 +5,7 @@ Sports\Qualify\Group:
     id:
       type: integer
     target:
-      type: string
+      type: Sports\Qualify\Target
     number:
       type: integer
     childRound:

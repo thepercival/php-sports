@@ -68,14 +68,14 @@ class Against extends SportRoundRankingCalculator
         foreach ($games as $p_gameIt) {
             $inHome = false;
             foreach ($places as $place) {
-                if ($p_gameIt->isParticipating($place, AgainstSide::HOME)) {
+                if ($p_gameIt->isParticipating($place, AgainstSide::Home)) {
                     $inHome = true;
                     break;
                 }
             }
             $inAway = false;
             foreach ($places as $place) {
-                if ($p_gameIt->isParticipating($place, AgainstSide::AWAY)) {
+                if ($p_gameIt->isParticipating($place, AgainstSide::Away)) {
                     $inAway = true;
                     break;
                 }

@@ -5,11 +5,12 @@ namespace Sports\Ranking;
 
 use Closure;
 use Sports\Place\SportPerformance;
+use Sports\Ranking\Rule as RankingRule;
 
 class FunctionMapCreator
 {
     /**
-     * @var array<int, Closure(list<SportPerformance>):list<SportPerformance>>
+     * @var array<string, Closure(list<SportPerformance>):list<SportPerformance>>
      */
     protected array $map = [];
 
@@ -19,7 +20,7 @@ class FunctionMapCreator
     }
 
     /**
-     * @return array<int, Closure(list<SportPerformance>):list<SportPerformance>>
+     * @return array<string, Closure(list<SportPerformance>):list<SportPerformance>>
      */
     public function getMap(): array
     {
@@ -28,7 +29,7 @@ class FunctionMapCreator
 
     private function initMap(): void
     {
-        $this->map[Rule::MostPoints] = function (array $sportPerformances): array {
+        $this->map[Rule::MostPoints->name] = function (array $sportPerformances): array {
             /** @var list<SportPerformance> $sportPerformances */
             $mostPoints = null;
             $bestSportPerformances = [];
@@ -45,7 +46,7 @@ class FunctionMapCreator
             }
             return $bestSportPerformances;
         };
-        $this->map[Rule::FewestGames] = function (array $sportPerformances): array {
+        $this->map[Rule::FewestGames->name] = function (array $sportPerformances): array {
             /** @var list<SportPerformance> $sportPerformances */
             $fewestGames = null;
             $bestSportPerformances = [];
@@ -77,11 +78,11 @@ class FunctionMapCreator
             }
             return $bestSportPerformances;
         };
-        $this->map[Rule::MostUnitsScored] = function (array $sportPerformances) use ($mostScored): array {
+        $this->map[Rule::MostUnitsScored->name] = function (array $sportPerformances) use ($mostScored): array {
             /** @var list<SportPerformance> $sportPerformances */
             return $mostScored($sportPerformances, false);
         };
-        $this->map[Rule::MostSubUnitsScored] = function (array $sportPerformances) use ($mostScored): array {
+        $this->map[Rule::MostSubUnitsScored->name] = function (array $sportPerformances) use ($mostScored): array {
             /** @var list<SportPerformance> $sportPerformances */
             return $mostScored($sportPerformances, true);
         };

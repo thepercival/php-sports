@@ -20,7 +20,7 @@ class Group extends Identifiable
 
     public function __construct(
         protected Round $parentRound,
-        protected string $target,
+        protected Target $target,
         RoundNumber $nextRoundNumber,
         int|null $numberAsValue = null
     ) {
@@ -34,7 +34,7 @@ class Group extends Identifiable
         $this->childRound = new Round($nextRoundNumber, $this);
     }
 
-    public function getTarget(): string
+    public function getTarget(): Target
     {
         return $this->target;
     }

@@ -78,8 +78,8 @@ class AgainstGame
         if ($finalScore !== null) {
             $score = $finalScore->getHome() . $score . $finalScore->getAway();
         }
-        $homePlaces = $game->getSidePlaces(AgainstSide::HOME);
-        $awayPlaces = $game->getSidePlaces(AgainstSide::AWAY);
+        $homePlaces = $game->getSidePlaces(AgainstSide::Home);
+        $awayPlaces = $game->getSidePlaces(AgainstSide::Away);
         return [
             $nameService->getPlacesFromName($homePlaces, true, true),
             '', '',
@@ -93,8 +93,8 @@ class AgainstGame
         ConsoleTable $table,
         AgainstGameBase $game
     ): void {
-        $homeParticipations = $this->getLineup(AgainstSide::HOME, $game);
-        $awayParticipations = $this->getLineup(AgainstSide::AWAY, $game);
+        $homeParticipations = $this->getLineup(AgainstSide::Home, $game);
+        $awayParticipations = $this->getLineup(AgainstSide::Away, $game);
         while (count($homeParticipations) > 0 || count($awayParticipations) > 0) {
             $homeParticipationValues = $this->getParticipation(array_pop($homeParticipations));
             $awayParticipationValues = $this->getParticipation(array_pop($awayParticipations));
@@ -109,11 +109,11 @@ class AgainstGame
     }
 
     /**
-     * @param int $side
+     * @param AgainstSide $side
      * @param AgainstGameBase $game
      * @return list<GameParticipation>
      */
-    protected function getLineup(int $side, AgainstGameBase $game): array
+    protected function getLineup(AgainstSide $side, AgainstGameBase $game): array
     {
         $sideGamePlaces = $game->getSidePlaces($side);
         $participations = [];
@@ -152,7 +152,7 @@ class AgainstGame
 
     protected function displayEvents(ConsoleTable $table, AgainstGameBase $game): void
     {
-        $currentScore = [ AgainstSide::HOME => 0, AgainstSide::AWAY => 0 ];
+        $currentScore = [ AgainstSide::Home->name => 0, AgainstSide::Away->name => 0 ];
         foreach ($game->getEvents() as $event) {
             foreach ($this->getEventRows($event, $currentScore) as $eventRow) {
                 $table->addRow($eventRow);
@@ -162,7 +162,7 @@ class AgainstGame
 
     /**
      * @param GoalEvent|CardEvent|SubstitutionEvent $event
-     * @param array<int, int> $currentScore
+     * @param array<string, int> $currentScore
      * @return list<list<string>>
      */
     protected function getEventRows(GoalEvent|CardEvent|SubstitutionEvent $event, array &$currentScore): array
@@ -180,47 +180,47 @@ class AgainstGame
 
     /**
      * @param GoalEvent $event
-     * @param int $side
-     * @param array<int, int> $currentScore
+     * @param AgainstSide $side
+     * @param array<string, int> $currentScore
      * @return list<list<string>>
      */
-    protected function getGoalEventRows(GoalEvent $event, int $side, array &$currentScore): array
+    protected function getGoalEventRows(GoalEvent $event, AgainstSide $side, array &$currentScore): array
     {
         $valueHome = ['','',''];
         $valueAway = ['','',''];
         $rows = [];
-        if ($side === AgainstSide::HOME) {
-            $side = $event->getOwn() ? AgainstSide::AWAY : AgainstSide::HOME;
+        if ($side === AgainstSide::Home) {
+            $side = $event->getOwn() ? AgainstSide::Away : AgainstSide::Home;
             $valueHome = [
                 $event->getGameParticipation()->getPlayer()->getPerson()->getName(),
                 $event->getPenalty() ? "PEN  " : ($event->getOwn() ? "O GL" : "GOAL"),
                 $event->getMinute() . "' ",
             ];
         } else {
-            $side = $event->getOwn() ? AgainstSide::HOME : AgainstSide::AWAY;
+            $side = $event->getOwn() ? AgainstSide::Home : AgainstSide::Away;
             $valueAway = [
                 $event->getGameParticipation()->getPlayer()->getPerson()->getName(),
                 $event->getPenalty() ? "PEN  " : ($event->getOwn() ? "O GL" : "GOAL"),
                 " " . $event->getMinute() . "'",
             ];
         }
-        $currentScore[$side]++;
-        $score = '  ' . $currentScore[AgainstSide::HOME] . ' - ' . $currentScore[AgainstSide::AWAY];
+        $currentScore[$side->name]++;
+        $score = '  ' . $currentScore[AgainstSide::Home->name] . ' - ' . $currentScore[AgainstSide::Away->name];
         $rows[] = array_values(array_merge($valueHome, [$score], $valueAway));
         return $rows;
     }
 
     /**
      * @param CardEvent $event
-     * @param int $side
+     * @param AgainstSide $side
      * @return list<list<string>>
      */
-    protected function getCardEventRows(CardEvent $event, int $side): array
+    protected function getCardEventRows(CardEvent $event, AgainstSide $side): array
     {
         $valueHome = ['','',''];
         $valueAway = ['','',''];
         $rows = [];
-        if ($side === AgainstSide::HOME) {
+        if ($side === AgainstSide::Home) {
             $valueHome = [
                 $event->getGameParticipation()->getPlayer()->getPerson()->getName(),
                 $event->getMinute() . "' ",
@@ -239,17 +239,17 @@ class AgainstGame
 
     /**
      * @param SubstitutionEvent $event
-     * @param int $side
+     * @param AgainstSide $side
      * @return list<list<string>>
      */
-    protected function getSubstituteEventRows(SubstitutionEvent $event, int $side): array
+    protected function getSubstituteEventRows(SubstitutionEvent $event, AgainstSide $side): array
     {
         $valueHomeOut = ['','',''];
         $valueHomeIn = ['','',''];
         $valueAwayOut = ['','',''];
         $valueAwayIn = ['','',''];
         $rows = [];
-        if ($side === AgainstSide::HOME) {
+        if ($side === AgainstSide::Home) {
             $valueHomeOut = [
                 $event->getOut()->getPlayer()->getPerson()->getName(),
                 $event->getMinute() . "' ",

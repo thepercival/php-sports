@@ -13,6 +13,6 @@ Sports\Qualify\AgainstConfig:
     losePointsExt:
       type: float
     pointsCalculation:
-      type: integer
+      type: Sports\Ranking\PointsCalculation
     competitionSport:
       type: Sports\Competition\Sport

@@ -9,11 +9,11 @@ use Sports\Ranking\Rule as RankingRule;
 class Getter
 {
     /**
-     * @param int|null $ruleSet
+     * @param AgainstRuleSet|null $ruleSet
      * @param bool $useSubScore
-     * @return list<int>
+     * @return list<RankingRule>
      */
-    public function getRules(int|null $ruleSet, bool $useSubScore): array
+    public function getRules(AgainstRuleSet|null $ruleSet, bool $useSubScore): array
     {
         if ($ruleSet === null) {
             return $this->getTogetherRules($useSubScore);
@@ -22,11 +22,11 @@ class Getter
     }
 
     /**
-     * @param int $ruleSet
+     * @param AgainstRuleSet $ruleSet
      * @param bool $useSubScore
-     * @return list<int>
+     * @return list<RankingRule>
      */
-    protected function getAgainstRules(int $ruleSet, bool $useSubScore): array
+    protected function getAgainstRules(AgainstRuleSet $ruleSet, bool $useSubScore): array
     {
         $rules = [RankingRule::MostPoints, RankingRule::FewestGames];
         if ($ruleSet === AgainstRuleSet::AmongFirst) {
@@ -46,7 +46,7 @@ class Getter
 
     /**
      * @param bool $useSubScore
-     * @return list<int>
+     * @return list<RankingRule>
      */
     protected function getTogetherRules(bool $useSubScore): array
     {

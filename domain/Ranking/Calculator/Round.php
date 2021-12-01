@@ -34,7 +34,7 @@ class Round
 
     protected function getSportRoundRankingCalculator(CompetitionSport $competitionSport): SportRoundRankingCalculator
     {
-        if ($competitionSport->getGameMode() === GameMode::AGAINST) {
+        if ($competitionSport->getGameMode() === GameMode::Against) {
             return new AgainstSportRoundRankingCalculator($competitionSport, $this->gameStates);
         }
         return new TogetherSportRoundRankingCalculator($competitionSport, $this->gameStates);

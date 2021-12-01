@@ -16,8 +16,8 @@
   "require": {
     "php": ">=8.1",
     "league/period": "^4.9",
-    "doctrine/orm": "^2.7",
-    "jms/serializer": "^3.4",
+    "doctrine/orm": "^2.10",
+    "jms/serializer": "^3.16",
     "symfony/yaml": "^5.0",
     "monolog/monolog": "^2.0",
     "guzzlehttp/guzzle": "^7.3",

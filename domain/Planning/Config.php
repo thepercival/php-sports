@@ -6,6 +6,7 @@ namespace Sports\Planning;
 use Sports\Round\Number as RoundNumber;
 use SportsHelpers\Identifiable;
 use SportsHelpers\SelfReferee;
+use SportsPlanning\Combinations\GamePlaceStrategy;
 
 class Config extends Identifiable
 {
@@ -15,35 +16,35 @@ class Config extends Identifiable
 
     public function __construct(
         protected RoundNumber $roundNumber,
-        protected int $editMode,
-        protected int $gamePlaceStrategy,
+        protected EditMode $editMode,
+        protected GamePlaceStrategy $gamePlaceStrategy,
         protected bool $extension,
         protected bool $enableTime,
         protected int $minutesPerGame,
         protected int $minutesPerGameExt,
         protected int $minutesBetweenGames,
         protected int $minutesAfter,
-        protected int $selfReferee
+        protected SelfReferee $selfReferee
     ) {
         $this->roundNumber->setPlanningConfig($this);
     }
 
-    public function getEditMode(): int
+    public function getEditMode(): EditMode
     {
         return $this->editMode;
     }
 
-    public function setEditMode(int $editMode): void
+    public function setEditMode(EditMode $editMode): void
     {
         $this->editMode = $editMode;
     }
 
-    public function getGamePlaceStrategy(): int
+    public function getGamePlaceStrategy(): GamePlaceStrategy
     {
         return $this->gamePlaceStrategy;
     }
 
-    public function setGamePlaceStrategy(int $gamePlaceStrategy): void
+    public function setGamePlaceStrategy(GamePlaceStrategy $gamePlaceStrategy): void
     {
         $this->gamePlaceStrategy = $gamePlaceStrategy;
     }
@@ -117,19 +118,19 @@ class Config extends Identifiable
         $this->minutesPerGameExt = $minutesPerGameExt;
     }
 
-    public function getSelfReferee(): int
+    public function getSelfReferee(): SelfReferee
     {
         return $this->selfReferee;
     }
 
-    public function setSelfReferee(int $selfReferee): void
+    public function setSelfReferee(SelfReferee $selfReferee): void
     {
         $this->selfReferee = $selfReferee;
     }
 
     public function selfRefereeEnabled(): bool
     {
-        return $this->selfReferee !== SelfReferee::DISABLED;
+        return $this->selfReferee !== SelfReferee::Disabled;
     }
 
     protected function getRoundNumber(): RoundNumber

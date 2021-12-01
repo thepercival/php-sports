@@ -7,6 +7,7 @@ use Closure;
 use Sports\Game\Together as TogetherGame;
 use Sports\Game\Against as AgainstGame;
 use Sports\Place\SportPerformance\Calculator as PerformanceCalculator;
+use Sports\Ranking\AgainstRuleSet;
 use SportsHelpers\Sport\Variant\Against as AgainstSportVariant;
 use Sports\Poule;
 use Sports\Poule\Horizontal as HorizontalPoule;
@@ -26,7 +27,7 @@ abstract class Sport
      */
     protected array $gameStateMap = [];
     /**
-     * @var array<int, Closure(list<SportPerformance>):list<SportPerformance>>
+     * @var array<string, Closure(list<SportPerformance>):list<SportPerformance>>
      */
     protected array $rankFunctionMap = [];
     protected RankingRuleGetter $rankingRuleGetter;
@@ -114,7 +115,7 @@ abstract class Sport
 
     /**
      * @param list<SportPerformance> $originalPerformances
-     * @param list<int> $rankingRules
+     * @param list<RankingRule> $rankingRules
      * @return list<SportRoundRankingItem>
      */
     protected function rankItems(array $originalPerformances, array $rankingRules): array
@@ -160,7 +161,7 @@ abstract class Sport
         return $this->rankItems($performances, $rankingRules);
     }
 
-    protected function getRuleSet(): int|null
+    protected function getRuleSet(): AgainstRuleSet|null
     {
         $sportVariant = $this->competitionSport->createVariant();
         if ($sportVariant instanceof AgainstSportVariant) {
@@ -187,14 +188,14 @@ abstract class Sport
 
     /**
      * @param list<SportPerformance> $originalPerformances
-     * @param list<int> $rankingRules
+     * @param list<RankingRule> $rankingRules
      * @return list<SportPerformance>
      */
     protected function findBestPerformances(array $originalPerformances, array $rankingRules): array
     {
         $bestPerformances = $originalPerformances;
         foreach ($rankingRules as $rankingRule) {
-            $rankingFunction = $this->rankFunctionMap[$rankingRule];
+            $rankingFunction = $this->rankFunctionMap[$rankingRule->name];
             if ($rankingRule === RankingRule::BestAmongEachOther && count($originalPerformances) === count($bestPerformances)) {
                 continue;
             }

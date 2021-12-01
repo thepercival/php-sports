@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Sports\Output\StructureOutput;
 
+use Sports\Output\Grid\Align;
 use Sports\Output\Grid\Drawer;
 use Sports\Output\Coordinate;
 use Sports\NameService;
@@ -98,14 +99,14 @@ final class DrawHelper
     {
         $pouleWidth = $this->rangeCalculator->getPouleWidth($poule);
         $pouleName = $this->nameService->getPouleName($poule, false);
-        $nextPouleCoordrinate = $this->drawer->drawCellToRight($origin, $pouleName, $pouleWidth, Drawer::ALIGN_CENTER);
+        $nextPouleCoordrinate = $this->drawer->drawCellToRight($origin, $pouleName, $pouleWidth, Align::Center);
 
         $this->drawer->drawLineToRight($origin->addY(1), $pouleWidth);
 
         $placeCoordinate = $origin->addY(2);
         foreach ($poule->getPlaces() as $place) {
             $placeName = $this->nameService->getPlaceFromName($place, false);
-            $this->drawer->drawCellToRight($placeCoordinate, $placeName, $pouleWidth, Drawer::ALIGN_CENTER);
+            $this->drawer->drawCellToRight($placeCoordinate, $placeName, $pouleWidth, Align::Center);
             $placeCoordinate = $placeCoordinate->incrementY();
         }
 
@@ -121,7 +122,7 @@ final class DrawHelper
 
         $this->drawer->drawVertLineAwayFromOrigin($borderOrigin, 2 + $round->getHorizontalPoules(QualifyTarget::WINNERS)->count());
         $origin = $borderOrigin->addX(2);
-        $this->drawer->drawToRight($origin, QualifyTarget::WINNERS . ' ' . QualifyTarget::LOSERS);
+        $this->drawer->drawToRight($origin, QualifyTarget::WINNERS->value . ' ' . QualifyTarget::LOSERS->value);
         $seperator = $origin->incrementY();
         $this->drawer->drawToRight($seperator, '- -');
 
@@ -140,7 +141,7 @@ final class DrawHelper
         return $origin->incrementX();
     }
 
-    protected function getHorPoulesAsString(Round $round, string $qualifyTarget): string
+    protected function getHorPoulesAsString(Round $round, QualifyTarget $qualifyTarget): string
     {
         $value = '';
         foreach ($round->getHorizontalPoules($qualifyTarget) as $horPoule) {
@@ -233,13 +234,13 @@ final class DrawHelper
         $roundWidth = $this->rangeCalculator->getRoundWidth($qualifyGroup->getChildRound());
 
         $selfCoordinate = $origin;
-        $this->drawer->drawCellToRight($selfCoordinate, '|', $roundWidth, Drawer::ALIGN_CENTER);
+        $this->drawer->drawCellToRight($selfCoordinate, '|', $roundWidth, Align::Center);
         $selfCoordinate = $selfCoordinate->incrementY();
-        $qualifyGroupName = $qualifyGroup->getTarget();
+        $qualifyGroupName = $qualifyGroup->getTarget()->value;
         $color = $this->getQualifyGroupColor($qualifyGroup);
         $qualifyGroupName .= $qualifyGroup->getNumber();
-        $this->drawer->drawCellToRight($selfCoordinate, $qualifyGroupName, $roundWidth, Drawer::ALIGN_CENTER, $color);
-        $this->drawer->drawCellToRight($selfCoordinate->incrementY(), '|', $roundWidth, Drawer::ALIGN_CENTER);
+        $this->drawer->drawCellToRight($selfCoordinate, $qualifyGroupName, $roundWidth, Align::Center, $color);
+        $this->drawer->drawCellToRight($selfCoordinate->incrementY(), '|', $roundWidth, Align::Center);
 
         $childRoundCoordinate = $origin->addY(RangeCalculator::QUALIFYGROUPHEIGHT);
         $this->drawRound($qualifyGroup->getChildRound(), $childRoundCoordinate, $nextRoundNumberHeight);

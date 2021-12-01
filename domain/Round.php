@@ -114,10 +114,10 @@ class Round extends Identifiable
     }
 
     /**
-     * @param string $target
+     * @param QualifyTarget $target
      * @return Collection<int|string, QualifyGroup>
      */
-    public function getTargetQualifyGroups(string $target): Collection
+    public function getTargetQualifyGroups(QualifyTarget $target): Collection
     {
         return $this->qualifyGroups->filter(function (QualifyGroup $qualifyGroup) use ($target): bool {
             return $qualifyGroup->getTarget() === $target;
@@ -136,7 +136,7 @@ class Round extends Identifiable
         return $this->qualifyGroups->removeElement($qualifyGroup);
     }
 
-    public function clearRoundAndQualifyGroups(string $target): void
+    public function clearRoundAndQualifyGroups(QualifyTarget $target): void
     {
         $nextRoundNumber = $this->number->getNext();
         $rounds = $nextRoundNumber !== null ? $nextRoundNumber->getRounds() : null;
@@ -168,7 +168,7 @@ class Round extends Identifiable
 //        });
 //    }
 
-    public function getQualifyGroup(string $target, int $qualifyGroupNumber): ?QualifyGroup
+    public function getQualifyGroup(QualifyTarget $target, int $qualifyGroupNumber): ?QualifyGroup
     {
         $qualifyGroup = $this->getTargetQualifyGroups($target)->filter(function (QualifyGroup $qualifyGroup) use ($qualifyGroupNumber): bool {
             return $qualifyGroup->getNumber() === $qualifyGroupNumber;
@@ -176,7 +176,7 @@ class Round extends Identifiable
         return $qualifyGroup === false ? null : $qualifyGroup;
     }
 
-    public function getBorderQualifyGroup(string $target): QualifyGroup|null
+    public function getBorderQualifyGroup(QualifyTarget $target): QualifyGroup|null
     {
         $qualifyGroups = $this->getTargetQualifyGroups($target);
         $last = $qualifyGroups->last();
@@ -198,7 +198,7 @@ class Round extends Identifiable
         }, $this->getQualifyGroups()->toArray()));
     }
 
-    public function getChild(string $target, int $qualifyGroupNumber): ?Round
+    public function getChild(QualifyTarget $target, int $qualifyGroupNumber): ?Round
     {
         $qualifyGroup = $this->getQualifyGroup($target, $qualifyGroupNumber);
         return $qualifyGroup !== null ? $qualifyGroup->getChildRound() : null;
@@ -302,10 +302,10 @@ class Round extends Identifiable
     }
 
     /**
-     * @param string $qualifyTarget
+     * @param QualifyTarget $qualifyTarget
      * @return Collection<int|string, HorizontalPoule>
      */
-    public function getHorizontalPoules(string $qualifyTarget): Collection
+    public function getHorizontalPoules(QualifyTarget $qualifyTarget): Collection
     {
         if ($qualifyTarget === QualifyTarget::WINNERS) {
             return $this->winnersHorizontalPoules;
@@ -313,7 +313,7 @@ class Round extends Identifiable
         return $this->losersHorizontalPoules;
     }
 
-    public function getHorizontalPoule(string $target, int $number): HorizontalPoule
+    public function getHorizontalPoule(QualifyTarget $target, int $number): HorizontalPoule
     {
         $foundHorPoules = $this->getHorizontalPoules($target)->filter(function (HorizontalPoule $horPoule) use ($number): bool {
             return $horPoule->getNumber() === $number;
@@ -332,7 +332,7 @@ class Round extends Identifiable
         $this->structurePathNode = $this->constructStructurePathNode();
     }
 
-    public function getFirstPlace(string $target): Place
+    public function getFirstPlace(QualifyTarget $target): Place
     {
         return $this->getHorizontalPoule($target, 1)->getFirstPlace();
     }
@@ -422,11 +422,6 @@ class Round extends Identifiable
         return $this->getState() > State::Created;
     }
 
-    public static function getOpposing(string $target): string
-    {
-        return $target === QualifyTarget::WINNERS ? QualifyTarget::LOSERS : QualifyTarget::WINNERS;
-    }
-
     public function getNrOfPlaces(): int
     {
         $nrOfPlaces = 0;
@@ -436,7 +431,7 @@ class Round extends Identifiable
         return $nrOfPlaces;
     }
 
-    public function getNrOfPlacesChildren(string $target = null): int
+    public function getNrOfPlacesChildren(QualifyTarget $target = null): int
     {
         $nrOfPlacesChildRounds = 0;
         if ($target === null) {

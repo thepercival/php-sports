@@ -12,7 +12,7 @@ Sports\Sport:
       type: integer
       groups: [noReference]
     defaultGameMode:
-      type: integer
+      type: SportsHelpers\GameMode
       groups: [noReference]
     defaultNrOfSidePlaces:
       type: integer

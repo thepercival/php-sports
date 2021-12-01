@@ -70,14 +70,14 @@ class Against extends GameBase
     }
 
     /**
-     * @param int|null $side
+     * @param AgainstSide|null $side
      * @return list<AgainstGamePlace>
      */
-    public function getSidePlaces(int $side = null): array
+    public function getSidePlaces(AgainstSide $side = null): array
     {
-        if ($side === AgainstSide::HOME) {
+        if ($side === AgainstSide::Home) {
             return $this->getHomePlaces();
-        } elseif ($side === AgainstSide::AWAY) {
+        } elseif ($side === AgainstSide::Away) {
             return $this->getAwayPlaces();
         }
         return array_values($this->getPlaces()->toArray());
@@ -88,7 +88,7 @@ class Against extends GameBase
      */
     public function getHomePlaces(): array
     {
-        return $this->getSidePlacesHelper(AgainstSide::HOME);
+        return $this->getSidePlacesHelper(AgainstSide::Home);
     }
 
     /**
@@ -96,13 +96,13 @@ class Against extends GameBase
      */
     public function getAwayPlaces(): array
     {
-        return $this->getSidePlacesHelper(AgainstSide::AWAY);
+        return $this->getSidePlacesHelper(AgainstSide::Away);
     }
 
     /**
      * @return list<AgainstGamePlace>
      */
-    protected function getSidePlacesHelper(int $side): array
+    protected function getSidePlacesHelper(AgainstSide $side): array
     {
         return array_values($this->getPlaces()->filter(function (AgainstGamePlace $place) use ($side): bool {
             return $place->getSide() === $side;
@@ -116,10 +116,10 @@ class Against extends GameBase
 
     /**
      * @param Place $place
-     * @param int|null $side
+     * @param AgainstSide|null $side
      * @return bool
      */
-    public function isParticipating(Place $place, int $side = null): bool
+    public function isParticipating(Place $place, AgainstSide $side = null): bool
     {
         $places = array_map(function (AgainstGamePlace $gamePlace): Place {
             return $gamePlace->getPlace();
@@ -127,23 +127,23 @@ class Against extends GameBase
         return array_search($place, $places, true) !== false;
     }
 
-    public function getSide(Place $place): ?int
+    public function getSide(Place $place): AgainstSide|null
     {
-        if ($this->isParticipating($place, AgainstSide::HOME)) {
-            return AgainstSide::HOME;
+        if ($this->isParticipating($place, AgainstSide::Home)) {
+            return AgainstSide::Home;
         }
-        if ($this->isParticipating($place, AgainstSide::AWAY)) {
-            return AgainstSide::AWAY;
+        if ($this->isParticipating($place, AgainstSide::Away)) {
+            return AgainstSide::Away;
         }
         return null;
     }
 
     /**
      * @param CompetitorMap $competitorMap
-     * @param int|null $side
+     * @param AgainstSide|null $side
      * @return list<Competitor|null>
      */
-    public function getCompetitors(CompetitorMap $competitorMap, int $side = null): array
+    public function getCompetitors(CompetitorMap $competitorMap, AgainstSide $side = null): array
     {
         return array_values(array_map(
             function (AgainstGamePlace $gamePlace) use ($competitorMap): Competitor|null {

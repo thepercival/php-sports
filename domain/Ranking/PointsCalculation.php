@@ -3,9 +3,9 @@ declare(strict_types=1);
 
 namespace Sports\Ranking;
 
-class PointsCalculation
+enum PointsCalculation: int
 {
-    public const AGAINSTGAMEPOINTS = 0;
-    public const SCORES = 1;
-    public const BOTH = 2;
+    case AgainstGamePoints = 0;
+    case Scores = 1;
+    case Both = 2;
 }

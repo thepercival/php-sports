@@ -3,7 +3,7 @@ Sports\Competition:
   exclude: false
   properties:
     againstRuleSet:
-      type: integer
+      type: Sports\Ranking\AgainstRuleSet
     state:
       type: integer
     league:

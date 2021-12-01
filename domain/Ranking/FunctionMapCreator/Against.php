@@ -41,15 +41,15 @@ class Against extends BaseFunctionMapCreator
             }
             return $bestSportPerformances;
         };
-        $this->map[Rule::BestUnitDifference] = function (array $sportPerformances) use ($bestDifference) : array {
+        $this->map[Rule::BestUnitDifference->name] = function (array $sportPerformances) use ($bestDifference) : array {
             /** @var list<SportPerformance> $sportPerformances */
             return $bestDifference($sportPerformances, false);
         };
-        $this->map[Rule::BestSubUnitDifference] = function (array $sportPerformances) use ($bestDifference): array {
+        $this->map[Rule::BestSubUnitDifference->name] = function (array $sportPerformances) use ($bestDifference): array {
             /** @var list<SportPerformance> $sportPerformances */
             return $bestDifference($sportPerformances, true);
         };
-        $this->map[Rule::BestAmongEachOther] = function (array $sportPerformances) : array {
+        $this->map[Rule::BestAmongEachOther->name] = function (array $sportPerformances) : array {
             /** @var list<SportPerformance> $sportPerformances */
             $places = array_values(array_map(
                 function (SportPerformance $sportPerformance): Place {

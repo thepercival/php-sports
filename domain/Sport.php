@@ -24,7 +24,7 @@ class Sport extends Identifiable
     public function __construct(
         string $name,
         private bool $team,
-        private int $defaultGameMode,
+        private GameMode $defaultGameMode,
         private int $defaultNrOfSidePlaces,
     ) {
         $this->setName($name);
@@ -49,7 +49,7 @@ class Sport extends Identifiable
         return $this->team;
     }
 
-    public function getDefaultGameMode(): int
+    public function getDefaultGameMode(): GameMode
     {
         return $this->defaultGameMode;
     }
@@ -71,7 +71,7 @@ class Sport extends Identifiable
 
     public function createAgainstPersistVariant(int $nrOfH2H, int|null $nrOfSidePlaces = null ): SportPersistVariant {
         return new SportPersistVariant(
-            GameMode::AGAINST,
+            GameMode::Against,
             $nrOfSidePlaces !== null ? $nrOfSidePlaces : $this->getDefaultNrOfSidePlaces(),
             $nrOfSidePlaces !== null ? $nrOfSidePlaces : $this->getDefaultNrOfSidePlaces(),
             0,
@@ -81,7 +81,7 @@ class Sport extends Identifiable
     }
 
     public function createTogetherPersistVariant(
-        int $gameMode,
+        GameMode $gameMode,
         int $nrOfGamePlaces,
         int $nrOfGamesPerPlace
     ): SportPersistVariant {

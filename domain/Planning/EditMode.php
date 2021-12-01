@@ -3,8 +3,8 @@ declare(strict_types=1);
 
 namespace Sports\Planning;
 
-class EditMode
+enum EditMode: int
 {
-    public const Auto = 1;
-    public const Manual = 2;
+    case Auto = 1;
+    case Manual = 2;
 }

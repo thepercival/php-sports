@@ -10,7 +10,6 @@ use Exception;
 use Sports\Competition\Field as CompetitionField;
 use Sports\Competition\Referee;
 use Sports\Competition\Sport as CompetitionSport;
-use Sports\Competition\Sport as CompetitonSport;
 use Sports\Competitor\Team as TeamCompetitor;
 use Sports\Ranking\AgainstRuleSet;
 use SportsHelpers\Identifiable;
@@ -22,7 +21,7 @@ class Competition extends Identifiable
 {
     private League $league;
     private DateTimeImmutable $startDateTime;
-    private int $againstRuleSet;
+    private AgainstRuleSet $againstRuleSet;
     private int $state;
     /**
      * @var Collection<int|string, Round\Number>
@@ -90,12 +89,12 @@ class Competition extends Identifiable
         $this->startDateTime = $datetime;
     }
 
-    public function getAgainstRuleSet(): int
+    public function getAgainstRuleSet(): AgainstRuleSet
     {
         return $this->againstRuleSet;
     }
 
-    public function setAgainstRuleSet(int $againstRuleSet): void
+    public function setAgainstRuleSet(AgainstRuleSet $againstRuleSet): void
     {
         $this->againstRuleSet = $againstRuleSet;
     }
@@ -202,7 +201,7 @@ class Competition extends Identifiable
      */
     public function getBaseSports(): Collection
     {
-        return $this->sports->map(function (CompetitonSport $competitionSport): Sport {
+        return $this->sports->map(function (CompetitionSport $competitionSport): Sport {
             return $competitionSport->getSport();
         });
     }

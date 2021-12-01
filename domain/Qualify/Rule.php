@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Sports\Qualify;
 
@@ -11,7 +12,7 @@ abstract class Rule
     {
     }
 
-    public function getQualifyTarget(): string
+    public function getQualifyTarget(): Target
     {
         return $this->fromHorizontalPoule->getQualifyTarget();
     }

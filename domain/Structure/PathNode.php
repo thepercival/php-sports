@@ -3,16 +3,18 @@ declare(strict_types=1);
 
 namespace Sports\Structure;
 
+use Sports\Qualify\Target as QualifyTarget;
+
 class PathNode implements \Stringable
 {
     public function __construct(
-        private string|null $qualifyTarget,
+        private QualifyTarget|null $qualifyTarget,
         private int $qualifyGroupNumber,
         private PathNode|null $previous
     ) {
     }
 
-    public function createNext(string $qualifyTarget, int $qualifyGroupNumber): PathNode
+    public function createNext(QualifyTarget $qualifyTarget, int $qualifyGroupNumber): PathNode
     {
         $path = new PathNode($qualifyTarget, $qualifyGroupNumber, $this);
         // this.next = path;
@@ -24,6 +26,7 @@ class PathNode implements \Stringable
         if( $this->previous === null ) {
             return (string)$this->qualifyGroupNumber;
         }
-        return (string)$this->previous . (string)$this->qualifyTarget . $this->qualifyGroupNumber;
+        $qualifyTarget = ($this->qualifyTarget !== null ? $this->qualifyTarget->value : '');
+        return (string)$this->previous . $qualifyTarget . $this->qualifyGroupNumber;
     }
 }

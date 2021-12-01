@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Sports\Score;
 
@@ -30,17 +31,16 @@ trait AgainstTrait
         $this->away = $away;
     }
 
-    public function get(int $side): int
+    public function get(AgainstSide $side): int
     {
-        return $side === AgainstSide::HOME ? $this->getHome() : $this->getAway();
+        return $side === AgainstSide::Home ? $this->getHome() : $this->getAway();
     }
 
-    public function getResult(int $side): int
+    public function getResult(AgainstSide $side): AgainstResult
     {
         if ($this->getHome() === $this->getAway()) {
-            return AgainstResult::DRAW;
+            return AgainstResult::Draw;
         }
-        $opposite = $side === AgainstSide::HOME ? AgainstSide::AWAY : AgainstSide::HOME;
-        return $this->get($side) > $this->get($opposite) ? AgainstResult::WIN : AgainstResult::LOSS;
+        return $this->get($side) > $this->get($side->getOpposite()) ? AgainstResult::Win : AgainstResult::Loss;
     }
 }

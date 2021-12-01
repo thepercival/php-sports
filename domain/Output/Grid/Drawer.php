@@ -9,10 +9,6 @@ use Sports\Output\Grid;
 
 final class Drawer
 {
-    public const ALIGN_LEFT = 1;
-    public const ALIGN_CENTER = 2;
-    public const ALIGN_RIGHT = 3;
-
     use Color;
 
     public function __construct(protected Grid $grid)
@@ -79,17 +75,17 @@ final class Drawer
         return $this->drawVertToOrigin($coordinate, $this->initString($length, $value), $color);
     }
 
-    public function drawCellToRight(Coordinate $coordinate, string $text, int $width, int $align, int $color = 0): Coordinate
+    public function drawCellToRight(Coordinate $coordinate, string $text, int $width, Align $align, int $color = 0): Coordinate
     {
         $char = ' ';
         if (strlen($text) > $width) {
             $text = substr($text, 0, $width);
         }
-        if ($align === self::ALIGN_CENTER) {
-            $align = self::ALIGN_LEFT;
+        if ($align === Align::Center) {
+            $align = Align::Left;
             while (strlen($text) < $width) {
                 $text = $this->addToString($text, $char, $align);
-                $align = $align === self::ALIGN_LEFT ? self::ALIGN_RIGHT : self::ALIGN_LEFT;
+                $align = $align === Align::Left ? Align::Right : Align::Left;
             }
         } else {
             while (strlen($text) < $width) {
@@ -115,9 +111,9 @@ final class Drawer
         return $retVal;
     }
 
-    public function addToString(string $text, string $char, int $side): string
+    public function addToString(string $text, string $char, Align $side): string
     {
-        if ($side === self::ALIGN_RIGHT) {
+        if ($side === Align::Right) {
             return $text . $char;
         }
         return $char . $text;

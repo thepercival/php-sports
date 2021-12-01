@@ -124,14 +124,14 @@ class Service
 
     protected function getDefaultSportVariant(Sport $sport): SportVariant
     {
-        if ($sport->getDefaultGameMode() === GameMode::AGAINST) {
+        if ($sport->getDefaultGameMode() === GameMode::Against) {
             return new AgainstSportVariant(
                 $sport->getDefaultNrOfSidePlaces(),
                 $sport->getDefaultNrOfSidePlaces(),
                 $sport->getDefaultNrOfSidePlaces() > 1 ? 0 : 1,
                 $sport->getDefaultNrOfSidePlaces() > 1 ? 1 : 0
             );
-        } elseif ($sport->getDefaultGameMode() === GameMode::SINGLE) {
+        } elseif ($sport->getDefaultGameMode() === GameMode::Single) {
             return new SingleSportVariant(1, 1);
         }
         return new AllInOneGameSportVariant(1);
