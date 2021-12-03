@@ -203,4 +203,15 @@ class Against extends GamePlaceBase
         });
         return array_values($substitutes);
     }
+
+    public function getSideNative(): int
+    {
+        return $this->side->value;
+    }
+
+    public function setSideNative(int $side): void
+    {
+        /** @psalm-suppress MixedAssignment, UndefinedMethod */
+        $this->side = AgainstSide::from($side);
+    }
 }

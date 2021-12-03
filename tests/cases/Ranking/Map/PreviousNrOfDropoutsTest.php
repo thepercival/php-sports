@@ -26,13 +26,13 @@ final class PreviousNrOfDropoutsTest extends TestCase
         self::assertSame($firstRoundNumber, $structure->getLastRoundNumber());
 
         // (new StructureOutput())->output($structure, console);
-        $winnersChildRound = $structureEditor->addChildRound($rootRound, QualifyTarget::WINNERS, [5]);
-        $losersChildRound = $structureEditor->addChildRound($rootRound, QualifyTarget::LOSERS, [5]);
+        $winnersChildRound = $structureEditor->addChildRound($rootRound, QualifyTarget::Winners, [5]);
+        $losersChildRound = $structureEditor->addChildRound($rootRound, QualifyTarget::Losers, [5]);
 
-        $round1and2 = $structureEditor->addChildRound($winnersChildRound, QualifyTarget::WINNERS, [2]);
-        $structureEditor->addChildRound($winnersChildRound, QualifyTarget::LOSERS, [2]);
-        $round10and11 = $structureEditor->addChildRound($losersChildRound, QualifyTarget::WINNERS, [2]);
-        $round13and14 = $structureEditor->addChildRound($losersChildRound, QualifyTarget::LOSERS, [2]);
+        $round1and2 = $structureEditor->addChildRound($winnersChildRound, QualifyTarget::Winners, [2]);
+        $structureEditor->addChildRound($winnersChildRound, QualifyTarget::Losers, [2]);
+        $round10and11 = $structureEditor->addChildRound($losersChildRound, QualifyTarget::Winners, [2]);
+        $round13and14 = $structureEditor->addChildRound($losersChildRound, QualifyTarget::Losers, [2]);
 
         $previousDropoutsMap = new PreviousNrOfDropoutsMap($rootRound);
         self::assertSame(0, $previousDropoutsMap->get($round1and2));

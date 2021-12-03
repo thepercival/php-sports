@@ -5,7 +5,11 @@ Sports\Qualify\Group:
     id:
       type: integer
     target:
-      type: Sports\Qualify\Target
+      type: string
+      access_type: public_method
+      accessor:
+        getter: getTargetNative
+        setter: setTargetNative
     number:
       type: integer
     childRound:

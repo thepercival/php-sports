@@ -12,7 +12,11 @@ Sports\Sport:
       type: integer
       groups: [noReference]
     defaultGameMode:
-      type: SportsHelpers\GameMode
+      type: int
+      access_type: public_method
+      accessor:
+        getter: getDefaultGameModeNative
+        setter: setDefaultGameModeNative
       groups: [noReference]
     defaultNrOfSidePlaces:
       type: integer

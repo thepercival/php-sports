@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Sports;
 
 use InvalidArgumentException;
+use SportsHelpers\Against\Side as AgainstSide;
 use SportsHelpers\GameMode;
 use SportsHelpers\Identifiable;
 use SportsHelpers\Sport\PersistVariant as SportPersistVariant;
@@ -93,5 +94,16 @@ class Sport extends Identifiable
             0,
             $nrOfGamesPerPlace
         );
+    }
+
+    public function getDefaultGameModeNative(): int
+    {
+        return $this->defaultGameMode->value;
+    }
+
+    public function setDefaultGameModeNative(int $defaultGameMode): void
+    {
+        /** @psalm-suppress MixedAssignment, UndefinedMethod */
+        $this->defaultGameMode = GameMode::from($defaultGameMode);
     }
 }

@@ -142,7 +142,11 @@ class RoundHandler extends Handler implements SubscribingHandlerInterface
         CompetitionSport $competitionSport,
         Round $round
     ): AgainstQualifyConfig {
-        $config = new AgainstQualifyConfig($competitionSport, $round, $arrConfig["pointsCalculation"]);
+        $config = new AgainstQualifyConfig(
+            $competitionSport,
+            $round,
+            PointsCalculation::from($arrConfig["pointsCalculation"])
+        );
         $config->setWinPoints($arrConfig["winPoints"]);
         $config->setWinPointsExt($arrConfig["winPointsExt"]);
         $config->setDrawPoints($arrConfig["drawPoints"]);

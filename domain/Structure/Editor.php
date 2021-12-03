@@ -132,7 +132,7 @@ class Editor
         $this->horPouleCreator->create($rootRound);
         $this->rulesCreator->create($rootRound, null, true);
     
-        return $rootRound->getFirstPlace(QualifyTarget::LOSERS);
+        return $rootRound->getFirstPlace(QualifyTarget::Losers);
     }
 
     public function removePlaceFromRootRound(Round $rootRound): void
@@ -301,12 +301,12 @@ class Editor
 
     protected function getNrOfQualifiersPrevious(QualifyRuleSingle $singleRule): int
     {
-        return $singleRule->getNrOfToPlaces() + $singleRule->getNrOfToPlacesTargetSide(QualifyTarget::WINNERS);
+        return $singleRule->getNrOfToPlaces() + $singleRule->getNrOfToPlacesTargetSide(QualifyTarget::Winners);
     }
 
     protected function getNrOfQualifiersNext(QualifyRuleSingle $singleRule): int
     {
-        return $singleRule->getNrOfToPlaces() + $singleRule->getNrOfToPlacesTargetSide(QualifyTarget::LOSERS);
+        return $singleRule->getNrOfToPlaces() + $singleRule->getNrOfToPlacesTargetSide(QualifyTarget::Losers);
     }
 
     protected function getRoot(Round $round): Round
@@ -335,8 +335,8 @@ class Editor
     public function splitQualifyGroupFrom(QualifyGroup $qualifyGroup, QualifyRuleSingle $singleRule): void
     {
         $parentRound = $qualifyGroup->getParentRound();
-        $nrOfToPlaces = $singleRule->getNrOfToPlaces() + $singleRule->getNrOfToPlacesTargetSide(QualifyTarget::WINNERS);
-        $borderSideNrOfToPlaces = $singleRule->getNrOfToPlacesTargetSide(QualifyTarget::LOSERS);
+        $nrOfToPlaces = $singleRule->getNrOfToPlaces() + $singleRule->getNrOfToPlacesTargetSide(QualifyTarget::Winners);
+        $borderSideNrOfToPlaces = $singleRule->getNrOfToPlacesTargetSide(QualifyTarget::Losers);
         if ($nrOfToPlaces < 2 || $borderSideNrOfToPlaces < 2) {
             throw new Exception('de kwalificatiegroep is niet splitsbaar', E_ERROR);
         }
@@ -402,8 +402,8 @@ class Editor
         $this->horPouleCreator->create($round);
         // === because nrOfQualifiers should always go down with at leat one
         if ($round->getNrOfDropoutPlaces() <= 0) {
-            $losersBorderQualifyGroup = $round->getBorderQualifyGroup(QualifyTarget::LOSERS);
-            $childQualifyTarget = $losersBorderQualifyGroup !== null ? QualifyTarget::LOSERS : QualifyTarget::WINNERS;
+            $losersBorderQualifyGroup = $round->getBorderQualifyGroup(QualifyTarget::Losers);
+            $childQualifyTarget = $losersBorderQualifyGroup !== null ? QualifyTarget::Losers : QualifyTarget::Winners;
             $this->removeQualifier($round, $childQualifyTarget);
         } else {
             $this->rulesCreator->create($round, null, true);

@@ -29,8 +29,8 @@ final class PlanningMapperTest extends TestCase
         $rootRound = $structure->getRootRound();
         $firstRoundNumber = $rootRound->getNumber();
 
-        $winnersRound = $structureEditor->addChildRound($rootRound, QualifyTarget::WINNERS, [2]);
-        $losersRound = $structureEditor->addChildRound($rootRound, QualifyTarget::LOSERS, [2]);
+        $winnersRound = $structureEditor->addChildRound($rootRound, QualifyTarget::Winners, [2]);
+        $losersRound = $structureEditor->addChildRound($rootRound, QualifyTarget::Losers, [2]);
         $secondRoundNumber = $losersRound->getNumber();
 //        (new StructureOutput())->output($structure);
 
@@ -64,8 +64,8 @@ final class PlanningMapperTest extends TestCase
         $rootRound = $structure->getRootRound();
         $firstRoundNumber = $rootRound->getNumber();
 
-        $winnersRound = $structureEditor->addChildRound($rootRound, QualifyTarget::WINNERS, [2, 2]);
-        $losersRound = $structureEditor->addChildRound($rootRound, QualifyTarget::LOSERS, [2, 2]);
+        $winnersRound = $structureEditor->addChildRound($rootRound, QualifyTarget::Winners, [2, 2]);
+        $losersRound = $structureEditor->addChildRound($rootRound, QualifyTarget::Losers, [2, 2]);
 
         $secondRoundNumber = $winnersRound->getNumber();
 //        (new StructureOutput())->output($structure);
@@ -98,10 +98,10 @@ final class PlanningMapperTest extends TestCase
 //        $rootRound = $structure->getRootRound();
 //        $firstRoundNumber = $rootRound->getNumber();
 //
-//        $firstPlacesRound = $structureEditor->addChildRound($rootRound, QualifyTarget::WINNERS, [2,2]);
-//        $secondPlacesRound = $structureEditor->addChildRound($rootRound, QualifyTarget::WINNERS, [2,2]);
-//        $thirdPlacesRound = $structureEditor->addChildRound($rootRound, QualifyTarget::WINNERS, [2,2]);
-//        $fourthPlacesRound = $structureEditor->addChildRound($rootRound, QualifyTarget::WINNERS, [2,2]);
+//        $firstPlacesRound = $structureEditor->addChildRound($rootRound, QualifyTarget::Winners, [2,2]);
+//        $secondPlacesRound = $structureEditor->addChildRound($rootRound, QualifyTarget::Winners, [2,2]);
+//        $thirdPlacesRound = $structureEditor->addChildRound($rootRound, QualifyTarget::Winners, [2,2]);
+//        $fourthPlacesRound = $structureEditor->addChildRound($rootRound, QualifyTarget::Winners, [2,2]);
 //
 //        $secondRoundNumber = $firstPlacesRound->getNumber();
 //        (new StructureOutput())->output($structure);

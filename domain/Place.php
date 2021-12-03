@@ -104,7 +104,7 @@ class Place extends PlaceLocation
 
     private function getHorizontalNumber(QualifyTarget $qualifyTarget): int
     {
-        if ($qualifyTarget === QualifyTarget::WINNERS) {
+        if ($qualifyTarget === QualifyTarget::Winners) {
             return $this->getPlaceNr();
         }
         return $this->getPoule()->getPlaces()->count() + 1 - $this->getPlaceNr();

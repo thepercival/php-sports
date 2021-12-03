@@ -110,7 +110,7 @@ class Group extends Identifiable
         $firstSingleRule = $this->getFirstSingleRule();
         if ($firstSingleRule !== null) {
             $nrOfToPlaces = $firstSingleRule->getNrOfToPlaces()
-                + $firstSingleRule->getNrOfToPlacesTargetSide(Target::LOSERS);
+                + $firstSingleRule->getNrOfToPlacesTargetSide(Target::Losers);
         }
         $multipleRule = $this->getMultipleRule();
         if ($multipleRule !== null) {
@@ -170,5 +170,16 @@ class Group extends Identifiable
             $this->firstSingleRule->detach();
             $this->firstSingleRule = null;
         }
+    }
+
+    public function getTargetNative(): string
+    {
+        return $this->target->value;
+    }
+
+    public function setTargetNative(string $target): void
+    {
+        /** @psalm-suppress MixedAssignment, UndefinedMethod */
+        $this->target = Target::from($target);
     }
 }

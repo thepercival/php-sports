@@ -144,7 +144,7 @@ class Service
         $rankedPlaceLocations = $this->rankingCalculator->getPlaceLocationsForMultipleRule($multipleRule);
 
         while (count($rankedPlaceLocations) > count($toPlaces)) {
-            $multipleRule->getQualifyTarget() === QualifyTarget::WINNERS ? array_pop($rankedPlaceLocations) : array_shift($rankedPlaceLocations);
+            $multipleRule->getQualifyTarget() === QualifyTarget::Winners ? array_pop($rankedPlaceLocations) : array_shift($rankedPlaceLocations);
         }
         foreach ($toPlaces as $toPlace) {
             $toPouleNumber = $toPlace->getPoule()->getNumber();

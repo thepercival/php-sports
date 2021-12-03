@@ -6,7 +6,6 @@ namespace Sports\Qualify;
 use Sports\Competition\Sport as CompetitionSport;
 use Sports\Ranking\PointsCalculation;
 use Sports\Round;
-use Sports\Round\Number as RoundNumber;
 use Sports\Sport;
 use SportsHelpers\Identifiable;
 
@@ -97,5 +96,16 @@ class AgainstConfig extends Identifiable
     public function getPointsCalculation(): PointsCalculation
     {
         return $this->pointsCalculation;
+    }
+
+    public function getPointsCalculationNative(): int
+    {
+        return $this->pointsCalculation->value;
+    }
+
+    public function setPointsCalculationNative(int $pointsCalculation): void
+    {
+        /** @psalm-suppress MixedAssignment, UndefinedMethod */
+        $this->pointsCalculation = PointsCalculation::from($pointsCalculation);
     }
 }

@@ -3,9 +3,17 @@ Sports\Planning\Config:
   exclude: false
   properties:
     editMode:
-      type: integer
+      type: int
+      access_type: public_method
+      accessor:
+        getter: getEditModeNative
+        setter: setEditModeNative
     gamePlaceStrategy:
-      type: SportsPlanning\Combinations\GamePlaceStrategy
+      type: int
+      access_type: public_method
+      accessor:
+        getter: getGamePlaceStrategyNative
+        setter: setGamePlaceStrategyNative
     extension:
       type: boolean
     enableTime:
@@ -19,4 +27,8 @@ Sports\Planning\Config:
     minutesBetweenGames:
       type: integer
     selfReferee:
-      type: SportsHelpers\SelfReferee
+      type: int
+      access_type: public_method
+      accessor:
+        getter: getSelfRefereeNative
+        setter: setSelfRefereeNative

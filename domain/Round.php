@@ -307,7 +307,7 @@ class Round extends Identifiable
      */
     public function getHorizontalPoules(QualifyTarget $qualifyTarget): Collection
     {
-        if ($qualifyTarget === QualifyTarget::WINNERS) {
+        if ($qualifyTarget === QualifyTarget::Winners) {
             return $this->winnersHorizontalPoules;
         }
         return $this->losersHorizontalPoules;
@@ -345,7 +345,7 @@ class Round extends Identifiable
     {
         $places = [];
         if ($order === Round::ORDER_NUMBER_POULE) {
-            foreach ($this->getHorizontalPoules(QualifyTarget::WINNERS) as $horPoule) {
+            foreach ($this->getHorizontalPoules(QualifyTarget::Winners) as $horPoule) {
                 $places = array_merge($places, $horPoule->getPlaces()->toArray());
             }
         } else {

@@ -97,7 +97,7 @@ class Single extends QualifyRule
 
     public function getNeighbour(QualifyTarget $targetSide): Single | null
     {
-        return $targetSide === QualifyTarget::WINNERS ? $this->previous : $this->next;
+        return $targetSide === QualifyTarget::Winners ? $this->previous : $this->next;
     }
 
     public function getFirst(): Single

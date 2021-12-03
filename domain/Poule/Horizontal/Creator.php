@@ -18,7 +18,7 @@ class Creator
             if ($round === null) {
                 continue;
             }
-            foreach ([QualifyTarget::WINNERS, QualifyTarget::LOSERS] as $target) {
+            foreach ([QualifyTarget::Winners, QualifyTarget::Losers] as $target) {
                 $this->removeRound($round, $target);
             }
         }
@@ -39,7 +39,7 @@ class Creator
             if ($round === null) {
                 return;
             }
-            foreach ([QualifyTarget::WINNERS, QualifyTarget::LOSERS] as $target) {
+            foreach ([QualifyTarget::Winners, QualifyTarget::Losers] as $target) {
                 $this->createRoundHorizontalPoules($round, $target);
             }
         }
@@ -55,7 +55,7 @@ class Creator
         $horizontalPoules = $round->getHorizontalPoules($qualifyTarget);
 
         $placesHorizontalOrdered = $this->getPlacesHorizontal($round);
-        if ($qualifyTarget === QualifyTarget::LOSERS) {
+        if ($qualifyTarget === QualifyTarget::Losers) {
             $placesHorizontalOrdered = array_reverse($placesHorizontalOrdered);
         }
 

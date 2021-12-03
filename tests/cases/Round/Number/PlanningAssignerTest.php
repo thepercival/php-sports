@@ -58,7 +58,7 @@ final class PlanningAssignerTest extends TestCase
         $structure = $structureEditor->create($competition, [6,5]);
 
         $rootRound = $structure->getRootRound();
-        $structureEditor->addChildRound($rootRound, QualifyTarget::WINNERS, [7]);
+        $structureEditor->addChildRound($rootRound, QualifyTarget::Winners, [7]);
 
         $firstRoundNumber = $structure->getFirstRoundNumber();
         $firstRoundNumber->getValidPlanningConfig()->setSelfReferee(SelfReferee::SamePoule);

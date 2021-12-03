@@ -122,8 +122,8 @@ final class RangeCalculator
 
     public function getHorPoulesWidth(Round $round): int
     {
-        if ($round->getHorizontalPoules(QualifyTarget::WINNERS)->count() === 0
-            && $round->getHorizontalPoules(QualifyTarget::LOSERS)->count() === 0) {
+        if ($round->getHorizontalPoules(QualifyTarget::Winners)->count() === 0
+            && $round->getHorizontalPoules(QualifyTarget::Losers)->count() === 0) {
             return 0;
         }
         return RangeCalculator::BORDER + RangeCalculator::PADDING + RangeCalculator::HORPLACEWIDTH;

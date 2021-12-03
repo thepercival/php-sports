@@ -13,6 +13,10 @@ Sports\Qualify\AgainstConfig:
     losePointsExt:
       type: float
     pointsCalculation:
-      type: Sports\Ranking\PointsCalculation
+      type: int
+      access_type: public_method
+      accessor:
+        getter: getPointsCalculationNative
+        setter: setPointsCalculationNative
     competitionSport:
       type: Sports\Competition\Sport

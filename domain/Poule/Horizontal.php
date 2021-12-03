@@ -61,10 +61,10 @@ class Horizontal
 
     public function getPlaceNumber(): int
     {
-        if ($this->getQualifyTarget() !== QualifyTarget::LOSERS) {
+        if ($this->getQualifyTarget() !== QualifyTarget::Losers) {
             return $this->number;
         }
-        $nrOfPlaceNubers = $this->round->getHorizontalPoules(QualifyTarget::WINNERS)->count();
+        $nrOfPlaceNubers = $this->round->getHorizontalPoules(QualifyTarget::Winners)->count();
         return $nrOfPlaceNubers - ($this->number - 1);
     }
 

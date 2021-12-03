@@ -7,6 +7,7 @@ use JMS\Serializer\Handler\SubscribingHandlerInterface;
 use JMS\Serializer\JsonDeserializationVisitor;
 use JMS\Serializer\Context;
 use Sports\Qualify\Group as QualifyGroup;
+use Sports\Qualify\Target;
 use Sports\Round;
 use Sports\Round\Number as RoundNumber;
 use Sports\SerializationHandler\Handler;
@@ -44,7 +45,7 @@ class GroupHandler extends Handler implements SubscribingHandlerInterface
         $nextRoundNumber = $fieldValue["nextRoundNumber"];
         $qualifyGroup = new QualifyGroup(
             $parentRound,
-            (string)$fieldValue["target"],
+            Target::from($fieldValue["target"]),
             $nextRoundNumber,
             $fieldValue["number"]);
         //$fieldValue["childRound"] = $qualifyGroup->getChildRound();

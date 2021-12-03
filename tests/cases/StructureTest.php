@@ -25,7 +25,7 @@ class StructureTest extends TestCase
 
         self::assertSame($rootRound->getNumber(), $firstRoundNumber);
 
-        $structureEditor->addChildRound($rootRound, QualifyTarget::WINNERS, [2]);
+        $structureEditor->addChildRound($rootRound, QualifyTarget::Winners, [2]);
 
         self::assertSame($rootRound->getNumber()->getNext(), $structure->getLastRoundNumber());
 

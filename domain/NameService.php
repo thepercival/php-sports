@@ -29,7 +29,7 @@ class NameService
 
     public function getQualifyTargetDescription(QualifyTarget $qualifyTarget, bool $multiple = false): string
     {
-        $description = $qualifyTarget === QualifyTarget::WINNERS ? 'winnaar' : ($qualifyTarget === QualifyTarget::LOSERS ? 'verliezer' : '');
+        $description = $qualifyTarget === QualifyTarget::Winners ? 'winnaar' : ($qualifyTarget === QualifyTarget::Losers ? 'verliezer' : '');
         return (($multiple && ($description !== '')) ? $description . 's' : $description);
     }
 
@@ -131,7 +131,7 @@ class NameService
             return $this->getPlaceName($fromPlace, false, $longName);
         }
         $name = $this->getQualifyTargetDescription(
-            $fromPlace->getPlaceNr() === 1 ? QualifyTarget::WINNERS : QualifyTarget::LOSERS
+            $fromPlace->getPlaceNr() === 1 ? QualifyTarget::Winners : QualifyTarget::Losers
         );
         return $name . ' ' . $this->getPouleName($fromPlace->getPoule(), false);
     }
@@ -170,7 +170,7 @@ class NameService
         }
         $nrOfToPlaces = $qualifyRule->getNrOfToPlaces();
 
-        if ($qualifyRule->getQualifyTarget() === QualifyTarget::WINNERS) {
+        if ($qualifyRule->getQualifyTarget() === QualifyTarget::Winners) {
             $name = 'nummer' . ($nrOfToPlaces > 1 ? 's ' : ' ') . $horizontalPoule->getNumber();
             if ($qualifyRule instanceof MultipleQualifyRule) {
                 return ($nrOfToPlaces > 1 ? ($nrOfToPlaces . ' ') : '') . 'beste ' . $name;

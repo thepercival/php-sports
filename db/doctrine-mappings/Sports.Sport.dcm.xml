@@ -3,7 +3,7 @@
   <entity name="Sports\Sport" table="sports" repository-class="Sports\Sport\Repository">
     <field name="name" column="name" type="string" length="30" nullable="false" unique="false"/>
     <field name="team" column="team" type="boolean" nullable="false" unique="false"/>
-    <field name="defaultGameMode" column="defaultGameMode" type="smallint" nullable="false" unique="false"/>
+    <field name="defaultGameMode" column="defaultGameMode" type="enum_GameMode" nullable="false" unique="false"/>
     <field name="defaultNrOfSidePlaces" column="defaultNrOfSidePlaces" type="smallint" nullable="false" unique="false"/>
     <field name="customId" column="customId" type="smallint" nullable="true" unique="false"/>
     <unique-constraints>

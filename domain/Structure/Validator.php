@@ -102,9 +102,9 @@ class Validator
             $placeRanges->validateStructure($round->createPouleStructure());
         }
 
-        $winners = array_values($round->getTargetQualifyGroups(QualifyTarget::WINNERS)->toArray());
+        $winners = array_values($round->getTargetQualifyGroups(QualifyTarget::Winners)->toArray());
         $this->checkQualifyGroupsNumberGap($winners);
-        $losers = array_values($round->getTargetQualifyGroups(QualifyTarget::LOSERS)->toArray());
+        $losers = array_values($round->getTargetQualifyGroups(QualifyTarget::Losers)->toArray());
         $this->checkQualifyGroupsNumberGap($losers);
         foreach ($round->getQualifyGroups() as $qualifyGroup) {
             $this->checkRoundValidity($qualifyGroup->getChildRound(), $placeRanges);

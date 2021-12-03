@@ -148,11 +148,11 @@ final class ValidatorTest extends TestCase
         $structureEditor = $this->createStructureEditor();
         $structure = $structureEditor->create($competition, [3,3]);
         $rootRound = $structure->getRootRound();
-        $structureEditor->addChildRound($rootRound, QualifyTarget::WINNERS, [2]);
+        $structureEditor->addChildRound($rootRound, QualifyTarget::Winners, [2]);
 
         (new GamesCreator())->createStructureGames($structure);
 
-        $winnersQualifyGroup = $rootRound->getQualifyGroup(QualifyTarget::WINNERS, 1);
+        $winnersQualifyGroup = $rootRound->getQualifyGroup(QualifyTarget::Winners, 1);
         self::assertNotNull($winnersQualifyGroup);
         $winnersQualifyGroup->setNumber(0);
 
@@ -218,7 +218,7 @@ final class ValidatorTest extends TestCase
 
         $secondRoundNumber = new RoundNumber($competition);
 
-        new QualifyGroup($rootRound, QualifyTarget::WINNERS, $secondRoundNumber);
+        new QualifyGroup($rootRound, QualifyTarget::Winners, $secondRoundNumber);
 
         (new GamesCreator())->createStructureGames($structure);
 
@@ -236,7 +236,7 @@ final class ValidatorTest extends TestCase
 
         $rootRound = $structure->getRootRound();
 
-        $structureEditor->addChildRound($rootRound, QualifyTarget::WINNERS, [2]);
+        $structureEditor->addChildRound($rootRound, QualifyTarget::Winners, [2]);
 
         (new GamesCreator())->createStructureGames($structure);
 

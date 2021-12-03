@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Sports\Planning;
 
 use Sports\Round\Number as RoundNumber;
+use SportsHelpers\GameMode;
 use SportsHelpers\Identifiable;
 use SportsHelpers\SelfReferee;
 use SportsPlanning\Combinations\GamePlaceStrategy;
@@ -136,5 +137,38 @@ class Config extends Identifiable
     protected function getRoundNumber(): RoundNumber
     {
         return $this->roundNumber;
+    }
+
+    public function getEditModeNative(): int
+    {
+        return $this->editMode->value;
+    }
+
+    public function setEditModeNative(int $editMode): void
+    {
+        /** @psalm-suppress MixedAssignment, UndefinedMethod */
+        $this->editMode = EditMode::from($editMode);
+    }
+
+    public function getGamePlaceStrategyNative(): int
+    {
+        return $this->gamePlaceStrategy->value;
+    }
+
+    public function setGamePlaceStrategyNative(int $gamePlaceStrategy): void
+    {
+        /** @psalm-suppress MixedAssignment, UndefinedMethod */
+        $this->gamePlaceStrategy = GamePlaceStrategy::from($gamePlaceStrategy);
+    }
+
+    public function getSelfRefereeNative(): int
+    {
+        return $this->selfReferee->value;
+    }
+
+    public function setSelfRefereeNative(int $selfReferee): void
+    {
+        /** @psalm-suppress MixedAssignment, UndefinedMethod */
+        $this->selfReferee = SelfReferee::from($selfReferee);
     }
 }

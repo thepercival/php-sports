@@ -70,7 +70,7 @@ class RoundTest extends TestCase
         $this->setScoreSingle($pouleTwo, 2, 3, 0, 2);
 
         $roundRankingCalculator = new RoundRankingCalculator();
-        $nrsTwo = $rootRound->getHorizontalPoule(QualifyTarget::WINNERS, 2);
+        $nrsTwo = $rootRound->getHorizontalPoule(QualifyTarget::Winners, 2);
         $rankingItems = $roundRankingCalculator->getItemsForHorizontalPoule($nrsTwo);
 
         $thirdPlacedItem = $roundRankingCalculator->getItemByRank($rankingItems, 1);
@@ -100,7 +100,7 @@ class RoundTest extends TestCase
         $this->setScoreSingle($pouleTwo, 2, 3, 0, 1);
 
         $roundRankingCalculator = new RoundRankingCalculator();
-        $nrsTwo = $rootRound->getHorizontalPoule(QualifyTarget::WINNERS, 2);
+        $nrsTwo = $rootRound->getHorizontalPoule(QualifyTarget::Winners, 2);
         $rankingItems = $roundRankingCalculator->getItemsForHorizontalPoule($nrsTwo);
 
         $thirdPlacedItem = $roundRankingCalculator->getItemByRank($rankingItems, 1);
@@ -202,7 +202,7 @@ class RoundTest extends TestCase
         // Rank 2.1, 1.1, 2.2, 1.2, 2.3, 1.3
 
         $roundRankingCalculator = new RoundRankingCalculator();
-        $firstHorizontalPoule = $rootRound->getHorizontalPoule(QualifyTarget::WINNERS, 1);
+        $firstHorizontalPoule = $rootRound->getHorizontalPoule(QualifyTarget::Winners, 1);
         $placeLocations = $roundRankingCalculator->getPlacesForHorizontalPoule($firstHorizontalPoule);
 
         self::assertSame(2, $placeLocations[0]->getPouleNr());
@@ -224,7 +224,7 @@ class RoundTest extends TestCase
 //        $structure = $structureEditor->create($competition, new PouleStructure([3,3]));
 //        $rootRound = $structure->getRootRound();
 //
-//        $structureEditor->addQualifier($rootRound, QualifyTarget::WINNERS);
+//        $structureEditor->addQualifier($rootRound, QualifyTarget::Winners);
 //
 //        (new GamesCreator())->createStructureGames($structure);
 //
@@ -240,7 +240,7 @@ class RoundTest extends TestCase
 //        $this->setScoreSingle($pouleTwo, 2, 3, 6, 4);
 //
 //        $roundRankingCalculator = new RoundRankingCalculator();
-//        $firstHorizontalPoule = $rootRound->getHorizontalPoule(QualifyTarget::WINNERS, 1);
+//        $firstHorizontalPoule = $rootRound->getHorizontalPoule(QualifyTarget::Winners, 1);
 //        self::assertInstanceOf(HorizontalPoule::class, $firstHorizontalPoule);
 //        $placeLocations = $roundRankingCalculator->getPlaceLocationsForHorizontalPoule($firstHorizontalPoule);
 //

@@ -36,7 +36,7 @@ class Creator
 
     public function createForParentRound(Round $parentRound): void
     {
-        foreach ([QualifyTarget::WINNERS, QualifyTarget::LOSERS] as $target) {
+        foreach ([QualifyTarget::Winners, QualifyTarget::Losers] as $target) {
             $fromRoundHorPoules = $parentRound->getHorizontalPoules($target)->slice(0);
             foreach ($parentRound->getTargetQualifyGroups($target) as $qualifyGroup) {
                 $childRound = $qualifyGroup->getChildRound();

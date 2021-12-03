@@ -32,7 +32,7 @@ class End
         $getItems = function (Round $round) use (&$getItems) : array {
             /** @var Closure(Round):list<EndRankingItem> $getItems */
             $items = [];
-            foreach ($round->getTargetQualifyGroups(QualifyTarget::WINNERS) as $qualifyGroup) {
+            foreach ($round->getTargetQualifyGroups(QualifyTarget::Winners) as $qualifyGroup) {
                 $items = array_merge($items, $getItems($qualifyGroup->getChildRound()));
             }
             if ($round->getState() === State::Finished) {
@@ -40,7 +40,7 @@ class End
             } else {
                 $items = array_merge($items, $this->getDropoutsNotPlayed($round));
             }
-            foreach (array_reverse($round->getTargetQualifyGroups(QualifyTarget::LOSERS)->slice(0)) as $qualifyGroup) {
+            foreach (array_reverse($round->getTargetQualifyGroups(QualifyTarget::Losers)->slice(0)) as $qualifyGroup) {
                 $items = array_merge($items, $getItems($qualifyGroup->getChildRound()));
             }
             return array_values($items);
@@ -72,7 +72,7 @@ class End
         $dropouts = [];
         $nrOfDropouts = $round->getNrOfDropoutPlaces();
         while (count($dropouts) < $nrOfDropouts) {
-            foreach ([QualifyTarget::WINNERS, QualifyTarget::LOSERS] as $qualifyTarget) {
+            foreach ([QualifyTarget::Winners, QualifyTarget::Losers] as $qualifyTarget) {
                 foreach ($round->getHorizontalPoules($qualifyTarget) as $horPoule) {
                     $horPouleDropouts = $this->getHorizontalPouleDropouts($horPoule);
                     $horPouleDropout = array_pop($horPouleDropouts);

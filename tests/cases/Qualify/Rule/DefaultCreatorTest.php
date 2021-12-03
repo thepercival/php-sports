@@ -26,9 +26,9 @@ class DefaultCreatorTest extends TestCase
         $structure = $structureEditor->create($competition, [3,3,3]);
         $rootRound = $structure->getRootRound();
 
-        $winnersRound = $structureEditor->addChildRound($rootRound, QualifyTarget::WINNERS, [2, 2, 2, 2]);
+        $winnersRound = $structureEditor->addChildRound($rootRound, QualifyTarget::Winners, [2, 2, 2, 2]);
 
-        $qualifyGroup = $rootRound->getQualifyGroup(QualifyTarget::WINNERS, 1);
+        $qualifyGroup = $rootRound->getQualifyGroup(QualifyTarget::Winners, 1);
         self::assertInstanceOf(QualifyGroup::class, $qualifyGroup);
 
         // (new StructureOutput())->output($structure);
@@ -48,9 +48,9 @@ class DefaultCreatorTest extends TestCase
         $structure = $structureEditor->create($competition, [4,4,4,4,4]);
         $rootRound = $structure->getRootRound();
 
-        $winnersRound = $structureEditor->addChildRound($rootRound, QualifyTarget::WINNERS, [2, 2, 2, 2, 2, 2, 2, 2]);
+        $winnersRound = $structureEditor->addChildRound($rootRound, QualifyTarget::Winners, [2, 2, 2, 2, 2, 2, 2, 2]);
 
-        $qualifyGroup = $rootRound->getQualifyGroup(QualifyTarget::WINNERS, 1);
+        $qualifyGroup = $rootRound->getQualifyGroup(QualifyTarget::Winners, 1);
         self::assertInstanceOf(QualifyGroup::class, $qualifyGroup);
 
         // (new StructureOutput())->output($structure);
@@ -71,11 +71,11 @@ class DefaultCreatorTest extends TestCase
         $rootRound = $structure->getRootRound();
 
 
-        $winnersRound = $structureEditor->addChildRound($rootRound, QualifyTarget::WINNERS, [2, 2, 2, 2, 2, 2, 2, 2]);
-        $firstQualifyGroup = $rootRound->getQualifyGroup(QualifyTarget::WINNERS, 1);
+        $winnersRound = $structureEditor->addChildRound($rootRound, QualifyTarget::Winners, [2, 2, 2, 2, 2, 2, 2, 2]);
+        $firstQualifyGroup = $rootRound->getQualifyGroup(QualifyTarget::Winners, 1);
         self::assertInstanceOf(QualifyGroup::class, $firstQualifyGroup);
-        $quarterFinal = $structureEditor->addChildRound($winnersRound, QualifyTarget::WINNERS, [2, 2, 2, 2]);
-        $lastQualifyGroup = $winnersRound->getQualifyGroup(QualifyTarget::WINNERS, 1);
+        $quarterFinal = $structureEditor->addChildRound($winnersRound, QualifyTarget::Winners, [2, 2, 2, 2]);
+        $lastQualifyGroup = $winnersRound->getQualifyGroup(QualifyTarget::Winners, 1);
         self::assertInstanceOf(QualifyGroup::class, $lastQualifyGroup);
 
         // (new StructureOutput())->output($structure);
@@ -115,12 +115,12 @@ class DefaultCreatorTest extends TestCase
         $structure = $structureEditor->create($competition, [8,8,8,8,8]);
         $rootRound = $structure->getRootRound();
 
-        $secondRound = $structureEditor->addChildRound($rootRound, QualifyTarget::WINNERS, [6,6,6,6,6]);
-        $thirdRound = $structureEditor->addChildRound($secondRound, QualifyTarget::WINNERS, [4,4,4,4,4]);
-        $fourthRound = $structureEditor->addChildRound($thirdRound, QualifyTarget::WINNERS, [2, 2, 2, 2, 2, 2, 2, 2]);
-        $quarterFinal = $structureEditor->addChildRound($fourthRound, QualifyTarget::WINNERS, [2, 2, 2, 2]);
-        $semiFinal = $structureEditor->addChildRound($quarterFinal, QualifyTarget::WINNERS, [2, 2]);
-        $structureEditor->addChildRound($semiFinal, QualifyTarget::WINNERS, [2]);
+        $secondRound = $structureEditor->addChildRound($rootRound, QualifyTarget::Winners, [6,6,6,6,6]);
+        $thirdRound = $structureEditor->addChildRound($secondRound, QualifyTarget::Winners, [4,4,4,4,4]);
+        $fourthRound = $structureEditor->addChildRound($thirdRound, QualifyTarget::Winners, [2, 2, 2, 2, 2, 2, 2, 2]);
+        $quarterFinal = $structureEditor->addChildRound($fourthRound, QualifyTarget::Winners, [2, 2, 2, 2]);
+        $semiFinal = $structureEditor->addChildRound($quarterFinal, QualifyTarget::Winners, [2, 2]);
+        $structureEditor->addChildRound($semiFinal, QualifyTarget::Winners, [2]);
 
         // (new StructureOutput())->output($structure);
 

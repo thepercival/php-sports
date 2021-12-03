@@ -82,8 +82,8 @@ class EndTest extends TestCase
         $structure = $structureEditor->create($competition, [5]);
         $rootRound = $structure->getRootRound();
 
-        $winnersRound = $structureEditor->addChildRound($rootRound, QualifyTarget::WINNERS, [2]);
-        $losersRound = $structureEditor->addChildRound($rootRound, QualifyTarget::LOSERS, [2]);
+        $winnersRound = $structureEditor->addChildRound($rootRound, QualifyTarget::Winners, [2]);
+        $losersRound = $structureEditor->addChildRound($rootRound, QualifyTarget::Losers, [2]);
 
         (new GamesCreator())->createStructureGames($structure);
 

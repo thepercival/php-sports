@@ -7,6 +7,7 @@ use Sports\Planning\Config as PlanningConfig;
 use JMS\Serializer\Handler\SubscribingHandlerInterface;
 use JMS\Serializer\JsonDeserializationVisitor;
 use JMS\Serializer\Context;
+use Sports\Planning\EditMode;
 use Sports\Qualify\Group as QualifyGroup;
 use Sports\Round;
 use Sports\Round\Number as RoundNumber;
@@ -48,15 +49,15 @@ class ConfigHandler extends Handler implements SubscribingHandlerInterface
         }
         $planningConfig = new PlanningConfig(
             $fieldValue["roundNumber"],
-            $fieldValue["editMode"],
-            $fieldValue["gamePlaceStrategy"],
+            EditMode::from($fieldValue["editMode"]),
+            GamePlaceStrategy::from($fieldValue["gamePlaceStrategy"]),
             $fieldValue["extension"],
             $fieldValue["enableTime"],
             $fieldValue["minutesPerGame"],
             $fieldValue["minutesPerGameExt"],
             $fieldValue["minutesBetweenGames"],
             $fieldValue["minutesAfter"],
-            $fieldValue["selfReferee"]
+            SelfReferee::from($fieldValue["selfReferee"])
         );
 
         return $planningConfig;

@@ -29,14 +29,14 @@ class PreviousNrOfDropouts
 
         $nrOfDropoutPlaces = 0;
         $setDropouts = function (Round $round) use (&$setDropouts, &$nrOfDropoutPlaces): void {
-            foreach ($round->getTargetQualifyGroups(QualifyTarget::WINNERS) as $qualifyGroup) {
+            foreach ($round->getTargetQualifyGroups(QualifyTarget::Winners) as $qualifyGroup) {
                 /** @var \Closure $setDropouts */
                 $setDropouts($qualifyGroup->getChildRound());
             }
             /** @var int $nrOfDropoutPlaces */
             $this->map[(string)$round->getStructurePathNode()] = $nrOfDropoutPlaces;
             $nrOfDropoutPlaces += $round->getNrOfDropoutPlaces();
-            $losers = $round->getTargetQualifyGroups(QualifyTarget::LOSERS)->toArray();
+            $losers = $round->getTargetQualifyGroups(QualifyTarget::Losers)->toArray();
 
             foreach (array_reverse($losers) as $losersQualifyGroup) {
                 /** @var \Closure $setDropouts */
