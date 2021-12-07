@@ -27,4 +27,8 @@ class PointsCalculationType extends EnumDbType
         }
         return null;
     }
+
+    public function getSQLDeclaration(array $column, AbstractPlatform $platform){
+        return 'int';
+    }
 }

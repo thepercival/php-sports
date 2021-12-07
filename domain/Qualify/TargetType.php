@@ -27,4 +27,8 @@ class TargetType extends EnumDbType
         }
         return null;
     }
+
+    public function getSQLDeclaration(array $column, AbstractPlatform $platform){
+        return 'varchar(1)';
+    }
 }
