@@ -4,16 +4,16 @@ declare(strict_types=1);
 namespace Sports\Ranking\Calculator;
 
 use Closure;
-use Sports\State;
 use Sports\Place;
 use Sports\Poule\Horizontal as HorizontalPoule;
-use Sports\Qualify\Target as QualifyTarget;
 use Sports\Qualify\Rule\Single as SingleQualifyRule;
-use Sports\Round;
-use Sports\Structure;
+use Sports\Qualify\Target as QualifyTarget;
 use Sports\Ranking\AgainstRuleSet;
-use Sports\Ranking\Item\End as EndRankingItem;
 use Sports\Ranking\Calculator\Round as RoundRankingCalculator;
+use Sports\Ranking\Item\End as EndRankingItem;
+use Sports\Round;
+use Sports\State;
+use Sports\Structure;
 
 class End
 {
@@ -43,10 +43,9 @@ class End
             foreach (array_reverse($round->getTargetQualifyGroups(QualifyTarget::Losers)->slice(0)) as $qualifyGroup) {
                 $items = array_merge($items, $getItems($qualifyGroup->getChildRound()));
             }
-            return array_values($items);
+            return $items;
         };
-        $endRankingItems = $getItems($this->structure->getRootRound());
-        return array_values($endRankingItems);
+        return $getItems($this->structure->getRootRound());
     }
 
     /**

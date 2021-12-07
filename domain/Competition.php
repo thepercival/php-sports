@@ -231,4 +231,15 @@ class Competition extends Identifiable
         }
         return array_values($fields);
     }
+
+    public function getAgainstRuleSetNative(): int
+    {
+        return $this->againstRuleSet->value;
+    }
+
+    public function setAgainstRuleSetNative(int $againstRuleSet): void
+    {
+        /** @psalm-suppress MixedAssignment, UndefinedMethod */
+        $this->againstRuleSet = AgainstRuleSet::from($againstRuleSet);
+    }
 }

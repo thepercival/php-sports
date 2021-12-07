@@ -376,10 +376,11 @@ class Number extends Identifiable
      */
     public function createSportVariants(): array
     {
-        return array_values(array_map(
-            fn (GameAmountConfig $gameAmountConfig): AgainstSportVariant|AllInOneGameSportVariant|SingleSportVariant => $gameAmountConfig->createVariant(),
+        return array_map(
+            fn(GameAmountConfig $gameAmountConfig
+            ): AgainstSportVariant|AllInOneGameSportVariant|SingleSportVariant => $gameAmountConfig->createVariant(),
             $this->getValidGameAmountConfigs()
-        ));
+        );
     }
 
 

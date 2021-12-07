@@ -73,7 +73,7 @@ class PlanningMapper
     {
         $planningGames = $planning->getGames(PlanningGame::ORDER_BY_BATCH);
         if (!$roundNumber->isFirst()) {
-            return array_values(array_reverse($planningGames));
+            return array_reverse($planningGames);
         }
         return $planningGames;
     }
@@ -153,7 +153,7 @@ class PlanningMapper
                 }
             );
         }
-        return array_values($poules);
+        return $poules;
     }
 
     /**

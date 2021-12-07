@@ -4,18 +4,18 @@ declare(strict_types=1);
 namespace Sports\Place\SportPerformance\Calculator;
 
 use Sports\Competition\Sport as CompetitionSport;
+use Sports\Game\Against as AgainstGame;
 use Sports\Game\Phase as GamePhase;
-use Sports\Score\Against as AgainstGameScore;
-use Sports\Score\AgainstHelper as AgainstScoreHelper;
-use Sports\Score\Against as AgainstScore;
+use Sports\Game\Together as TogetherGame;
 use Sports\Place;
-use Sports\Round;
 use Sports\Place\SportPerformance;
 use Sports\Place\SportPerformance\Calculator;
-use Sports\Game\Against as AgainstGame;
-use Sports\Game\Together as TogetherGame;
-use SportsHelpers\Against\Side as AgainstSide;
+use Sports\Round;
+use Sports\Score\Against as AgainstGameScore;
+use Sports\Score\Against as AgainstScore;
+use Sports\Score\AgainstHelper as AgainstScoreHelper;
 use SportsHelpers\Against\Result as AgainstResult;
+use SportsHelpers\Against\Side as AgainstSide;
 
 class Against extends Calculator
 {
@@ -114,6 +114,6 @@ class Against extends Calculator
         $againstGames = array_filter($games, function (AgainstGame | TogetherGame $game): bool {
             return $game instanceof AgainstGame && $this->competitionSport === $game->getCompetitionSport();
         });
-        return array_values($againstGames);
+        return $againstGames;
     }
 }

@@ -3,13 +3,13 @@ declare(strict_types=1);
 
 namespace Sports\Place\SportPerformance\Calculator;
 
-use Sports\Place\SportPerformance\Calculator;
-use Sports\Place;
-use Sports\Round;
-use Sports\Place\SportPerformance;
-use Sports\Game\Together as TogetherGame;
-use Sports\Game\Against as AgainstGame;
 use Sports\Competition\Sport as CompetitionSport;
+use Sports\Game\Against as AgainstGame;
+use Sports\Game\Together as TogetherGame;
+use Sports\Place;
+use Sports\Place\SportPerformance;
+use Sports\Place\SportPerformance\Calculator;
+use Sports\Round;
 
 class Together extends Calculator
 {
@@ -54,6 +54,6 @@ class Together extends Calculator
         $togetherGames = array_filter($games, function (AgainstGame | TogetherGame $game): bool {
             return $game instanceof TogetherGame && $this->competitionSport === $game->getCompetitionSport();
         });
-        return array_values($togetherGames);
+        return $togetherGames;
     }
 }

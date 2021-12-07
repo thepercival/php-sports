@@ -146,15 +146,15 @@ class Against extends GamePlaceBase
 
     /**
      * @param TeamCompetitor|null $teamCompetitor
-     * @return array<GoalEvent|CardEvent|SubstitutionEvent>
+     * @return list<GoalEvent|CardEvent|SubstitutionEvent>
      */
     public function getEvents(TeamCompetitor $teamCompetitor = null): array
     {
-        return array_values(array_merge(
+        return array_merge(
             $this->getGoalEvents($teamCompetitor),
             $this->getCardEvents($teamCompetitor),
             $this->getSubstituteEvents($teamCompetitor)
-        ));
+        );
     }
 
 

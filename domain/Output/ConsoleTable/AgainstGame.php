@@ -7,17 +7,17 @@ namespace Sports\Output\ConsoleTable;
 use DateTimeInterface;
 use LucidFrame\Console\ConsoleTable;
 use Sports\Competition;
-use Sports\Game\Against as AgainstGameBase;
-use Sports\Game\Participation;
-use Sports\Game\Participation as GameParticipation;
-use Sports\Game\Event\Goal as GoalEvent;
-use Sports\Game\Event\Card as CardEvent;
-use Sports\Game\Event\Substitution as SubstitutionEvent;
-use Sports\NameService;
 use Sports\Competitor\Map as CompetitorMap;
 use Sports\Competitor\Team as TeamCompetitor;
-use Sports\Sport;
+use Sports\Game\Against as AgainstGameBase;
+use Sports\Game\Event\Card as CardEvent;
+use Sports\Game\Event\Goal as GoalEvent;
+use Sports\Game\Event\Substitution as SubstitutionEvent;
+use Sports\Game\Participation;
+use Sports\Game\Participation as GameParticipation;
+use Sports\NameService;
 use Sports\Score\Config\Service as ScoreConfigService;
+use Sports\Sport;
 use SportsHelpers\Against\Side as AgainstSide;
 
 class AgainstGame
@@ -98,7 +98,7 @@ class AgainstGame
         while (count($homeParticipations) > 0 || count($awayParticipations) > 0) {
             $homeParticipationValues = $this->getParticipation(array_pop($homeParticipations));
             $awayParticipationValues = $this->getParticipation(array_pop($awayParticipations));
-            $table->addRow(array_values(array_merge($homeParticipationValues, [''], $awayParticipationValues)));
+            $table->addRow(array_merge($homeParticipationValues, [''], $awayParticipationValues));
         }
 
 //        while (count($homeParticipations) > 0 || count($awayParticipations) > 0) {
@@ -206,7 +206,7 @@ class AgainstGame
         }
         $currentScore[$side->name]++;
         $score = '  ' . $currentScore[AgainstSide::Home->name] . ' - ' . $currentScore[AgainstSide::Away->name];
-        $rows[] = array_values(array_merge($valueHome, [$score], $valueAway));
+        $rows[] = array_merge($valueHome, [$score], $valueAway);
         return $rows;
     }
 
@@ -233,7 +233,7 @@ class AgainstGame
                 $valueAway[] = $event->getType() === Sport::WARNING ? "YC  " : "RC  "
             ];
         }
-        $rows[] = array_values(array_merge($valueHome, [''], $valueAway));
+        $rows[] = array_merge($valueHome, [''], $valueAway);
         return $rows;
     }
 
@@ -272,8 +272,8 @@ class AgainstGame
                 "IN  "
             ];
         }
-        $rows[] = array_values(array_merge($valueHomeOut, [''], $valueAwayOut));
-        $rows[] = array_values(array_merge($valueHomeIn, [''], $valueAwayIn));
+        $rows[] = array_merge($valueHomeOut, [''], $valueAwayOut);
+        $rows[] = array_merge($valueHomeIn, [''], $valueAwayIn);
         return $rows;
     }
 

@@ -5,17 +5,16 @@ namespace Sports;
 
 use Exception;
 use Sports\Competitor\Map as CompetitorMap;
-use Sports\Poule\Horizontal as HorizontalPoule;
-use Sports\Ranking\AgainstRuleSet;
-use Sports\Round\Number as RoundNumber;
-use Sports\Qualify\Target as QualifyTarget;
 use Sports\Game\Place as GamePlace;
-use Sports\Ranking\Rule\Getter as RankingRuleGetter;
-use Sports\Ranking\Rule as RankingRule;
-use Sports\Qualify\Rule\Single as SingleQualifyRule;
+use Sports\Poule\Horizontal as HorizontalPoule;
 use Sports\Qualify\Rule\Multiple as MultipleQualifyRule;
+use Sports\Qualify\Target as QualifyTarget;
+use Sports\Ranking\AgainstRuleSet;
 use Sports\Ranking\Map\PouleStructureNumber as PouleStructureNumberMap;
 use Sports\Ranking\Map\PreviousNrOfDropouts as PreviousNrOfDropoutsMap;
+use Sports\Ranking\Rule as RankingRule;
+use Sports\Ranking\Rule\Getter as RankingRuleGetter;
+use Sports\Round\Number as RoundNumber;
 
 class NameService
 {
@@ -209,7 +208,7 @@ class NameService
     public function getRulesName(AgainstRuleSet $ruleSet): array
     {
         $rankingRuleGetter = new RankingRuleGetter();
-        return array_values(array_map(function (RankingRule $rule): string {
+        return array_map(function (RankingRule $rule): string {
             switch ($rule) {
                 case RankingRule::MostPoints:
                     return 'meeste aantal punten';
@@ -227,7 +226,7 @@ class NameService
                     return 'meeste aantal subeenheden voor';
             }
             return '';
-        }, $rankingRuleGetter->getRules($ruleSet, false)));
+        }, $rankingRuleGetter->getRules($ruleSet, false));
     }
 
     protected function childRoundsHaveEqualDepth(Round $round): bool

@@ -5,16 +5,16 @@ declare(strict_types=1);
 namespace Sports\Ranking\Calculator;
 
 use Sports\Competition\Sport as CompetitionSport;
+use Sports\Place;
 use Sports\Poule;
 use Sports\Poule\Horizontal as HorizontalPoule;
-use Sports\Place;
-use Sports\Ranking\Item\Round as RoundRankingItem;
-use Sports\Ranking\Item\Round\Sport as SportRoundRankingItem;
-use Sports\State;
+use Sports\Qualify\Rule\Multiple as MultipleQualifyRule;
 use Sports\Ranking\Calculator\Round\Sport as SportRoundRankingCalculator;
 use Sports\Ranking\Calculator\Round\Sport\Against as AgainstSportRoundRankingCalculator;
 use Sports\Ranking\Calculator\Round\Sport\Together as TogetherSportRoundRankingCalculator;
-use Sports\Qualify\Rule\Multiple as MultipleQualifyRule;
+use Sports\Ranking\Item\Round as RoundRankingItem;
+use Sports\Ranking\Item\Round\Sport as SportRoundRankingItem;
+use Sports\State;
 use SportsHelpers\GameMode;
 
 class Round
@@ -89,9 +89,9 @@ class Round
      */
     public function getPlacesForHorizontalPoule(HorizontalPoule $horizontalPoule): array
     {
-        return array_values(array_map(function (RoundRankingItem $rankingItem): Place {
+        return array_map(function (RoundRankingItem $rankingItem): Place {
             return $rankingItem->getPlace();
-        }, $this->getItemsForHorizontalPoule($horizontalPoule)));
+        }, $this->getItemsForHorizontalPoule($horizontalPoule));
     }
 
     /**

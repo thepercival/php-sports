@@ -6,10 +6,10 @@ namespace Sports\Place\SportPerformance;
 use Sports\Competition\Sport as CompetitionSport;
 use Sports\Game\Against as AgainstGame;
 use Sports\Game\Together as TogetherGame;
-use Sports\Score\Config\Service as ScoreConfigService;
 use Sports\Place;
-use Sports\Round;
 use Sports\Place\SportPerformance;
+use Sports\Round;
+use Sports\Score\Config\Service as ScoreConfigService;
 
 abstract class Calculator
 {
@@ -33,9 +33,9 @@ abstract class Calculator
      */
     protected function createPerformances(array $places): array
     {
-        return array_values(array_map(function (Place $place): SportPerformance {
+        return array_map(function (Place $place): SportPerformance {
             return new SportPerformance($this->competitionSport, $place, $place->getPenaltyPoints());
-        }, $places));
+        }, $places);
     }
 
     /**

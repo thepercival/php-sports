@@ -45,7 +45,7 @@ final class PlanningMapperTest extends TestCase
 //        (new GamesOutput())->outputRoundNumber($secondRoundNumber);
 
         $planningMapper = new PlanningMapper($secondRoundNumber, $secondPlanning);
-        $planningGames = array_values($secondPlanning->getGames(PlanningGame::ORDER_BY_BATCH));
+        $planningGames = $secondPlanning->getGames(PlanningGame::ORDER_BY_BATCH);
         $firstPlanningGame = reset($planningGames);
         $lastPlanningGame = end($planningGames);
         $losersPoule = $planningMapper->getPoule($firstPlanningGame->getPoule());

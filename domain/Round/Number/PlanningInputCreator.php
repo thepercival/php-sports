@@ -3,19 +3,18 @@ declare(strict_types=1);
 
 namespace Sports\Round\Number;
 
-use SportsHelpers\GameMode;
-use SportsHelpers\PouleStructure;
-use SportsHelpers\Sport\Variant\AllInOneGame as AllInOneGameSportVariant;
-use SportsHelpers\Sport\Variant\Against as AgainstSportVariant;
-use SportsHelpers\Sport\Variant\Single as SingleSportVariant;
-use SportsPlanning\Input as PlanningInput;
-use Sports\Round\Number as RoundNumber;
-use Sports\Planning\GameAmountConfig;
-use SportsPlanning\Input\Service as PlanningInputService;
-use SportsPlanning\Input\Calculator as InputCalculator;
 use Sports\Planning\Config as PlanningConfig;
+use Sports\Planning\GameAmountConfig;
+use Sports\Round\Number as RoundNumber;
+use SportsHelpers\PouleStructure;
 use SportsHelpers\SelfReferee;
+use SportsHelpers\Sport\Variant\Against as AgainstSportVariant;
+use SportsHelpers\Sport\Variant\AllInOneGame as AllInOneGameSportVariant;
+use SportsHelpers\Sport\Variant\Single as SingleSportVariant;
 use SportsHelpers\Sport\VariantWithFields as SportVariantWithFields;
+use SportsPlanning\Input as PlanningInput;
+use SportsPlanning\Input\Calculator as InputCalculator;
+use SportsPlanning\Input\Service as PlanningInputService;
 
 class PlanningInputCreator
 {
@@ -53,12 +52,12 @@ class PlanningInputCreator
     protected function createSportVariantsWithFields(RoundNumber $roundNumber): array
     {
         $gameAmountConfigs = $roundNumber->getValidGameAmountConfigs();
-        return array_values(array_map(function (GameAmountConfig $gameAmountConfig): SportVariantWithFields {
+        return array_map(function (GameAmountConfig $gameAmountConfig): SportVariantWithFields {
             return new SportVariantWithFields(
                 $gameAmountConfig->createVariant(),
                 $gameAmountConfig->getCompetitionSport()->getFields()->count()
             );
-        }, $gameAmountConfigs));
+        }, $gameAmountConfigs);
     }
 
     /**

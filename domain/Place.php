@@ -6,12 +6,12 @@ namespace Sports;
 use Exception;
 use InvalidArgumentException;
 use Sports\Competition\Sport as CompetitionSport;
-use Sports\Game\Place\Together as TogetherGamePlace;
-use Sports\Place\Location as PlaceLocation;
-use Sports\Qualify\Target as QualifyTarget;
-use Sports\Poule\Horizontal as HorizontalPoule;
 use Sports\Game\Against as AgainstGame;
+use Sports\Game\Place\Together as TogetherGamePlace;
 use Sports\Game\Together as TogetherGame;
+use Sports\Place\Location as PlaceLocation;
+use Sports\Poule\Horizontal as HorizontalPoule;
+use Sports\Qualify\Target as QualifyTarget;
 
 class Place extends PlaceLocation
 {
@@ -163,7 +163,7 @@ class Place extends PlaceLocation
      */
     public function getTogetherGamePlaces(CompetitionSport|null $competitionSport = null): array
     {
-        return array_values(array_map(
+        return array_map(
             function (TogetherGame $game): TogetherGamePlace {
                 foreach ($game->getPlaces() as $gamePlace) {
                     if ($gamePlace->getPlace() === $this) {
@@ -173,7 +173,7 @@ class Place extends PlaceLocation
                 throw new Exception('place should be in own games', E_ERROR);
             },
             $this->getTogetherGames($competitionSport)
-        ));
+        );
     }
 
     public function getQualifiedPlace(): ?Place

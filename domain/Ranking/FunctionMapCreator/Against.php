@@ -4,12 +4,12 @@ declare(strict_types=1);
 namespace Sports\Ranking\FunctionMapCreator;
 
 use Sports\Competition\Sport as CompetitionSport;
-use Sports\Ranking\Rule;
-use Sports\Ranking\FunctionMapCreator as BaseFunctionMapCreator;
-use Sports\Ranking\Calculator\Round\Sport\Against as AgainstSportRoundRankingCalculator;
-use Sports\Ranking\Item\Round\Sport as SportRoundRankingItem;
-use Sports\Place\SportPerformance;
 use Sports\Place;
+use Sports\Place\SportPerformance;
+use Sports\Ranking\Calculator\Round\Sport\Against as AgainstSportRoundRankingCalculator;
+use Sports\Ranking\FunctionMapCreator as BaseFunctionMapCreator;
+use Sports\Ranking\Item\Round\Sport as SportRoundRankingItem;
+use Sports\Ranking\Rule;
 
 class Against extends BaseFunctionMapCreator
 {
@@ -51,12 +51,12 @@ class Against extends BaseFunctionMapCreator
         };
         $this->map[Rule::BestAmongEachOther->name] = function (array $sportPerformances) : array {
             /** @var list<SportPerformance> $sportPerformances */
-            $places = array_values(array_map(
+            $places = array_map(
                 function (SportPerformance $sportPerformance): Place {
                     return $sportPerformance->getPlace();
                 },
                 $sportPerformances
-            ));
+            );
             $firstPlace = reset($places);
             if ($firstPlace === false) {
                 return [];

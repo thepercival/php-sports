@@ -60,7 +60,7 @@ class Creator
         }
 
         $nrOfPoules = $round->getPoules()->count();
-        $horPlaces = array_values(array_splice($placesHorizontalOrdered, 0, $nrOfPoules));
+        $horPlaces = array_splice($placesHorizontalOrdered, 0, $nrOfPoules);
         $previous = null;
         while (count($horPlaces) > 0) {
             /** @var Collection<int|string, Place> $horPlacesCollection */

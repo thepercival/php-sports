@@ -39,7 +39,7 @@ class DefaultCreator
         while ($fromHorPoule !== null && count($childRoundPlaces) >= $fromHorPoule->getPlaces()->count()) {
             $nrOfFromPlaces = $fromHorPoule->getPlaces()->count();
             /** @var list<Place> $toPlaces */
-            $toPlaces = array_values(array_splice($childRoundPlaces, 0, $nrOfFromPlaces));
+            $toPlaces = array_splice($childRoundPlaces, 0, $nrOfFromPlaces);
             $placeMappings = $this->createQualifyPlaceMappings($fromHorPoule, $toPlaces);
             $previousRule = new SingleQualifyRule($fromHorPoule, $qualifyGroup, $placeMappings, $previousRule);
             $fromHorPoule = array_shift($fromHorPoules);
@@ -86,8 +86,8 @@ class DefaultCreator
         while ($childRoundPlace = array_shift($childRoundPlaces)) {
             $bestFromPoule = $fromPoulePicker->getBestFromPoule(
                 $childRoundPlace->getPoule(),
-                array_values(array_map(fn(Place $place) => $place->getPoule(), $fromHorPoulePlaces)),
-                array_values(array_map(fn(Place $place) => $place->getPoule(), $childRoundPlaces))
+                array_map(fn(Place $place) => $place->getPoule(), $fromHorPoulePlaces),
+                array_map(fn(Place $place) => $place->getPoule(), $childRoundPlaces)
             );
             $bestFromPlace = $this->removeBestHorizontalPlace($fromHorPoulePlaces, $bestFromPoule);
             $placeMapping = new QualifyPlaceMapping($bestFromPlace, $childRoundPlace);

@@ -145,12 +145,12 @@ class Against extends GameBase
      */
     public function getCompetitors(CompetitorMap $competitorMap, AgainstSide $side = null): array
     {
-        return array_values(array_map(
+        return array_map(
             function (AgainstGamePlace $gamePlace) use ($competitorMap): Competitor|null {
                 return $competitorMap->getCompetitor($gamePlace->getPlace());
             },
             $this->getSidePlaces($side)
-        ));
+        );
     }
 
     public function getFinalPhase(): int
