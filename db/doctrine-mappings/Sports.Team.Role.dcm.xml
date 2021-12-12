@@ -1,17 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
-<mapped-superclass name="Sports\Team\Role">
-  <field name="startDateTime" column="startdatetime" type="datetime_immutable" nullable="false" unique="false"/>
-  <field name="endDateTime" column="enddatetime" type="datetime_immutable" nullable="false" unique="false"/>
-  <many-to-one field="team" target-entity="Sports\Team" inversed-by="players">
-    <join-columns>
-      <join-column name="teamId" referenced-column-name="id" nullable="false" on-delete="RESTRICT"/>
-    </join-columns>
-  </many-to-one>
-  <many-to-one field="person" target-entity="Sports\Person" inversed-by="players">
-    <join-columns>
-      <join-column name="personId" referenced-column-name="id" nullable="false" on-delete="RESTRICT"/>
-    </join-columns>
-  </many-to-one>
-</mapped-superclass>
+<doctrine-mapping xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                  xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
+                  xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+    <mapped-superclass name="Sports\Team\Role">
+        <field name="startDateTime" column="startdatetime" type="datetime_immutable" nullable="false" unique="false"/>
+        <field name="endDateTime" column="enddatetime" type="datetime_immutable" nullable="false" unique="false"/>
+        <many-to-one field="team" target-entity="Sports\Team" inversed-by="players">
+            <join-columns>
+                <join-column name="teamId" referenced-column-name="id" nullable="false" on-delete="RESTRICT"/>
+            </join-columns>
+        </many-to-one>
+        <many-to-one field="person" target-entity="Sports\Person" inversed-by="players">
+            <join-columns>
+                <join-column name="personId" referenced-column-name="id" nullable="false" on-delete="RESTRICT"/>
+            </join-columns>
+        </many-to-one>
+    </mapped-superclass>
 </doctrine-mapping>

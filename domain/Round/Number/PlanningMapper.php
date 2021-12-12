@@ -231,9 +231,8 @@ class PlanningMapper
     protected function getCompetitionSportsFieldMap(Competition $competition): array
     {
         $competitionSportsFieldMap = [];
-        $sportNr = 1;
-        foreach ($competition->getSports() as $competitionSport) {
-            $competitionSportsFieldMap[$sportNr++] = array_values($competitionSport->getFields()->toArray());
+        foreach( $this->competitionSportMap as $inputSportNumber => $competitionSport ) {
+            $competitionSportsFieldMap[$inputSportNumber] = array_values($competitionSport->getFields()->toArray());
         }
         return $competitionSportsFieldMap;
     }
@@ -250,6 +249,9 @@ class PlanningMapper
         while (count($referees) > 0 && $planningGame = array_shift($planningGames)) {
             $planningReferee = $planningGame->getReferee();
             if ($planningReferee === null) {
+                continue;
+            }
+            if( isset($this->refereeMap[$planningReferee->getUniqueIndex()]) ) {
                 continue;
             }
             $this->refereeMap[$planningReferee->getUniqueIndex()] = array_shift($referees);

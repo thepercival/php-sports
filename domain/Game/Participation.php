@@ -20,7 +20,11 @@ class Participation extends Identifiable
     /**
      * @var Collection<int|string, GoalEvent>
      */
-    protected Collection $goalsAndAssists;
+    protected Collection $goals;
+    /**
+     * @var Collection<int|string, GoalEvent>
+     */
+    protected Collection $assists;
 
     public function __construct(
         protected AgainstGamePlace $againstGamePlace,
@@ -33,7 +37,8 @@ class Participation extends Identifiable
             $againstGamePlace->getParticipations()->add($this) ;
         }
         $this->cards = new ArrayCollection();
-        $this->goalsAndAssists = new ArrayCollection();
+        $this->goals = new ArrayCollection();
+        $this->assists = new ArrayCollection();
     }
 
     public function getPlayer(): Player
@@ -104,22 +109,20 @@ class Participation extends Identifiable
         return $sendOffCard === false ? null : $sendOffCard;
     }
 
-    /**
-     * @return Collection<int|string, GoalEvent>
-     */
-    public function getGoalsAndAssists(): Collection
-    {
-        return $this->goalsAndAssists;
-    }
+//    /**
+//     * @return Collection<int|string, GoalEvent>
+//     */
+//    public function getGoalsAndAssists(): Collection
+//    {
+//        return $this->goalsAndAssists;
+//    }
 
     /**
      * @return Collection<int|string, GoalEvent>
      */
     public function getGoals(): Collection
     {
-        return $this->goalsAndAssists->filter(function (GoalEvent $goalEvent): bool {
-            return $goalEvent->getGameParticipation() === $this;
-        });
+        return $this->goals;
     }
 
     /**
@@ -151,8 +154,6 @@ class Participation extends Identifiable
      */
     public function getAssists(): Collection
     {
-        return $this->goalsAndAssists->filter(function (GoalEvent $goalEvent): bool {
-            return $goalEvent->getAssistGameParticipation() === $this;
-        });
+        return $this->assists;
     }
 }

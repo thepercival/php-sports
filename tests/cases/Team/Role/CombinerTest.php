@@ -9,8 +9,8 @@ use Sports\Person;
 use Sports\Sport\Custom as SportCustom;
 use Sports\Team;
 use Sports\Team\Player;
-use Sports\TestHelper\CompetitionCreator;
 use Sports\Team\Role\Combiner as RoleCombiner;
+use Sports\TestHelper\CompetitionCreator;
 
 final class CombinerTest extends TestCase
 {
@@ -238,7 +238,7 @@ final class CombinerTest extends TestCase
      *                  |   A   |
      *     |   X   |
      */
-    public function testMergableByPeriodFutureMultipleTeams(): void
+    public function testNotMergableByPeriodFutureMultipleTeams(): void
     {
         $competition = $this->createCompetition();
         $person = new Person('Al', null, 'Person');
@@ -272,8 +272,7 @@ final class CombinerTest extends TestCase
      *
      *  -----  MIGRATE --------
      *
-     *     |   A   |
-     *         |       X       |
+     *     |          A         |
      */
     public function testMergable(): void
     {

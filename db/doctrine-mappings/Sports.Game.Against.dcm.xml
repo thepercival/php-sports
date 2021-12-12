@@ -1,18 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
-  <entity name="Sports\Game\Against" table="againstGames" repository-class="Sports\Game\Against\Repository">
-    <field name="gameRoundNumber" column="gameRoundNumber" type="smallint" nullable="false" unique="false"/>
-    <one-to-many field="places" target-entity="Sports\Game\Place\Against" mapped-by="game" orphan-removal="true">
-      <cascade>
-        <cascade-persist/>
-        <cascade-remove/>
-      </cascade>
-    </one-to-many>
-    <one-to-many field="scores" target-entity="Sports\Score\Against" mapped-by="game" orphan-removal="true">
-      <cascade>
-        <cascade-persist/>
-        <cascade-remove/>
-      </cascade>
-    </one-to-many>
-  </entity>
+<doctrine-mapping xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                  xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
+                  xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+    <entity name="Sports\Game\Against" table="againstGames" repository-class="Sports\Game\Against\Repository">
+        <field name="gameRoundNumber" column="gameRoundNumber" type="smallint" nullable="false" unique="false"/>
+        <many-to-one field="poule" target-entity="Sports\Poule" inversed-by="againstGames">
+            <join-columns>
+                <join-column name="pouleId" referenced-column-name="id" nullable="false" on-delete="CASCADE"/>
+            </join-columns>
+        </many-to-one>
+        <one-to-many field="places" target-entity="Sports\Game\Place\Against" mapped-by="game" orphan-removal="true">
+            <cascade>
+                <cascade-persist/>
+                <cascade-remove/>
+            </cascade>
+        </one-to-many>
+        <one-to-many field="scores" target-entity="Sports\Score\Against" mapped-by="game" orphan-removal="true">
+            <cascade>
+                <cascade-persist/>
+                <cascade-remove/>
+            </cascade>
+        </one-to-many>
+    </entity>
 </doctrine-mapping>

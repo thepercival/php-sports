@@ -3,9 +3,9 @@ declare(strict_types=1);
 
 namespace Sports\Game\Event;
 
+use Sports\Game\Event as GameEvent;
 use Sports\Game\Participation as GameParticipation;
 use Sports\Team;
-use Sports\Game\Event as GameEvent;
 use SportsHelpers\Identifiable;
 
 class Goal extends Identifiable implements GameEvent
@@ -20,8 +20,8 @@ class Goal extends Identifiable implements GameEvent
     
     public function __construct(private int $minute, private GameParticipation $gameParticipation)
     {
-        if (!$gameParticipation->getGoalsAndAssists()->contains($this)) {
-            $gameParticipation->getGoalsAndAssists()->add($this) ;
+        if (!$gameParticipation->getGoals()->contains($this)) {
+            $gameParticipation->getGoals()->add($this) ;
         }
         $this->own = false;
         $this->penalty = false;
@@ -76,8 +76,8 @@ class Goal extends Identifiable implements GameEvent
 
     public function setAssistGameParticipation(GameParticipation $assistGameParticipation): void
     {
-        if ($this->assistGameParticipation === null and !$assistGameParticipation->getGoalsAndAssists()->contains($this)) {
-            $assistGameParticipation->getGoalsAndAssists()->add($this) ;
+        if ($this->assistGameParticipation === null and !$assistGameParticipation->getAssists()->contains($this)) {
+            $assistGameParticipation->getAssists()->add($this) ;
         }
         $this->assistGameParticipation = $assistGameParticipation;
     }

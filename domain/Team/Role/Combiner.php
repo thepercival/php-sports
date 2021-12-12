@@ -5,7 +5,6 @@ namespace Sports\Team\Role;
 
 
 use League\Period\Period;
-use League\Period\Sequence;
 use Sports\Person;
 use Sports\Team;
 use Sports\Team\Player;
@@ -30,7 +29,7 @@ class Combiner
     public function combineWithPast( Team $newTeam, Period $newPeriod, int $newLine ): void {
 
         $this->mergeWithPast( $newTeam, $newPeriod, $newLine );
-        $this->updatePast( $newTeam, $newPeriod );
+        $this->updateOverlapses( $newTeam, $newPeriod );
         if( !$this->hasOverlapses( $newTeam, $newPeriod ) && !$this->hasLater( $newTeam, $newPeriod ) ) {
             new Player( $newTeam, $this->person, $newPeriod, $newLine );
         }
@@ -39,7 +38,7 @@ class Combiner
     protected function mergeWithPast( Team $newTeam, Period $newPeriod, int $newLine ): void {
         $players = $this->person->getPlayers( $newTeam, null, $newLine );
 
-        $sevenMonthsEarlier = $newPeriod->getStartDate()->modify("-". self::MAX_MONTHS_FOR_MERGE ." motnhs");
+        $sevenMonthsEarlier = $newPeriod->getStartDate()->modify("-". self::MAX_MONTHS_FOR_MERGE ." months");
         foreach( $players as $player ) {
             if( $player->getPeriod()->contains( $newPeriod ) ) {
                 continue;
@@ -54,7 +53,7 @@ class Combiner
         }
     }
 
-    protected function updatePast( Team $newTeam, Period $newPeriod ): void {
+    protected function updateOverlapses( Team $newTeam, Period $newPeriod ): void {
 
         $team = null;
         if( $this->mode === self::MODE_MULTIPLE_TEAMS_OF_A_TYPE_AT_THE_SAME_TIME ) {
@@ -68,6 +67,10 @@ class Combiner
                 continue;
             }
             if( $playerOverlaps->getPeriod()->getStartDate() > $newPeriod->getStartDate() ) { // future
+                if( $playerOverlaps->getPeriod()->getEndDate()->getTimestamp()
+                    <= $newPeriod->getEndDate()->getTimestamp() ) {
+                    $playerOverlaps->setStartDateTime( $newPeriod->getStartDate() );
+                }
                 continue;
             }
             $playerOverlaps->setEndDateTime( $newPeriod->getStartDate() );

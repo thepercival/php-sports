@@ -3,19 +3,18 @@ declare(strict_types=1);
 
 namespace Sports\Round\Number;
 
-use DateTimeImmutable;
 use Exception;
 use League\Period\Period;
 use Sports\Competition\Sport as CompetitionSport;
 use Sports\Game\Against as AgainstGame;
 use Sports\Game\Order;
-use Sports\Game\Together as TogetherGame;
 use Sports\Game\Place\Against as AgainstGamePlace;
 use Sports\Game\Place\Together as TogetherGamePlace;
+use Sports\Game\Together as TogetherGame;
 use Sports\Place;
 use Sports\Poule;
-use Sports\Structure;
 use Sports\Round\Number as RoundNumber;
+use Sports\Structure;
 use SportsHelpers\SelfReferee;
 use SportsHelpers\Sport\Variant\Against as AgainstSportVariant;
 
@@ -70,8 +69,12 @@ class GamesValidator
     protected function validateFields(RoundNumber $roundNumber): void
     {
         foreach ($roundNumber->getGames(Order::ByPoule) as $game) {
-            if ($game->getField() === null) {
+            $field = $game->getField();
+            if ( $field === null) {
                 throw new Exception("there is at least one game without a field", E_ERROR);
+            }
+            if ($field->getCompetitionSport() !== $game->getCompetitionSport()) {
+                throw new Exception("game->field->sport should be equal to game->sport", E_ERROR);
             }
         }
     }

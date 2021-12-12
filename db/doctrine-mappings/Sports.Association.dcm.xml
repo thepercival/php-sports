@@ -1,16 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
-  <entity name="Sports\Association" table="associations" repository-class="Sports\Association\Repository">
-    <field name="name" column="name" type="string" length="30" nullable="false" unique="false"/>
-    <field name="description" column="description" type="string" length="50" nullable="true" unique="false"/>
-    <field name="countryCode" column="countryCode" type="string" length="2" nullable="true" unique="false"/>
-    <many-to-one field="parent" target-entity="Sports\Association" inversed-by="children">
-      <join-columns>
-        <join-column name="parentid" referenced-column-name="id" nullable="true" on-delete="CASCADE"/>
-      </join-columns>
-    </many-to-one>
-    <one-to-many field="children" target-entity="Sports\Association" mapped-by="parent" />
-    <one-to-many field="teams" target-entity="Sports\Team" mapped-by="association" />
-    <one-to-many field="leagues" target-entity="Sports\League" mapped-by="association" />
-  </entity>
+<doctrine-mapping xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                  xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
+                  xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+    <entity name="Sports\Association" table="associations" repository-class="Sports\Association\Repository">
+        <field name="name" column="name" type="string" length="30" nullable="false" unique="false"/>
+        <field name="description" column="description" type="string" length="50" nullable="true" unique="false"/>
+        <field name="countryCode" column="countryCode" type="string" length="2" nullable="true" unique="false"/>
+        <many-to-one field="parent" target-entity="Sports\Association" inversed-by="children">
+            <join-columns>
+                <join-column name="parentId" referenced-column-name="id" nullable="true" on-delete="CASCADE"/>
+            </join-columns>
+        </many-to-one>
+        <one-to-many field="children" target-entity="Sports\Association" mapped-by="parent"/>
+        <one-to-many field="teams" target-entity="Sports\Team" mapped-by="association"/>
+        <one-to-many field="leagues" target-entity="Sports\League" mapped-by="association"/>
+    </entity>
 </doctrine-mapping>

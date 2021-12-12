@@ -1,21 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
-  <entity name="Sports\Qualify\AgainstConfig" table="againstQualifyConfigs" repository-class="Sports\Qualify\AgainstConfig\Repository">
-    <field name="winPoints" column="winPoints" type="decimal" precision="3" scale="1" nullable="false" unique="false"/>
-    <field name="drawPoints" column="drawPoints" type="decimal" precision="3" scale="1" nullable="false" unique="false"/>
-    <field name="winPointsExt" column="winPointsExt" type="decimal" precision="3" scale="1" nullable="false" unique="false"/>
-    <field name="drawPointsExt" column="drawPointsExt" type="decimal" precision="3" scale="1" nullable="false" unique="false"/>
-    <field name="losePointsExt" column="losePointsExt" type="decimal" precision="3" scale="1" nullable="false" unique="false"/>
-    <field name="pointsCalculation" column="pointsCalculation" type="enum_PointsCalculation" nullable="false" unique="false"/>
-      <many-to-one field="competitionSport" target-entity="Sports\Competition\Sport">
-          <join-columns>
-              <join-column name="competitionSportId" referenced-column-name="id" nullable="true" on-delete="CASCADE"/>
-          </join-columns>
-      </many-to-one>
-      <many-to-one field="round" target-entity="Sports\Round" inversed-by="qualifyConfigs">
-          <join-columns>
-              <join-column name="roundId" referenced-column-name="id" nullable="true" on-delete="CASCADE"/>
-          </join-columns>
-      </many-to-one>
-  </entity>
+<doctrine-mapping xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                  xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
+                  xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+    <entity name="Sports\Qualify\AgainstConfig" table="againstQualifyConfigs"
+            repository-class="Sports\Qualify\AgainstConfig\Repository">
+        <field name="winPoints" column="winPoints" type="decimal" precision="3" scale="1" nullable="false"
+               unique="false"/>
+        <field name="drawPoints" column="drawPoints" type="decimal" precision="3" scale="1" nullable="false"
+               unique="false"/>
+        <field name="winPointsExt" column="winPointsExt" type="decimal" precision="3" scale="1" nullable="false"
+               unique="false"/>
+        <field name="drawPointsExt" column="drawPointsExt" type="decimal" precision="3" scale="1" nullable="false"
+               unique="false"/>
+        <field name="losePointsExt" column="losePointsExt" type="decimal" precision="3" scale="1" nullable="false"
+               unique="false"/>
+        <field name="pointsCalculation" column="pointsCalculation" type="enum_PointsCalculation" nullable="false"
+               unique="false"/>
+        <many-to-one field="competitionSport" target-entity="Sports\Competition\Sport">
+            <join-columns>
+                <join-column name="competitionSportId" referenced-column-name="id" nullable="true" on-delete="CASCADE"/>
+            </join-columns>
+        </many-to-one>
+        <many-to-one field="round" target-entity="Sports\Round" inversed-by="againstQualifyConfigs">
+            <join-columns>
+                <join-column name="roundId" referenced-column-name="id" nullable="true" on-delete="CASCADE"/>
+            </join-columns>
+        </many-to-one>
+    </entity>
 </doctrine-mapping>

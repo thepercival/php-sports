@@ -1,32 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
-<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
-  <entity name="Sports\Game\Participation" table="gameParticipations" repository-class="Sports\Game\Participation\Repository">
-    <field name="beginMinute" column="beginMinute" type="smallint" nullable="false" unique="false"/>
-    <field name="endMinute" column="startMinute" type="smallint" nullable="false" unique="false"/>
-    <many-to-one field="againstGamePlace" target-entity="Sports\Game\Place\Against" inversed-by="participations">
-      <join-columns>
-        <join-column name="againstGamePlaceId" referenced-column-name="id" nullable="false" on-delete="CASCADE"/>
-      </join-columns>
-    </many-to-one>
-    <many-to-one field="player" target-entity="Sports\Team\Player">
-      <join-columns>
-        <join-column name="playerId" referenced-column-name="id" nullable="false" on-delete="RESTRICT"/>
-      </join-columns>
-    </many-to-one>
-    <one-to-many field="cards" target-entity="Sports\Game\Event\Card" mapped-by="gameParticipation" orphan-removal="true">
-      <cascade>
-        <cascade-persist/>
-        <cascade-remove/>
-      </cascade>
-    </one-to-many>
-    <one-to-many field="goalsAndAssists" target-entity="Sports\Game\Event\Goal" mapped-by="gameParticipation" orphan-removal="true">
-      <cascade>
-        <cascade-persist/>
-        <cascade-remove/>
-      </cascade>
-    </one-to-many>
-    <unique-constraints>
-      <unique-constraint columns="againstGamePlaceId,playerId" name="number_v_idx"/>
-    </unique-constraints>
-  </entity>
+<doctrine-mapping xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                  xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
+                  xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+    <entity name="Sports\Game\Participation" table="gameParticipations"
+            repository-class="Sports\Game\Participation\Repository">
+        <field name="beginMinute" column="beginMinute" type="smallint" nullable="false" unique="false"/>
+        <field name="endMinute" column="startMinute" type="smallint" nullable="false" unique="false"/>
+        <many-to-one field="againstGamePlace" target-entity="Sports\Game\Place\Against" inversed-by="participations">
+            <join-columns>
+                <join-column name="againstGamePlaceId" referenced-column-name="id" nullable="false"
+                             on-delete="CASCADE"/>
+            </join-columns>
+        </many-to-one>
+        <many-to-one field="player" target-entity="Sports\Team\Player">
+            <join-columns>
+                <join-column name="playerId" referenced-column-name="id" nullable="false" on-delete="RESTRICT"/>
+            </join-columns>
+        </many-to-one>
+        <one-to-many field="cards" target-entity="Sports\Game\Event\Card" mapped-by="gameParticipation"
+                     orphan-removal="true">
+            <cascade>
+                <cascade-persist/>
+                <cascade-remove/>
+            </cascade>
+        </one-to-many>
+        <one-to-many field="goals" target-entity="Sports\Game\Event\Goal" mapped-by="gameParticipation"
+                     orphan-removal="true">
+            <cascade>
+                <cascade-persist/>
+                <cascade-remove/>
+            </cascade>
+        </one-to-many>
+        <one-to-many field="assists" target-entity="Sports\Game\Event\Goal" mapped-by="assistGameParticipation"
+                     orphan-removal="true">
+            <cascade>
+                <cascade-persist/>
+                <cascade-remove/>
+            </cascade>
+        </one-to-many>
+        <unique-constraints>
+            <unique-constraint columns="againstGamePlaceId,playerId" name="number_v_idx"/>
+        </unique-constraints>
+    </entity>
 </doctrine-mapping>
