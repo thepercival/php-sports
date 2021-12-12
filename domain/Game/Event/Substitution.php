@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Sports\Game\Event;
@@ -12,7 +13,7 @@ class Substitution extends Identifiable implements GameEvent
 {
     private GameParticipation $out;
     private GameParticipation $in;
-    
+
     public function __construct(private int $minute, GameParticipation $out, GameParticipation $in)
     {
         $this->out = $out;

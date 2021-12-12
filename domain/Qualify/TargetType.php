@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Sports\Qualify;
@@ -9,26 +10,27 @@ use Sports\Qualify\Target as QualifyTarget;
 
 class TargetType extends EnumDbType
 {
-    static public function getNameHelper(): string
+    public static function getNameHelper(): string
     {
         return 'enum_QualifyTarget';
     }
 
     public function convertToPHPValue($value, AbstractPlatform $platform)
     {
-        if( $value === QualifyTarget::Winners->value ) {
+        if ($value === QualifyTarget::Winners->value) {
             return QualifyTarget::Winners;
         }
-        if( $value === QualifyTarget::Losers->value ) {
+        if ($value === QualifyTarget::Losers->value) {
             return QualifyTarget::Losers;
         }
-        if( $value === QualifyTarget::Dropouts->value ) {
+        if ($value === QualifyTarget::Dropouts->value) {
             return QualifyTarget::Dropouts;
         }
         return null;
     }
 
-    public function getSQLDeclaration(array $column, AbstractPlatform $platform){
+    public function getSQLDeclaration(array $column, AbstractPlatform $platform)
+    {
         return 'varchar(1)';
     }
 }

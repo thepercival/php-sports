@@ -1,11 +1,12 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Sports\SerializationHandler\Qualify;
 
+use JMS\Serializer\Context;
 use JMS\Serializer\Handler\SubscribingHandlerInterface;
 use JMS\Serializer\JsonDeserializationVisitor;
-use JMS\Serializer\Context;
 use Sports\Qualify\Group as QualifyGroup;
 use Sports\Qualify\Target;
 use Sports\Round;
@@ -34,8 +35,7 @@ class GroupHandler extends Handler implements SubscribingHandlerInterface
         array $fieldValue,
         array $type,
         Context $context
-    ): QualifyGroup
-    {
+    ): QualifyGroup {
         if (!isset($fieldValue["parentRound"]) || !isset($fieldValue["nextRoundNumber"])) {
             throw new \Exception('malformd json => qualifygroup', E_ERROR);
         }
@@ -47,14 +47,16 @@ class GroupHandler extends Handler implements SubscribingHandlerInterface
             $parentRound,
             Target::from($fieldValue["target"]),
             $nextRoundNumber,
-            $fieldValue["number"]);
+            $fieldValue["number"]
+        );
         //$fieldValue["childRound"] = $qualifyGroup->getChildRound();
         $fieldValue["childRound"]["parentQualifyGroup"] = $qualifyGroup;
         $this->getProperty(
             $visitor,
             $fieldValue,
             "childRound",
-            Round::class);
+            Round::class
+        );
 
         return $qualifyGroup;
     }

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Sports;
@@ -30,7 +31,7 @@ class Poule extends Identifiable
 
     protected string|null $structureLocation = null;
 
-    const MAX_LENGTH_NAME = 10;
+    public const MAX_LENGTH_NAME = 10;
 
     public function __construct(protected Round $round, int $number = null)
     {
@@ -87,7 +88,7 @@ class Poule extends Identifiable
 
     public function getStructureLocation(): string
     {
-        if( $this->structureLocation === null ) {
+        if ($this->structureLocation === null) {
             $this->structureLocation = $this->round->getStructurePathNode() . '.' . $this->getNumber();
         }
         return $this->structureLocation;

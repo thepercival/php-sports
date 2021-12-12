@@ -1,11 +1,11 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Sports\Ranking;
 
 use Closure;
 use Sports\Place\SportPerformance;
-use Sports\Ranking\Rule as RankingRule;
 
 class FunctionMapCreator
 {

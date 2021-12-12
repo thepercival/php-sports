@@ -17,7 +17,7 @@ class Together extends Score
         if ($number === null) {
             $number = $gamePlace->getScores()->count();
         }
-        parent::__construct($phase, $number );
+        parent::__construct($phase, $number);
     }
 
     public function getGamePlace(): TogetherGamePlace
@@ -25,7 +25,8 @@ class Together extends Score
         return $this->gamePlace;
     }
 
-    public function getScore(): int {
+    public function getScore(): int
+    {
         return $this->score;
     }
 

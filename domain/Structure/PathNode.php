@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Sports\Structure;
@@ -23,7 +24,7 @@ class PathNode implements \Stringable
 
     public function __toString()
     {
-        if( $this->previous === null ) {
+        if ($this->previous === null) {
             return (string)$this->qualifyGroupNumber;
         }
         $qualifyTarget = ($this->qualifyTarget !== null ? $this->qualifyTarget->value : '');

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Sports;
@@ -20,7 +21,8 @@ class Service
         return new Structure\Repository(
             $this->getEntityManager(),
             new HorizontalPouleCreator(),
-            new QualifyRuleCreator());
+            new QualifyRuleCreator()
+        );
     }
 
     /**

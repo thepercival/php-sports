@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Sports;
@@ -19,14 +20,14 @@ class Team extends Identifiable
      */
     protected Collection $players;
 
-    const MIN_LENGTH_NAME = 2;
-    const MAX_LENGTH_NAME = 30;
-    const MAX_LENGTH_ABBREVIATION = 3;
+    public const MIN_LENGTH_NAME = 2;
+    public const MAX_LENGTH_NAME = 30;
+    public const MAX_LENGTH_ABBREVIATION = 3;
 
     // Every team should must have a club, a association or a country
-    const TYPE_ASSOCIATION = 1;
-    const TYPE_COUNTRY = 2;
-    const TYPE_CLUB = 4;
+    public const TYPE_ASSOCIATION = 1;
+    public const TYPE_COUNTRY = 2;
+    public const TYPE_CLUB = 4;
 
     public function __construct(Association $association, string $name)
     {

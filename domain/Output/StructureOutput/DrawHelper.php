@@ -1,26 +1,27 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Sports\Output\StructureOutput;
 
+use Sports\NameService;
+use Sports\Output\Coordinate;
 use Sports\Output\Grid\Align;
 use Sports\Output\Grid\Drawer;
-use Sports\Output\Coordinate;
-use Sports\NameService;
 use Sports\Poule;
-use Sports\Round;
-use Sports\Structure;
-use Sports\Round\Number as RoundNumber;
 use Sports\Qualify\Group as QualifyGroup;
-use Sports\Qualify\Target as QualifyTarget;
 use Sports\Qualify\Rule\Multiple as MultipleQualifyRule;
 use Sports\Qualify\Rule\Single as SingleQualifyRule;
+use Sports\Qualify\Target as QualifyTarget;
+use Sports\Round;
+use Sports\Round\Number as RoundNumber;
+use Sports\Structure;
 use SportsHelpers\Output\Color;
 
 final class DrawHelper
 {
     use Color;
-    
+
     protected NameService $nameService;
     protected RangeCalculator $rangeCalculator;
 
@@ -62,7 +63,7 @@ final class DrawHelper
         if ($qualifyRulesOrigin !== null) {
             $this->drawQualifyRules($round, $qualifyRulesOrigin);
         }
-        
+
         $nextRoundNumber = $round->getNumber()->getNext();
         if ($nextRoundNumber !== null) {
             $nextRoundNumberHeight = $this->rangeCalculator->getRoundNumberHeight($nextRoundNumber);
@@ -208,7 +209,8 @@ final class DrawHelper
         }
     }
 
-    protected function getQualifyRuleString(MultipleQualifyRule | SingleQualifyRule $qualifyRule): string {
+    protected function getQualifyRuleString(MultipleQualifyRule | SingleQualifyRule $qualifyRule): string
+    {
         return ($qualifyRule instanceof MultipleQualifyRule) ? 'M' : 'S';
     }
 

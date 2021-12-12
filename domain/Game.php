@@ -1,16 +1,16 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Sports;
 
 use DateTimeImmutable;
-
 use League\Period\Period;
 use Sports\Competition\Field;
 use Sports\Competition\Referee;
+use Sports\Competition\Sport as CompetitionSport;
 use Sports\Planning\Config as PlanningConfig;
 use Sports\Score\Config as ScoreConfig;
-use Sports\Competition\Sport as CompetitionSport;
 use SportsHelpers\Identifiable;
 
 abstract class Game extends Identifiable

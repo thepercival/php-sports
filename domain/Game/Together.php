@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Sports\Game;
@@ -24,8 +25,7 @@ class Together extends GameBase
         int $batchNr,
         DateTimeImmutable $startDateTime,
         CompetitionSport $competitionSport
-    )
-    {
+    ) {
         parent::__construct($poule, $batchNr, $startDateTime, $competitionSport);
         $this->places = new ArrayCollection();
         if (!$poule->getTogetherGames()->contains($this)) {

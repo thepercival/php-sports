@@ -1,19 +1,19 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Sports\Planning;
 
 use Sports\Round\Number as RoundNumber;
-use SportsHelpers\GameMode;
 use SportsHelpers\Identifiable;
 use SportsHelpers\SelfReferee;
 use SportsPlanning\Combinations\GamePlaceStrategy;
 
 class Config extends Identifiable
 {
-    const DEFAULTEXTENSION = false;
-    const DEFAULTENABLETIME = true;
-    const DEFAULTGAMEAMOUNT = 1;
+    public const DEFAULTEXTENSION = false;
+    public const DEFAULTENABLETIME = true;
+    public const DEFAULTGAMEAMOUNT = 1;
 
     public function __construct(
         protected RoundNumber $roundNumber,

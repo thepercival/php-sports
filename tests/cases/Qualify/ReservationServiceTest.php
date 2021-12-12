@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Sports\Tests\Qualify;
@@ -18,7 +19,9 @@ use SportsHelpers\PouleStructure;
 
 final class ReservationServiceTest extends TestCase
 {
-    use CompetitionCreator, SetScores, StructureEditorCreator;
+    use CompetitionCreator;
+    use SetScores;
+    use StructureEditorCreator;
 
     public function testFreeAndReserve(): void
     {
@@ -33,7 +36,7 @@ final class ReservationServiceTest extends TestCase
         $winnersRound = $rootRound->getChild(QualifyTarget::Winners, 1);
         self::assertNotNull($winnersRound);
 
-        (new GamesCreator())->createStructureGames( $structure );
+        (new GamesCreator())->createStructureGames($structure);
 
         $pouleOne = $rootRound->getPoule(1);
 
@@ -69,7 +72,7 @@ final class ReservationServiceTest extends TestCase
 
         $winnersRound = $structureEditor->addChildRound($rootRound, QualifyTarget::Winners, [2, 2, 2]);
 
-        (new GamesCreator())->createStructureGames( $structure );
+        (new GamesCreator())->createStructureGames($structure);
 
         $pouleOne = $rootRound->getPoule(1);
         $pouleTwo = $rootRound->getPoule(2);
@@ -115,14 +118,16 @@ final class ReservationServiceTest extends TestCase
         $placeLocationOne = $resService->getFreeAndLeastAvailabe(
             1,
             $rootRound,
-            array_values($horPoule->getPlaces()->toArray()));
+            array_values($horPoule->getPlaces()->toArray())
+        );
         self::assertSame($placeLocationOne->getPouleNr(), $pouleOne->getNumber());
 
         // two available, three least available
         $placeLocationThree = $resService->getFreeAndLeastAvailabe(
             3,
             $rootRound,
-            array_values($horPoule->getPlaces()->toArray()));
+            array_values($horPoule->getPlaces()->toArray())
+        );
         self::assertSame($placeLocationThree->getPouleNr(), $pouleTwo->getNumber());
     }
 
@@ -136,7 +141,7 @@ final class ReservationServiceTest extends TestCase
 
         $winnersRound = $structureEditor->addChildRound($rootRound, QualifyTarget::Winners, [4]);
 
-        (new GamesCreator())->createStructureGames( $structure );
+        (new GamesCreator())->createStructureGames($structure);
 
         $pouleOne = $rootRound->getPoule(1);
         $pouleTwo = $rootRound->getPoule(2);
@@ -157,6 +162,6 @@ final class ReservationServiceTest extends TestCase
 
         $winnersPoule = $winnersRound->getPoule(1);
 
-        self::assertNull($winnersPoule->getPlace(4)->getQualifiedPlace() );
+        self::assertNull($winnersPoule->getPlace(4)->getQualifiedPlace());
     }
 }

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Sports;
@@ -26,9 +27,9 @@ class Association extends Identifiable
      */
     protected Collection $teams;
 
-    const MIN_LENGTH_NAME = 2;
-    const MAX_LENGTH_NAME = 30;
-    const MAX_LENGTH_DESCRIPTION = 50;
+    public const MIN_LENGTH_NAME = 2;
+    public const MAX_LENGTH_NAME = 30;
+    public const MAX_LENGTH_DESCRIPTION = 50;
 
     public function __construct(string $name)
     {

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Sports\Priority;
@@ -63,7 +64,7 @@ class Service
     {
         $foundPrioritizables = array_filter(
             $this->prioritizables,
-            function (Prioritizable $prioritizable) use ($priority) : bool {
+            function (Prioritizable $prioritizable) use ($priority): bool {
                 return $prioritizable->getPriority() === $priority;
             }
         );

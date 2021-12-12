@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Sports\Ranking\FunctionMapCreator;
@@ -41,7 +42,7 @@ class Against extends BaseFunctionMapCreator
             }
             return $bestSportPerformances;
         };
-        $this->map[Rule::BestUnitDifference->name] = function (array $sportPerformances) use ($bestDifference) : array {
+        $this->map[Rule::BestUnitDifference->name] = function (array $sportPerformances) use ($bestDifference): array {
             /** @var list<SportPerformance> $sportPerformances */
             return $bestDifference($sportPerformances, false);
         };
@@ -49,7 +50,7 @@ class Against extends BaseFunctionMapCreator
             /** @var list<SportPerformance> $sportPerformances */
             return $bestDifference($sportPerformances, true);
         };
-        $this->map[Rule::BestAmongEachOther->name] = function (array $sportPerformances) : array {
+        $this->map[Rule::BestAmongEachOther->name] = function (array $sportPerformances): array {
             /** @var list<SportPerformance> $sportPerformances */
             $places = array_map(
                 function (SportPerformance $sportPerformance): Place {

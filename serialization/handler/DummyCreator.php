@@ -1,13 +1,14 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Sports\SerializationHandler;
 
 use Sports\Association;
 use Sports\Competition;
-use Sports\Round\Number as RoundNumber;
 use Sports\Competition\Sport as CompetitionSport;
 use Sports\League;
+use Sports\Round\Number as RoundNumber;
 use Sports\Season;
 use Sports\Sport;
 use SportsHelpers\GameMode;

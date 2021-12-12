@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Sports;
@@ -9,10 +10,10 @@ class State // extends \SplEnum
 
     // const __default = self::Created;
 
-    const Created = 1;
-    const InProgress = 2;
-    const Finished = 4;
-    const Canceled = 8;
+    public const Created = 1;
+    public const InProgress = 2;
+    public const Finished = 4;
+    public const Canceled = 8;
 
     public function __construct(int $state)
     {

@@ -1,10 +1,11 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Sports\Score;
 
-use SportsHelpers\Against\Side as AgainstSide;
 use SportsHelpers\Against\Result as AgainstResult;
+use SportsHelpers\Against\Side as AgainstSide;
 
 trait AgainstTrait
 {

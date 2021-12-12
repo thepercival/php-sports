@@ -1,16 +1,17 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Sports\Availability;
 
 use Exception;
 use Sports\Competition;
-use Sports\Competitor;
 use Sports\Competition\Field;
-use Sports\Priority\Prioritizable;
 use Sports\Competition\Referee;
 use Sports\Competition\Sport as CompetitionSport;
+use Sports\Competitor;
 use Sports\Place\LocationInterface as PlaceLocationInterface;
+use Sports\Priority\Prioritizable;
 
 class Checker
 {

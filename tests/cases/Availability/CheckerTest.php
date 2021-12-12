@@ -1,11 +1,11 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Sports\Tests\Availability;
 
 use PHPUnit\Framework\TestCase;
 use Sports\Availability\Checker as AvailabilityChecker;
-use Sports\Competition;
 use Sports\TestHelper\CompetitionCreator;
 
 class CheckerTest extends TestCase

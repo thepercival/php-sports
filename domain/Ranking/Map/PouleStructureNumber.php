@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Sports\Ranking\Map;
@@ -30,7 +31,7 @@ class PouleStructureNumber
         $this->map = [];
 
         $pouleNr = 1;
-        $setPouleStructureNumbers = function (RoundNumber $roundNumber) use (&$pouleNr, &$setPouleStructureNumbers) : void {
+        $setPouleStructureNumbers = function (RoundNumber $roundNumber) use (&$pouleNr, &$setPouleStructureNumbers): void {
             /** @var \Closure $setPouleStructureNumbers */
             $rounds = $roundNumber->getRounds()->toArray();
             uasort($rounds, function (Round $roundA, Round $roundB): int {

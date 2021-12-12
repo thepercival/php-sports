@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Sports\Ranking\Item;
@@ -41,7 +42,8 @@ class Round
         return $this->cumulativeRank;
     }
 
-    public function getCumulativePerformance(): PlacePerformance {
+    public function getCumulativePerformance(): PlacePerformance
+    {
         return $this->cumulativePerformance;
     }
 
@@ -79,7 +81,8 @@ class Round
         return reset($sportItems);
     }
 
-    public function compareCumulativePerformances(RoundRankingItem $roundRankingItem): float {
+    public function compareCumulativePerformances(RoundRankingItem $roundRankingItem): float
+    {
         $otherPerformance = $roundRankingItem->getCumulativePerformance();
 
         $cmpPoints = $otherPerformance->getPoints() - $this->cumulativePerformance->getPoints();

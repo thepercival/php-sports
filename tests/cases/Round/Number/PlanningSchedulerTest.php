@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Sports\Tests\Round\Number;
@@ -13,13 +14,14 @@ use Sports\TestHelper\CompetitionCreator;
 use Sports\TestHelper\GamesCreator;
 use Sports\Planning\Config\Service as PlanningConfigService;
 use Sports\Game\Order as GameOrder;
-use \Exception;
+use Exception;
 use Sports\TestHelper\StructureEditorCreator;
 use SportsHelpers\SportRange;
 
 final class PlanningSchedulerTest extends TestCase
 {
-    use CompetitionCreator, StructureEditorCreator;
+    use CompetitionCreator;
+    use StructureEditorCreator;
 
     public function testValidDateTimes(): void
     {

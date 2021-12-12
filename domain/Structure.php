@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Sports;
@@ -24,7 +25,7 @@ class Structure
 
     public function getLastRoundNumber(): RoundNumber
     {
-        $getLastRoundNumber = function (RoundNumber $roundNumber) use (&$getLastRoundNumber) : RoundNumber {
+        $getLastRoundNumber = function (RoundNumber $roundNumber) use (&$getLastRoundNumber): RoundNumber {
             /** @var Closure(RoundNumber):RoundNumber $getLastRoundNumber */
             $next = $roundNumber->getNext();
             if ($next === null) {

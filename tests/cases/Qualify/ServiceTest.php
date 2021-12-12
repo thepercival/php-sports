@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Sports\Tests\Qualify;
@@ -19,7 +20,9 @@ use SportsHelpers\PouleStructure;
 
 class ServiceTest extends TestCase
 {
-    use CompetitionCreator, SetScores, StructureEditorCreator;
+    use CompetitionCreator;
+    use SetScores;
+    use StructureEditorCreator;
 
     public function test2RoundNumbers5(): void
     {

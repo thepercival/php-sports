@@ -1,6 +1,5 @@
 <?php
 
-
 namespace Sports\SerializationHandler\Round;
 
 use JMS\Serializer\EventDispatcher\EventSubscriberInterface;

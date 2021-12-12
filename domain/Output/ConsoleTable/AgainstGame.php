@@ -119,7 +119,7 @@ class AgainstGame
         $participations = [];
         foreach ($sideGamePlaces as $sideGamePlace) {
             foreach ($sideGamePlace->getParticipations() as $sideGameParticipation) {
-                if( $sideGameParticipation->isStarting()) {
+                if ($sideGameParticipation->isStarting()) {
                     $participations[] = $sideGameParticipation;
                 }
             }

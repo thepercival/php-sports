@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Sports;
@@ -21,7 +22,7 @@ class Place extends PlaceLocation
     protected int $penaltyPoints;
     protected Place|null $qualifiedPlace = null;
 
-    const MAX_LENGTH_NAME = 10;
+    public const MAX_LENGTH_NAME = 10;
 
     public function __construct(protected Poule $poule, int $number = null)
     {

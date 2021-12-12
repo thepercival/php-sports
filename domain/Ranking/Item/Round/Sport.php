@@ -30,7 +30,8 @@ class Sport
         return $this->getPerformance()->getCompetitionSport();
     }
 
-    public function getPlaceLocation(): PlaceLocation {
+    public function getPlaceLocation(): PlaceLocation
+    {
         return $this->performance->getPlaceLocation();
     }
 

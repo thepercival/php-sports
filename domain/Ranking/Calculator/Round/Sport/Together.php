@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Sports\Ranking\Calculator\Round\Sport;
@@ -37,7 +38,8 @@ class Together extends SportRoundRankingCalculator
         return $this->getItems(
             $poule->getRound(),
             array_values($poule->getPlaces()->toArray()),
-            array_values($poule->getTogetherGames()->toArray()));
+            array_values($poule->getTogetherGames()->toArray())
+        );
     }
 
     protected function getCalculator(Round $round): PerformanceCalculator

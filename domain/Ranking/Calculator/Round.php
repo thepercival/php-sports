@@ -63,7 +63,7 @@ class Round
     public function getItemsForHorizontalPoule(HorizontalPoule $horPoule): array
     {
         $rankingItems = [];
-        foreach( $horPoule->getPlaces() as $place) {
+        foreach ($horPoule->getPlaces() as $place) {
             $pouleRannkingItems = $this->getItemsForPoule($place->getPoule());
             $pouleRankingItem = $this->getItemByRank($pouleRannkingItems, $place->getPlaceNr());
             if ($pouleRankingItem === null) {

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Sports\SerializationHandler;
@@ -35,7 +36,8 @@ class Handler
         JsonDeserializationVisitor $visitor,
         array $fieldValue,
         string $property,
-        string $className): mixed
+        string $className
+    ): mixed
     {
         if (!isset($fieldValue[$property])) {
             return null;

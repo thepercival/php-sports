@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Sports\Tests;
@@ -19,7 +20,8 @@ use Sports\TestHelper\StructureEditorCreator;
 
 final class NameServiceTest extends TestCase
 {
-    use CompetitionCreator, StructureEditorCreator;
+    use CompetitionCreator;
+    use StructureEditorCreator;
 
     public function testQualifyTargetDescription(): void
     {
@@ -210,10 +212,10 @@ final class NameServiceTest extends TestCase
 
             $lastPlace = $rootRound->getFirstPlace(QualifyTarget::Losers);
 
-            self::assertSame('C3',$nameService->getPlaceFromName($lastPlace, false, false));
-            self::assertSame('C3',$nameService->getPlaceFromName($lastPlace, true, false));
-            self::assertSame('poule C nr. 3',$nameService->getPlaceFromName($lastPlace, false, true));
-            self::assertSame('poule C nr. 3',$nameService->getPlaceFromName($lastPlace, true, true));
+            self::assertSame('C3', $nameService->getPlaceFromName($lastPlace, false, false));
+            self::assertSame('C3', $nameService->getPlaceFromName($lastPlace, true, false));
+            self::assertSame('poule C nr. 3', $nameService->getPlaceFromName($lastPlace, false, true));
+            self::assertSame('poule C nr. 3', $nameService->getPlaceFromName($lastPlace, true, true));
 
 
             $winnersLastPlace = $winnersRound->getFirstPoule()->getPlace(2);

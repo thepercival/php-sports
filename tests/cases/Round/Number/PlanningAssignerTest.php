@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Sports\Tests\Round\Number;
@@ -13,7 +14,8 @@ use SportsHelpers\SelfReferee;
 
 final class PlanningAssignerTest extends TestCase
 {
-    use CompetitionCreator, StructureEditorCreator;
+    use CompetitionCreator;
+    use StructureEditorCreator;
 
     public function testValid(): void
     {

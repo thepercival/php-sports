@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Sports\SerializationHandler;
@@ -8,11 +9,10 @@ use Sports\SerializationHandler\Round\NumberHandler as RoundNumberHandler;
 use Sports\SerializationHandler\Qualify\GroupHandler as QualifyGroupHandler;
 use Sports\SerializationHandler\Planning\ConfigHandler as PlanningConfigHandler;
 
-
 class Subscriber
 {
-    public function __construct(protected DummyCreator $dummyCreator) {
-
+    public function __construct(protected DummyCreator $dummyCreator)
+    {
     }
 
     public function subscribeHandlers(HandlerRegistry $registry): void

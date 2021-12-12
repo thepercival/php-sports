@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Sports\Output\Grid;
@@ -7,9 +8,8 @@ use SportsHelpers\Output\Color;
 
 final class Cell implements \Stringable
 {
-    protected int $color = 0;
-
     use Color;
+    protected int $color = 0;
 
     public function __construct(protected string $value)
     {

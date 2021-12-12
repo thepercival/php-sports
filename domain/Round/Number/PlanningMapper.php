@@ -182,7 +182,8 @@ class PlanningMapper
                     return ($competitionSport->getFields()->count() === $sport->getFields()->count()
                         || $competitionSport->getFields()->count() > $maxNrOfFields)
                     && $planningSportVariant == $competitionSportVariant;
-            });
+                }
+            );
 
             $filteredCompetitionSport = reset($filtered);
             if ($filteredCompetitionSport === false) {
@@ -231,7 +232,7 @@ class PlanningMapper
     protected function getCompetitionSportsFieldMap(Competition $competition): array
     {
         $competitionSportsFieldMap = [];
-        foreach( $this->competitionSportMap as $inputSportNumber => $competitionSport ) {
+        foreach ($this->competitionSportMap as $inputSportNumber => $competitionSport) {
             $competitionSportsFieldMap[$inputSportNumber] = array_values($competitionSport->getFields()->toArray());
         }
         return $competitionSportsFieldMap;
@@ -251,7 +252,7 @@ class PlanningMapper
             if ($planningReferee === null) {
                 continue;
             }
-            if( isset($this->refereeMap[$planningReferee->getUniqueIndex()]) ) {
+            if (isset($this->refereeMap[$planningReferee->getUniqueIndex()])) {
                 continue;
             }
             $this->refereeMap[$planningReferee->getUniqueIndex()] = array_shift($referees);

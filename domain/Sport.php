@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Sports;
@@ -11,13 +12,13 @@ use SportsHelpers\Sport\PersistVariant as SportPersistVariant;
 
 class Sport extends Identifiable
 {
-    const MIN_LENGTH_NAME = 3;
-    const MAX_LENGTH_NAME = 30;
-    const MIN_LENGTH_UNITNAME = 2;
-    const MAX_LENGTH_UNITNAME = 20;
+    public const MIN_LENGTH_NAME = 3;
+    public const MAX_LENGTH_NAME = 30;
+    public const MIN_LENGTH_UNITNAME = 2;
+    public const MAX_LENGTH_UNITNAME = 20;
 
-    const WARNING = 1;
-    const SENDOFF = 2;
+    public const WARNING = 1;
+    public const SENDOFF = 2;
 
     private string $name;
     private int $customId = 0;
@@ -70,7 +71,8 @@ class Sport extends Identifiable
         $this->customId = $id;
     }
 
-    public function createAgainstPersistVariant(int $nrOfH2H, int|null $nrOfSidePlaces = null ): SportPersistVariant {
+    public function createAgainstPersistVariant(int $nrOfH2H, int|null $nrOfSidePlaces = null): SportPersistVariant
+    {
         return new SportPersistVariant(
             GameMode::Against,
             $nrOfSidePlaces !== null ? $nrOfSidePlaces : $this->getDefaultNrOfSidePlaces(),

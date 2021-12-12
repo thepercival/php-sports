@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Sports\Output\ConsoleTable;
@@ -11,12 +12,13 @@ class Sports
     /**
      * @param list<Sport> $sports
      */
-    public function display( array $sports ): void {
+    public function display(array $sports): void
+    {
         $table = new ConsoleTable();
         $table->setHeaders(array('id', 'name'));
-        foreach( $sports as $sport ) {
+        foreach ($sports as $sport) {
             $row = array( $sport->getId(), $sport->getName() );
-            $table->addRow( $row );
+            $table->addRow($row);
         }
         $table->display();
     }

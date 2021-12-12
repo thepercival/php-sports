@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Sports\SerializationHandler;
@@ -12,7 +13,8 @@ use Sports\Structure;
 
 class StructureHandler extends Handler implements SubscribingHandlerInterface
 {
-    public function __construct(protected DummyCreator $dummyCreator) {
+    public function __construct(protected DummyCreator $dummyCreator)
+    {
     }
 
     /**
@@ -40,15 +42,17 @@ class StructureHandler extends Handler implements SubscribingHandlerInterface
             $visitor,
             $fieldValue,
             "firstRoundNumber",
-            RoundNumber::class);
+            RoundNumber::class
+        );
         $fieldValue["rootRound"]["roundNumber"] = $firstRoundNumber;
         $rootRound = $this->getProperty(
             $visitor,
             $fieldValue,
             "rootRound",
-            Round::class);
+            Round::class
+        );
 
-        return new Structure($firstRoundNumber,$rootRound);
+        return new Structure($firstRoundNumber, $rootRound);
     }
 
 

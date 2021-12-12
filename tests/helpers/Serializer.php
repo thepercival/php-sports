@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Sports\TestHelper;
@@ -16,7 +17,8 @@ use Sports\SerializationHandler\RoundHandler as RoundSerializationHandler;
 use Sports\SerializationHandler\Round\NumberHandler as RoundNumberSerializationHandler;
 use Sports\SerializationHandler\StructureHandler as StructureSerializationHandler;
 
-class Serializer {
+class Serializer
+{
     public function getSerializer(): JMSSerializer
     {
         $apiVersion = "2";
@@ -55,4 +57,3 @@ class Serializer {
         return $serializerBuilder->build();
     }
 }
-

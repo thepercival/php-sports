@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Sports\Team;
@@ -14,10 +15,10 @@ abstract class Role extends Identifiable
     private DateTimeImmutable $startDateTime;
     private DateTimeImmutable $endDateTime;
 
-    const MIN_LENGTH_NAME = 2;
-    const MAX_LENGTH_NAME = 30;
-    const MAX_LENGTH_ABBREVIATION = 3;
-    const MAX_LENGTH_IMAGEURL = 150;
+    public const MIN_LENGTH_NAME = 2;
+    public const MAX_LENGTH_NAME = 30;
+    public const MAX_LENGTH_ABBREVIATION = 3;
+    public const MAX_LENGTH_IMAGEURL = 150;
 
     public function __construct(protected Team $team, protected Person $person, Period $period)
     {
@@ -34,7 +35,7 @@ abstract class Role extends Identifiable
     {
         return $this->person;
     }
-    
+
     public function getStartDateTime(): DateTimeImmutable
     {
         return $this->startDateTime;

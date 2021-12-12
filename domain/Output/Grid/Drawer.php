@@ -1,11 +1,12 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Sports\Output\Grid;
 
-use SportsHelpers\Output\Color;
 use Sports\Output\Coordinate;
 use Sports\Output\Grid;
+use SportsHelpers\Output\Color;
 
 final class Drawer
 {
@@ -59,7 +60,7 @@ final class Drawer
     {
         return $this->drawVertAwayFromOrigin($coordinate, $this->initString($length, $value), $color);
     }
-    
+
     public function drawVertToOrigin(Coordinate $coordinate, string $value, int $color = 0): Coordinate
     {
         $valueAsArray = str_split($value);
@@ -95,12 +96,13 @@ final class Drawer
         return $this->drawToRight($coordinate, $text, $color);
     }
 
-    public function drawRectangle(Coordinate $origin, Coordinate $size): void {
+    public function drawRectangle(Coordinate $origin, Coordinate $size): void
+    {
         $topRight = $this->drawLineToRight($origin, $size->getX());
         $bottomRight = $this->drawVertLineAwayFromOrigin($topRight, $size->getY());
         $bottomLeft = $this->drawLineToLeft($bottomRight->decrementX(), $size->getX() - 1);
         $this->drawVertLineToOrigin($bottomLeft, $size->getY());
-}
+    }
 
     public function initString(int $length, string $char = ' '): string
     {

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Sports\Tests\Ranking\Calculator;
@@ -18,7 +19,9 @@ use Sports\TestHelper\StructureEditorCreator;
 
 class RoundTest extends TestCase
 {
-    use CompetitionCreator, SetScores, StructureEditorCreator;
+    use CompetitionCreator;
+    use SetScores;
+    use StructureEditorCreator;
 
     public function testMultipleEqualRanked(): void
     {

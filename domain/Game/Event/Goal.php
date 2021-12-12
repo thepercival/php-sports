@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Sports\Game\Event;
@@ -17,7 +18,7 @@ class Goal extends Identifiable implements GameEvent
     private bool $own;
     private bool $penalty;
     private GameParticipation|null $assistGameParticipation = null;
-    
+
     public function __construct(private int $minute, private GameParticipation $gameParticipation)
     {
         if (!$gameParticipation->getGoals()->contains($this)) {

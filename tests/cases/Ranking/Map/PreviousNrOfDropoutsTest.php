@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Sports\Tests\Ranking\Map;
@@ -11,7 +12,8 @@ use Sports\Ranking\Map\PreviousNrOfDropouts as PreviousNrOfDropoutsMap;
 
 final class PreviousNrOfDropoutsTest extends TestCase
 {
-    use CompetitionCreator, StructureEditorCreator;
+    use CompetitionCreator;
+    use StructureEditorCreator;
 
     // [7,7] => W[5],L[5] => W[2],L[2],W[2],L[2]
     public function testSimple(): void

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Sports\Round\Number;
@@ -70,7 +71,7 @@ class GamesValidator
     {
         foreach ($roundNumber->getGames(Order::ByPoule) as $game) {
             $field = $game->getField();
-            if ( $field === null) {
+            if ($field === null) {
                 throw new Exception("there is at least one game without a field", E_ERROR);
             }
             if ($field->getCompetitionSport() !== $game->getCompetitionSport()) {

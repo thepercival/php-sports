@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Sports\Structure;
@@ -31,9 +32,11 @@ class Copier
     public function __construct(
         private HorizontalPouleCreator $horPouleCreator,
         private QualifyRuleCreator $qualifyRuleCreator
-    ){}
+    ) {
+    }
 
-    public function setSportMappingPropertyToName(): void {
+    public function setSportMappingPropertyToName(): void
+    {
         $this->sportMappingProperty = self::SPORT_MAPPING_PROP_NAME;
     }
 

@@ -1,15 +1,14 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Sports\SerializationHandler\Planning;
 
-use Sports\Planning\Config as PlanningConfig;
+use JMS\Serializer\Context;
 use JMS\Serializer\Handler\SubscribingHandlerInterface;
 use JMS\Serializer\JsonDeserializationVisitor;
-use JMS\Serializer\Context;
+use Sports\Planning\Config as PlanningConfig;
 use Sports\Planning\EditMode;
-use Sports\Qualify\Group as QualifyGroup;
-use Sports\Round;
 use Sports\Round\Number as RoundNumber;
 use Sports\SerializationHandler\DummyCreator;
 use Sports\SerializationHandler\Handler;
@@ -19,7 +18,8 @@ use SportsPlanning\Combinations\GamePlaceStrategy;
 
 class ConfigHandler extends Handler implements SubscribingHandlerInterface
 {
-    public function __construct(protected DummyCreator $dummyCreator) {
+    public function __construct(protected DummyCreator $dummyCreator)
+    {
     }
 
     /**
@@ -42,8 +42,7 @@ class ConfigHandler extends Handler implements SubscribingHandlerInterface
         array $fieldValue,
         array $type,
         Context $context
-    ): PlanningConfig
-    {
+    ): PlanningConfig {
         if (!isset($fieldValue["roundNumber"])) {
             $fieldValue["roundNumber"] = $this->dummyCreator->createRoundNumber();
         }

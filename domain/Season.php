@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Sports;
@@ -19,8 +20,8 @@ class Season extends Identifiable
      */
     private Collection $competitions;
 
-    const MIN_LENGTH_NAME = 2;
-    const MAX_LENGTH_NAME = 9;
+    public const MIN_LENGTH_NAME = 2;
+    public const MAX_LENGTH_NAME = 9;
 
     public function __construct(string $name, Period $period)
     {

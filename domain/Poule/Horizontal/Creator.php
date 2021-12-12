@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Sports\Poule\Horizontal;
@@ -82,7 +83,7 @@ class Creator
             $places = array_merge($places, $poule->getPlaces()->toArray());
         }
         uasort($places, function (Place $placeA, Place $placeB): int {
-            if($placeA->getPlaceNr() === $placeB->getPlaceNr()) {
+            if ($placeA->getPlaceNr() === $placeB->getPlaceNr()) {
                 return $placeA->getPouleNr() - $placeB->getPouleNr();
             }
             return $placeA->getPlaceNr() - $placeB->getPlaceNr();

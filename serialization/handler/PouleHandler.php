@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Sports\SerializationHandler;
@@ -21,7 +22,8 @@ use Sports\Qualify\AgainstConfig as AgainstQualifyConfig;
 
 class PouleHandler extends Handler implements SubscribingHandlerInterface
 {
-    public function __construct(protected DummyCreator $dummyCreator) {
+    public function __construct(protected DummyCreator $dummyCreator)
+    {
     }
 
     /**
@@ -44,8 +46,7 @@ class PouleHandler extends Handler implements SubscribingHandlerInterface
         array $fieldValue,
         array $type,
         Context $context
-    ): Poule
-    {
+    ): Poule {
         if (!isset($fieldValue["round"])) {
             throw new \Exception('malformd json => poule', E_ERROR);
         }
@@ -78,8 +79,7 @@ class PouleHandler extends Handler implements SubscribingHandlerInterface
         CompetitionSport $competitionSport,
         Round $round,
         ScoreConfig $previous = null
-    ): ScoreConfig
-    {
+    ): ScoreConfig {
         $config = new ScoreConfig(
             $competitionSport,
             $round,
@@ -104,8 +104,7 @@ class PouleHandler extends Handler implements SubscribingHandlerInterface
         array $arrConfig,
         CompetitionSport $competitionSport,
         Round $round
-    ): AgainstQualifyConfig
-    {
+    ): AgainstQualifyConfig {
         $config = new AgainstQualifyConfig($competitionSport, $round, $arrConfig["pointsCalculation"]);
         $config->setWinPoints($arrConfig["winPoints"]);
         $config->setWinPointsExt($arrConfig["winPointsExt"]);

@@ -1,35 +1,36 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Sports\Sport;
 
 abstract class Custom
 {
-    const Min = 1;
-    const Badminton = 1;
-    const Basketball = 2;
-    const Darts = 3;
-    const ESports = 4;
-    const Hockey = 5;
-    const Korfball = 6;
-    const Chess = 7;
-    const Squash = 8;
-    const TableTennis = 9;
-    const Tennis = 10;
-    const Football = 11;
-    const Volleyball = 12;
-    const Baseball = 13;
-    const IceHockey = 14;
-    const Shuffleboard = 15;
-    const Jass = 16;
-    const Padel = 17;
-    const Max = 17;
+    public const Min = 1;
+    public const Badminton = 1;
+    public const Basketball = 2;
+    public const Darts = 3;
+    public const ESports = 4;
+    public const Hockey = 5;
+    public const Korfball = 6;
+    public const Chess = 7;
+    public const Squash = 8;
+    public const TableTennis = 9;
+    public const Tennis = 10;
+    public const Football = 11;
+    public const Volleyball = 12;
+    public const Baseball = 13;
+    public const IceHockey = 14;
+    public const Shuffleboard = 15;
+    public const Jass = 16;
+    public const Padel = 17;
+    public const Max = 17;
 
-    const Football_Line_GoalKepeer = 1;
-    const Football_Line_Defense = 2;
-    const Football_Line_Midfield = 4;
-    const Football_Line_Forward = 8;
-    const Football_Line_All = 15;
+    public const Football_Line_GoalKepeer = 1;
+    public const Football_Line_Defense = 2;
+    public const Football_Line_Midfield = 4;
+    public const Football_Line_Forward = 8;
+    public const Football_Line_All = 15;
 
     /**
      * @return list<int>

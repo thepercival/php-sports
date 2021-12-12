@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Sports\Ranking\Calculator;
@@ -29,7 +30,7 @@ class End
     public function getItems(): array
     {
         $this->currentRank = 1;
-        $getItems = function (Round $round) use (&$getItems) : array {
+        $getItems = function (Round $round) use (&$getItems): array {
             /** @var Closure(Round):list<EndRankingItem> $getItems */
             $items = [];
             foreach ($round->getTargetQualifyGroups(QualifyTarget::Winners) as $qualifyGroup) {

@@ -1,23 +1,26 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Sports\Tests\Ranking\Calculator;
 
-use Sports\Qualify\Target as QualifyTarget;
 use PHPUnit\Framework\TestCase;
-use Sports\Ranking\AgainstRuleSet;
-use Sports\Ranking\Item\End as EndRankingItem;
 use Sports\Place\Location as PlaceLocation;
+use Sports\Qualify\Service as QualifyService;
+use Sports\Qualify\Target as QualifyTarget;
+use Sports\Ranking\AgainstRuleSet;
+use Sports\Ranking\Calculator\End as EndRankingCalculator;
+use Sports\Ranking\Item\End as EndRankingItem;
 use Sports\TestHelper\CompetitionCreator;
 use Sports\TestHelper\GamesCreator;
 use Sports\TestHelper\SetScores;
-use Sports\Qualify\Service as QualifyService;
-use Sports\Ranking\Calculator\End as EndRankingCalculator;
 use Sports\TestHelper\StructureEditorCreator;
 
 class EndTest extends TestCase
 {
-    use CompetitionCreator, SetScores, StructureEditorCreator;
+    use CompetitionCreator;
+    use SetScores;
+    use StructureEditorCreator;
 
     public function testOnePouleOfThreePlaces(): void
     {

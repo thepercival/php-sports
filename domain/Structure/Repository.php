@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Sports\Structure;
@@ -19,7 +20,8 @@ class Repository
     public function __construct(
         protected EntityManager $em,
         private HorizontalPouleCreator $horPouleCreator,
-        private QualifyRuleCreator $qualifyRuleCreator)
+        private QualifyRuleCreator $qualifyRuleCreator
+    )
     {
         /** @psalm-suppress ArgumentTypeCoercion */
         $this->roundNumberRepos = new RoundNumberRepository($em, $em->getClassMetadata(RoundNumber::class));
@@ -147,18 +149,20 @@ class Repository
         $this->em->flush();
     }
 
-    protected function addHorizontalPoules(Round $parentRound): void {
+    protected function addHorizontalPoules(Round $parentRound): void
+    {
         $this->horPouleCreator->remove($parentRound);
         $this->horPouleCreator->create($parentRound);
-        foreach($parentRound->getChildren() as $childRound) {
+        foreach ($parentRound->getChildren() as $childRound) {
             $this->addHorizontalPoules($childRound);
         }
     }
 
-    protected function addQualifyRules(Round $parentRound): void {
+    protected function addQualifyRules(Round $parentRound): void
+    {
         $this->qualifyRuleCreator->remove($parentRound);
         $this->qualifyRuleCreator->create($parentRound, null, true);
-        foreach($parentRound->getChildren() as $childRound) {
+        foreach ($parentRound->getChildren() as $childRound) {
             $this->addQualifyRules($childRound);
         }
     }

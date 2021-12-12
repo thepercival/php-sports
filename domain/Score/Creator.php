@@ -1,11 +1,12 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Sports\Score;
 
 use Sports\Game\Against as AgainstGame;
-use Sports\Score\Against as AgainstScore;
 use Sports\Game\Place\Together as TogetherGamePlace;
+use Sports\Score\Against as AgainstScore;
 use Sports\Score\Together as TogetherScore;
 
 class Creator

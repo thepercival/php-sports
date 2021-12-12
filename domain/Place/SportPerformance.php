@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Sports\Place;
@@ -13,8 +14,7 @@ class SportPerformance extends Performance
         private CompetitionSport $competitionSport,
         Place $place,
         int|null $penaltyPoints = null
-    )
-    {
+    ) {
         parent::__construct($place);
         if ($penaltyPoints !== null) {
             $this->addPoints(-$penaltyPoints);

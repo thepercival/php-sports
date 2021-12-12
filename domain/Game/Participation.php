@@ -31,8 +31,7 @@ class Participation extends Identifiable
         protected Player $player,
         protected int $beginMinute,
         protected int $endMinute
-    )
-    {
+    ) {
         if (!$againstGamePlace->getParticipations()->contains($this)) {
             $againstGamePlace->getParticipations()->add($this) ;
         }
@@ -99,7 +98,7 @@ class Participation extends Identifiable
      */
     public function getWarnings(): Collection
     {
-        return $this->cards->filter(fn(CardEvent $card) => $card->getType() === Sport::WARNING);
+        return $this->cards->filter(fn (CardEvent $card) => $card->getType() === Sport::WARNING);
     }
 
     public function getSendoff(): CardEvent|null
@@ -130,7 +129,7 @@ class Participation extends Identifiable
      */
     public function getOwnGoals(): Collection
     {
-        return $this->getGoals()->filter(fn(GoalEvent $goalEvent) => $goalEvent->getOwn());
+        return $this->getGoals()->filter(fn (GoalEvent $goalEvent) => $goalEvent->getOwn());
     }
 
     /**
@@ -138,7 +137,7 @@ class Participation extends Identifiable
      */
     public function getPenalties(): Collection
     {
-        return $this->getGoals()->filter(fn(GoalEvent $goalEvent) => $goalEvent->getPenalty());
+        return $this->getGoals()->filter(fn (GoalEvent $goalEvent) => $goalEvent->getPenalty());
     }
 
     /**
@@ -146,7 +145,7 @@ class Participation extends Identifiable
      */
     public function getFieldGoals(): Collection
     {
-        return $this->getGoals()->filter(fn(GoalEvent $goal) => !$goal->getOwn() && !$goal->getPenalty());
+        return $this->getGoals()->filter(fn (GoalEvent $goal) => !$goal->getOwn() && !$goal->getPenalty());
     }
 
     /**

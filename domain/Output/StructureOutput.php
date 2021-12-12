@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Sports\Output;
@@ -39,7 +40,8 @@ final class StructureOutput extends OutputBase
         $grid->output();
     }
 
-    protected function getGrid(Structure $structure): Grid {
+    protected function getGrid(Structure $structure): Grid
+    {
         $width = $this->rangeCalculator->getStructureWidth($structure);
         $height = $this->rangeCalculator->getStructureHeight($structure);
         return new Grid($height, $width);

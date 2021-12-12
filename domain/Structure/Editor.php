@@ -3,6 +3,15 @@
 namespace Sports\Structure;
 
 use Exception;
+use Sports\Competition;
+use Sports\Competition\Sport\Service as CompetitionSportService;
+use Sports\Place;
+use Sports\Planning\Config\Service as PlanningConfigService;
+use Sports\Poule;
+use Sports\Poule\Horizontal\Creator as HorizontalPouleCreator;
+use Sports\Qualify\Group as QualifyGroup;
+use Sports\Qualify\Rule\Creator as QualifyRuleCreator;
+use Sports\Qualify\Rule\Single as QualifyRuleSingle;
 use Sports\Qualify\Target as QualifyTarget;
 use Sports\Round;
 use Sports\Round\Number as RoundNumber;
@@ -10,16 +19,6 @@ use Sports\Structure;
 use Sports\Structure as StructureBase;
 use SportsHelpers\PlaceRanges;
 use SportsHelpers\PouleStructure\Balanced as BalancedPouleStructure;
-use Sports\Competition;
-use Sports\Place;
-use Sports\Poule;
-use Sports\Poule\Horizontal as HorizontalPoule;
-use Sports\Planning\Config\Service as PlanningConfigService;
-use Sports\Qualify\Rule\Creator as QualifyRuleCreator;
-use Sports\Qualify\Rule\Single as QualifyRuleSingle;
-use Sports\Qualify\Group as QualifyGroup;
-use Sports\Poule\Horizontal\Creator as HorizontalPouleCreator;
-use Sports\Competition\Sport\Service as CompetitionSportService;
 use SportsHelpers\PouleStructure\BalancedCreator as BalancedPouleStructureCreator;
 
 class Editor
@@ -131,7 +130,7 @@ class Editor
         // end editing
         $this->horPouleCreator->create($rootRound);
         $this->rulesCreator->create($rootRound, null, true);
-    
+
         return $rootRound->getFirstPlace(QualifyTarget::Losers);
     }
 
@@ -442,7 +441,8 @@ class Editor
         }
     }
 
-    public function validate(int $nrOfPlaces, int $nrOfPoules): bool {
+    public function validate(int $nrOfPlaces, int $nrOfPoules): bool
+    {
         if ($this->placeRanges !== null) {
             return $this->placeRanges->validate($nrOfPlaces, $nrOfPoules);
         }
@@ -452,8 +452,9 @@ class Editor
         return true;
     }
 
-    public function getMinPlacesPerPouleSmall(): int {
-        if( $this->placeRanges === null ) {
+    public function getMinPlacesPerPouleSmall(): int
+    {
+        if ($this->placeRanges === null) {
             return PlaceRanges::MinNrOfPlacesPerPoule;
         }
         return $this->placeRanges->getPlacesPerPouleSmall()->getMin();

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Sports\Tests\Structure;
@@ -22,7 +23,8 @@ use SportsHelpers\Sport\Variant\Against as AgainstSportVariant;
 
 final class ValidatorTest extends TestCase
 {
-    use CompetitionCreator, StructureEditorCreator;
+    use CompetitionCreator;
+    use StructureEditorCreator;
 
     public function testNoStructure(): void
     {
@@ -119,7 +121,7 @@ final class ValidatorTest extends TestCase
     public function testWithPlaceRanges(): void
     {
         $sportVariant = new AgainstSportVariant(2, 2, 0, 3);
-        $competition = $this->createCompetition( $sportVariant );
+        $competition = $this->createCompetition($sportVariant);
 
         $structureEditor = $this->createStructureEditor();
         $structure = $structureEditor->create($competition, [4]);

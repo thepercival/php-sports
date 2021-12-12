@@ -1,21 +1,21 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Sports\Tests\Structure;
 
 use Exception;
 use PHPUnit\Framework\TestCase;
-use Sports\TestHelper\CompetitionCreator;
 use Sports\Qualify\Target as QualifyTarget;
+use Sports\TestHelper\CompetitionCreator;
 use Sports\TestHelper\StructureEditorCreator;
-use SportsHelpers\Place\Range as PlaceRange;
 use SportsHelpers\PlaceRanges;
 use SportsHelpers\Sport\Variant\MinNrOfPlacesCalculator;
-use SportsHelpers\SportRange;
 
 final class EditorTest extends TestCase
 {
-    use CompetitionCreator, StructureEditorCreator;
+    use CompetitionCreator;
+    use StructureEditorCreator;
 
     public function testAddChildRound1(): void
     {
@@ -74,15 +74,15 @@ final class EditorTest extends TestCase
         $structure = $structureEditor->create($competition, [4, 4, 4, 4]);
         $rootRound = $structure->getRootRound();
         $firstRoundNumber = $structure->getFirstRoundNumber();
-    
+
         self::assertSame($firstRoundNumber, $rootRound->getNumber());
         self::assertSame($firstRoundNumber, $structure->getLastRoundNumber());
-    
+
         $losersRound = $structureEditor->addChildRound($rootRound, QualifyTarget::Losers, [2, 2]);
         // (new StructureOutput())->output($structure, console);
         $structureEditor->removePlaceFromRootRound($rootRound);
         // (new StructureOutput())->output($structure, console);
-    
+
         $qualifyGroup = $losersRound->getParentQualifyGroup();
         self::assertNotNull($qualifyGroup);
         $fromPlace = $qualifyGroup->getFromPlace($losersRound->getPoule(1)->getPlace(1));

@@ -3,10 +3,10 @@
 namespace Sports\Qualify\Rule;
 
 use Exception;
-use Sports\Poule\Horizontal as HorizontalPoule;
 use Sports\Place;
-use Sports\Qualify\Rule as QualifyRule;
+use Sports\Poule\Horizontal as HorizontalPoule;
 use Sports\Qualify\Group as QualifyGroup;
+use Sports\Qualify\Rule as QualifyRule;
 
 class Multiple extends QualifyRule
 {
@@ -20,8 +20,7 @@ class Multiple extends QualifyRule
         HorizontalPoule $fromHorizontalPoule,
         QualifyGroup $group,
         private array $toPlaces
-    )
-    {
+    ) {
         parent::__construct($fromHorizontalPoule);
         $this->fromHorizontalPoule->setQualifyRule($this);
         $group->setMultipleRule($this);
@@ -50,10 +49,11 @@ class Multiple extends QualifyRule
         $this->getFromHorizontalPoule()->setQualifyRule(null);
     }
 
-    public function getGroup(): QualifyGroup {
+    public function getGroup(): QualifyGroup
+    {
         $target = $this->getQualifyTarget();
         $targetGroups = $this->getFromRound()->getTargetQualifyGroups($target);
-        $qualifGroups = $targetGroups->filter(function(QualifyGroup $qualifyGroup): bool {
+        $qualifGroups = $targetGroups->filter(function (QualifyGroup $qualifyGroup): bool {
             return $this === $qualifyGroup->getMultipleRule();
         });
         $qualifGroup = $qualifGroups->last();

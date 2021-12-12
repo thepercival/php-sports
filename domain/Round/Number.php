@@ -377,7 +377,8 @@ class Number extends Identifiable
     public function createSportVariants(): array
     {
         return array_map(
-            fn(GameAmountConfig $gameAmountConfig
+            fn (
+                GameAmountConfig $gameAmountConfig
             ): AgainstSportVariant|AllInOneGameSportVariant|SingleSportVariant => $gameAmountConfig->createVariant(),
             $this->getValidGameAmountConfigs()
         );

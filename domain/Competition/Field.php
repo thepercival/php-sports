@@ -1,11 +1,12 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Sports\Competition;
 
-use Sports\Priority\Prioritizable;
 use Sports\Competition;
 use Sports\Competition\Sport as CompetitionSport;
+use Sports\Priority\Prioritizable;
 use SportsHelpers\Identifiable;
 
 class Field extends Identifiable implements Prioritizable
@@ -13,8 +14,8 @@ class Field extends Identifiable implements Prioritizable
     protected int $priority;
     private string|null $name = null;
 
-    const MIN_LENGTH_NAME = 1;
-    const MAX_LENGTH_NAME = 3;
+    public const MIN_LENGTH_NAME = 1;
+    public const MAX_LENGTH_NAME = 3;
 
     public function __construct(private CompetitionSport $competitionSport, int $priority = null)
     {

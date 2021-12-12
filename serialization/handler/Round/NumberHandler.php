@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Sports\SerializationHandler\Round;
@@ -23,7 +24,8 @@ use Sports\Competition\Sport as CompetitionSport;
 
 class NumberHandler extends Handler implements SubscribingHandlerInterface
 {
-    public function __construct(protected DummyCreator $dummyCreator) {
+    public function __construct(protected DummyCreator $dummyCreator)
+    {
     }
 
     /**
@@ -78,7 +80,8 @@ class NumberHandler extends Handler implements SubscribingHandlerInterface
                     $competitionSport,
                     $roundNumber,
                     $arrGameAmountConfig["amount"],
-                    $arrGameAmountConfig["nrOfGamesPerPlaceMixed"]);
+                    $arrGameAmountConfig["nrOfGamesPerPlaceMixed"]
+                );
             }
         }
 
@@ -132,5 +135,4 @@ class NumberHandler extends Handler implements SubscribingHandlerInterface
 //            postSerializeHelper( $childRound, $roundNumber->getNext(), $competition, $roundNumber );
 //        }
 //    }
-
 }

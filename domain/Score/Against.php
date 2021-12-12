@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Sports\Score;
@@ -10,8 +11,8 @@ class Against extends Score
 {
     use AgainstTrait;
 
-    const SCORED = 1;
-    const RECEIVED = 2;
+    public const SCORED = 1;
+    public const RECEIVED = 2;
 
     public function __construct(protected AgainstGame $game, int $home, int $away, int $phase, int $number = null)
     {

@@ -1,14 +1,15 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Sports\Qualify;
 
 use Exception;
 use Sports\Place;
-use Sports\Round\Number as RoundNumber;
-use Sports\Round;
-use Sports\Qualify\Rule\Single as SingleQualifyRule;
 use Sports\Qualify\Rule\Multiple as MultipleQualifyRule;
+use Sports\Qualify\Rule\Single as SingleQualifyRule;
+use Sports\Round;
+use Sports\Round\Number as RoundNumber;
 use SportsHelpers\Identifiable;
 
 class Group extends Identifiable

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Sports\TestHelper;
@@ -8,16 +9,16 @@ use League\Period\Period;
 use Sports\Association;
 use Sports\Competition;
 use Sports\Competition\Field;
-use Sports\League;
 use Sports\Competition\Referee;
+use Sports\Competition\Sport as CompetitionSport;
+use Sports\League;
 use Sports\Season;
 use Sports\Sport;
-use Sports\Competition\Sport as CompetitionSport;
 use Sports\Sport\Custom as SportCustom;
 use SportsHelpers\GameMode;
 use SportsHelpers\Sport\Variant\Against as AgainstSportVariant;
-use SportsHelpers\Sport\Variant\Single as SingleSportVariant;
 use SportsHelpers\Sport\Variant\AllInOneGame as AllInOneGameSportVariant;
+use SportsHelpers\Sport\Variant\Single as SingleSportVariant;
 
 trait CompetitionCreator
 {
@@ -32,8 +33,7 @@ trait CompetitionCreator
 
     protected function createCompetition(
         SingleSportVariant|AgainstSportVariant|AllInOneGameSportVariant|null $sportVariant = null
-    ): Competition
-    {
+    ): Competition {
         if ($this->competition !== null) {
             return $this->competition;
         }
@@ -68,8 +68,7 @@ trait CompetitionCreator
     protected function createCompetitionSport(
         Competition $competition,
         SingleSportVariant|AgainstSportVariant|AllInOneGameSportVariant|null $sportVariant
-    ): void
-    {
+    ): void {
         if ($this->competitionSport !== null) {
             return;
         }

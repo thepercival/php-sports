@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Sports\Round\Number;
@@ -33,7 +34,7 @@ class PlanningInputCreator
             $roundNumber->createSportVariants(),
             $pouleStructure
         );
-        if( $selfReferee !== SelfReferee::Disabled ) {
+        if ($selfReferee !== SelfReferee::Disabled) {
             $nrOfReferees = 0;
         }
         $efficientSportVariants = $this->reduceFields($pouleStructure, $sportVariantsWithFields, $nrOfReferees, $selfReferee !== SelfReferee::Disabled);

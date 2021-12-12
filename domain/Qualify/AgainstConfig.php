@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Sports\Qualify;
@@ -17,13 +18,14 @@ class AgainstConfig extends Identifiable
     protected float $drawPointsExt = 0.0;
     protected float $losePointsExt = 0.0;
 
-    const DEFAULT_WINPOINTS = 3;
-    const DEFAULT_DRAWPOINTS = 1;
+    public const DEFAULT_WINPOINTS = 3;
+    public const DEFAULT_DRAWPOINTS = 1;
 
     public function __construct(
         protected CompetitionSport $competitionSport,
         protected Round $round,
-        protected PointsCalculation $pointsCalculation)
+        protected PointsCalculation $pointsCalculation
+    )
     {
         $this->round->getAgainstQualifyConfigs()->add($this);
     }

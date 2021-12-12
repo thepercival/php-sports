@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Sports\Tests;
@@ -13,7 +14,8 @@ use SportsHelpers\PouleStructure;
 
 class StructureTest extends TestCase
 {
-    use CompetitionCreator, StructureEditorCreator;
+    use CompetitionCreator;
+    use StructureEditorCreator;
 
     public function testBasics(): void
     {

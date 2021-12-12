@@ -1,20 +1,8 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Sports\Output;
-
-use Psr\Log\LoggerInterface;
-use Sports\Competition\Field;
-use Sports\Game\Against as AgainstGame;
-use Sports\Game\Place\Against as AgainstGamePlace;
-use Sports\Game\Together as TogetherGame;
-use Sports\Game\Place\Together as TogetherGamePlace;
-use Sports\NameService;
-use Sports\Place;
-use SportsHelpers\Output as OutputBase;
-use Sports\Competitor\Map as CompetitorMap;
-use Sports\Competition\Referee;
-use Sports\Score\Config\Service as ScoreConfigService;
 
 final class Coordinate
 {
@@ -67,4 +55,3 @@ final class Coordinate
         return new Coordinate($this->getX(), $this->getY() - 1);
     }
 }
-

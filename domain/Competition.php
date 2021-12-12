@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Sports;
@@ -40,8 +41,8 @@ class Competition extends Identifiable
      */
     private Collection $teamCompetitors;
 
-    const MIN_COMPETITORS = 3;
-    const MAX_COMPETITORS = 40;
+    public const MIN_COMPETITORS = 3;
+    public const MAX_COMPETITORS = 40;
 
     public function __construct(League $league, private Season $season)
     {
@@ -149,7 +150,7 @@ class Competition extends Identifiable
             return $teamCompetitor->getTeam() === $team;
         });
         $foundCompetitor = $foundCompetitors->first();
-        if( $foundCompetitor === false) {
+        if ($foundCompetitor === false) {
             throw new \Exception('the competitor for team "' . $team->getName() . '" was not found', E_ERROR);
         }
         return $foundCompetitor;

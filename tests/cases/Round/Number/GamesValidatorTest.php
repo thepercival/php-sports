@@ -1,28 +1,29 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Sports\Tests\Round\Number;
 
-use \Exception;
+use Exception;
 use League\Period\Period;
 use PHPUnit\Framework\TestCase;
 use Sports\Competition\Field;
 use Sports\Competition\Referee;
-use Sports\Game\Order as GameOrder;
-use Sports\Output\Game\Against as AgainstGameOutput;
-use Sports\TestHelper\StructureEditorCreator;
-use SportsHelpers\Against\Side as AgainstSide;
 use Sports\Game\Against as AgainstGame;
-use Sports\Place;
+use Sports\Game\Order as GameOrder;
 use Sports\Game\Place\Against as AgainstGamePlace;
+use Sports\Place;
+use Sports\Round\Number\GamesValidator;
 use Sports\TestHelper\CompetitionCreator;
 use Sports\TestHelper\GamesCreator;
-use Sports\Round\Number\GamesValidator;
+use Sports\TestHelper\StructureEditorCreator;
+use SportsHelpers\Against\Side as AgainstSide;
 use SportsHelpers\SelfReferee;
 
 class GamesValidatorTest extends TestCase
 {
-    use CompetitionCreator, StructureEditorCreator;
+    use CompetitionCreator;
+    use StructureEditorCreator;
 
     public function testGameWithoutField(): void
     {

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Sports\Output\ConsoleTable;
@@ -6,11 +7,11 @@ namespace Sports\Output\ConsoleTable;
 use DateTimeInterface;
 use LucidFrame\Console\ConsoleTable;
 use Sports\Competition;
-use Sports\Game\Against as AgainstGame;
-use Sports\Score\Against as AgainstScore;
-use Sports\NameService;
 use Sports\Competitor\Map as CompetitorMap;
 use Sports\Competitor\Team as TeamCompetitor;
+use Sports\Game\Against as AgainstGame;
+use Sports\NameService;
+use Sports\Score\Against as AgainstScore;
 use Sports\State;
 use SportsHelpers\Against\Side as AgainstSide;
 

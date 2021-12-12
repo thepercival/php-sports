@@ -86,8 +86,8 @@ class DefaultCreator
         while ($childRoundPlace = array_shift($childRoundPlaces)) {
             $bestFromPoule = $fromPoulePicker->getBestFromPoule(
                 $childRoundPlace->getPoule(),
-                array_map(fn(Place $place) => $place->getPoule(), $fromHorPoulePlaces),
-                array_map(fn(Place $place) => $place->getPoule(), $childRoundPlaces)
+                array_map(fn (Place $place) => $place->getPoule(), $fromHorPoulePlaces),
+                array_map(fn (Place $place) => $place->getPoule(), $childRoundPlaces)
             );
             $bestFromPlace = $this->removeBestHorizontalPlace($fromHorPoulePlaces, $bestFromPoule);
             $placeMapping = new QualifyPlaceMapping($bestFromPlace, $childRoundPlace);
@@ -105,7 +105,7 @@ class DefaultCreator
     protected function removeBestHorizontalPlace(array &$fromHorPoulePlaces, Poule $bestFromPoule): Place
     {
         $bestPouleNr = $bestFromPoule->getNumber();
-        $fromPlaces = array_filter($fromHorPoulePlaces, fn($place) => $place->getPouleNr() === $bestPouleNr);
+        $fromPlaces = array_filter($fromHorPoulePlaces, fn ($place) => $place->getPouleNr() === $bestPouleNr);
         $bestFromPlace = reset($fromPlaces);
         if ($bestFromPlace === false) {
             throw new Exception('fromPlace should be found', E_ERROR);

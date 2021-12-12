@@ -1,11 +1,11 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Sports\Game\Event;
 
-use Sports\Game\Participation as GameParticipation;
-
 use Sports\Game\Event as GameEvent;
+use Sports\Game\Participation as GameParticipation;
 use Sports\Team;
 use SportsHelpers\Identifiable;
 

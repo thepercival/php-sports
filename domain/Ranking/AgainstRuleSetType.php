@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Sports\Ranking;
@@ -8,23 +9,24 @@ use SportsHelpers\EnumDbType;
 
 class AgainstRuleSetType extends EnumDbType
 {
-    static public function getNameHelper(): string
+    public static function getNameHelper(): string
     {
         return 'enum_AgainstRuleSet';
     }
 
     public function convertToPHPValue($value, AbstractPlatform $platform)
     {
-        if( $value === AgainstRuleSet::DiffFirst->value ) {
+        if ($value === AgainstRuleSet::DiffFirst->value) {
             return AgainstRuleSet::DiffFirst;
         }
-        if( $value === AgainstRuleSet::AmongFirst->value ) {
+        if ($value === AgainstRuleSet::AmongFirst->value) {
             return AgainstRuleSet::AmongFirst;
         }
         return null;
     }
 
-    public function getSQLDeclaration(array $column, AbstractPlatform $platform){
+    public function getSQLDeclaration(array $column, AbstractPlatform $platform)
+    {
         return 'int';
     }
 }

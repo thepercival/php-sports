@@ -1,19 +1,20 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Sports\Ranking\Calculator\Round\Sport;
 
 use Sports\Competition\Sport as CompetitionSport;
+use Sports\Game\Against as AgainstGame;
+use Sports\Place;
+use Sports\Place\SportPerformance\Calculator as PerformanceCalculator;
+use Sports\Place\SportPerformance\Calculator\Against as AgainstPerformanceCalculator;
+use Sports\Poule;
 use Sports\Ranking\Calculator\Round\Sport as SportRoundRankingCalculator;
 use Sports\Ranking\FunctionMapCreator\Against as AgainstRankingFunctionMapCreator;
-use Sports\Place\SportPerformance\Calculator\Against as AgainstPerformanceCalculator;
-use Sports\Place\SportPerformance\Calculator as PerformanceCalculator;
 use Sports\Ranking\Item\Round\Sport as SportRoundRankingItem;
-use Sports\State;
 use Sports\Round;
-use Sports\Poule;
-use Sports\Place;
-use Sports\Game\Against as AgainstGame;
+use Sports\State;
 use SportsHelpers\Against\Side as AgainstSide;
 
 class Against extends SportRoundRankingCalculator
@@ -38,7 +39,8 @@ class Against extends SportRoundRankingCalculator
         return $this->getItems(
             $poule->getRound(),
             array_values($poule->getPlaces()->toArray()),
-            array_values($poule->getAgainstGames()->toArray()));
+            array_values($poule->getAgainstGames()->toArray())
+        );
     }
 
     /**

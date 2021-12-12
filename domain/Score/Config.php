@@ -1,20 +1,19 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Sports\Score;
 
 use Sports\Competition\Sport as CompetitionSport;
 use Sports\Round;
-use Sports\Sport as SportBase;
-use Sports\Round\Number as RoundNumber;
 use SportsHelpers\Identifiable;
 
 class Config extends Identifiable
 {
     protected Config|null $next = null;
 
-    const UPWARDS = 1;
-    const DOWNWARDS = 2;
+    public const UPWARDS = 1;
+    public const DOWNWARDS = 2;
 
     public function __construct(
         protected CompetitionSport $competitionSport,
@@ -117,7 +116,8 @@ class Config extends Identifiable
         return !$this->hasNext();
     }
 
-    public function getCalculate(): Config {
+    public function getCalculate(): Config
+    {
         $firstNext = $this->getFirst()->getNext();
         return $firstNext !== null && $firstNext->getEnabled() ? $firstNext : $this;
     }
