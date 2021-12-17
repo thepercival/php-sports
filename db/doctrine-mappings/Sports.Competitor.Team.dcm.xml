@@ -3,8 +3,6 @@
                   xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
                   xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
     <entity name="Sports\Competitor\Team" table="teamCompetitors" repository-class="Sports\Competitor\Team\Repository">
-        <field name="placeNr" column="placeNr" type="smallint" nullable="false" unique="false"/>
-        <field name="pouleNr" column="pouleNr" type="smallint" nullable="false" unique="false"/>
         <field name="registered" column="registered" type="boolean" nullable="false" unique="false"/>
         <field name="info" column="info" type="string" length="200" nullable="true" unique="false"/>
         <one-to-one field="team" target-entity="Sports\Team">

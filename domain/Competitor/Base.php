@@ -5,15 +5,18 @@ declare(strict_types=1);
 namespace Sports\Competitor;
 
 use InvalidArgumentException;
+use SportsHelpers\Identifiable;
 
-trait Base
+class Base extends Identifiable
 {
     protected int $max_length_info = 200;
 
     protected bool $registered = false;
     protected string|null $info = null;
-    protected int $pouleNr;
-    protected int $placeNr;
+
+    public function __construct(protected int $pouleNr, protected int $placeNr)
+    {
+    }
 
     public function getRegistered(): bool
     {

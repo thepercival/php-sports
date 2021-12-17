@@ -1,0 +1,18 @@
+Sports\Competitor\Base:
+  exclusion_policy: ALL
+  exclude: false
+  properties:
+    team:
+      type: Sports\Team
+    pouleNr:
+      type: int
+    placeNr:
+      type: int
+    abbreviation:
+      type: string
+    registered:
+      type: boolean
+    info:
+      type: string
+    imageUrl:
+      type: string
