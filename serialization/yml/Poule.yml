@@ -1,7 +1,7 @@
 Sports\Poule:
   exclusion_policy: ALL
   exclude: false
-  custom_accessor_order: [places, games]
+  custom_accessor_order: [ places, againstGames,togetherGames ]
   properties:
     number:
       type: integer
@@ -9,5 +9,7 @@ Sports\Poule:
       type: ArrayCollection<Sports\Place>
     againstGames:
       type: ArrayCollection<Sports\Game\Against>
+      groups: [ games ]
     togetherGames:
       type: ArrayCollection<Sports\Game\Together>
+      groups: [ games ]
