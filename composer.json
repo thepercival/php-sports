@@ -83,5 +83,11 @@
         "extension.neon"
       ]
     }
+  },
+  "config": {
+    "allow-plugins": {
+      "composer/package-versions-deprecated": true,
+      "phpstan/extension-installer": true
+    }
   }
 }
