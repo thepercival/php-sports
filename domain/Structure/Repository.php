@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace Sports\Structure;
 
-use Sports\Round;
-use Sports\Structure as StructureBase;
-use Sports\Round\Number as RoundNumber;
-use Sports\Competition;
 use Doctrine\ORM\EntityManager;
-use Sports\Round\Number\Repository as RoundNumberRepository;
+use Sports\Competition;
 use Sports\Poule\Horizontal\Creator as HorizontalPouleCreator;
 use Sports\Qualify\Rule\Creator as QualifyRuleCreator;
+use Sports\Round;
+use Sports\Round\Number as RoundNumber;
+use Sports\Round\Number\Repository as RoundNumberRepository;
+use Sports\Structure as StructureBase;
 
 class Repository
 {
@@ -21,8 +21,7 @@ class Repository
         protected EntityManager $em,
         private HorizontalPouleCreator $horPouleCreator,
         private QualifyRuleCreator $qualifyRuleCreator
-    )
-    {
+    ) {
         /** @psalm-suppress ArgumentTypeCoercion */
         $this->roundNumberRepos = new RoundNumberRepository($em, $em->getClassMetadata(RoundNumber::class));
     }

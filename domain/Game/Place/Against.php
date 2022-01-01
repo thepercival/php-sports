@@ -122,12 +122,14 @@ class Against extends GamePlaceBase
             /** @var list<Participation> $substitutes */
             foreach ($substitutes as $substitute) {
                 if ($substitute->getBeginMinute() === $minute) {
+                    /** @var callable(mixed, mixed): int $callable */
+                    $callable = function (Participation $a, Participation $b): int {
+                        return $a === $b ? 0 : 1;
+                    };
                     $substitutes = array_udiff(
                         $substitutes,
                         [$substitute],
-                        function (Participation $a, Participation $b): int {
-                            return $a === $b ? 0 : 1;
-                        }
+                        $callable
                     );
                     return $substitute;
                 }

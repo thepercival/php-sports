@@ -49,6 +49,8 @@ final class PlanningMapperTest extends TestCase
         $planningGames = $secondPlanning->getGames(PlanningGame::ORDER_BY_BATCH);
         $firstPlanningGame = reset($planningGames);
         $lastPlanningGame = end($planningGames);
+        self::assertNotFalse($firstPlanningGame);
+        self::assertNotFalse($lastPlanningGame);
         $losersPoule = $planningMapper->getPoule($firstPlanningGame->getPoule());
         $winnersPoule = $planningMapper->getPoule($lastPlanningGame->getPoule());
 

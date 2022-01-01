@@ -37,8 +37,7 @@ class Handler
         array $fieldValue,
         string $property,
         string $className
-    ): mixed
-    {
+    ): mixed {
         if (!isset($fieldValue[$property])) {
             return null;
         }

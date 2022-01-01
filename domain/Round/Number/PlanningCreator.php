@@ -1,17 +1,19 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Sports\Round\Number;
 
-use Sports\Game\Order as GameOrder;
+use League\Period\Period;
+use Psr\Log\LoggerInterface;
+use Sports\Queue\PlanningInput\CreatePlanningsEvent;
+use Sports\Round\Number as RoundNumber;
 use Sports\Round\Number\PlanningInputCreator as PlanningInputService;
+use Sports\Round\Number\Repository as RoundNumberRepository;
+use SportsPlanning\Input\Repository as PlanningInputRepository;
 use SportsPlanning\Planning;
 use SportsPlanning\Planning\Repository as PlanningRepository;
-use SportsPlanning\Input\Repository as PlanningInputRepository;
-use Sports\Round\Number as RoundNumber;
-use Sports\Round\Number\Repository as RoundNumberRepository;
-use League\Period\Period;
-use Sports\Queue\PlanningInput\CreatePlanningsEvent;
-use Psr\Log\LoggerInterface;
+use SportsPlanning\Planning\State as PlanningState;
 
 class PlanningCreator
 {
@@ -88,7 +90,7 @@ class PlanningCreator
                 return;
             }
             if ($planningInput->getPlannings()->filter(function (Planning $planning): bool {
-                return $planning->getState() === Planning::STATE_TOBEPROCESSED;
+                    return $planning->getState() === PlanningState::ToBeProcessed;
             })->count() > 0 /* has plannings to be processed,  */) {
                 return;
             }

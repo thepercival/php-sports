@@ -9,7 +9,6 @@ use Sports\Place;
 use Sports\Poule\Horizontal as HorizontalPoule;
 use Sports\Qualify\Rule\Single as SingleQualifyRule;
 use Sports\Qualify\Target as QualifyTarget;
-use Sports\Ranking\AgainstRuleSet;
 use Sports\Ranking\Calculator\Round as RoundRankingCalculator;
 use Sports\Ranking\Item\End as EndRankingItem;
 use Sports\Round;
@@ -20,7 +19,7 @@ class End
 {
     private int $currentRank = 1;
 
-    public function __construct(private Structure $structure, private AgainstRuleSet $ruleSet)
+    public function __construct(private Structure $structure)
     {
     }
 

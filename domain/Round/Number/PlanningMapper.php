@@ -88,17 +88,22 @@ class PlanningMapper
         $poulesNrOfPlacesMap = $this->getPoulesNrOfPlacesMap($roundNumber);
 
         $this->pouleMap = [];
-        while (count($poulesNrOfPlacesMap) > 0 && $planningGame = array_shift($planningGames)) {
+        $planningGame = array_shift($planningGames);
+        while (count($poulesNrOfPlacesMap) > 0 && $planningGame !== null) {
             $planningPoule = $planningGame->getPoule();
             if (isset($this->pouleMap[$planningPoule->getNumber()])) {
+                $planningGame = array_shift($planningGames);
                 continue;
             }
             $nrOfPlaces = $planningPoule->getPlaces()->count();
             $poule = array_shift($poulesNrOfPlacesMap[$nrOfPlaces]);
-            if (count($poulesNrOfPlacesMap[$nrOfPlaces]) === 0) {
-                unset($poulesNrOfPlacesMap[$nrOfPlaces]);
+            if ($poule !== null) {
+                if (count($poulesNrOfPlacesMap[$nrOfPlaces]) === 0) {
+                    unset($poulesNrOfPlacesMap[$nrOfPlaces]);
+                }
+                $this->pouleMap[$planningPoule->getNumber()] = $poule;
             }
-            $this->pouleMap[$planningPoule->getNumber()] = $poule;
+            $planningGame = array_shift($planningGames);
         }
     }
 
@@ -208,19 +213,25 @@ class PlanningMapper
         $competitionSportsFieldMap = $this->getCompetitionSportsFieldMap($roundNumber->getCompetition());
         $this->fieldMap = [];
 
-        while (count($competitionSportsFieldMap) > 0 && $planningGame = array_shift($planningGames)) {
+        $planningGame = array_shift($planningGames);
+        while (count($competitionSportsFieldMap) > 0 && $planningGame !== null) {
             $planningField = $planningGame->getField();
             $planningSportNr = $planningField->getSport()->getNumber();
             if (isset($this->fieldMap[$planningField->getUniqueIndex()])
                 || !isset($competitionSportsFieldMap[$planningSportNr])) {
+                $planningGame = array_shift($planningGames);
                 continue;
             }
 
             $field = array_shift($competitionSportsFieldMap[$planningSportNr]);
-            if (count($competitionSportsFieldMap[$planningSportNr]) === 0) {
-                unset($competitionSportsFieldMap[$planningSportNr]);
+            if ($field !== null) {
+                if (count($competitionSportsFieldMap[$planningSportNr]) === 0) {
+                    unset($competitionSportsFieldMap[$planningSportNr]);
+                }
+                $this->fieldMap[$planningField->getUniqueIndex()] = $field;
             }
-            $this->fieldMap[$planningField->getUniqueIndex()] = $field;
+
+            $planningGame = array_shift($planningGames);
         }
     }
 
@@ -247,15 +258,13 @@ class PlanningMapper
     {
         $referees = $this->getSortedReferees($roundNumber->getCompetition());
 
-        while (count($referees) > 0 && $planningGame = array_shift($planningGames)) {
+        $planningGame = array_shift($planningGames);
+        while (count($referees) > 0 && $planningGame !== null) {
             $planningReferee = $planningGame->getReferee();
-            if ($planningReferee === null) {
-                continue;
+            if ($planningReferee !== null && !isset($this->refereeMap[$planningReferee->getUniqueIndex()])) {
+                $this->refereeMap[$planningReferee->getUniqueIndex()] = array_shift($referees);
             }
-            if (isset($this->refereeMap[$planningReferee->getUniqueIndex()])) {
-                continue;
-            }
-            $this->refereeMap[$planningReferee->getUniqueIndex()] = array_shift($referees);
+            $planningGame = array_shift($planningGames);
         }
     }
 

@@ -25,8 +25,7 @@ class AgainstConfig extends Identifiable
         protected CompetitionSport $competitionSport,
         protected Round $round,
         protected PointsCalculation $pointsCalculation
-    )
-    {
+    ) {
         $this->round->getAgainstQualifyConfigs()->add($this);
     }
 
