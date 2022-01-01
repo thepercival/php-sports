@@ -13,6 +13,6 @@ interface CreatePlanningsEvent
         PlanningInput $input,
         Competition $competition = null,
         int $startRoundNumber = null,
-        int $priority = null
+        int|null $priority = null
     ): void;
 }
