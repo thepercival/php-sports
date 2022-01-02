@@ -3214,19 +3214,19 @@
             "time": "2022-01-01T21:22:33+00:00"
         },
         {
-            "name": "thepercival/php-sports-planning",
-            "version": "v1.0.42",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/thepercival/php-sports-planning.git",
-                "reference": "25bcb350377dfdfba1ca0af1317929268d36d63e"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/thepercival/php-sports-planning/zipball/25bcb350377dfdfba1ca0af1317929268d36d63e",
-                "reference": "25bcb350377dfdfba1ca0af1317929268d36d63e",
-                "shasum": ""
-            },
+          "name": "thepercival/php-sports-planning",
+          "version": "v1.0.43",
+          "source": {
+            "type": "git",
+            "url": "https://github.com/thepercival/php-sports-planning.git",
+            "reference": "baa6f810f1224c5a0c882f44533d2ad370402b52"
+          },
+          "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/thepercival/php-sports-planning/zipball/baa6f810f1224c5a0c882f44533d2ad370402b52",
+            "reference": "baa6f810f1224c5a0c882f44533d2ad370402b52",
+            "shasum": ""
+          },
             "require": {
                 "doctrine/orm": "^2.10",
                 "drupol/phpermutations": "^1.4",
@@ -3280,9 +3280,9 @@
             "support": {
                 "email": "coendunnink@gmail.com",
                 "issues": "https://github.com/thepercival/php-sports-planning/issues",
-                "source": "https://github.com/thepercival/php-sports-planning/tree/v1.0.42"
+              "source": "https://github.com/thepercival/php-sports-planning/tree/v1.0.43"
             },
-            "time": "2022-01-01T21:23:31+00:00"
+          "time": "2022-01-02T08:51:02+00:00"
         }
     ],
     "packages-dev": [

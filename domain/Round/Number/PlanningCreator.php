@@ -90,7 +90,7 @@ class PlanningCreator
                 return;
             }
             if ($planningInput->getPlannings()->filter(function (Planning $planning): bool {
-                    return $planning->getState() === PlanningState::ToBeProcessed;
+                return $planning->getState() === PlanningState::ToBeProcessed;
             })->count() > 0 /* has plannings to be processed,  */) {
                 return;
             }
