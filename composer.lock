@@ -3215,16 +3215,16 @@
         },
         {
           "name": "thepercival/php-sports-planning",
-          "version": "v1.0.54",
+          "version": "v1.0.55",
           "source": {
             "type": "git",
             "url": "https://github.com/thepercival/php-sports-planning.git",
-            "reference": "b686bd6f4549adb067cbd17a3a72dc1c5b2c8141"
+            "reference": "e2300188f23192e526cfe13008aa6835eaeda509"
           },
           "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/thepercival/php-sports-planning/zipball/b686bd6f4549adb067cbd17a3a72dc1c5b2c8141",
-            "reference": "b686bd6f4549adb067cbd17a3a72dc1c5b2c8141",
+            "url": "https://api.github.com/repos/thepercival/php-sports-planning/zipball/e2300188f23192e526cfe13008aa6835eaeda509",
+            "reference": "e2300188f23192e526cfe13008aa6835eaeda509",
             "shasum": ""
           },
           "require": {
@@ -3237,16 +3237,16 @@
             "thepercival/php-sports-helpers": "^1.0"
           },
           "require-dev": {
-                "friendsofphp/php-cs-fixer": "^3.2",
-                "phpstan/extension-installer": "^1.0",
-                "phpstan/phpstan": "^1.2",
-                "phpstan/phpstan-doctrine": "^1.0",
-                "phpstan/phpstan-phpunit": "^1.0",
-                "phpstan/phpstan-strict-rules": "^1.1",
-                "phpunit/phpunit": "^9.5",
-                "psalm/plugin-phpunit": "^0.16",
-                "vimeo/psalm": "^4.15",
-                "weirdan/doctrine-psalm-plugin": "^2.0"
+            "friendsofphp/php-cs-fixer": "^3.2",
+            "phpstan/extension-installer": "^1.0",
+            "phpstan/phpstan": "^1.2",
+            "phpstan/phpstan-doctrine": "^1.0",
+            "phpstan/phpstan-phpunit": "^1.0",
+            "phpstan/phpstan-strict-rules": "^1.1",
+            "phpunit/phpunit": "^9.5",
+            "psalm/plugin-phpunit": "^0.16",
+            "vimeo/psalm": "^4.15",
+            "weirdan/doctrine-psalm-plugin": "^2.0"
             },
             "type": "library",
             "extra": {
@@ -3280,9 +3280,9 @@
             "support": {
                 "email": "coendunnink@gmail.com",
                 "issues": "https://github.com/thepercival/php-sports-planning/issues",
-              "source": "https://github.com/thepercival/php-sports-planning/tree/v1.0.54"
+              "source": "https://github.com/thepercival/php-sports-planning/tree/v1.0.55"
             },
-          "time": "2022-01-02T17:46:30+00:00"
+          "time": "2022-01-04T08:42:49+00:00"
         }
     ],
     "packages-dev": [
