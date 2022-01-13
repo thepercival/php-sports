@@ -4,17 +4,14 @@ declare(strict_types=1);
 
 namespace Sports\Tests\Ranking\Calculator;
 
-use Sports\Qualify\Target as QualifyTarget;
-use Exception;
 use PHPUnit\Framework\TestCase;
-use Sports\Poule\Horizontal as HorizontalPoule;
+use Sports\Game\State as GameState;
+use Sports\Qualify\Target as QualifyTarget;
 use Sports\Ranking\AgainstRuleSet;
+use Sports\Ranking\Calculator\Round as RoundRankingCalculator;
 use Sports\TestHelper\CompetitionCreator;
 use Sports\TestHelper\GamesCreator;
 use Sports\TestHelper\SetScores;
-use Sports\Structure\Editor as StructureService;
-use Sports\Ranking\Calculator\Round as RoundRankingCalculator;
-use Sports\State;
 use Sports\TestHelper\StructureEditorCreator;
 
 class RoundTest extends TestCase
@@ -158,11 +155,11 @@ class RoundTest extends TestCase
 
         $pouleOne = $rootRound->getPoule(1);
 
-        $this->setScoreSingle($pouleOne, 1, 2, 2, 1, State::InProgress);
-        $this->setScoreSingle($pouleOne, 1, 3, 3, 1, State::InProgress);
-        $this->setScoreSingle($pouleOne, 2, 3, 3, 2, State::InProgress);
+        $this->setScoreSingle($pouleOne, 1, 2, 2, 1, GameState::InProgress);
+        $this->setScoreSingle($pouleOne, 1, 3, 3, 1, GameState::InProgress);
+        $this->setScoreSingle($pouleOne, 2, 3, 3, 2, GameState::InProgress);
 
-        $roundRankingCalculator = new RoundRankingCalculator([State::InProgress,State::Finished]);
+        $roundRankingCalculator = new RoundRankingCalculator([GameState::InProgress,GameState::Finished]);
         $items = $roundRankingCalculator->getItemsForPoule($pouleOne);
 
         $roundRankingItem1 = $roundRankingCalculator->getItemByRank($items, 1);

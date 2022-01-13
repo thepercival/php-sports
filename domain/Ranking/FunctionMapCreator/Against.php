@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Sports\Ranking\FunctionMapCreator;
 
 use Sports\Competition\Sport as CompetitionSport;
+use Sports\Game\State as GameState;
 use Sports\Place;
 use Sports\Place\SportPerformance;
 use Sports\Ranking\Calculator\Round\Sport\Against as AgainstSportRoundRankingCalculator;
@@ -16,7 +17,7 @@ class Against extends BaseFunctionMapCreator
 {
     /**
      * @param CompetitionSport $competitionSport
-     * @param list<int> $gameStates
+     * @param list<GameState> $gameStates
      */
     public function __construct(private CompetitionSport $competitionSport, private array $gameStates)
     {

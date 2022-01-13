@@ -23,7 +23,6 @@ class Competition extends Identifiable
     private League $league;
     private DateTimeImmutable $startDateTime;
     private AgainstRuleSet $againstRuleSet;
-    private int $state;
     /**
      * @var Collection<int|string, Round\Number>
      */
@@ -49,7 +48,6 @@ class Competition extends Identifiable
         $this->setLeague($league);
         $this->setStartDateTime($season->getStartDateTime());
         $this->againstRuleSet = AgainstRuleSet::DiffFirst;
-        $this->state = State::Created;
         $this->roundNumbers = new ArrayCollection();
         $this->referees = new ArrayCollection();
         $this->sports = new ArrayCollection();
@@ -98,16 +96,6 @@ class Competition extends Identifiable
     public function setAgainstRuleSet(AgainstRuleSet $againstRuleSet): void
     {
         $this->againstRuleSet = $againstRuleSet;
-    }
-
-    public function getState(): int
-    {
-        return $this->state;
-    }
-
-    public function setState(int $state): void
-    {
-        $this->state = $state;
     }
 
     /**

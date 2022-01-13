@@ -34,7 +34,7 @@ abstract class Game extends OutputBase
     protected function getGameRoundNrAsString(int $gameRoundNr): string
     {
         $gameRoundNrColor = $this->useColors() ? ($gameRoundNr % 10) : -1;
-        $retVal = 'gameRoundNr ' . ($gameRoundNr < 10 ? ' ' : '') . $gameRoundNr;
+        $retVal = ($gameRoundNr < 10 ? ' ' : '') . $gameRoundNr;
         return $this->getColored($gameRoundNrColor, $retVal);
     }
 

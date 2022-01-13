@@ -5,7 +5,7 @@
     <entity name="Sports\Competitor\Team" table="teamCompetitors" repository-class="Sports\Competitor\Team\Repository">
         <field name="registered" column="registered" type="boolean" nullable="false" unique="false"/>
         <field name="info" column="info" type="string" length="200" nullable="true" unique="false"/>
-        <one-to-one field="team" target-entity="Sports\Team">
+        <many-to-one field="team" target-entity="Sports\Team">
             <cascade>
                 <cascade-persist/>
                 <cascade-remove/>
@@ -13,7 +13,7 @@
             <join-columns>
                 <join-column name="teamId" referenced-column-name="id" nullable="false" on-delete="RESTRICT"/>
             </join-columns>
-        </one-to-one>
+        </many-to-one>
         <many-to-one field="competition" target-entity="Sports\Competition" inversed-by="teamCompetitors">
             <cascade>
                 <cascade-persist/>

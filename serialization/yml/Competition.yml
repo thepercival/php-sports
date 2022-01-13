@@ -8,8 +8,6 @@ Sports\Competition:
       accessor:
         getter: getAgainstRuleSetNative
         setter: setAgainstRuleSetNative
-    state:
-      type: integer
     league:
       type: Sports\League
     season:

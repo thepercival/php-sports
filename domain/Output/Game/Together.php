@@ -9,7 +9,7 @@ use Sports\Competitor\Map as CompetitorMap;
 use Sports\Output\Game as OutputGame;
 use Sports\Game\Together as TogetherGame;
 use Sports\Game\Place\Together as TogetherGamePlace;
-use Sports\State;
+use Sports\Game\State as GameState;
 
 class Together extends OutputGame
 {
@@ -49,7 +49,7 @@ class Together extends OutputGame
 
     protected function getPointsAsString(TogetherGame $game): string
     {
-        if ($game->getState() !== State::Finished) {
+        if ($game->getState() !== GameState::Finished) {
             return '';
         }
         return join(",", $game->getPlaces()->map(function (TogetherGamePlace $gamePlace): string {

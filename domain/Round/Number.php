@@ -12,6 +12,7 @@ use Sports\Competition;
 use Sports\Competition\Sport as CompetitionSport;
 use Sports\Game\Against as AgainstGame;
 use Sports\Game\Order as GameOrder;
+use Sports\Game\State as GameState;
 use Sports\Game\Together as TogetherGame;
 use Sports\Place;
 use Sports\Planning\Config as PlanningConfig;
@@ -19,7 +20,6 @@ use Sports\Planning\GameAmountConfig as GameAmountConfig;
 use Sports\Poule;
 use Sports\Round;
 use Sports\Round\Number as RoundNumber;
-use Sports\State;
 use SportsHelpers\Identifiable;
 use SportsHelpers\PouleStructure;
 use SportsHelpers\Sport\Variant\Against as AgainstSportVariant;
@@ -139,31 +139,31 @@ class Number extends Identifiable
         return false;
     }
 
-    public function getState(): int
+    public function getGamesState(): GameState
     {
         $allRoundsFinished = true;
         foreach ($this->getRounds() as $round) {
-            if ($round->getState() === State::Finished) {
+            if ($round->getGamesState() === GameState::Finished) {
                 continue;
             }
             $allRoundsFinished = false;
             break;
         }
         if ($allRoundsFinished) {
-            return State::Finished;
+            return GameState::Finished;
         }
         $someRoundsNotCreated = false;
         foreach ($this->getRounds() as $round) {
-            if ($round->getState() === State::Created) {
+            if ($round->getGamesState() === GameState::Created) {
                 continue;
             }
             $someRoundsNotCreated = true;
             break;
         }
         if ($someRoundsNotCreated) {
-            return State::InProgress;
+            return GameState::InProgress;
         }
-        return State::Created;
+        return GameState::Created;
     }
 
     public function hasBegun(): bool

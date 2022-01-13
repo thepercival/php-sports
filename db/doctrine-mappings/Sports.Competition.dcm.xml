@@ -5,11 +5,6 @@
     <entity name="Sports\Competition" table="competitions" repository-class="Sports\Competition\Repository">
         <field name="againstRuleSet" column="againstRuleSet" type="enum_AgainstRuleSet" nullable="false"
                unique="false"/>
-        <field name="state" column="state" type="smallint" nullable="false" unique="false">
-            <options>
-                <option name="default">1</option> <!-- Created -->
-            </options>
-        </field>
         <field name="startDateTime" column="startDateTime" type="datetime_immutable" nullable="false" unique="false"/>
         <many-to-one field="league" target-entity="Sports\League" inversed-by="competitions">
             <cascade>

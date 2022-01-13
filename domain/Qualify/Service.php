@@ -4,16 +4,16 @@ declare(strict_types=1);
 
 namespace Sports\Qualify;
 
+use Sports\Game\State as GameState;
+use Sports\Place;
+use Sports\Poule;
+use Sports\Qualify\PlaceMapping as QualifyPlaceMapping;
+use Sports\Qualify\ReservationService as QualifyReservationService;
+use Sports\Qualify\Rule\Multiple as MultipleQualifyRule;
+use Sports\Qualify\Rule\Single as SingleQualifyRule;
 use Sports\Qualify\Target as QualifyTarget;
 use Sports\Ranking\Calculator\Round as RoundRankingCalculator;
-use Sports\Qualify\ReservationService as QualifyReservationService;
-use Sports\Qualify\PlaceMapping as QualifyPlaceMapping;
-use Sports\Poule;
-use Sports\Place;
 use Sports\Round;
-use Sports\State;
-use Sports\Qualify\Rule\Single as SingleQualifyRule;
-use Sports\Qualify\Rule\Multiple as MultipleQualifyRule;
 
 class Service
 {
@@ -190,7 +190,7 @@ class Service
     protected function isPouleFinished(Poule $poule): bool
     {
         if (!array_key_exists($poule->getNumber(), $this->finishedPouleMap)) {
-            $this->finishedPouleMap[$poule->getNumber()] = ($poule->getState() === State::Finished);
+            $this->finishedPouleMap[$poule->getNumber()] = ($poule->getGamesState() === GameState::Finished);
         }
         return $this->finishedPouleMap[$poule->getNumber()];
     }

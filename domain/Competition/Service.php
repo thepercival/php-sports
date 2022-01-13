@@ -47,10 +47,6 @@ class Service
      */
     public function changeStartDateTime(Competition $competition, DateTimeImmutable $startDateTime): Competition
     {
-        if ($competition->getState() > State::Created) {
-            throw new Exception("de competitie kan niet worden gewijzigd, omdat deze al gespeelde wedstrijden heeft", E_ERROR);
-        }
-
         if (!$competition->getSeason()->getPeriod()->contains($startDateTime)) {
             throw new Exception("de startdatum van de competitie valt buiten het seizoen", E_ERROR);
         }
@@ -68,10 +64,6 @@ class Service
      */
     public function changeAgainstRuleSet(Competition $competition, AgainstRuleSet $ruleSet)
     {
-        if ($competition->getState() > State::Created) {
-            throw new Exception("de competitie kan niet worden gewijzigd, omdat deze al gespeelde wedstrijden heeft", E_ERROR);
-        }
-
         $competition->setAgainstRuleSet($ruleSet);
 
         return $competition;

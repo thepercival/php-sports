@@ -18,7 +18,7 @@ abstract class Game extends Identifiable
     protected Referee|null $referee = null;
     protected Place|null $refereePlace = null;
     protected Field|null $field = null;
-    protected int $state;
+    protected Game\State $state;
 
     private string|null $refereeStructureLocation = null; // json
 
@@ -28,7 +28,7 @@ abstract class Game extends Identifiable
         protected DateTimeImmutable $startDateTime,
         protected CompetitionSport $competitionSport
     ) {
-        $this->setState(State::Created);
+        $this->setState(Game\State::Created);
     }
 
     public function getPoule(): Poule
@@ -67,12 +67,12 @@ abstract class Game extends Identifiable
         return $this->competitionSport;
     }
 
-    public function getState(): int
+    public function getState(): Game\State
     {
         return $this->state;
     }
 
-    final public function setState(int $state): void
+    final public function setState(Game\State $state): void
     {
         $this->state = $state;
     }
@@ -138,5 +138,10 @@ abstract class Game extends Identifiable
     public function setRefereeStructureLocation(string|null $refereeStructureLocation): void
     {
         $this->refereeStructureLocation = $refereeStructureLocation;
+    }
+
+    public function getStateNative(): int
+    {
+        return $this->state->value;
     }
 }

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Sports\Ranking\Calculator\Round;
 
 use Closure;
+use Sports\Game\State as GameState;
 use Sports\Game\Together as TogetherGame;
 use Sports\Game\Against as AgainstGame;
 use Sports\Place\SportPerformance\Calculator as PerformanceCalculator;
@@ -35,12 +36,12 @@ abstract class Sport
 
     /**
      * @param CompetitionSport $competitionSport
-     * @param list<int> $gameStates
+     * @param list<GameState> $gameStates
      */
     public function __construct(protected CompetitionSport $competitionSport, array $gameStates)
     {
         foreach ($gameStates as $state) {
-            $this->gameStateMap[$state] = true;
+            $this->gameStateMap[$state->value] = true;
         }
         $this->rankingRuleGetter = new RankingRuleGetter();
     }
@@ -58,7 +59,7 @@ abstract class Sport
     protected function getFilteredGames(array $games): array
     {
         return array_values(array_filter($games, function (AgainstGame|TogetherGame $game): bool {
-            return array_key_exists($game->getState(), $this->gameStateMap);
+            return array_key_exists($game->getState()->value, $this->gameStateMap);
         }));
     }
 

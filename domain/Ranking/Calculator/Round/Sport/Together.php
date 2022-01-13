@@ -13,18 +13,18 @@ use Sports\Ranking\Item\Round\Sport as SportRoundRankingItem;
 use Sports\Ranking\FunctionMapCreator as RankingFunctionMapCreator;
 use Sports\Place\SportPerformance\Calculator\Together as PlaceTogetherPerformanceCalculator;
 use Sports\Place\SportPerformance\Calculator as PerformanceCalculator;
-use Sports\State;
+use Sports\Game\State as GameState;
 use Sports\Ranking\Calculator\Round\Sport as SportRoundRankingCalculator;
 
 class Together extends SportRoundRankingCalculator
 {
     /**
      * @param CompetitionSport $competitionSport
-     * @param list<int>|null $gameStates
+     * @param list<GameState>|null $gameStates
      */
     public function __construct(CompetitionSport $competitionSport, array $gameStates = null)
     {
-        parent::__construct($competitionSport, $gameStates ?? [State::Finished]);
+        parent::__construct($competitionSport, $gameStates ?? [GameState::Finished]);
         $functionMapCreator = new RankingFunctionMapCreator();
         $this->rankFunctionMap = $functionMapCreator->getMap();
     }

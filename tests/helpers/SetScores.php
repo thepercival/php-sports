@@ -4,18 +4,18 @@ declare(strict_types=1);
 
 namespace Sports\TestHelper;
 
-use Sports\Poule;
-use Sports\Place;
 use Sports\Game\Against as AgainstGame;
 use Sports\Game\Phase as GamePhase;
 use Sports\Game\Place\Against as AgainstGamPlace;
+use Sports\Game\State as GameState;
+use Sports\Place;
+use Sports\Poule;
 use Sports\Score\Against as AgainstGameScore;
 use SportsHelpers\Against\Side as AgainstSide;
-use Sports\State;
 
 trait SetScores
 {
-    protected function setScoreSingle(Poule $poule, int $homePlaceNr, int $awayPlaceNr, int $homeGoals, int $awayGoals, int $state = null): void
+    protected function setScoreSingle(Poule $poule, int $homePlaceNr, int $awayPlaceNr, int $homeGoals, int $awayGoals, GameState $state = null): void
     {
         $homePlace = $poule->getPlace($homePlaceNr);
         $awayPlace = $poule->getPlace($awayPlaceNr);
@@ -67,6 +67,6 @@ trait SetScores
         $newAwayGoals = $foundGame->getSide($awayPlace) === AgainstSide::Away ? $awayGoals : $homeGoals;
 
         $foundGame->getScores()->add(new AgainstGameScore($foundGame, $newHomeGoals, $newAwayGoals, GamePhase::RegularTime));
-        $foundGame->setState($state !== null ? $state : State::Finished);
+        $foundGame->setState($state !== null ? $state : GameState::Finished);
     }
 }

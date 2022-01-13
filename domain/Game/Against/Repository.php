@@ -5,12 +5,13 @@ declare(strict_types=1);
 namespace Sports\Game\Against;
 
 use Doctrine\ORM\QueryBuilder;
+use League\Period\Period;
 use Sports\Competition;
-use Sports\Game\Place\Against as AgainstGamePlace;
-use Sports\Game\Repository as GameRepository;
 use Sports\Competitor;
 use Sports\Game\Against as AgainstGame;
-use League\Period\Period;
+use Sports\Game\Place\Against as AgainstGamePlace;
+use Sports\Game\Repository as GameRepository;
+use Sports\Game\State as GameState;
 use Sports\Round\Number as RoundNumber;
 use SportsHelpers\Against\Side as AgainstSide;
 
@@ -64,14 +65,14 @@ class Repository extends GameRepository
 
     /**
      * @param Competition $competition
-     * @param int|null $gameStates
+     * @param list<GameState>|null $gameStates
      * @param int|null $gameRoundNumber
      * @param Period|null $period
      * @return list<AgainstGame>
      */
     public function getCompetitionGames(
         Competition $competition,
-        int $gameStates = null,
+        array $gameStates = null,
         int $gameRoundNumber = null,
         Period $period = null
     ): array {
@@ -82,9 +83,16 @@ class Repository extends GameRepository
         return $games;
     }
 
+    /**
+     * @param Competition $competition
+     * @param list<GameState>|null $gameStates
+     * @param int|null $gameRoundNumber
+     * @param Period|null $period
+     * @return bool
+     */
     public function hasCompetitionGames(
         Competition $competition,
-        int $gameStates = null,
+        array $gameStates = null,
         int $gameRoundNumber = null,
         Period $period = null
     ): bool {
@@ -98,9 +106,16 @@ class Repository extends GameRepository
         return count($games) === 1;
     }
 
+    /**
+     * @param Competition $competition
+     * @param list<GameState>|null $gameStates
+     * @param int|null $gameRoundNumber
+     * @param Period|null $period
+     * @return int
+     */
     public function getNrOfCompetitionGamePlaces(
         Competition $competition,
-        int $gameStates = null,
+        array $gameStates = null,
         int $gameRoundNumber = null,
         Period $period = null
     ): int {
@@ -114,9 +129,17 @@ class Repository extends GameRepository
         return count($gamePlaces);
     }
 
+    /**
+     * @param Competition $competition
+     * @param list<GameState>|null $gameStates
+     * @param int|null $gameRoundNumber
+     * @param Period|null $period
+     * @return QueryBuilder
+     * @throws \Exception
+     */
     protected function getCompetitionGamesQuery(
         Competition $competition,
-        int $gameStates = null,
+        array $gameStates = null,
         int $gameRoundNumber = null,
         Period $period = null
     ): QueryBuilder {
@@ -130,9 +153,17 @@ class Repository extends GameRepository
         return $this->applyExtraFilters($query, $gameStates, $gameRoundNumber, $period);
     }
 
+    /**
+     * @param Competition $competition
+     * @param list<GameState>|null $gameStates
+     * @param int|null $gameRoundNumber
+     * @param Period|null $period
+     * @return QueryBuilder
+     * @throws \Exception
+     */
     protected function getCompetitionGamePlacessQuery(
         Competition $competition,
-        int $gameStates = null,
+        array $gameStates = null,
         int $gameRoundNumber = null,
         Period $period = null
     ): QueryBuilder {
@@ -151,18 +182,24 @@ class Repository extends GameRepository
 
     /**
      * @param RoundNumber $roundNumber
-     * @param int|null $gameStates
+     * @param list<GameState>|null $gameStates
      * @param int|null $gameRoundNumber
      * @return list<AgainstGamePlace>
      */
-    public function getRoundNumberGames(RoundNumber $roundNumber, int $gameStates = null, int $gameRoundNumber = null): array
+    public function getRoundNumberGames(RoundNumber $roundNumber, array $gameStates = null, int $gameRoundNumber = null): array
     {
         /** @var list<AgainstGamePlace> $games */
         $games = $this->getRoundNumberGamesQuery($roundNumber, $gameStates, $gameRoundNumber)->getQuery()->getResult();
         return $games;
     }
 
-    public function hasRoundNumberGames(RoundNumber $roundNumber, int $gameStates = null, int $gameRoundNumber = null): bool
+    /**
+     * @param RoundNumber $roundNumber
+     * @param list<GameState>|null $gameStates
+     * @param int|null $gameRoundNumber
+     * @return bool
+     */
+    public function hasRoundNumberGames(RoundNumber $roundNumber, array $gameStates = null, int $gameRoundNumber = null): bool
     {
         /** @var list<AgainstGamePlace> $games */
         $games = $this->getRoundNumberGamesQuery(
@@ -173,7 +210,14 @@ class Repository extends GameRepository
         return count($games) === 1;
     }
 
-    protected function getRoundNumberGamesQuery(RoundNumber $roundNumber, int $gameStates = null, int $gameRoundNumber = null): QueryBuilder
+    /**
+     * @param RoundNumber $roundNumber
+     * @param list<GameState>|null $gameStates
+     * @param int|null $gameRoundNumber
+     * @return QueryBuilder
+     * @throws \Exception
+     */
+    protected function getRoundNumberGamesQuery(RoundNumber $roundNumber, array $gameStates = null, int $gameRoundNumber = null): QueryBuilder
     {
         $query = $this->createQueryBuilder('g')
             ->join("g.poule", "p")
@@ -185,17 +229,25 @@ class Repository extends GameRepository
         return $this->applyExtraFilters($query, $gameStates, $gameRoundNumber);
     }
 
+    /**
+     * @param QueryBuilder $query
+     * @param list<GameState>|null $gameStates
+     * @param int|null $gameRoundNumber
+     * @param Period|null $period
+     * @return QueryBuilder
+     * @throws \Exception
+     */
     protected function applyExtraFilters(
         QueryBuilder $query,
-        int $gameStates = null,
+        array $gameStates = null,
         int $gameRoundNumber = null,
         Period $period = null
     ): QueryBuilder {
         if ($gameStates !== null) {
-            // $query = $query->andWhere('g.state & :gamestates = g.state');
-            $query = $query
-                ->andWhere('BIT_AND(g.state, :gamestates) > 0')
-                ->setParameter('gamestates', $gameStates);
+            throw new \Exception('IMPLEMENT MULTIPLE GAMESTATES');
+//            $query = $query
+//                ->andWhere('BIT_AND(g.state, :gamestates) > 0')
+//                ->setParameter('gamestates', $gameStates);
         }
         if ($gameRoundNumber !== null) {
             $query = $query

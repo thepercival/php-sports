@@ -10,6 +10,7 @@ use Exception;
 use InvalidArgumentException;
 use Sports\Competition\Sport as CompetitionSport;
 use Sports\Game\Against as AgainstGame;
+use Sports\Game\State as GameState;
 use Sports\Game\Together as TogetherGame;
 use Sports\Place\Location as PlaceLocation;
 use Sports\Poule\Horizontal as HorizontalPoule;
@@ -386,10 +387,10 @@ class Round extends Identifiable
     }
 
     /**
-     * @param int $state
+     * @param GameState $state
      * @return list<AgainstGame|TogetherGame>
      */
-    public function getGamesWithState(int $state): array
+    public function getGamesWithState(GameState $state): array
     {
         $games = [];
         foreach ($this->getPoules() as $poule) {
@@ -398,29 +399,29 @@ class Round extends Identifiable
         return array_values($games);
     }
 
-    public function getState(): int
+    public function getGamesState(): GameState
     {
         $allPlayed = true;
         foreach ($this->getPoules() as $poule) {
-            if ($poule->getState() !== State::Finished) {
+            if ($poule->getGamesState() !== GameState::Finished) {
                 $allPlayed = false;
                 break;
             }
         }
         if ($allPlayed) {
-            return State::Finished;
+            return GameState::Finished;
         }
         foreach ($this->getPoules() as $poule) {
-            if ($poule->getState() !== State::Created) {
-                return State::InProgress;
+            if ($poule->getGamesState() !== GameState::Created) {
+                return GameState::InProgress;
             }
         }
-        return State::Created;
+        return GameState::Created;
     }
 
     public function hasBegun(): bool
     {
-        return $this->getState() > State::Created;
+        return $this->getGamesState()->value > GameState::Created->value;
     }
 
     public function getNrOfPlaces(): int

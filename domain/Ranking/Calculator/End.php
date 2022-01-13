@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Sports\Ranking\Calculator;
 
 use Closure;
+use Sports\Game\State as GameState;
 use Sports\Place;
 use Sports\Poule\Horizontal as HorizontalPoule;
 use Sports\Qualify\Rule\Single as SingleQualifyRule;
@@ -12,7 +13,6 @@ use Sports\Qualify\Target as QualifyTarget;
 use Sports\Ranking\Calculator\Round as RoundRankingCalculator;
 use Sports\Ranking\Item\End as EndRankingItem;
 use Sports\Round;
-use Sports\State;
 use Sports\Structure;
 
 class End
@@ -35,7 +35,7 @@ class End
             foreach ($round->getTargetQualifyGroups(QualifyTarget::Winners) as $qualifyGroup) {
                 $items = array_merge($items, $getItems($qualifyGroup->getChildRound()));
             }
-            if ($round->getState() === State::Finished) {
+            if ($round->getGamesState() === GameState::Finished) {
                 $items = array_merge($items, $this->getDropouts($round));
             } else {
                 $items = array_merge($items, $this->getDropoutsNotPlayed($round));

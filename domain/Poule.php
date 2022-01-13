@@ -9,6 +9,7 @@ use Doctrine\Common\Collections\Collection;
 use InvalidArgumentException;
 use Sports\Competition\Sport as CompetitionSport;
 use Sports\Game\Against as AgainstGame;
+use Sports\Game\State as GameState;
 use Sports\Game\Together as TogetherGame;
 use SportsHelpers\Identifiable;
 
@@ -154,10 +155,10 @@ class Poule extends Identifiable
     }
 
     /**
-     * @param int $state
+     * @param GameState $state
      * @return array<int|string, AgainstGame|TogetherGame>
      */
-    public function getGamesWithState(int $state): array
+    public function getGamesWithState(GameState $state): array
     {
         return array_filter($this->getGames(), function (AgainstGame|TogetherGame $gameIt) use ($state): bool {
             return $gameIt->getState() === $state;
@@ -176,24 +177,24 @@ class Poule extends Identifiable
         return (int)(($nrOfPlaces - $rest) / $sportVariant->getNrOfGamePlaces());
     }*/
 
-    public function getState(CompetitionSport|null $competitionSport = null): int
+    public function getGamesState(CompetitionSport|null $competitionSport = null): GameState
     {
         $allPlayed = true;
         $games = $this->getGames($competitionSport);
         foreach ($games as $game) {
-            if ($game->getState() !== State::Finished) {
+            if ($game->getState() !== GameState::Finished) {
                 $allPlayed = false;
                 break;
             }
         }
         if (count($games) > 0 && $allPlayed) {
-            return State::Finished;
+            return GameState::Finished;
         }
         foreach ($games as $game) {
-            if ($game->getState() !== State::Created) {
-                return State::InProgress;
+            if ($game->getState() !== GameState::Created) {
+                return GameState::InProgress;
             }
         }
-        return State::Created;
+        return GameState::Created;
     }
 }

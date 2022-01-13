@@ -105,7 +105,6 @@ class Sport extends Identifiable
 
     public function setDefaultGameModeNative(int $defaultGameMode): void
     {
-        /** @psalm-suppress MixedAssignment, UndefinedMethod */
         $this->defaultGameMode = GameMode::from($defaultGameMode);
     }
 }

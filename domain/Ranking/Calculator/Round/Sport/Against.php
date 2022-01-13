@@ -6,6 +6,7 @@ namespace Sports\Ranking\Calculator\Round\Sport;
 
 use Sports\Competition\Sport as CompetitionSport;
 use Sports\Game\Against as AgainstGame;
+use Sports\Game\State as GameState;
 use Sports\Place;
 use Sports\Place\SportPerformance\Calculator as PerformanceCalculator;
 use Sports\Place\SportPerformance\Calculator\Against as AgainstPerformanceCalculator;
@@ -14,19 +15,18 @@ use Sports\Ranking\Calculator\Round\Sport as SportRoundRankingCalculator;
 use Sports\Ranking\FunctionMapCreator\Against as AgainstRankingFunctionMapCreator;
 use Sports\Ranking\Item\Round\Sport as SportRoundRankingItem;
 use Sports\Round;
-use Sports\State;
 use SportsHelpers\Against\Side as AgainstSide;
 
 class Against extends SportRoundRankingCalculator
 {
     /**
      * @param CompetitionSport $competitionSport
-     * @param list<int>|null $gameStates
+     * @param list<GameState>|null $gameStates
      */
     public function __construct(CompetitionSport $competitionSport, array $gameStates = null)
     {
-        parent::__construct($competitionSport, $gameStates ?? [State::Finished]);
-        $functionMapCreator = new AgainstRankingFunctionMapCreator($competitionSport, $gameStates ?? [State::Finished]);
+        parent::__construct($competitionSport, $gameStates ?? [GameState::Finished]);
+        $functionMapCreator = new AgainstRankingFunctionMapCreator($competitionSport, $gameStates ?? [GameState::Finished]);
         $this->rankFunctionMap = $functionMapCreator->getMap();
     }
 

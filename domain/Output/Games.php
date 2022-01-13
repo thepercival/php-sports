@@ -9,6 +9,7 @@ use Sports\Competitor\Map as CompetitorMap;
 use Sports\Game\Against as AgainstGame;
 use Sports\Game\Order as GameOrder;
 use Sports\Output\Game\Against as AgainstGameOutput;
+use Sports\Output\Game\Column;
 use Sports\Output\Game\Together as TogetherGameOutput;
 use Sports\Round\Number as RoundNumber;
 use SportsHelpers\Output as OutputBase;
@@ -25,11 +26,15 @@ class Games extends OutputBase
         $this->togetherOutput = new TogetherGameOutput($competitorMap, $logger);
     }
 
-    public function outputRoundNumber(RoundNumber $roundNumber): void
+    /**
+     * @param RoundNumber $roundNumber
+     * @param list<Column>|null $columns
+     */
+    public function outputRoundNumber(RoundNumber $roundNumber, array $columns = null): void
     {
         foreach ($roundNumber->getGames(GameOrder::ByBatch) as $game) {
             if ($game instanceof AgainstGame) {
-                $this->againstOutput->output($game);
+                $this->againstOutput->output($game, null, $columns);
             } else {
                 $this->togetherOutput->output($game);
             }

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Sports\Ranking\Calculator;
 
 use Sports\Competition\Sport as CompetitionSport;
+use Sports\Game\State as GameState;
 use Sports\Place;
 use Sports\Poule;
 use Sports\Poule\Horizontal as HorizontalPoule;
@@ -14,22 +15,21 @@ use Sports\Ranking\Calculator\Round\Sport\Against as AgainstSportRoundRankingCal
 use Sports\Ranking\Calculator\Round\Sport\Together as TogetherSportRoundRankingCalculator;
 use Sports\Ranking\Item\Round as RoundRankingItem;
 use Sports\Ranking\Item\Round\Sport as SportRoundRankingItem;
-use Sports\State;
 use SportsHelpers\GameMode;
 
 class Round
 {
     /**
-     * @var list<int>
+     * @var list<GameState>
      */
     protected array $gameStates;
 
     /**
-     * @param list<int>|null $gameStates
+     * @param list<GameState>|null $gameStates
      */
     public function __construct(array $gameStates = null)
     {
-        $this->gameStates = $gameStates ?? [State::Finished];
+        $this->gameStates = $gameStates ?? [GameState::Finished];
     }
 
     protected function getSportRoundRankingCalculator(CompetitionSport $competitionSport): SportRoundRankingCalculator
