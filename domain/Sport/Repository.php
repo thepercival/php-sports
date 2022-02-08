@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Sports\Sport;
 
-use SportsHelpers\Repository as BaseRepository;
-use Sports\Sport as SportBase;
 use Doctrine\ORM\EntityRepository;
+use Sports\Sport as SportBase;
+use SportsHelpers\Repository as BaseRepository;
 
 /**
  * @template-extends EntityRepository<SportBase>
@@ -29,7 +29,6 @@ class Repository extends EntityRepository
             $operator = $withCustomId ? '>' : '=';
             $qb = $qb->andWhere('s.customId ' . $operator .' 0');
         }
-        /** @var list<SportBase> $result */
         $result = $qb->getQuery()->getResult();
         return $result;
     }

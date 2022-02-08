@@ -137,17 +137,18 @@ class AgainstGame
     protected function getParticipation(GameParticipation|null $participation): array
     {
         if ($participation === null) {
-            return ['','',''];
+            return ['', '', ''];
         }
 
-        $playerLineLetter = $participation->getPlayer()->getLineLetter();
+        $footballLine = Sport\FootballLine::from($participation->getPlayer()->getLine());
+        $playerLineLetter = Sport\FootballLine::getFirstChar($footballLine);
         $playerName = $participation->getPlayer()->getPerson()->getName();
 
         $beginMinute = $participation->getBeginMinute();
         $begin = $beginMinute > 0 ? $beginMinute : ($beginMinute === 0 ? 'B' : '');
         $endMinute = $participation->getEndMinute();
         $end = $endMinute > 0 ? $endMinute : '';
-        return [  $playerLineLetter . ' ' . $playerName, (string)$begin, (string)$end ];
+        return [$playerLineLetter . ' ' . $playerName, (string)$begin, (string)$end];
     }
 
     protected function displayEvents(ConsoleTable $table, AgainstGameBase $game): void

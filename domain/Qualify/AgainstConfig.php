@@ -106,7 +106,6 @@ class AgainstConfig extends Identifiable
 
     public function setPointsCalculationNative(int $pointsCalculation): void
     {
-        /** @psalm-suppress MixedAssignment, UndefinedMethod */
         $this->pointsCalculation = PointsCalculation::from($pointsCalculation);
     }
 }

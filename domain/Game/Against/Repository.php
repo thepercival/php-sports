@@ -22,15 +22,15 @@ class Repository extends GameRepository
 {
     public function findOneByExt(Competitor $homeCompetitor, Competitor $awayCompetitor, Period $period): ?AgainstGame
     {
-        $exprHome = $this->_em->getExpressionBuilder();
-        $exprAway = $this->_em->getExpressionBuilder();
+        $exprHome = $this->getEntityManager()->getExpressionBuilder();
+        $exprAway = $this->getEntityManager()->getExpressionBuilder();
 
         $query = $this->createQueryBuilder('g')
             ->where('g.startDateTime >= :start')
             ->andWhere('g.startDateTime <= :end')
             ->andWhere(
                 $exprHome->exists(
-                    $this->_em->createQueryBuilder()
+                    $this->getEntityManager()->createQueryBuilder()
                         ->select('gpphome.id')
                         ->from('Sports\Game\Place', 'gpphome')
                         ->join("gpphome.place", "pphome")
@@ -42,7 +42,7 @@ class Repository extends GameRepository
             )
             ->andWhere(
                 $exprAway->exists(
-                    $this->_em->createQueryBuilder()
+                    $this->getEntityManager()->createQueryBuilder()
                         ->select('gppaway.id')
                         ->from('Sports\Game\Place', 'gppaway')
                         ->join("gppaway.place", "ppaway")
@@ -167,7 +167,7 @@ class Repository extends GameRepository
         int $gameRoundNumber = null,
         Period $period = null
     ): QueryBuilder {
-        $query = $this->_em->createQueryBuilder()
+        $query = $this->getEntityManager()->createQueryBuilder()
             ->select('gp')
             ->from('Sports\Game\Place\Against', 'gp')
             ->join("gp.game", "g")
@@ -244,10 +244,9 @@ class Repository extends GameRepository
         Period $period = null
     ): QueryBuilder {
         if ($gameStates !== null) {
-            throw new \Exception('IMPLEMENT MULTIPLE GAMESTATES');
-//            $query = $query
-//                ->andWhere('BIT_AND(g.state, :gamestates) > 0')
-//                ->setParameter('gamestates', $gameStates);
+            $query = $query
+                ->andWhere('g.state IN(:gamestates)')
+                ->setParameter('gamestates', array_map(fn(GameState $gameState) => $gameState->value, $gameStates));
         }
         if ($gameRoundNumber !== null) {
             $query = $query

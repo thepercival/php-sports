@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Sports\Round\Number;
 
-use Sports\Game\Order;
-use SportsHelpers\Repository as BaseRepository;
 use Doctrine\ORM\EntityRepository;
+use Sports\Game\Order;
 use Sports\Round\Number as RoundNumber;
+use SportsHelpers\Repository as BaseRepository;
 
 /**
  * @template-extends EntityRepository<RoundNumber>
@@ -25,30 +25,30 @@ class Repository extends EntityRepository
             $games = $poule->getAgainstGames();
             while ($game = $games->first()) {
                 $games->removeElement($game);
-                $this->_em->remove($game);
+                $this->getEntityManager()->remove($game);
             }
             $games = $poule->getTogetherGames();
             while ($game = $games->first()) {
                 $games->removeElement($game);
-                $this->_em->remove($game);
+                $this->getEntityManager()->remove($game);
             }
         }
         // $roundNumber->setHasPlanning(false);
         // $this->_em->persist($roundNumber);
 
-        $this->_em->flush();
+        $this->getEntityManager()->flush();
     }
 
     public function savePlanning(RoundNumber $roundNumber): void
     {
         foreach ($roundNumber->getGames(Order::ByPoule) as $game) {
-            $this->_em->persist($game);
+            $this->getEntityManager()->persist($game);
         }
 //        if ($hasPlanning !== null) {
 //            $roundNumber->setHasPlanning($hasPlanning);
 //            $this->_em->persist($roundNumber);
 //        }
 
-        $this->_em->flush();
+        $this->getEntityManager()->flush();
     }
 }

@@ -180,7 +180,6 @@ class Group extends Identifiable
 
     public function setTargetNative(string $target): void
     {
-        /** @psalm-suppress MixedAssignment, UndefinedMethod */
         $this->target = Target::from($target);
     }
 }

@@ -4,17 +4,17 @@ declare(strict_types=1);
 
 namespace Sports\Competition\Sport;
 
+use Doctrine\ORM\EntityRepository;
 use Exception;
-use SportsHelpers\Repository as BaseRepository;
-use Sports\Score\Config as ScoreConfig;
+use Sports\Competition\Sport as CompetitionSport;
 use Sports\Planning\GameAmountConfig;
 use Sports\Planning\GameAmountConfig\Repository as GameAmountConfigRepos;
 use Sports\Qualify\AgainstConfig as AgainstQualifyConfig;
 use Sports\Qualify\AgainstConfig\Repository as AgainstQualifyConfigRepos;
+use Sports\Score\Config as ScoreConfig;
 use Sports\Score\Config\Repository as ScoreConfigRepos;
-use Sports\Competition\Sport as CompetitionSport;
 use Sports\Structure;
-use Doctrine\ORM\EntityRepository;
+use SportsHelpers\Repository as BaseRepository;
 
 /**
  * @template-extends EntityRepository<CompetitionSport>
@@ -28,25 +28,26 @@ class Repository extends EntityRepository
 
     public function customAdd(CompetitionSport $competitionSport, Structure $structure): void
     {
-        $conn = $this->_em->getConnection();
+        $em = $this->getEntityManager();
+        $conn = $em->getConnection();
         $conn->beginTransaction();
         try {
             $this->save($competitionSport);
 
+            $metaData = $em->getClassMetadata(ScoreConfig::class);
             $rootRound = $structure->getRootRound();
-            /** @psalm-suppress MixedArgumentTypeCoercion */
-            $scoreRepos = new ScoreConfigRepos($this->_em, $this->_em->getClassMetadata(ScoreConfig::class));
+            $scoreRepos = new ScoreConfigRepos($em, $metaData);
             $scoreRepos->addObjects($competitionSport, $rootRound);
-            /** @psalm-suppress MixedArgumentTypeCoercion */
-            $againstQualifyConfigRepos = new AgainstQualifyConfigRepos($this->_em, $this->_em->getClassMetadata(AgainstQualifyConfig::class));
+            $metaData = $em->getClassMetadata(AgainstQualifyConfig::class);
+            $againstQualifyConfigRepos = new AgainstQualifyConfigRepos($em, $metaData);
             $againstQualifyConfigRepos->addObjects($competitionSport, $rootRound);
 
             $firstRoundNumber = $structure->getFirstRoundNumber();
-            /** @psalm-suppress MixedArgumentTypeCoercion */
-            $gameAmountRepos = new GameAmountConfigRepos($this->_em, $this->_em->getClassMetadata(GameAmountConfig::class));
+            $metaData = $em->getClassMetadata(GameAmountConfig::class);
+            $gameAmountRepos = new GameAmountConfigRepos($em, $metaData);
             $gameAmountRepos->addObjects($competitionSport, $firstRoundNumber);
 
-            $this->_em->flush();
+            $em->flush();
             $conn->commit();
         } catch (Exception $e) {
             $conn->rollBack();
@@ -56,12 +57,12 @@ class Repository extends EntityRepository
 
     public function customRemove(CompetitionSport $competitionSport): void
     {
-        $conn = $this->_em->getConnection();
+        $conn = $this->getEntityManager()->getConnection();
         $conn->beginTransaction();
         try {
             while ($field = $competitionSport->getFields()->first()) {
                 $competitionSport->getFields()->removeElement($field);
-                $this->_em->remove($field);
+                $this->getEntityManager()->remove($field);
             }
 
             // $scoreRepos = new ScoreConfigRepos($this->_em, $this->_em->getClassMetadata(ScoreConfig::class));
@@ -74,10 +75,10 @@ class Repository extends EntityRepository
             $this->remove($competitionSport);
 
             if ($this->findOneBy(["sport" => $sport ]) === null) {
-                $this->_em->remove($sport);
+                $this->getEntityManager()->remove($sport);
             }
 
-            $this->_em->flush();
+            $this->getEntityManager()->flush();
             $conn->commit();
         } catch (Exception $e) {
             $conn->rollBack();

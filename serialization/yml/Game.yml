@@ -9,11 +9,11 @@ Sports\Game:
     batchNr:
       type: integer
     state:
-      type: integer
-        access_type: public_method
-        accessor:
-          getter: getStateNative
-      read_only: true
+      type: string
+      access_type: public_method # defaults to property
+      accessor: # access_type must be set to public_method
+        getter: getStateNative
+        setter: setStateNative
     startDateTime:
       type: DateTimeImmutable<'Y-m-d\TH:i:s.u\Z'>
     competitionSport:

@@ -8,18 +8,15 @@ use Exception;
 use PHPUnit\Framework\TestCase;
 use Sports\Place;
 use Sports\Qualify\Group as QualifyGroup;
+use Sports\Qualify\Target as QualifyTarget;
 use Sports\Round;
 use Sports\Round\Number as RoundNumber;
 use Sports\Structure;
-use Sports\TestHelper\CompetitionCreator;
-use Sports\Structure\Editor as StructureService;
 use Sports\Structure\Validator as StructureValidator;
-use Sports\Qualify\Target as QualifyTarget;
+use Sports\TestHelper\CompetitionCreator;
 use Sports\TestHelper\GamesCreator;
 use Sports\TestHelper\StructureEditorCreator;
 use SportsHelpers\PlaceRanges;
-use SportsHelpers\PouleStructure;
-use SportsHelpers\Sport\Variant\Against as AgainstSportVariant;
 
 final class ValidatorTest extends TestCase
 {
@@ -120,7 +117,7 @@ final class ValidatorTest extends TestCase
 
     public function testWithPlaceRanges(): void
     {
-        $sportVariant = new AgainstSportVariant(2, 2, 0, 3);
+        $sportVariant = $this->getAgainstSportVariantWithFields(2, 2, 2, 0, 3);
         $competition = $this->createCompetition($sportVariant);
 
         $structureEditor = $this->createStructureEditor();

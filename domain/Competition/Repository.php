@@ -6,12 +6,12 @@ namespace Sports\Competition;
 
 use DateTimeImmutable;
 use Doctrine\ORM\EntityRepository;
-use SportsHelpers\Repository as BaseRepository;
 use League\Period\Period;
 use Sports\Competition;
 use Sports\League;
 use Sports\Season;
 use Sports\Sport;
+use SportsHelpers\Repository as BaseRepository;
 
 /**
  * @template-extends EntityRepository<Competition>
@@ -25,18 +25,19 @@ class Repository extends EntityRepository
 
     public function customPersist(Competition $competition): void
     {
+        $em = $this->getEntityManager();
         foreach ($competition->getReferees() as $referee) {
-            $this->_em->persist($referee);
+            $em->persist($referee);
         }
 
         foreach ($competition->getSports() as $competitionSport) {
-            $this->_em->persist($competitionSport);
+            $em->persist($competitionSport);
             foreach ($competitionSport->getFields() as $field) {
-                $this->_em->persist($field);
+                $em->persist($field);
             }
         }
 
-        $this->_em->persist($competition);
+        $em->persist($competition);
     }
 
     public function findOneExt(League $league, Season $season): Competition|null
@@ -46,7 +47,7 @@ class Repository extends EntityRepository
             ->andWhere('c.league = :league');
         $query = $query->setParameter('season', $season);
         $query = $query->setParameter('league', $league);
-        /** @var list<Competition> $results */
+
         $results = $query->getQuery()->getResult();
         $result = reset($results);
         return $result !== false ? $result : null;
@@ -62,7 +63,7 @@ class Repository extends EntityRepository
 
         $query = $query->setParameter('date', $date);
         $query = $query->setParameter('league', $league);
-        /** @var list<Competition> $results */
+
         $results = $query->getQuery()->getResult();
         $result = reset($results);
         return $result !== false ? $result : null;
@@ -80,7 +81,7 @@ class Repository extends EntityRepository
             ->andWhere('s.endDateTime >= :date');
 
         $query = $query->setParameter('date', $date);
-        /** @var list<Competition> $results */
+
         $results = $query->getQuery()->getResult();
         return $results;
     }
@@ -109,7 +110,7 @@ class Repository extends EntityRepository
             $qb = $qb->setParameter('periodEnd', $period->getEndDate());
             $qb = $qb->setParameter('periodStart', $period->getStartDate());
         }
-        /** @var list<Competition> $results */
+
         $results = $qb->getQuery()->getResult();
         return $results;
     }

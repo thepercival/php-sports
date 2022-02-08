@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Sports\Season;
 
-use SportsHelpers\Repository as BaseRepository;
 use Doctrine\ORM\EntityRepository;
 use League\Period\Period;
 use Sports\Season as SeasonBase;
+use SportsHelpers\Repository as BaseRepository;
 
 /**
  * @template-extends EntityRepository<SeasonBase>
@@ -27,7 +27,7 @@ class Repository extends EntityRepository
 
         $query = $query->setParameter('end', $period->getEndDate());
         $query = $query->setParameter('start', $period->getEndDate());
-        /** @var list<SeasonBase> $seasons */
+
         $seasons = $query->getQuery()->getResult();
         $season = reset($seasons);
         return $season !== false ? $season : null;

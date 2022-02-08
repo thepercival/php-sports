@@ -16,6 +16,7 @@ use SportsHelpers\Sport\VariantWithFields as SportVariantWithFields;
 use SportsPlanning\Input as PlanningInput;
 use SportsPlanning\Input\Calculator as InputCalculator;
 use SportsPlanning\Input\Service as PlanningInputService;
+use SportsPlanning\Referee\Info as RefereeInfo;
 
 class PlanningInputCreator
 {
@@ -27,23 +28,21 @@ class PlanningInputCreator
     {
         $config = $roundNumber->getValidPlanningConfig();
 
-        $sportVariantsWithFields = $this->createSportVariantsWithFields($roundNumber);
         $pouleStructure = $this->createPouleStructure($roundNumber);
+        $sportVariantsWithFields = $this->createSportVariantsWithFields($roundNumber);
+
         $selfReferee = $this->getSelfReferee(
             $config,
             $roundNumber->createSportVariants(),
             $pouleStructure
         );
-        if ($selfReferee !== SelfReferee::Disabled) {
-            $nrOfReferees = 0;
-        }
-        $efficientSportVariants = $this->reduceFields($pouleStructure, $sportVariantsWithFields, $nrOfReferees, $selfReferee !== SelfReferee::Disabled);
+        $refereeInfo = new RefereeInfo($selfReferee === SelfReferee::Disabled ? $nrOfReferees : $selfReferee);
+        $efficientSportVariants = $this->reduceFields($pouleStructure, $sportVariantsWithFields, $refereeInfo);
         return new PlanningInput(
             $pouleStructure,
             $efficientSportVariants,
             $config->getGamePlaceStrategy(),
-            $nrOfReferees,
-            $selfReferee,
+            $refereeInfo
         );
     }
 
@@ -97,14 +96,20 @@ class PlanningInputCreator
     /**
      * @param PouleStructure $pouleStructure
      * @param list<SportVariantWithFields> $sportVariantsWithFields
-     * @param bool $selfReferee
-     * @param int $nrOfReferees
+     * @param RefereeInfo $refereeInfo
      * @return list<SportVariantWithFields>
      */
-    protected function reduceFields(PouleStructure $pouleStructure, array $sportVariantsWithFields, int $nrOfReferees, bool $selfReferee): array
-    {
+    protected function reduceFields(
+        PouleStructure $pouleStructure,
+        array $sportVariantsWithFields,
+        RefereeInfo $refereeInfo
+    ): array {
         $inputCalculator = new InputCalculator();
-        $maxNrOfGamesPerBatch = $inputCalculator->getMaxNrOfGamesPerBatch($pouleStructure, $sportVariantsWithFields, $nrOfReferees, $selfReferee);
+        $maxNrOfGamesPerBatch = $inputCalculator->getMaxNrOfGamesPerBatch(
+            $pouleStructure,
+            $sportVariantsWithFields,
+            $refereeInfo
+        );
         $reducedSportVariants = [];
         foreach ($sportVariantsWithFields as $sportVariantWithField) {
             $reducedNrOfFields = $sportVariantWithField->getNrOfFields();
@@ -117,12 +122,90 @@ class PlanningInputCreator
             );
         }
 
+        $moreReducedSportVariants = $this->reduceFieldsBySports($pouleStructure, $reducedSportVariants);
+
         usort(
-            $reducedSportVariants,
+            $moreReducedSportVariants,
             function (SportVariantWithFields $sportA, SportVariantWithFields $sportB): int {
                 return $sportA->getNrOfFields() > $sportB->getNrOfFields() ? -1 : 1;
             }
         );
-        return $reducedSportVariants;
+        return $moreReducedSportVariants;
+    }
+
+    /**
+     * @param PouleStructure $pouleStructure
+     * @param list<SportVariantWithFields> $sportVariantsWithFields
+     * @return list<SportVariantWithFields>
+     */
+    protected function reduceFieldsBySports(PouleStructure $pouleStructure, array $sportVariantsWithFields): array
+    {
+        $leastNrOfBatchesNeeded = $this->getLeastNrOfBatchesNeeded($pouleStructure, $sportVariantsWithFields);
+        return array_map(
+            function (SportVariantWithFields $sportVariantWithFields) use (
+                $pouleStructure,
+                $leastNrOfBatchesNeeded
+            ): SportVariantWithFields {
+                return $this->reduceSportVariantFields(
+                    $pouleStructure,
+                    $sportVariantWithFields,
+                    $leastNrOfBatchesNeeded
+                );
+            },
+            $sportVariantsWithFields
+        );
+    }
+
+    protected function reduceSportVariantFields(
+        PouleStructure $pouleStructure,
+        SportVariantWithFields $sportVariantWithFields,
+        int $minNrOfBatches
+    ): SportVariantWithFields {
+        $sportVariant = $sportVariantWithFields->getSportVariant();
+        $nrOfFields = $sportVariantWithFields->getNrOfFields();
+        if ($nrOfFields === 1) {
+            return $sportVariantWithFields;
+        }
+        $nrOfBatchesNeeded = $this->getNrOfBatchesNeeded($pouleStructure, $sportVariant, $nrOfFields);
+        while ($nrOfBatchesNeeded < $minNrOfBatches) {
+            if (--$nrOfFields === 1) {
+                break;
+            }
+            $nrOfBatchesNeeded = $this->getNrOfBatchesNeeded($pouleStructure, $sportVariant, $nrOfFields);
+        }
+        return new SportVariantWithFields($sportVariant, $nrOfFields);
+    }
+
+    /**
+     * @param PouleStructure $pouleStructure
+     * @param list<SportVariantWithFields> $sportVariantsWithFields
+     * @return int
+     */
+    protected function getLeastNrOfBatchesNeeded(PouleStructure $pouleStructure, array $sportVariantsWithFields): int
+    {
+        $leastNrOfBatchesNeeded = null;
+        foreach ($sportVariantsWithFields as $sportVariantWithField) {
+            $nrOfBatchesNeeded = $this->getNrOfBatchesNeeded(
+                $pouleStructure,
+                $sportVariantWithField->getSportVariant(),
+                $sportVariantWithField->getNrOfFields()
+            );
+            if ($leastNrOfBatchesNeeded === null || $nrOfBatchesNeeded > $leastNrOfBatchesNeeded) {
+                $leastNrOfBatchesNeeded = $nrOfBatchesNeeded;
+            }
+        }
+        if ($leastNrOfBatchesNeeded === null) {
+            throw new \Exception('at least one sport is needed', E_ERROR);
+        }
+        return $leastNrOfBatchesNeeded;
+    }
+
+    protected function getNrOfBatchesNeeded(
+        PouleStructure $pouleStructure,
+        AgainstSportVariant|SingleSportVariant|AllInOneGameSportVariant $sportVariant,
+        int $nrOfFields
+    ): int {
+        $nrOfGames = $pouleStructure->getTotalNrOfGames([$sportVariant]);
+        return (int)ceil($nrOfGames / $nrOfFields);
     }
 }

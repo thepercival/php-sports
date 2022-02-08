@@ -17,8 +17,7 @@ use Sports\Sport;
 use Sports\Sport\Custom as SportCustom;
 use SportsHelpers\GameMode;
 use SportsHelpers\Sport\Variant\Against as AgainstSportVariant;
-use SportsHelpers\Sport\Variant\AllInOneGame as AllInOneGameSportVariant;
-use SportsHelpers\Sport\Variant\Single as SingleSportVariant;
+use SportsHelpers\Sport\VariantWithFields as SportVariantWithFields;
 
 trait CompetitionCreator
 {
@@ -26,13 +25,9 @@ trait CompetitionCreator
      * @var Competition|null
      */
     protected $competition;
-    /**
-     * @var CompetitionSport|null
-     */
-    protected $competitionSport;
 
     protected function createCompetition(
-        SingleSportVariant|AgainstSportVariant|AllInOneGameSportVariant|null $sportVariant = null
+        SportVariantWithFields|null $sportVariantWithFields = null
     ): Competition {
         if ($this->competition !== null) {
             return $this->competition;
@@ -49,7 +44,7 @@ trait CompetitionCreator
         new Referee($competition, '111');
         new Referee($competition, '222');
 
-        $this->createCompetitionSport($competition, $sportVariant);
+        $this->createCompetitionSport($competition, $sportVariantWithFields);
         $this->competition = $competition;
         return $competition;
     }
@@ -67,22 +62,44 @@ trait CompetitionCreator
 
     protected function createCompetitionSport(
         Competition $competition,
-        SingleSportVariant|AgainstSportVariant|AllInOneGameSportVariant|null $sportVariant
+        SportVariantWithFields|null $sportVariantWithFields
     ): void {
-        if ($this->competitionSport !== null) {
-            return;
-        }
-
         $sport = new Sport("voetbal", true, GameMode::Against, 1);
         $sport->setCustomId(SportCustom::Football);
 
-        if ($sportVariant === null) {
-            $sportVariant = new AgainstSportVariant(1, 1, 1, 0);
+        if ($sportVariantWithFields === null) {
+            $sportVariantWithFields = new SportVariantWithFields(
+                new AgainstSportVariant(1, 1, 1, 0),
+                2
+            );
         }
-        $this->competitionSport = new CompetitionSport($sport, $competition, $sportVariant->toPersistVariant());
-        $field1 = new Field($this->competitionSport);
-        $field1->setName("1");
-        $field2 = new Field($this->competitionSport);
-        $field2->setName("2");
+        $persistVariant = $sportVariantWithFields->getSportVariant()->toPersistVariant();
+        $competitionSport = new CompetitionSport($sport, $competition, $persistVariant);
+        for ($fieldNr = 1; $fieldNr <= $sportVariantWithFields->getNrOfFields(); $fieldNr++) {
+            $field = new Field($competitionSport);
+            $field->setName((string)$fieldNr);
+        }
+    }
+
+    protected function getAgainstSportVariantWithFields(
+        int $nrOfFields,
+        int $nrOfHomePlaces = 1,
+        int $nrOfAwayPlaces = 1,
+        int $nrOfH2H = 1,
+        int $nrOfGamesPerPlace = 0
+    ): SportVariantWithFields {
+        return new SportVariantWithFields(
+            $this->getAgainstSportVariant($nrOfHomePlaces, $nrOfAwayPlaces, $nrOfH2H, $nrOfGamesPerPlace),
+            $nrOfFields
+        );
+    }
+
+    protected function getAgainstSportVariant(
+        int $nrOfHomePlaces = 1,
+        int $nrOfAwayPlaces = 1,
+        int $nrOfH2H = 1,
+        int $nrOfGamesPerPlace = 0
+    ): AgainstSportVariant {
+        return new AgainstSportVariant($nrOfHomePlaces, $nrOfAwayPlaces, $nrOfH2H, $nrOfGamesPerPlace);
     }
 }

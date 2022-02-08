@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Sports\Structure;
 
-use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface;
 use Sports\Competition;
 use Sports\Poule\Horizontal\Creator as HorizontalPouleCreator;
 use Sports\Qualify\Rule\Creator as QualifyRuleCreator;
@@ -18,12 +18,12 @@ class Repository
     private RoundNumberRepository $roundNumberRepos;
 
     public function __construct(
-        protected EntityManager $em,
+        protected EntityManagerInterface $em,
         private HorizontalPouleCreator $horPouleCreator,
         private QualifyRuleCreator $qualifyRuleCreator
     ) {
-        /** @psalm-suppress ArgumentTypeCoercion */
-        $this->roundNumberRepos = new RoundNumberRepository($em, $em->getClassMetadata(RoundNumber::class));
+        $metaData = $em->getClassMetadata(RoundNumber::class);
+        $this->roundNumberRepos = new RoundNumberRepository($em, $metaData);
     }
 
     public function removeAndAdd(Competition $competition, StructureBase $newStructure, int $roundNumberValue = null): RoundNumber

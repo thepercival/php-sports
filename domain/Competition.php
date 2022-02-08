@@ -145,6 +145,14 @@ class Competition extends Identifiable
     }
 
     /**
+     * @return Collection<int|string, Team>
+     */
+    public function getTeams(): Collection
+    {
+        return $this->getTeamCompetitors()->map(fn(TeamCompetitor $teamCompetitor) => $teamCompetitor->getTeam());
+    }
+
+    /**
      * @return Collection<int|string, CompetitionSport>
      */
     public function getSports(): Collection
@@ -195,20 +203,6 @@ class Competition extends Identifiable
         });
     }
 
-//    /**
-//     * @param int|string $sportId
-//     * @return Sport|null
-//     */
-//    public function getSportBySportId($sportId): ?Sport
-//    {
-//        foreach ($this->getSportConfigs() as $sportConfig) {
-//            if ($sportConfig->getSport()->getId() === $sportId) {
-//                return $sportConfig->getSport();
-//            }
-//        }
-//        return null;
-//    }
-
     /**
      * @return list<CompetitionField>
      */
@@ -228,7 +222,6 @@ class Competition extends Identifiable
 
     public function setAgainstRuleSetNative(int $againstRuleSet): void
     {
-        /** @psalm-suppress MixedAssignment, UndefinedMethod */
         $this->againstRuleSet = AgainstRuleSet::from($againstRuleSet);
     }
 }

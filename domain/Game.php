@@ -144,4 +144,9 @@ abstract class Game extends Identifiable
     {
         return $this->state->value;
     }
+
+    public function setStateNative(int $state): void
+    {
+        $this->state = Game\State::from($state);
+    }
 }

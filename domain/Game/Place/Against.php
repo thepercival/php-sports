@@ -213,7 +213,6 @@ class Against extends GamePlaceBase
 
     public function setSideNative(int $side): void
     {
-        /** @psalm-suppress MixedAssignment, UndefinedMethod */
         $this->side = AgainstSide::from($side);
     }
 }

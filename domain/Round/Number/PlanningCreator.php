@@ -94,7 +94,7 @@ class PlanningCreator
             })->count() > 0 /* has plannings to be processed,  */) {
                 return;
             }
-            $planning = $planningInput->getBestPlanning();
+            $planning = $planningInput->getBestPlanning(null);
             $planningAssigner = new PlanningAssigner($scheduler);
             $planningAssigner->assignPlanningToRoundNumber($roundNumber, $planning);
         }

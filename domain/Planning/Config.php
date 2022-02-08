@@ -146,7 +146,6 @@ class Config extends Identifiable
 
     public function setEditModeNative(int $editMode): void
     {
-        /** @psalm-suppress MixedAssignment, UndefinedMethod */
         $this->editMode = EditMode::from($editMode);
     }
 
@@ -157,7 +156,6 @@ class Config extends Identifiable
 
     public function setGamePlaceStrategyNative(int $gamePlaceStrategy): void
     {
-        /** @psalm-suppress MixedAssignment, UndefinedMethod */
         $this->gamePlaceStrategy = GamePlaceStrategy::from($gamePlaceStrategy);
     }
 
@@ -168,7 +166,6 @@ class Config extends Identifiable
 
     public function setSelfRefereeNative(int $selfReferee): void
     {
-        /** @psalm-suppress MixedAssignment, UndefinedMethod */
         $this->selfReferee = SelfReferee::from($selfReferee);
     }
 }

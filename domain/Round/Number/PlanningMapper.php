@@ -135,10 +135,17 @@ class PlanningMapper
     protected function getSortedPoules(RoundNumber $roundNumber): array
     {
         $poules = $roundNumber->getPoules();
+        $fncBaseSort = function (Poule $pouleA, Poule $pouleB): int {
+            if ($pouleA->getPlaces()->count() !== $pouleB->getPlaces()->count()) {
+                return $pouleB->getPlaces()->count() - $pouleA->getPlaces()->count();
+            }
+            $nrOfQualifyGroupsA = count($pouleA->getRound()->getQualifyGroups());
+            $nrOfQualifyGroupsB = count($pouleB->getRound()->getQualifyGroups());
+            return $nrOfQualifyGroupsA - $nrOfQualifyGroupsB;
+        };
+
         if ($roundNumber->isFirst()) {
-            usort($poules, function (Poule $pouleA, Poule $pouleB) {
-                return $pouleA->getPlaces()->count() >= $pouleB->getPlaces()->count() ? -1 : 1;
-            });
+            usort($poules, $fncBaseSort);
         } else {
             $someRound = $roundNumber->getRounds()->first();
             if ($someRound === false) {
@@ -148,9 +155,10 @@ class PlanningMapper
             $pouleStructureNumberMap = new PouleStructureNumberMap($roundNumber, $previousNrOfDropoutsMap);
             usort(
                 $poules,
-                function (Poule $pouleA, Poule $pouleB) use ($pouleStructureNumberMap): int {
-                    if ($pouleA->getPlaces()->count() !== $pouleB->getPlaces()->count()) {
-                        return $pouleA->getPlaces()->count() >= $pouleB->getPlaces()->count() ? -1 : 1;
+                function (Poule $pouleA, Poule $pouleB) use ($fncBaseSort, $pouleStructureNumberMap): int {
+                    $baseSort = $fncBaseSort($pouleA, $pouleB);
+                    if ($baseSort !== 0) {
+                        return $baseSort;
                     }
                     $pouleAStructureNumber = $pouleStructureNumberMap->get($pouleA);
                     $pouleBStructureNumber = $pouleStructureNumberMap->get($pouleB);

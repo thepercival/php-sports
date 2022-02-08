@@ -30,10 +30,13 @@ class Participation extends Identifiable
         protected AgainstGamePlace $againstGamePlace,
         protected Player $player,
         protected int $beginMinute,
-        protected int $endMinute
+        protected int $endMinute = -1
     ) {
         if (!$againstGamePlace->getParticipations()->contains($this)) {
-            $againstGamePlace->getParticipations()->add($this) ;
+            $againstGamePlace->getParticipations()->add($this);
+        }
+        if (!$player->getGameParticipations()->contains($this)) {
+            $player->getGameParticipations()->add($this);
         }
         $this->cards = new ArrayCollection();
         $this->goals = new ArrayCollection();

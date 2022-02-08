@@ -26,12 +26,6 @@ abstract class Custom
     public const Padel = 17;
     public const Max = 17;
 
-    public const Football_Line_GoalKepeer = 1;
-    public const Football_Line_Defense = 2;
-    public const Football_Line_Midfield = 4;
-    public const Football_Line_Forward = 8;
-    public const Football_Line_All = 15;
-
     /**
      * @return list<int>
      */

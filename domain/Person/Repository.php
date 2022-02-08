@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Sports\Person;
 
-use SportsHelpers\Repository as BaseRepository;
 use Doctrine\ORM\EntityRepository;
 use League\Period\Period;
 use Sports\Person;
 use Sports\Person as PersonBase;
 use Sports\Team;
+use SportsHelpers\Repository as BaseRepository;
 
 /**
  * @template-extends EntityRepository<PersonBase>
@@ -50,7 +50,7 @@ class Repository extends EntityRepository
         if ($maxRows !== null) {
             $qb = $qb->setMaxResults($maxRows);
         }
-        /** @var list<PersonBase> $persons */
+
         $persons = $qb->getQuery()->getResult();
         return $persons;
     }
