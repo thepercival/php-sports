@@ -11,9 +11,7 @@ use Sports\Round\Number as RoundNumber;
 use Sports\Round\Number\PlanningInputCreator as PlanningInputService;
 use Sports\Round\Number\Repository as RoundNumberRepository;
 use SportsPlanning\Input\Repository as PlanningInputRepository;
-use SportsPlanning\Planning;
 use SportsPlanning\Planning\Repository as PlanningRepository;
-use SportsPlanning\Planning\State as PlanningState;
 
 class PlanningCreator
 {
@@ -77,10 +75,10 @@ class PlanningCreator
             $planningInput = $this->inputRepos->getFromInput($defaultPlanningInput);
             if ($planningInput === null) {
                 $this->inputRepos->save($defaultPlanningInput);
-                $this->inputRepos->createBatchGamesPlannings($defaultPlanningInput);
-                if ($this->logger !== null) {
-                    $this->logger->info("DEBUG: send message for roundnumber " . $roundNumber->getNumber());
-                }
+//                $this->inputRepos->createBatchGamesPlannings($defaultPlanningInput);
+//                if ($this->logger !== null) {
+//                    $this->logger->info("DEBUG: send message for roundnumber " . $roundNumber->getNumber());
+//                }
                 $createPlanningEvent->sendCreatePlannings(
                     $defaultPlanningInput,
                     $roundNumber->getCompetition(),
@@ -89,9 +87,7 @@ class PlanningCreator
                 );
                 return;
             }
-            if ($planningInput->getPlannings()->filter(function (Planning $planning): bool {
-                return $planning->getState() === PlanningState::ToBeProcessed;
-            })->count() > 0 /* has plannings to be processed,  */) {
+            if ($planningInput->getSeekingPercentage() < 100) {
                 return;
             }
             $planning = $planningInput->getBestPlanning(null);
