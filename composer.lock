@@ -3145,28 +3145,28 @@
         },
         {
           "name": "thepercival/php-sports-planning",
-          "version": "v1.0.59",
+          "version": "v1.0.60",
           "source": {
             "type": "git",
             "url": "https://github.com/thepercival/php-sports-planning.git",
-            "reference": "8dd775d355f27717e4dcea2b8b63f6835b1b6aa9"
+            "reference": "8b5ae1a46f4d738ec499332c0f17bd82258deda3"
           },
           "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/thepercival/php-sports-planning/zipball/8dd775d355f27717e4dcea2b8b63f6835b1b6aa9",
-            "reference": "8dd775d355f27717e4dcea2b8b63f6835b1b6aa9",
+            "url": "https://api.github.com/repos/thepercival/php-sports-planning/zipball/8b5ae1a46f4d738ec499332c0f17bd82258deda3",
+            "reference": "8b5ae1a46f4d738ec499332c0f17bd82258deda3",
             "shasum": ""
           },
-            "require": {
-                "doctrine/orm": "^2.10",
-                "drupol/phpermutations": "^1.4",
-                "ext-json": "*",
-                "league/period": "^4.9",
-                "monolog/monolog": "^2.0",
-                "php": ">=8.1",
-                "thepercival/php-sports-helpers": "^1.0"
-            },
-            "require-dev": {
+          "require": {
+            "doctrine/orm": "^2.10",
+            "drupol/phpermutations": "^1.4",
+            "ext-json": "*",
+            "league/period": "^4.9",
+            "monolog/monolog": "^2.0",
+            "php": ">=8.1",
+            "thepercival/php-sports-helpers": "^1.0"
+          },
+          "require-dev": {
                 "friendsofphp/php-cs-fixer": "^3.2",
                 "phpstan/extension-installer": "^1.0",
                 "phpstan/phpstan": "^1.2",
@@ -3210,9 +3210,9 @@
             "support": {
                 "email": "coendunnink@gmail.com",
                 "issues": "https://github.com/thepercival/php-sports-planning/issues",
-              "source": "https://github.com/thepercival/php-sports-planning/tree/v1.0.59"
+              "source": "https://github.com/thepercival/php-sports-planning/tree/v1.0.60"
             },
-          "time": "2022-02-10T12:41:35+00:00"
+          "time": "2022-02-11T07:56:57+00:00"
         }
     ],
     "packages-dev": [
