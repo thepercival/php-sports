@@ -176,39 +176,73 @@ class PlanningMapper
      */
     protected function initCompetitionSportsMap(RoundNumber $roundNumber, Input $input): void
     {
-        $maxNrOfFields = $input->getMaxNrOfBatchGames();
         $this->competitionSportMap = [];
         $competitionSports = array_values($roundNumber->getCompetitionSports()->toArray());
-
-        foreach ($input->getSports() as $sport) {
-            $planningSportVariant = $sport->createVariant();
-            $filtered = array_filter(
+        usort(
+            $competitionSports,
+            function (CompetitionSport $competitionSportA, CompetitionSport $competitionSportB): int {
+                return count($competitionSportB->getFields()) - count($competitionSportA->getFields());
+            }
+        );
+        $planningSports = $input->getSports()->toArray();
+        usort(
+            $planningSports,
+            function (PlanningSport $planningSportA, PlanningSport $planningSportB): int {
+                return count($planningSportB->getFields()) - count($planningSportA->getFields());
+            }
+        );
+        foreach ($planningSports as $planningSport) {
+            $removedCompetitionSport = $this->removeCompetitionSport(
                 $competitionSports,
-                function (CompetitionSport $competitionSport) use (
-                    $sport,
-                    $maxNrOfFields,
-                    $roundNumber,
-                    $planningSportVariant
-                ): bool {
-                    $competitionSportVariant = $roundNumber->getValidGameAmountConfig($competitionSport)->createVariant(
-                    );
-                    return ($competitionSport->getFields()->count() === $sport->getFields()->count()
-                        || $competitionSport->getFields()->count() > $maxNrOfFields)
-                    && $planningSportVariant == $competitionSportVariant;
-                }
+                $planningSport,
+                $roundNumber
             );
-
-            $filteredCompetitionSport = reset($filtered);
-            if ($filteredCompetitionSport === false) {
-                throw new Exception("competitionsport could not be found", E_ERROR);
-            }
-            $idx = array_search($filteredCompetitionSport, $competitionSports, true);
-            if ($idx === false) {
-                throw new Exception("competitionsport could not be found", E_ERROR);
-            }
-            array_splice($competitionSports, $idx, 1);
-            $this->competitionSportMap[$sport->getNumber()] = $filteredCompetitionSport;
+            $this->competitionSportMap[$planningSport->getNumber()] = $removedCompetitionSport;
         }
+    }
+
+    /**
+     * @param list<CompetitionSport> $p_competitionSports
+     * @param PlanningSport $planningSport
+     * @param RoundNumber $roundNumber
+     * @return CompetitionSport
+     * @throws Exception
+     */
+    protected function removeCompetitionSport(
+        array &$p_competitionSports,
+        PlanningSport $planningSport,
+        RoundNumber $roundNumber
+    ): CompetitionSport {
+        $competitionSports = $p_competitionSports;
+        $planningSportVariantWithFields = $planningSport->createVariantWithFields();
+        $planningSportVariant = $planningSportVariantWithFields->getSportVariant();
+        $sameCompetitionSports = array_filter(
+            $competitionSports,
+            function (CompetitionSport $competitionSport) use ($roundNumber, $planningSportVariant): bool {
+                $compSportVariant = $roundNumber->getValidGameAmountConfig($competitionSport)->createVariant();
+                return $planningSportVariant == $compSportVariant;
+            }
+        );
+        $sameCompetitionSportsAndFields = array_filter(
+            $sameCompetitionSports,
+            function (CompetitionSport $competitionSport) use ($planningSportVariantWithFields): bool {
+                return count($competitionSport->getFields()) >= $planningSportVariantWithFields->getNrOfFields();
+            }
+        );
+
+        $competitionSport = array_shift($sameCompetitionSportsAndFields);
+        if ($competitionSport === null) {
+            throw new Exception("competitionsport could not be found", E_ERROR);
+        }
+        $idx = array_search($competitionSport, $p_competitionSports, true);
+        if ($idx === false) {
+            throw new Exception("competitionsport could not be found", E_ERROR);
+        }
+        $removedCompetitionSports = array_splice($p_competitionSports, $idx, 1);
+        if (count($removedCompetitionSports) === 0) {
+            throw new Exception("competitionsport could not be found", E_ERROR);
+        }
+        return $competitionSport;
     }
 
     /**
