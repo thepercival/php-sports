@@ -8,9 +8,10 @@ use Sports\Competition\Sport as CompetitionSport;
 use Sports\Round\Number as RoundNumber;
 use SportsHelpers\GameMode;
 use SportsHelpers\Identifiable;
-use SportsHelpers\Sport\Variant\Against as AgainstSportVariant;
-use SportsHelpers\Sport\Variant\AllInOneGame as AllInOneGameSportVariant;
-use SportsHelpers\Sport\Variant\Single as SingleSportVariant;
+use SportsHelpers\Sport\Variant\Against\H2h as AgainstH2h;
+use SportsHelpers\Sport\Variant\Against\GamesPerPlace as AgainstGpp;
+use SportsHelpers\Sport\Variant\AllInOneGame;
+use SportsHelpers\Sport\Variant\Single;
 
 class GameAmountConfig extends Identifiable
 {
@@ -18,7 +19,6 @@ class GameAmountConfig extends Identifiable
         protected CompetitionSport $competitionSport,
         protected RoundNumber $roundNumber,
         protected int $amount,
-        protected int $nrOfGamesPerPlaceMixed
     ) {
         $this->roundNumber->getGameAmountConfigs()->add($this);
     }
@@ -43,30 +43,26 @@ class GameAmountConfig extends Identifiable
         $this->amount = $amount;
     }
 
-    public function getNrOfGamesPerPlaceMixed(): int
-    {
-        return $this->nrOfGamesPerPlaceMixed;
-    }
-
-    public function setNrOfGamesPerPlaceMixed(int $nrOfGamesPerPlaceMixed): void
-    {
-        $this->nrOfGamesPerPlaceMixed = $nrOfGamesPerPlaceMixed;
-    }
-
-    public function createVariant(): SingleSportVariant|AgainstSportVariant|AllInOneGameSportVariant
+    public function createVariant(): Single|AgainstH2h|AgainstGpp|AllInOneGame
     {
         $competitionSport = $this->getCompetitionSport();
         if ($competitionSport->getGameMode() === GameMode::Single) {
-            return new SingleSportVariant($competitionSport->getNrOfGamePlaces(), $this->getAmount());
+            return new Single($competitionSport->getNrOfGamePlaces(), $this->getAmount());
         }
         if ($competitionSport->getGameMode() === GameMode::AllInOneGame) {
-            return new AllInOneGameSportVariant($this->getAmount());
+            return new AllInOneGame($this->getAmount());
         }
-        return new AgainstSportVariant(
+        if ($competitionSport->getNrOfH2H() > 0) {
+            return new AgainstH2h(
+                $competitionSport->getNrOfHomePlaces(),
+                $competitionSport->getNrOfAwayPlaces(),
+                $this->getAmount()
+            );
+        }
+        return new AgainstGpp(
             $competitionSport->getNrOfHomePlaces(),
             $competitionSport->getNrOfAwayPlaces(),
-            $this->getAmount(),
-            $this->getNrOfGamesPerPlaceMixed(),
+            $this->getAmount()
         );
     }
 }

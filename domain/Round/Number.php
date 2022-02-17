@@ -22,9 +22,10 @@ use Sports\Round;
 use Sports\Round\Number as RoundNumber;
 use SportsHelpers\Identifiable;
 use SportsHelpers\PouleStructure;
-use SportsHelpers\Sport\Variant\Against as AgainstSportVariant;
-use SportsHelpers\Sport\Variant\AllInOneGame as AllInOneGameSportVariant;
-use SportsHelpers\Sport\Variant\Single as SingleSportVariant;
+use SportsHelpers\Sport\Variant\Against\H2h as AgainstH2h;
+use SportsHelpers\Sport\Variant\Against\GamesPerPlace as AgainstGpp;
+use SportsHelpers\Sport\Variant\AllInOneGame;
+use SportsHelpers\Sport\Variant\Single;
 
 class Number extends Identifiable
 {
@@ -372,14 +373,14 @@ class Number extends Identifiable
     }
 
     /**
-     * @return list<AgainstSportVariant|AllInOneGameSportVariant|SingleSportVariant>
+     * @return list<AgainstH2h|AgainstGpp|AllInOneGame|Single>
      */
     public function createSportVariants(): array
     {
         return array_map(
-            fn (
+            fn(
                 GameAmountConfig $gameAmountConfig
-            ): AgainstSportVariant|AllInOneGameSportVariant|SingleSportVariant => $gameAmountConfig->createVariant(),
+            ): AgainstH2h|AgainstGpp|AllInOneGame|Single => $gameAmountConfig->createVariant(),
             $this->getValidGameAmountConfigs()
         );
     }

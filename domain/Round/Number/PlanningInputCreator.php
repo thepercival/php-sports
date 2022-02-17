@@ -9,9 +9,10 @@ use Sports\Planning\GameAmountConfig;
 use Sports\Round\Number as RoundNumber;
 use SportsHelpers\PouleStructure;
 use SportsHelpers\SelfReferee;
-use SportsHelpers\Sport\Variant\Against as AgainstSportVariant;
-use SportsHelpers\Sport\Variant\AllInOneGame as AllInOneGameSportVariant;
-use SportsHelpers\Sport\Variant\Single as SingleSportVariant;
+use SportsHelpers\Sport\Variant\Against\H2h as AgainstH2h;
+use SportsHelpers\Sport\Variant\Against\GamesPerPlace as AgainstGpp;
+use SportsHelpers\Sport\Variant\AllInOneGame;
+use SportsHelpers\Sport\Variant\Single;
 use SportsHelpers\Sport\VariantWithFields as SportVariantWithFields;
 use SportsPlanning\Input as PlanningInput;
 use SportsPlanning\Input\Calculator as InputCalculator;
@@ -62,7 +63,7 @@ class PlanningInputCreator
 
     /**
      * @param PlanningConfig $planningConfig
-     * @param list<AgainstSportVariant|SingleSportVariant|AllInOneGameSportVariant> $sportVariants
+     * @param list<AgainstH2h|AgainstGpp|Single|AllInOneGame> $sportVariants
      * @param PouleStructure $pouleStructure
      * @return SelfReferee
      */
@@ -202,7 +203,7 @@ class PlanningInputCreator
 
     protected function getNrOfBatchesNeeded(
         PouleStructure $pouleStructure,
-        AgainstSportVariant|SingleSportVariant|AllInOneGameSportVariant $sportVariant,
+        AgainstH2h|AgainstGpp|Single|AllInOneGame $sportVariant,
         int $nrOfFields
     ): int {
         $nrOfGames = $pouleStructure->getTotalNrOfGames([$sportVariant]);

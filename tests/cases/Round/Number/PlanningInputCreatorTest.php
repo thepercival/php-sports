@@ -16,15 +16,15 @@ final class PlanningInputCreatorTest extends TestCase
 
     public function testMultipleSports(): void
     {
-        $sportVariant = $this->getAgainstSportVariantWithFields(2, 1, 1, 1);
+        $sportVariant = $this->getAgainstGppSportVariantWithFields(2, 1, 1, 9);
         $competition = $this->createCompetition($sportVariant);
         $this->createCompetitionSport(
             $competition,
-            $this->getAgainstSportVariantWithFields(1, 1, 1, 1)
+            $this->getAgainstGppSportVariantWithFields(1, 1, 1, 9)
         );
         $this->createCompetitionSport(
             $competition,
-            $this->getAgainstSportVariantWithFields(1, 1, 1, 1)
+            $this->getAgainstGppSportVariantWithFields(1, 1, 1, 9)
         );
 
         $structureEditor = $this->createStructureEditor();

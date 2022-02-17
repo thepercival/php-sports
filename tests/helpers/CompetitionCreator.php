@@ -16,7 +16,8 @@ use Sports\Season;
 use Sports\Sport;
 use Sports\Sport\Custom as SportCustom;
 use SportsHelpers\GameMode;
-use SportsHelpers\Sport\Variant\Against as AgainstSportVariant;
+use SportsHelpers\Sport\Variant\Against\H2h as AgainstH2h;
+use SportsHelpers\Sport\Variant\Against\GamesPerPlace as AgainstGpp;
 use SportsHelpers\Sport\VariantWithFields as SportVariantWithFields;
 
 trait CompetitionCreator
@@ -69,7 +70,7 @@ trait CompetitionCreator
 
         if ($sportVariantWithFields === null) {
             $sportVariantWithFields = new SportVariantWithFields(
-                new AgainstSportVariant(1, 1, 1, 0),
+                new AgainstH2h(1, 1, 1),
                 2
             );
         }
@@ -81,25 +82,43 @@ trait CompetitionCreator
         }
     }
 
-    protected function getAgainstSportVariantWithFields(
+    protected function getAgainstH2hSportVariantWithFields(
         int $nrOfFields,
         int $nrOfHomePlaces = 1,
         int $nrOfAwayPlaces = 1,
-        int $nrOfH2H = 1,
-        int $nrOfGamesPerPlace = 0
+        int $nrOfH2H = 1
     ): SportVariantWithFields {
         return new SportVariantWithFields(
-            $this->getAgainstSportVariant($nrOfHomePlaces, $nrOfAwayPlaces, $nrOfH2H, $nrOfGamesPerPlace),
+            $this->getAgainstH2hSportVariant($nrOfHomePlaces, $nrOfAwayPlaces, $nrOfH2H),
             $nrOfFields
         );
     }
 
-    protected function getAgainstSportVariant(
+    protected function getAgainstH2hSportVariant(
         int $nrOfHomePlaces = 1,
         int $nrOfAwayPlaces = 1,
-        int $nrOfH2H = 1,
-        int $nrOfGamesPerPlace = 0
-    ): AgainstSportVariant {
-        return new AgainstSportVariant($nrOfHomePlaces, $nrOfAwayPlaces, $nrOfH2H, $nrOfGamesPerPlace);
+        int $nrOfH2H = 1
+    ): AgainstH2h {
+        return new AgainstH2h($nrOfHomePlaces, $nrOfAwayPlaces, $nrOfH2H);
+    }
+
+    protected function getAgainstGppSportVariantWithFields(
+        int $nrOfFields,
+        int $nrOfHomePlaces = 1,
+        int $nrOfAwayPlaces = 1,
+        int $nrOfGamesPerPlace = 1
+    ): SportVariantWithFields {
+        return new SportVariantWithFields(
+            $this->getAgainstGppSportVariant($nrOfHomePlaces, $nrOfAwayPlaces, $nrOfGamesPerPlace),
+            $nrOfFields
+        );
+    }
+
+    protected function getAgainstGppSportVariant(
+        int $nrOfHomePlaces = 1,
+        int $nrOfAwayPlaces = 1,
+        int $nrOfGamesPerPlace = 1
+    ): AgainstGpp {
+        return new AgainstGpp($nrOfHomePlaces, $nrOfAwayPlaces, $nrOfGamesPerPlace);
     }
 }

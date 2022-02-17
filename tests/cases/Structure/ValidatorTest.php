@@ -117,7 +117,7 @@ final class ValidatorTest extends TestCase
 
     public function testWithPlaceRanges(): void
     {
-        $sportVariant = $this->getAgainstSportVariantWithFields(2, 2, 2, 0, 3);
+        $sportVariant = $this->getAgainstGppSportVariantWithFields(2, 2, 2, 3);
         $competition = $this->createCompetition($sportVariant);
 
         $structureEditor = $this->createStructureEditor();

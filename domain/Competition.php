@@ -14,9 +14,10 @@ use Sports\Competition\Sport as CompetitionSport;
 use Sports\Competitor\Team as TeamCompetitor;
 use Sports\Ranking\AgainstRuleSet;
 use SportsHelpers\Identifiable;
-use SportsHelpers\Sport\Variant\Against as AgainstSportVariant;
-use SportsHelpers\Sport\Variant\AllInOneGame as AllInOneGameSportVariant;
-use SportsHelpers\Sport\Variant\Single as SingleSportVariant;
+use SportsHelpers\Sport\Variant\Against\GamesPerPlace as AgainstGpp;
+use SportsHelpers\Sport\Variant\Against\H2h as AgainstH2h;
+use SportsHelpers\Sport\Variant\AllInOneGame;
+use SportsHelpers\Sport\Variant\Single;
 
 class Competition extends Identifiable
 {
@@ -161,13 +162,17 @@ class Competition extends Identifiable
     }
 
     /**
-     * @return list<SingleSportVariant|AgainstSportVariant|AllInOneGameSportVariant>
+     * @return list<AllInOneGame|Single|AgainstH2h|AgainstGpp>
      */
     public function createSportVariants(): array
     {
-        return array_values($this->getSports()->map(function (CompetitionSport $competitionSport): SingleSportVariant|AgainstSportVariant|AllInOneGameSportVariant {
-            return $competitionSport->createVariant();
-        })->toArray());
+        return array_values(
+            $this->getSports()->map(
+                function (CompetitionSport $competitionSport): AllInOneGame|Single|AgainstH2h|AgainstGpp {
+                    return $competitionSport->createVariant();
+                }
+            )->toArray()
+        );
     }
 
     public function getSingleSport(): CompetitionSport

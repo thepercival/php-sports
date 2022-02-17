@@ -17,7 +17,7 @@ use Sports\Poule;
 use Sports\Round\Number as RoundNumber;
 use Sports\Structure;
 use SportsHelpers\SelfReferee;
-use SportsHelpers\Sport\Variant\Against as AgainstSportVariant;
+use SportsHelpers\Sport\Variant\Against\GamesPerPlace as AgainstGpp;
 
 class GamesValidator
 {
@@ -126,10 +126,11 @@ class GamesValidator
     {
         foreach ($roundNumber->getCompetitionSports() as $competitionSport) {
             $sportVariant = $competitionSport->createVariant();
-            if ($sportVariant instanceof AgainstSportVariant && $sportVariant->isMixed()) {
-                continue;
-            }
             foreach ($roundNumber->getPoules() as $poule) {
+                $nrOfPlaces = count($poule->getPlaces());
+                if ($sportVariant instanceof AgainstGpp && !$sportVariant->allPlacesPlaySameNrOfGames($nrOfPlaces)) {
+                    continue;
+                }
                 if ($this->allPlacesInPouleSameNrOfGames($poule, $competitionSport) === false) {
                     throw new Exception("not all places within poule have same number of games", E_ERROR);
                 }

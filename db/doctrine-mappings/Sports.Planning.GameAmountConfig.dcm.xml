@@ -5,8 +5,6 @@
     <entity name="Sports\Planning\GameAmountConfig" table="gameAmountConfigs"
             repository-class="Sports\Sport\GameAmount\Repository">
         <field name="amount" column="amount" type="smallint" nullable="false" unique="false"/>
-        <field name="nrOfGamesPerPlaceMixed" column="nrOfGamesPerPlaceMixed" type="smallint" nullable="false"
-               unique="false"/>
         <many-to-one field="roundNumber" target-entity="Sports\Round\Number" inversed-by="gameAmountConfigs">
             <join-columns>
                 <join-column name="roundNumberId" referenced-column-name="id" nullable="true" on-delete="CASCADE"/>

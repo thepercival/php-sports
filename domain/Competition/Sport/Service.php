@@ -6,58 +6,36 @@ namespace Sports\Competition\Sport;
 
 use Sports\Round;
 use Closure;
-use Sports\Sport;
+use Sports\Planning\Config as PlanningConfig;
 use Sports\Score\Config as ScoreConfig;
 use Sports\Planning\GameAmountConfig as GameAmountConfig;
 use Sports\Qualify\AgainstConfig as QualifyConfig;
 use Sports\Score\Config\Service as ScoreConfigService;
-use Sports\Planning\GameAmountConfig\Service as GameAmountConfigService;
 use Sports\Qualify\AgainstConfig\Service as QualifyConfigService;
 use Sports\Competition\Sport as CompetitionSport;
 use Sports\Structure;
-use SportsHelpers\GameMode;
-use SportsHelpers\Sport\Variant\Against as AgainstSportVariant;
-use SportsHelpers\Sport\Variant\Single as SingleSportVariant;
-use SportsHelpers\Sport\Variant\AllInOneGame as AllInOneGameSportVariant;
-use SportsHelpers\Sport\Variant as SportVariant;
 
 class Service
 {
     protected ScoreConfigService $scoreConfigService;
-    protected GameAmountConfigService $gameAmountConfigService;
     protected QualifyConfigService $qualifyConfigService;
 
     public function __construct()
     {
         $this->scoreConfigService = new ScoreConfigService();
-        $this->gameAmountConfigService = new GameAmountConfigService();
         $this->qualifyConfigService = new QualifyConfigService();
     }
-
-    /*public function createDefault(Sport $sport, Competition $competition, Structure $structure = null): CompetitionSport
-    {
-        $competitionSport = new CompetitionSport(
-            $sport,
-            $competition,
-            $this->getDefaultSportVariant($sport)->createPersistVariant()
-        );
-        if ($structure !== null) {
-            $this->addToStructure($competitionSport, $structure);
-        }
-        return $competitionSport;
-    }*/
-
-    /*public function copy(Competition $newCompetition, Sport $sport): CompetitionSport
-    {
-        return new CompetitionSport($sport, $newCompetition);
-    }*/
 
     public function addToStructure(CompetitionSport $competitionSport, Structure $structure): void
     {
         $roundNumber = $structure->getFirstRoundNumber();
         while ($roundNumber !== null) {
             if ($roundNumber->hasPrevious() === false || $roundNumber->getGameAmountConfigs()->count() > 0) {
-                $this->gameAmountConfigService->create($competitionSport, $roundNumber);
+                new GameAmountConfig(
+                    $competitionSport,
+                    $roundNumber,
+                    PlanningConfig::DEFAULTGAMEAMOUNT
+                );
             }
             $roundNumber = $roundNumber->getNext();
         }
@@ -121,20 +99,5 @@ class Service
             }
         };
         $removeFromRounds([$structure->getRootRound()]);
-    }
-
-    protected function getDefaultSportVariant(Sport $sport): SportVariant
-    {
-        if ($sport->getDefaultGameMode() === GameMode::Against) {
-            return new AgainstSportVariant(
-                $sport->getDefaultNrOfSidePlaces(),
-                $sport->getDefaultNrOfSidePlaces(),
-                $sport->getDefaultNrOfSidePlaces() > 1 ? 0 : 1,
-                $sport->getDefaultNrOfSidePlaces() > 1 ? 1 : 0
-            );
-        } elseif ($sport->getDefaultGameMode() === GameMode::Single) {
-            return new SingleSportVariant(1, 1);
-        }
-        return new AllInOneGameSportVariant(1);
     }
 }

@@ -24,7 +24,7 @@ use Sports\Team\Player as TeamPlayer;
 use Sports\Team\Role\Validator as Validator;
 use SportsHelpers\Against\Side as AgainstSide;
 use SportsHelpers\GameMode;
-use SportsHelpers\Sport\Variant\Against as AgainstSportVariant;
+use SportsHelpers\Sport\Variant\Against\H2h as AgainstH2h;
 
 class ValidatorTest extends \PHPUnit\Framework\TestCase
 {
@@ -226,7 +226,7 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
         $structure = $structureEditor->create($competition, [1]);
         $poule = $structure->getRootRound()->getFirstPoule();
         $sport = new Sport('voetbal', true, GameMode::Against, 1);
-        $sportVariant = new AgainstSportVariant(1, 1, 1, 0);
+        $sportVariant = new AgainstH2h(1, 1, 1);
         $competitionSport = new CompetitionSport($sport, $competition, $sportVariant->toPersistVariant());
         $game = new AgainstGame(
             $poule,

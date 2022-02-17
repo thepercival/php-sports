@@ -9,7 +9,8 @@ use Sports\Competition;
 use Sports\Competition\Sport as CompetitionSport;
 use Sports\Place;
 use Sports\Planning\Config\Service as PlanningConfigService;
-use Sports\Planning\GameAmountConfig\Service as GameAmountConfigService;
+use Sports\Planning\Config as PlanningConfig;
+use Sports\Planning\GameAmountConfig;
 use Sports\Poule;
 use Sports\Poule\Horizontal\Creator as HorizontalPouleCreator;
 use Sports\Qualify\AgainstConfig as AgainstQualifyConfig;
@@ -53,7 +54,6 @@ class Copier
     protected function copyRoundNumber(RoundNumber $roundNumber, RoundNumber $newRoundNumber): void
     {
         $planningConfigService = new PlanningConfigService();
-        $gameAmountConfigService = new GameAmountConfigService();
 
         $planningConfig = $roundNumber->getPlanningConfig();
         if ($planningConfig !== null) {
@@ -64,9 +64,11 @@ class Copier
                 $gameAmountConfig->getCompetitionSport(),
                 $newRoundNumber->getCompetition()
             );
-            $newGameAmountConfig = $gameAmountConfigService->create($newCompetitionSport, $newRoundNumber);
-            $newGameAmountConfig->setAmount($gameAmountConfig->getAmount());
-            $newGameAmountConfig->setNrOfGamesPerPlaceMixed($gameAmountConfig->getNrOfGamesPerPlaceMixed());
+            new GameAmountConfig(
+                $newCompetitionSport,
+                $newRoundNumber,
+                $gameAmountConfig->getAmount()
+            );
         }
         $nextRoundNumber = $roundNumber->getNext();
         if ($nextRoundNumber !== null) {
