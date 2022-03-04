@@ -1,7 +1,7 @@
 -- PRE PRE PRE doctrine-update =============================================================
-alter table roundnumbers rename roundNumbers;
-alter table planningconfigs rename planningConfigs;
-alter table qualifygroups rename qualifyGroups;
+
+alter table planningConfigs
+    drop gamePlaceStrategy;
 
 -- alter table rounds CHANGE parentQualifyId parentQualifyGroupId int NULL;
 

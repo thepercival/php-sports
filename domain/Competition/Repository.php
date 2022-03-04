@@ -48,6 +48,7 @@ class Repository extends EntityRepository
         $query = $query->setParameter('season', $season);
         $query = $query->setParameter('league', $league);
 
+        /** @var list<Competition> $results */
         $results = $query->getQuery()->getResult();
         $result = reset($results);
         return $result !== false ? $result : null;
@@ -64,6 +65,7 @@ class Repository extends EntityRepository
         $query = $query->setParameter('date', $date);
         $query = $query->setParameter('league', $league);
 
+        /** @var list<Competition> $results */
         $results = $query->getQuery()->getResult();
         $result = reset($results);
         return $result !== false ? $result : null;
@@ -81,7 +83,7 @@ class Repository extends EntityRepository
             ->andWhere('s.endDateTime >= :date');
 
         $query = $query->setParameter('date', $date);
-
+        /** @var list<Competition> $results */
         $results = $query->getQuery()->getResult();
         return $results;
     }
@@ -110,7 +112,7 @@ class Repository extends EntityRepository
             $qb = $qb->setParameter('periodEnd', $period->getEndDate());
             $qb = $qb->setParameter('periodStart', $period->getStartDate());
         }
-
+        /** @var list<Competition> $results */
         $results = $qb->getQuery()->getResult();
         return $results;
     }

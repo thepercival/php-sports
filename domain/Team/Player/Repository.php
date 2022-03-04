@@ -48,7 +48,8 @@ class Repository extends EntityRepository
         if ($maxRows !== null) {
             $qb = $qb->setMaxResults($maxRows);
         }
-        $result = $qb->getQuery()->getResult();
-        return $result;
+        /** @var list<PlayerBase> $results */
+        $results = $qb->getQuery()->getResult();
+        return $results;
     }
 }

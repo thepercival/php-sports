@@ -33,7 +33,7 @@ class Repository extends EntityRepository
     {
         $qualifyConfigs = $this->findBy(["competitionSport" => $competitionSport]);
         foreach ($qualifyConfigs as $qualifyConfig) {
-            $this->remove($qualifyConfig);
+            $this->remove($qualifyConfig, true);
         }
     }
 }

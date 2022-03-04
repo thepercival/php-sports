@@ -50,7 +50,7 @@ class Repository extends EntityRepository
         if ($maxRows !== null) {
             $qb = $qb->setMaxResults($maxRows);
         }
-
+        /** @var list<PersonBase> $persons */
         $persons = $qb->getQuery()->getResult();
         return $persons;
     }

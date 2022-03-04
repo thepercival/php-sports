@@ -27,9 +27,10 @@ class Repository extends EntityRepository
         $qb = $this->createQueryBuilder('s');
         if ($withCustomId !== null) {
             $operator = $withCustomId ? '>' : '=';
-            $qb = $qb->andWhere('s.customId ' . $operator .' 0');
+            $qb = $qb->andWhere('s.customId ' . $operator . ' 0');
         }
-        $result = $qb->getQuery()->getResult();
-        return $result;
+        /** @var list<SportBase> $results */
+        $results = $qb->getQuery()->getResult();
+        return $results;
     }
 }

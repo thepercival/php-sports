@@ -55,8 +55,9 @@ class Repository extends EntityRepository
         }
     }
 
-    public function customRemove(CompetitionSport $competitionSport): void
+    public function customRemove(CompetitionSport $competitionSport, Structure $structure): void
     {
+        $em = $this->getEntityManager();
         $conn = $this->getEntityManager()->getConnection();
         $conn->beginTransaction();
         try {
@@ -65,16 +66,24 @@ class Repository extends EntityRepository
                 $this->getEntityManager()->remove($field);
             }
 
-            // $scoreRepos = new ScoreConfigRepos($this->_em, $this->_em->getClassMetadata(ScoreConfig::class));
-            // $scoreRepos->removeObjects($competitionSport);
+            // $rootRound = $structure->getRootRound();
+            $metaData = $em->getClassMetadata(ScoreConfig::class);
+            $scoreRepos = new ScoreConfigRepos($em, $metaData);
+            $scoreRepos->removeObjects($competitionSport);
 
-//            $planningRepos = new SportPlanningConfigRepos($this->_em, $this->_em->getClassMetaData(SportPlanningConfig::class));
-//            $planningRepos->removeObjects($sportConfig);
+            $metaData = $em->getClassMetadata(AgainstQualifyConfig::class);
+            $againstQualifyConfigRepos = new AgainstQualifyConfigRepos($em, $metaData);
+            $againstQualifyConfigRepos->removeObjects($competitionSport);
+
+            // $firstRoundNumber = $structure->getFirstRoundNumber();
+            $metaData = $em->getClassMetadata(GameAmountConfig::class);
+            $gameAmountRepos = new GameAmountConfigRepos($em, $metaData);
+            $gameAmountRepos->removeObjects($competitionSport);
 
             $sport = $competitionSport->getSport();
             $this->remove($competitionSport);
 
-            if ($this->findOneBy(["sport" => $sport ]) === null) {
+            if ($this->findOneBy(["sport" => $sport]) === null) {
                 $this->getEntityManager()->remove($sport);
             }
 

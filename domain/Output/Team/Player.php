@@ -23,7 +23,7 @@ class Player extends OutputBase
     public function getString(TeamPlayer $teamPlayer, string $prefix): string
     {
         return $prefix . $teamPlayer->getPerson()->getName() . ' - ' .
-            $teamPlayer->getTeam()->getName() . ' - ' . $teamPlayer->getPeriod()->format('Y-m-d')
+            $teamPlayer->getTeam()->getName() . ' - ' . $teamPlayer->getPeriod()->toIso80000('Y-m-d')
         ;
     }
 }

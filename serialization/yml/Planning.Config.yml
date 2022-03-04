@@ -8,12 +8,6 @@ Sports\Planning\Config:
       accessor:
         getter: getEditModeNative
         setter: setEditModeNative
-    gamePlaceStrategy:
-      type: int
-      access_type: public_method
-      accessor:
-        getter: getGamePlaceStrategyNative
-        setter: setGamePlaceStrategyNative
     extension:
       type: boolean
     enableTime:

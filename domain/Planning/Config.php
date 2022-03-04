@@ -7,7 +7,6 @@ namespace Sports\Planning;
 use Sports\Round\Number as RoundNumber;
 use SportsHelpers\Identifiable;
 use SportsHelpers\SelfReferee;
-use SportsPlanning\Combinations\GamePlaceStrategy;
 
 class Config extends Identifiable
 {
@@ -18,7 +17,6 @@ class Config extends Identifiable
     public function __construct(
         protected RoundNumber $roundNumber,
         protected EditMode $editMode,
-        protected GamePlaceStrategy $gamePlaceStrategy,
         protected bool $extension,
         protected bool $enableTime,
         protected int $minutesPerGame,
@@ -38,16 +36,6 @@ class Config extends Identifiable
     public function setEditMode(EditMode $editMode): void
     {
         $this->editMode = $editMode;
-    }
-
-    public function getGamePlaceStrategy(): GamePlaceStrategy
-    {
-        return $this->gamePlaceStrategy;
-    }
-
-    public function setGamePlaceStrategy(GamePlaceStrategy $gamePlaceStrategy): void
-    {
-        $this->gamePlaceStrategy = $gamePlaceStrategy;
     }
 
     public function getExtension(): bool
@@ -147,16 +135,6 @@ class Config extends Identifiable
     public function setEditModeNative(int $editMode): void
     {
         $this->editMode = EditMode::from($editMode);
-    }
-
-    public function getGamePlaceStrategyNative(): int
-    {
-        return $this->gamePlaceStrategy->value;
-    }
-
-    public function setGamePlaceStrategyNative(int $gamePlaceStrategy): void
-    {
-        $this->gamePlaceStrategy = GamePlaceStrategy::from($gamePlaceStrategy);
     }
 
     public function getSelfRefereeNative(): int

@@ -14,7 +14,7 @@ use SportsPlanning\Game\Creator as GameCreator;
 use SportsPlanning\Input;
 use SportsPlanning\Planning;
 use SportsPlanning\Planning\State as PlanningState;
-use SportsPlanning\Schedule\Creator\Service as ScheduleCreatorService;
+use SportsPlanning\Schedule\Creator as ScheduleCreator;
 
 class PlanningCreator
 {
@@ -36,8 +36,8 @@ class PlanningCreator
         }
         $planning = new Planning($input, $range, 0);
 
-        $scheduleCreatorService = new ScheduleCreatorService($this->getLogger());
-        $schedules = $scheduleCreatorService->createSchedules($input);
+        $scheduleCreator = new ScheduleCreator($this->getLogger());
+        $schedules = $scheduleCreator->createFromInput($input);
 
         $gameCreator = new GameCreator($this->getLogger());
         // $gameCreator->disableThrowOnTimeout();

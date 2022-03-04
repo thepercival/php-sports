@@ -79,8 +79,7 @@ class NumberHandler extends Handler implements SubscribingHandlerInterface
                 new GameAmountConfig(
                     $competitionSport,
                     $roundNumber,
-                    $arrGameAmountConfig["amount"],
-                    $arrGameAmountConfig["nrOfGamesPerPlaceMixed"]
+                    $arrGameAmountConfig["amount"]
                 );
             }
         }
