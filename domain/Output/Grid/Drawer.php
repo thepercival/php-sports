@@ -19,9 +19,11 @@ final class Drawer
     public function drawToRight(Coordinate $coordinate, string $value, int $color = 0): Coordinate
     {
         $valueAsArray = str_split($value);
-        while ($char = array_shift($valueAsArray)) {
+        $char = array_shift($valueAsArray);
+        while ($char !== null) {
             $this->grid->setColor($coordinate, $color);
             $coordinate = $this->grid->setToRight($coordinate, $char);
+            $char = array_shift($valueAsArray);
         }
         return $coordinate->decrementX();
     }
@@ -34,9 +36,11 @@ final class Drawer
     public function drawToLeft(Coordinate $coordinate, string $value, int $color = 0): Coordinate
     {
         $valueAsArray = str_split($value);
-        while ($char = array_shift($valueAsArray)) {
+        $char = array_shift($valueAsArray);
+        while ($char !== null) {
             $this->grid->setColor($coordinate, $color);
             $coordinate = $this->grid->setToLeft($coordinate, $char);
+            $char = array_shift($valueAsArray);
         }
         return $coordinate->incrementX();
     }
@@ -49,9 +53,11 @@ final class Drawer
     public function drawVertAwayFromOrigin(Coordinate $coordinate, string $value, int $color = 0): Coordinate
     {
         $valueAsArray = str_split($value);
-        while ($char = array_shift($valueAsArray)) {
+        $char = array_shift($valueAsArray);
+        while ($char !== null) {
             $this->grid->setColor($coordinate, $color);
             $coordinate = $this->grid->setVertAwayFromOrigin($coordinate, $char);
+            $char = array_shift($valueAsArray);
         }
         return $coordinate->decrementY();
     }
@@ -64,9 +70,11 @@ final class Drawer
     public function drawVertToOrigin(Coordinate $coordinate, string $value, int $color = 0): Coordinate
     {
         $valueAsArray = str_split($value);
-        while ($char = array_shift($valueAsArray)) {
+        $char = array_shift($valueAsArray);
+        while ($char !== null) {
             $this->grid->setColor($coordinate, $color);
             $coordinate = $this->grid->setVertToOrigin($coordinate, $char);
+            $char = array_shift($valueAsArray);
         }
         return $coordinate->decrementY();
     }

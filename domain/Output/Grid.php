@@ -25,6 +25,10 @@ final class Grid extends OutputBase
         }
     }
 
+    public function getWidth(): int {
+        return $this->width;
+    }
+
     public function setColor(Coordinate $coordinate, int $color): void
     {
         $this->grid[$coordinate->getY()][$coordinate->getX()]->setColor($color);
