@@ -69,12 +69,12 @@ class EditorTest extends \PHPUnit\Framework\TestCase
 
         $seasonStart = $seasonPeriod->getStartDate();
 
-        $periodBefore = new Period($seasonStart->modify('+4 days'), $seasonStart->modify('+8 days'));
-        new Team\Player($team, $person, $periodBefore, FootballLine::Defense->value);
+        $period = new Period($seasonStart->modify('+4 days'), $seasonStart->modify('+8 days'));
+        new Team\Player($team, $person, $period, FootballLine::Defense->value);
 
         $gameDateTime = $seasonStart->modify('+6 days');
-        $changedPeriod = $editor->update($season, $person, $gameDateTime, $team, FootballLine::Defense);
-        self::assertNull($changedPeriod);
+        $updatedPlayer = $editor->update($season, $person, $gameDateTime, $team, FootballLine::Defense);
+        self::assertNull($updatedPlayer);
     }
 
     public function testOverlappingSameTeamOtherLine(): void
@@ -119,8 +119,8 @@ class EditorTest extends \PHPUnit\Framework\TestCase
         $otherTeam = new Team($association, 'otherTeam');
 
         $gameDateTime = $seasonStart->modify('+6 days');
-        self::expectException(\Exception::class);
-        $editor->update($season, $person, $gameDateTime, $otherTeam, FootballLine::Defense);
+        $newPlayer = $editor->update($season, $person, $gameDateTime, $otherTeam, FootballLine::Defense);
+        self::assertNotNull($newPlayer);
     }
 
     public function testOneBeforeSameTeamSameLine(): void
@@ -182,6 +182,7 @@ class EditorTest extends \PHPUnit\Framework\TestCase
         $person = new Person('FirstName', null, 'LastName');
 
         $seasonStart = $seasonPeriod->getStartDate();
+        $seasonEnd = $seasonPeriod->getEndDate();
 
         $periodBefore = new Period($seasonStart->modify('+4 days'), $seasonStart->modify('+8 days'));
         new Team\Player($team, $person, $periodBefore, FootballLine::Defense->value);
@@ -193,7 +194,7 @@ class EditorTest extends \PHPUnit\Framework\TestCase
         self::assertCount(2, $person->getPlayers(null, $season->getPeriod()));
         self::assertNotNull($addedPlayer);
         self::assertEquals($gameDateTime->modify('-1 days'), $addedPlayer->getStartDateTime());
-        self::assertEquals($gameDateTime->modify('+1 days'), $addedPlayer->getEndDateTime());
+        self::assertEquals($seasonEnd->modify('-1 days'), $addedPlayer->getEndDateTime());
     }
 
     public function testTwoBefore(): void
@@ -284,6 +285,7 @@ class EditorTest extends \PHPUnit\Framework\TestCase
         $person = new Person('FirstName', null, 'LastName');
 
         $seasonStart = $seasonPeriod->getStartDate();
+        $seasonEnd = $seasonPeriod->getEndDate();
 
         $periodBefore = new Period($seasonStart->modify('+4 days'), $seasonStart->modify('+8 days'));
         new Team\Player($team, $person, $periodBefore, FootballLine::Defense->value);
@@ -295,7 +297,7 @@ class EditorTest extends \PHPUnit\Framework\TestCase
         self::assertCount(2, $person->getPlayers(null, $season->getPeriod()));
         self::assertNotNull($addedPlayer);
         self::assertEquals($gameDateTime->modify('-1 days'), $addedPlayer->getStartDateTime());
-        self::assertEquals($gameDateTime->modify('+1 days'), $addedPlayer->getEndDateTime());
+        self::assertEquals($seasonEnd->modify('-1 days'), $addedPlayer->getEndDateTime());
     }
 
     public function testTwoAfter(): void
@@ -325,6 +327,34 @@ class EditorTest extends \PHPUnit\Framework\TestCase
         self::assertCount(2, $person->getPlayers(null, $season->getPeriod()));
         self::assertNotNull($updatedPlayer);
         self::assertEquals($gameDateTime->modify('-1 days'), $updatedPlayer->getStartDateTime());
+    }
+
+    public function testOneWithinOther(): void
+    {
+        $editor = new Team\Role\Editor();
+
+        $association = new Association('testAssociation');
+        $team = new Team($association, 'testTeam');
+
+        $seasonPeriod = new Period('2015-07-01', '2016-07-01');
+        $season = new Season('2015/2016', $seasonPeriod);
+
+        $person = new Person('FirstName', null, 'LastName');
+
+        $seasonStart = $seasonPeriod->getStartDate();
+        $seasonEnd = $seasonPeriod->getEndDate();
+
+        $period = new Period($seasonStart->modify('+4 days'), $seasonStart->modify('+8 days'));
+        new Team\Player($team, $person, $period, FootballLine::Defense->value);
+
+        $otherTeam = new Team($association, 'otherTeam');
+
+        $gameDateTime = $seasonStart->modify('+6 days');
+        $newPlayer = $editor->update($season, $person, $gameDateTime, $otherTeam, FootballLine::Defense);
+        self::assertCount(2, $person->getPlayers(null, $season->getPeriod()));
+        self::assertNotNull($newPlayer);
+        self::assertEquals($gameDateTime->modify('-1 days'), $newPlayer->getStartDateTime());
+        self::assertEquals($seasonEnd->modify('-1 days'), $newPlayer->getEndDateTime());
     }
 
     // psv 09-01    10-01

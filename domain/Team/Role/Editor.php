@@ -46,16 +46,22 @@ class Editor
         // get overlapping player
         $overlappingPlayer = $this->getOverlapping($players, $gameDateTime);
         if ($overlappingPlayer !== null) {
-            if ($overlappingPlayer->getTeam() !== $newTeam) {
-                $msg = 'for person "' . $person->getName() . '" ';
-                $msg .= 'new team "' . $newTeam->getName() . '" is different from ';
-                $msg .= 'overlapping player("' . $overlappingPlayer->getTeam()->getName() . '")';
-                throw new \Exception($msg, E_ERROR);
-            }
             if ($overlappingPlayer->getLine() !== $newLine->value) {
                 throw new \Exception('line is different from overlapping', E_ERROR);
             }
-            return null;
+            if ($overlappingPlayer->getTeam() == $newTeam) {
+                return null;
+            }
+            $overlappingPlayer->setEndDateTime($gameDateTime->modify('-' . self::DELTA));
+            $newPeriod = new Period($gameDateTime->modify('-' . self::DELTA), $checkPeriod->getEndDate());
+            return new Player($newTeam, $person, $newPeriod, $newLine->value);
+//            if ($overlappingPlayer->getTeam() !== $newTeam) {
+//                // new maken en oude stoppen
+//                $msg = 'for person "' . $person->getName() . '" ';
+//                $msg .= 'new team "' . $newTeam->getName() . '" is different from ';
+//                $msg .= 'overlapping player("' . $overlappingPlayer->getTeam()->getName() . '")';
+//                throw new \Exception($msg, E_ERROR);
+//            }
         }
 
         // no overlap
@@ -88,7 +94,9 @@ class Editor
             }
         }
 
-        $newPeriod = new Period($gameDateTime->modify('-' . self::DELTA), $gameDateTime->modify('+' . self::DELTA));
+        // $newPeriod = new Period($gameDateTime->modify('-' . self::DELTA), $gameDateTime->modify('+' . self::DELTA));
+        $newPeriod = new Period($gameDateTime->modify('-' . self::DELTA), $checkPeriod->getEndDate());
+
 //        if (!$this->isPeriodFree($players, $newPeriod)) {
 //            throw new \Exception('period already taken', E_ERROR);
 //        }
