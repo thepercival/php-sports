@@ -20,6 +20,7 @@ use Sports\Structure as StructureBase;
 use SportsHelpers\PlaceRanges;
 use SportsHelpers\PouleStructure\Balanced as BalancedPouleStructure;
 use SportsHelpers\PouleStructure\BalancedCreator as BalancedPouleStructureCreator;
+use SportsHelpers\Sport\Variant\MinNrOfPlacesCalculator;
 
 class Editor
 {
@@ -446,8 +447,11 @@ class Editor
         if ($this->placeRanges !== null) {
             return $this->placeRanges->validate($nrOfPlaces, $nrOfPoules);
         }
-        if ($nrOfPlaces < PlaceRanges::MinNrOfPlacesPerPoule) {
-            throw new \Exception('het minimaal aantal deelnemers is ' . PlaceRanges::MinNrOfPlacesPerPoule, E_ERROR);
+        if ($nrOfPlaces < MinNrOfPlacesCalculator::MinNrOfPlacesPerPoule) {
+            throw new \Exception(
+                'het minimaal aantal deelnemers is ' . MinNrOfPlacesCalculator::MinNrOfPlacesPerPoule,
+                E_ERROR
+            );
         }
         return true;
     }
@@ -455,7 +459,7 @@ class Editor
     public function getMinPlacesPerPouleSmall(): int
     {
         if ($this->placeRanges === null) {
-            return PlaceRanges::MinNrOfPlacesPerPoule;
+            return MinNrOfPlacesCalculator::MinNrOfPlacesPerPoule;
         }
         return $this->placeRanges->getPlacesPerPouleSmall()->getMin();
     }

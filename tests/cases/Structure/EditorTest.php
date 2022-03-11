@@ -197,8 +197,8 @@ final class EditorTest extends TestCase
     public function testIncrementNrOfPoules1(): void
     {
         $competition = $this->createCompetition();
-
-        $minNrOfPlacesPerPoule = (new MinNrOfPlacesCalculator())->getMinNrOfPlacesPerPoule($competition->createSportVariants());
+        $sportVariants = $competition->createSportVariants();
+        $minNrOfPlacesPerPoule = (new MinNrOfPlacesCalculator())->getMinNrOfPlacesPerPoule($sportVariants);
         $maxNrOfPlacesPerPoule = 10;
         $minNrOfPlacesPerRound = $minNrOfPlacesPerPoule;
         $maxNrOfPlacesPerRound = 100;

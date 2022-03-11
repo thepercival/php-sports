@@ -16,6 +16,11 @@ final class Drawer
     {
     }
 
+    public function getGridWidth(): int
+    {
+        return $this->grid->getWidth();
+    }
+
     public function drawToRight(Coordinate $coordinate, string $value, int $color = 0): Coordinate
     {
         $valueAsArray = str_split($value);

@@ -337,19 +337,19 @@
             "time": "2022-02-02T09:15:57+00:00"
         },
         {
-            "name": "doctrine/dbal",
-            "version": "3.3.2",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/doctrine/dbal.git",
-                "reference": "35eae239ef515d55ebb24e9d4715cad09a4f58ed"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/dbal/zipball/35eae239ef515d55ebb24e9d4715cad09a4f58ed",
-                "reference": "35eae239ef515d55ebb24e9d4715cad09a4f58ed",
-                "shasum": ""
-            },
+          "name": "doctrine/dbal",
+          "version": "3.3.3",
+          "source": {
+            "type": "git",
+            "url": "https://github.com/doctrine/dbal.git",
+            "reference": "82331b861727c15b1f457ef05a8729e508e7ead5"
+          },
+          "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/doctrine/dbal/zipball/82331b861727c15b1f457ef05a8729e508e7ead5",
+            "reference": "82331b861727c15b1f457ef05a8729e508e7ead5",
+            "shasum": ""
+          },
             "require": {
                 "composer-runtime-api": "^2",
                 "doctrine/cache": "^1.11|^2.0",
@@ -360,16 +360,16 @@
                 "psr/log": "^1|^2|^3"
             },
             "require-dev": {
-                "doctrine/coding-standard": "9.0.0",
-                "jetbrains/phpstorm-stubs": "2021.1",
-                "phpstan/phpstan": "1.4.0",
-                "phpstan/phpstan-strict-rules": "^1.1",
-                "phpunit/phpunit": "9.5.11",
-                "psalm/plugin-phpunit": "0.16.1",
-                "squizlabs/php_codesniffer": "3.6.2",
-                "symfony/cache": "^5.2|^6.0",
-                "symfony/console": "^2.7|^3.0|^4.0|^5.0|^6.0",
-                "vimeo/psalm": "4.16.1"
+              "doctrine/coding-standard": "9.0.0",
+              "jetbrains/phpstorm-stubs": "2021.1",
+              "phpstan/phpstan": "1.4.6",
+              "phpstan/phpstan-strict-rules": "^1.1",
+              "phpunit/phpunit": "9.5.16",
+              "psalm/plugin-phpunit": "0.16.1",
+              "squizlabs/php_codesniffer": "3.6.2",
+              "symfony/cache": "^5.2|^6.0",
+              "symfony/console": "^2.7|^3.0|^4.0|^5.0|^6.0",
+              "vimeo/psalm": "4.22.0"
             },
             "suggest": {
                 "symfony/console": "For helpful console commands such as SQL execution and import of files."
@@ -429,7 +429,7 @@
             ],
             "support": {
                 "issues": "https://github.com/doctrine/dbal/issues",
-                "source": "https://github.com/doctrine/dbal/tree/3.3.2"
+              "source": "https://github.com/doctrine/dbal/tree/3.3.3"
             },
             "funding": [
                 {
@@ -445,7 +445,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2022-02-05T16:33:45+00:00"
+          "time": "2022-03-09T15:39:50+00:00"
         },
         {
             "name": "doctrine/deprecations",
@@ -821,20 +821,20 @@
             ],
             "time": "2022-02-28T11:07:21+00:00"
         },
-        {
-            "name": "doctrine/orm",
-            "version": "2.11.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/doctrine/orm.git",
-                "reference": "4b88ce787d3916c8366abf52f6c658a7a27ed3a6"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/orm/zipball/4b88ce787d3916c8366abf52f6c658a7a27ed3a6",
-                "reference": "4b88ce787d3916c8366abf52f6c658a7a27ed3a6",
-                "shasum": ""
-            },
+      {
+        "name": "doctrine/orm",
+        "version": "2.11.2",
+        "source": {
+          "type": "git",
+          "url": "https://github.com/doctrine/orm.git",
+          "reference": "9c351e044478135aec1755e2c0c0493a4b6309db"
+        },
+        "dist": {
+          "type": "zip",
+          "url": "https://api.github.com/repos/doctrine/orm/zipball/9c351e044478135aec1755e2c0c0493a4b6309db",
+          "reference": "9c351e044478135aec1755e2c0c0493a4b6309db",
+          "shasum": ""
+        },
             "require": {
                 "composer-runtime-api": "^2",
                 "doctrine/cache": "^1.12.1 || ^2.1.1",
@@ -848,7 +848,6 @@
                 "doctrine/lexer": "^1.0",
                 "doctrine/persistence": "^2.2",
                 "ext-ctype": "*",
-                "ext-pdo": "*",
                 "php": "^7.1 || ^8.0",
                 "psr/cache": "^1 || ^2 || ^3",
                 "symfony/console": "^3.0 || ^4.0 || ^5.0 || ^6.0",
@@ -859,15 +858,15 @@
                 "doctrine/annotations": "<1.13 || >= 2.0"
             },
             "require-dev": {
-                "doctrine/annotations": "^1.13",
-                "doctrine/coding-standard": "^9.0",
-                "phpbench/phpbench": "^0.16.10 || ^1.0",
-                "phpstan/phpstan": "1.4.3",
-                "phpunit/phpunit": "^7.5 || ^8.5 || ^9.4",
-                "squizlabs/php_codesniffer": "3.6.2",
-                "symfony/cache": "^4.4 || ^5.4 || ^6.0",
-                "symfony/yaml": "^3.4 || ^4.0 || ^5.0 || ^6.0",
-                "vimeo/psalm": "4.19.0"
+              "doctrine/annotations": "^1.13",
+              "doctrine/coding-standard": "^9.0",
+              "phpbench/phpbench": "^0.16.10 || ^1.0",
+              "phpstan/phpstan": "1.4.6",
+              "phpunit/phpunit": "^7.5 || ^8.5 || ^9.4",
+              "squizlabs/php_codesniffer": "3.6.2",
+              "symfony/cache": "^4.4 || ^5.4 || ^6.0",
+              "symfony/yaml": "^3.4 || ^4.0 || ^5.0 || ^6.0",
+              "vimeo/psalm": "4.22.0"
             },
             "suggest": {
                 "symfony/cache": "Provides cache support for Setup Tool with doctrine/cache 2.0",
@@ -916,9 +915,9 @@
             ],
             "support": {
                 "issues": "https://github.com/doctrine/orm/issues",
-                "source": "https://github.com/doctrine/orm/tree/2.11.1"
+              "source": "https://github.com/doctrine/orm/tree/2.11.2"
             },
-            "time": "2022-01-30T21:47:06+00:00"
+        "time": "2022-03-09T15:23:58+00:00"
         },
         {
             "name": "doctrine/persistence",
@@ -3077,20 +3076,20 @@
             ],
             "time": "2022-01-26T17:23:29+00:00"
         },
-        {
-            "name": "thepercival/php-sports-helpers",
-            "version": "v1.0.34",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/thepercival/php-sports-helpers.git",
-                "reference": "e9866dfcc292f9f9567019bbbf2c2d1349b84bb8"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/thepercival/php-sports-helpers/zipball/e9866dfcc292f9f9567019bbbf2c2d1349b84bb8",
-                "reference": "e9866dfcc292f9f9567019bbbf2c2d1349b84bb8",
-                "shasum": ""
-            },
+      {
+        "name": "thepercival/php-sports-helpers",
+        "version": "v1.0.35",
+        "source": {
+          "type": "git",
+          "url": "https://github.com/thepercival/php-sports-helpers.git",
+          "reference": "59b272792e9f8637bf1e4cdc15b67e4558fa86c3"
+        },
+        "dist": {
+          "type": "zip",
+          "url": "https://api.github.com/repos/thepercival/php-sports-helpers/zipball/59b272792e9f8637bf1e4cdc15b67e4558fa86c3",
+          "reference": "59b272792e9f8637bf1e4cdc15b67e4558fa86c3",
+          "shasum": ""
+        },
             "require": {
                 "doctrine/orm": "^2.10",
                 "monolog/monolog": "^2.0",
@@ -3139,34 +3138,34 @@
             "support": {
                 "email": "coendunnink@gmail.com",
                 "issues": "https://github.com/thepercival/php-sports-helpers/issues",
-                "source": "https://github.com/thepercival/php-sports-helpers/tree/v1.0.34"
+              "source": "https://github.com/thepercival/php-sports-helpers/tree/v1.0.35"
             },
-            "time": "2022-03-04T11:40:27+00:00"
+        "time": "2022-03-11T13:03:09+00:00"
         },
-        {
-          "name": "thepercival/php-sports-planning",
-          "version": "v1.0.67",
-          "source": {
-            "type": "git",
-            "url": "https://github.com/thepercival/php-sports-planning.git",
-            "reference": "57f4464360bf12870f1f50a5b25844978c89b3dd"
-          },
-          "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/thepercival/php-sports-planning/zipball/57f4464360bf12870f1f50a5b25844978c89b3dd",
-            "reference": "57f4464360bf12870f1f50a5b25844978c89b3dd",
-            "shasum": ""
-          },
-            "require": {
-                "doctrine/orm": "^2.10",
-                "drupol/phpermutations": "^1.4",
-                "ext-json": "*",
-                "league/period": "^4.9",
-                "monolog/monolog": "^2.0",
-                "php": ">=8.1",
-                "thepercival/php-sports-helpers": "^1.0"
-            },
-            "require-dev": {
+      {
+        "name": "thepercival/php-sports-planning",
+        "version": "v1.0.68",
+        "source": {
+          "type": "git",
+          "url": "https://github.com/thepercival/php-sports-planning.git",
+          "reference": "3eb62d807e1adc3053e99103db470459b64da9b2"
+        },
+        "dist": {
+          "type": "zip",
+          "url": "https://api.github.com/repos/thepercival/php-sports-planning/zipball/3eb62d807e1adc3053e99103db470459b64da9b2",
+          "reference": "3eb62d807e1adc3053e99103db470459b64da9b2",
+          "shasum": ""
+        },
+        "require": {
+          "doctrine/orm": "^2.10",
+          "drupol/phpermutations": "^1.4",
+          "ext-json": "*",
+          "league/period": "^4.9",
+          "monolog/monolog": "^2.0",
+          "php": ">=8.1",
+          "thepercival/php-sports-helpers": "^1.0"
+        },
+        "require-dev": {
                 "friendsofphp/php-cs-fixer": "^3.2",
                 "phpstan/extension-installer": "^1.0",
                 "phpstan/phpstan": "^1.2",
@@ -3210,9 +3209,9 @@
             "support": {
                 "email": "coendunnink@gmail.com",
                 "issues": "https://github.com/thepercival/php-sports-planning/issues",
-              "source": "https://github.com/thepercival/php-sports-planning/tree/v1.0.67"
+              "source": "https://github.com/thepercival/php-sports-planning/tree/v1.0.68"
             },
-          "time": "2022-03-09T07:52:29+00:00"
+        "time": "2022-03-11T13:05:37+00:00"
         }
     ],
     "packages-dev": [
@@ -3801,15 +3800,15 @@
             "description": "PHP classes for the Language Server Protocol",
             "keywords": [
                 "language",
-                "microsoft",
-                "php",
-                "server"
+              "microsoft",
+              "php",
+              "server"
             ],
-            "support": {
-                "issues": "https://github.com/felixfbecker/php-language-server-protocol/issues",
-                "source": "https://github.com/felixfbecker/php-language-server-protocol/tree/1.5.1"
-            },
-            "time": "2021-02-22T14:02:09+00:00"
+          "support": {
+            "issues": "https://github.com/felixfbecker/php-language-server-protocol/issues",
+            "source": "https://github.com/felixfbecker/php-language-server-protocol/tree/1.5.1"
+          },
+          "time": "2021-02-22T14:02:09+00:00"
         },
       {
         "name": "friendsofphp/php-cs-fixer",
@@ -3825,25 +3824,25 @@
           "reference": "7705d5a985132a40282d18a176eb9a4a0497747c",
           "shasum": ""
         },
-            "require": {
-              "composer/semver": "^3.2",
-              "composer/xdebug-handler": "^3.0.3",
-              "doctrine/annotations": "^1.13",
-              "ext-json": "*",
-              "ext-tokenizer": "*",
-              "php": "^7.4 || ^8.0",
-              "php-cs-fixer/diff": "^2.0",
-              "symfony/console": "^5.4 || ^6.0",
-              "symfony/event-dispatcher": "^5.4 || ^6.0",
-              "symfony/filesystem": "^5.4 || ^6.0",
-              "symfony/finder": "^5.4 || ^6.0",
-              "symfony/options-resolver": "^5.4 || ^6.0",
-              "symfony/polyfill-mbstring": "^1.23",
-              "symfony/polyfill-php80": "^1.25",
-              "symfony/polyfill-php81": "^1.25",
-              "symfony/process": "^5.4 || ^6.0",
-              "symfony/stopwatch": "^5.4 || ^6.0"
-            },
+        "require": {
+          "composer/semver": "^3.2",
+          "composer/xdebug-handler": "^3.0.3",
+          "doctrine/annotations": "^1.13",
+          "ext-json": "*",
+          "ext-tokenizer": "*",
+          "php": "^7.4 || ^8.0",
+          "php-cs-fixer/diff": "^2.0",
+          "symfony/console": "^5.4 || ^6.0",
+          "symfony/event-dispatcher": "^5.4 || ^6.0",
+          "symfony/filesystem": "^5.4 || ^6.0",
+          "symfony/finder": "^5.4 || ^6.0",
+          "symfony/options-resolver": "^5.4 || ^6.0",
+          "symfony/polyfill-mbstring": "^1.23",
+          "symfony/polyfill-php80": "^1.25",
+          "symfony/polyfill-php81": "^1.25",
+          "symfony/process": "^5.4 || ^6.0",
+          "symfony/stopwatch": "^5.4 || ^6.0"
+        },
             "require-dev": {
                 "justinrainbow/json-schema": "^5.2",
                 "keradus/cli-executor": "^1.5",
@@ -4554,20 +4553,20 @@
             },
             "time": "2020-12-13T13:06:13+00:00"
         },
-        {
-            "name": "phpstan/phpstan",
-            "version": "1.4.8",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/phpstan/phpstan.git",
-                "reference": "2a6d6704b17c4db6190cc3104056c0aad740cb15"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/2a6d6704b17c4db6190cc3104056c0aad740cb15",
-                "reference": "2a6d6704b17c4db6190cc3104056c0aad740cb15",
-                "shasum": ""
-            },
+      {
+        "name": "phpstan/phpstan",
+        "version": "1.4.9",
+        "source": {
+          "type": "git",
+          "url": "https://github.com/phpstan/phpstan.git",
+          "reference": "1a45f44d319cf000a8c960af6b7435741e944771"
+        },
+        "dist": {
+          "type": "zip",
+          "url": "https://api.github.com/repos/phpstan/phpstan/zipball/1a45f44d319cf000a8c960af6b7435741e944771",
+          "reference": "1a45f44d319cf000a8c960af6b7435741e944771",
+          "shasum": ""
+        },
             "require": {
                 "php": "^7.1|^8.0"
             },
@@ -4596,7 +4595,7 @@
             "description": "PHPStan - PHP Static Analysis Tool",
             "support": {
                 "issues": "https://github.com/phpstan/phpstan/issues",
-                "source": "https://github.com/phpstan/phpstan/tree/1.4.8"
+              "source": "https://github.com/phpstan/phpstan/tree/1.4.9"
             },
             "funding": [
                 {
@@ -4616,7 +4615,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2022-03-04T13:03:56+00:00"
+        "time": "2022-03-10T08:52:08+00:00"
         },
         {
             "name": "phpstan/phpstan-doctrine",
@@ -5103,15 +5102,15 @@
             ],
             "support": {
                 "issues": "https://github.com/sebastianbergmann/php-timer/issues",
-                "source": "https://github.com/sebastianbergmann/php-timer/tree/5.0.3"
+              "source": "https://github.com/sebastianbergmann/php-timer/tree/5.0.3"
             },
-            "funding": [
-                {
-                    "url": "https://github.com/sebastianbergmann",
-                    "type": "github"
-                }
-            ],
-            "time": "2020-10-26T13:16:10+00:00"
+          "funding": [
+            {
+              "url": "https://github.com/sebastianbergmann",
+              "type": "github"
+            }
+          ],
+          "time": "2020-10-26T13:16:10+00:00"
         },
       {
         "name": "phpunit/phpunit",
@@ -5127,16 +5126,16 @@
           "reference": "1b5856028273bfd855e60a887278857d872ec67a",
           "shasum": ""
         },
-            "require": {
-                "doctrine/instantiator": "^1.3.1",
-                "ext-dom": "*",
-                "ext-json": "*",
-                "ext-libxml": "*",
-                "ext-mbstring": "*",
-                "ext-xml": "*",
-                "ext-xmlwriter": "*",
-                "myclabs/deep-copy": "^1.10.1",
-                "phar-io/manifest": "^2.0.3",
+        "require": {
+          "doctrine/instantiator": "^1.3.1",
+          "ext-dom": "*",
+          "ext-json": "*",
+          "ext-libxml": "*",
+          "ext-mbstring": "*",
+          "ext-xml": "*",
+          "ext-xmlwriter": "*",
+          "myclabs/deep-copy": "^1.10.1",
+          "phar-io/manifest": "^2.0.3",
                 "phar-io/version": "^3.0.2",
                 "php": ">=7.3",
                 "phpspec/prophecy": "^1.12.1",
