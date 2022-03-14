@@ -6,13 +6,16 @@ namespace Sports\Tests\Ranking\Calculator;
 
 use PHPUnit\Framework\TestCase;
 use Sports\Game\State as GameState;
+use Sports\Poule;
 use Sports\Qualify\Target as QualifyTarget;
 use Sports\Ranking\AgainstRuleSet;
+use Sports\Ranking\Calculator\Cumulative;
 use Sports\Ranking\Calculator\Round as RoundRankingCalculator;
 use Sports\TestHelper\CompetitionCreator;
 use Sports\TestHelper\GamesCreator;
 use Sports\TestHelper\SetScores;
 use Sports\TestHelper\StructureEditorCreator;
+use Sports\Output\Game\Against as AgainstGameOutput;
 
 class RoundTest extends TestCase
 {
@@ -32,9 +35,9 @@ class RoundTest extends TestCase
 
         $pouleOne = $rootRound->getPoule(1);
 
-        $this->setScoreSingle($pouleOne, 1, 2, 0, 0);
-        $this->setScoreSingle($pouleOne, 1, 3, 0, 0);
-        $this->setScoreSingle($pouleOne, 2, 3, 0, 0);
+        $this->setAgainstScore($pouleOne, 1, 2, 0, 0);
+        $this->setAgainstScore($pouleOne, 1, 3, 0, 0);
+        $this->setAgainstScore($pouleOne, 2, 3, 0, 0);
 
         $roundRankingCalculator = new RoundRankingCalculator();
         $items = $roundRankingCalculator->getItemsForPoule($pouleOne);
@@ -54,20 +57,20 @@ class RoundTest extends TestCase
         $competition = $this->createCompetition();
 
         $structureEditor = $this->createStructureEditor();
-        $structure = $structureEditor->create($competition, [3,3]);
+        $structure = $structureEditor->create($competition, [3, 3]);
         $rootRound = $structure->getRootRound();
 
         (new GamesCreator())->createStructureGames($structure);
 
         $pouleOne = $rootRound->getPoule(1);
-        $this->setScoreSingle($pouleOne, 1, 2, 1, 0);
-        $this->setScoreSingle($pouleOne, 1, 3, 1, 0);
-        $this->setScoreSingle($pouleOne, 2, 3, 0, 1);
+        $this->setAgainstScore($pouleOne, 1, 2, 1, 0);
+        $this->setAgainstScore($pouleOne, 1, 3, 1, 0);
+        $this->setAgainstScore($pouleOne, 2, 3, 0, 1);
 
         $pouleTwo = $rootRound->getPoule(2);
-        $this->setScoreSingle($pouleTwo, 1, 2, 1, 0);
-        $this->setScoreSingle($pouleTwo, 1, 3, 1, 0);
-        $this->setScoreSingle($pouleTwo, 2, 3, 0, 2);
+        $this->setAgainstScore($pouleTwo, 1, 2, 1, 0);
+        $this->setAgainstScore($pouleTwo, 1, 3, 1, 0);
+        $this->setAgainstScore($pouleTwo, 2, 3, 0, 2);
 
         $roundRankingCalculator = new RoundRankingCalculator();
         $nrsTwo = $rootRound->getHorizontalPoule(QualifyTarget::Winners, 2);
@@ -84,20 +87,20 @@ class RoundTest extends TestCase
         $competition = $this->createCompetition();
 
         $structureEditor = $this->createStructureEditor();
-        $structure = $structureEditor->create($competition, [3,3]);
+        $structure = $structureEditor->create($competition, [3, 3]);
         $rootRound = $structure->getRootRound();
 
         (new GamesCreator())->createStructureGames($structure);
 
         $pouleOne = $rootRound->getPoule(1);
-        $this->setScoreSingle($pouleOne, 1, 2, 1, 0);
-        $this->setScoreSingle($pouleOne, 1, 3, 1, 0);
-        $this->setScoreSingle($pouleOne, 2, 3, 0, 1);
+        $this->setAgainstScore($pouleOne, 1, 2, 1, 0);
+        $this->setAgainstScore($pouleOne, 1, 3, 1, 0);
+        $this->setAgainstScore($pouleOne, 2, 3, 0, 1);
 
         $pouleTwo = $rootRound->getPoule(2);
-        $this->setScoreSingle($pouleTwo, 1, 2, 1, 0);
-        $this->setScoreSingle($pouleTwo, 1, 3, 1, 0);
-        $this->setScoreSingle($pouleTwo, 2, 3, 0, 1);
+        $this->setAgainstScore($pouleTwo, 1, 2, 1, 0);
+        $this->setAgainstScore($pouleTwo, 1, 3, 1, 0);
+        $this->setAgainstScore($pouleTwo, 2, 3, 0, 1);
 
         $roundRankingCalculator = new RoundRankingCalculator();
         $nrsTwo = $rootRound->getHorizontalPoule(QualifyTarget::Winners, 2);
@@ -126,9 +129,9 @@ class RoundTest extends TestCase
 //            $pouleOne->getPlace($nr)->setCompetitor($competitor);
 //        }
 
-        $this->setScoreSingle($pouleOne, 1, 2, 2, 1);
-        $this->setScoreSingle($pouleOne, 1, 3, 3, 1);
-        $this->setScoreSingle($pouleOne, 2, 3, 3, 2);
+        $this->setAgainstScore($pouleOne, 1, 2, 2, 1);
+        $this->setAgainstScore($pouleOne, 1, 3, 3, 1);
+        $this->setAgainstScore($pouleOne, 2, 3, 3, 2);
 
         $roundRankingCalculator = new RoundRankingCalculator();
         $items = $roundRankingCalculator->getItemsForPoule($pouleOne);
@@ -155,11 +158,11 @@ class RoundTest extends TestCase
 
         $pouleOne = $rootRound->getPoule(1);
 
-        $this->setScoreSingle($pouleOne, 1, 2, 2, 1, GameState::InProgress);
-        $this->setScoreSingle($pouleOne, 1, 3, 3, 1, GameState::InProgress);
-        $this->setScoreSingle($pouleOne, 2, 3, 3, 2, GameState::InProgress);
+        $this->setAgainstScore($pouleOne, 1, 2, 2, 1, GameState::InProgress);
+        $this->setAgainstScore($pouleOne, 1, 3, 3, 1, GameState::InProgress);
+        $this->setAgainstScore($pouleOne, 2, 3, 3, 2, GameState::InProgress);
 
-        $roundRankingCalculator = new RoundRankingCalculator([GameState::InProgress,GameState::Finished]);
+        $roundRankingCalculator = new RoundRankingCalculator([GameState::InProgress, GameState::Finished]);
         $items = $roundRankingCalculator->getItemsForPoule($pouleOne);
 
         $roundRankingItem1 = $roundRankingCalculator->getItemByRank($items, 1);
@@ -184,7 +187,7 @@ class RoundTest extends TestCase
         $competition = $this->createCompetition();
 
         $structureEditor = $this->createStructureEditor();
-        $structure = $structureEditor->create($competition, [3,3]);
+        $structure = $structureEditor->create($competition, [3, 3]);
         $rootRound = $structure->getRootRound();
 
         (new GamesCreator())->createStructureGames($structure);
@@ -192,13 +195,13 @@ class RoundTest extends TestCase
         $pouleOne = $rootRound->getPoule(1);
         $pouleTwo = $rootRound->getPoule(2);
 
-        $this->setScoreSingle($pouleOne, 1, 2, 2, 1);
-        $this->setScoreSingle($pouleOne, 1, 3, 3, 1);
-        $this->setScoreSingle($pouleOne, 2, 3, 3, 2);
+        $this->setAgainstScore($pouleOne, 1, 2, 2, 1);
+        $this->setAgainstScore($pouleOne, 1, 3, 3, 1);
+        $this->setAgainstScore($pouleOne, 2, 3, 3, 2);
 
-        $this->setScoreSingle($pouleTwo, 1, 2, 4, 2);
-        $this->setScoreSingle($pouleTwo, 1, 3, 6, 2);
-        $this->setScoreSingle($pouleTwo, 2, 3, 6, 4);
+        $this->setAgainstScore($pouleTwo, 1, 2, 4, 2);
+        $this->setAgainstScore($pouleTwo, 1, 3, 6, 2);
+        $this->setAgainstScore($pouleTwo, 2, 3, 6, 4);
         // Rank 2.1, 1.1, 2.2, 1.2, 2.3, 1.3
 
         $roundRankingCalculator = new RoundRankingCalculator();
@@ -231,13 +234,13 @@ class RoundTest extends TestCase
 //        $pouleOne = $rootRound->getPoule(1);
 //        $pouleTwo = $rootRound->getPoule(2);
 //
-//        $this->setScoreSingle($pouleOne, 1, 2, 2, 1);
-//        $this->setScoreSingle($pouleOne, 1, 3, 3, 1);
-//        $this->setScoreSingle($pouleOne, 2, 3, 3, 2);
+//        $this->setAgainstScore($pouleOne, 1, 2, 2, 1);
+//        $this->setAgainstScore($pouleOne, 1, 3, 3, 1);
+//        $this->setAgainstScore($pouleOne, 2, 3, 3, 2);
 //
-//        $this->setScoreSingle($pouleTwo, 1, 2, 4, 2);
-//        $this->setScoreSingle($pouleTwo, 1, 3, 6, 2);
-//        $this->setScoreSingle($pouleTwo, 2, 3, 6, 4);
+//        $this->setAgainstScore($pouleTwo, 1, 2, 4, 2);
+//        $this->setAgainstScore($pouleTwo, 1, 3, 6, 2);
+//        $this->setAgainstScore($pouleTwo, 2, 3, 6, 4);
 //
 //        $roundRankingCalculator = new RoundRankingCalculator();
 //        $firstHorizontalPoule = $rootRound->getHorizontalPoule(QualifyTarget::Winners, 1);
@@ -259,12 +262,17 @@ class RoundTest extends TestCase
 
         $pouleOne = $rootRound->getPoule(1);
 
-        $this->setScoreSingle($pouleOne, 1, 2, 1, 0);
-        $this->setScoreSingle($pouleOne, 1, 3, 1, 0);
-        $this->setScoreSingle($pouleOne, 1, 4, 0, 1);
-        $this->setScoreSingle($pouleOne, 2, 3, 2, 0);
-        $this->setScoreSingle($pouleOne, 2, 4, 1, 0);
-        $this->setScoreSingle($pouleOne, 3, 4, 1, 0);
+        $this->setAgainstScore($pouleOne, 1, 2, 1, 0);
+        $this->setAgainstScore($pouleOne, 1, 3, 1, 0);
+        $this->setAgainstScore($pouleOne, 1, 4, 0, 1);
+        $this->setAgainstScore($pouleOne, 2, 3, 2, 0);
+        $this->setAgainstScore($pouleOne, 2, 4, 1, 0);
+        $this->setAgainstScore($pouleOne, 3, 4, 1, 0);
+        // p pnt
+        // 1   6 (2-1)
+        // 2   6 (3-1)
+        // 3   3 (1-3)
+        // 4   3 (1-2)
 
         $roundRankingCalculator = new RoundRankingCalculator();
         $items = $roundRankingCalculator->getItemsForPoule($pouleOne);
@@ -277,14 +285,14 @@ class RoundTest extends TestCase
 
         $competition->setAgainstRuleSet(AgainstRuleSet::AmongFirst);
         $roundRankingCalculatorAmong = new RoundRankingCalculator();
-        $itemsEC = $roundRankingCalculatorAmong->getItemsForPoule($pouleOne);
+        $itemsAmongFirst = $roundRankingCalculatorAmong->getItemsForPoule($pouleOne);
 
-        $roundRankingItemEC1 = $roundRankingCalculatorAmong->getItemByRank($itemsEC, 1);
-        self::assertNotNull($roundRankingItemEC1);
-        $roundRankingItemEC2 = $roundRankingCalculatorAmong->getItemByRank($itemsEC, 2);
-        self::assertNotNull($roundRankingItemEC2);
-        self::assertSame($roundRankingItemEC1->getPlace(), $pouleOne->getPlace(1));
-        self::assertSame($roundRankingItemEC2->getPlace(), $pouleOne->getPlace(2));
+        $roundRankingItemAmongFirst1 = $roundRankingCalculatorAmong->getItemByRank($itemsAmongFirst, 1);
+        self::assertNotNull($roundRankingItemAmongFirst1);
+        $roundRankingItemAmongFirst2 = $roundRankingCalculatorAmong->getItemByRank($itemsAmongFirst, 2);
+        self::assertNotNull($roundRankingItemAmongFirst2);
+        self::assertSame($roundRankingItemAmongFirst1->getPlace(), $pouleOne->getPlace(1));
+        self::assertSame($roundRankingItemAmongFirst2->getPlace(), $pouleOne->getPlace(2));
     }
 
     public function testVariation1MostPoints(): void
@@ -299,9 +307,9 @@ class RoundTest extends TestCase
 
         $pouleOne = $rootRound->getPoule(1);
 
-        $this->setScoreSingle($pouleOne, 1, 2, 1, 2);
-        $this->setScoreSingle($pouleOne, 1, 3, 1, 3);
-        $this->setScoreSingle($pouleOne, 2, 3, 2, 3);
+        $this->setAgainstScore($pouleOne, 1, 2, 1, 2);
+        $this->setAgainstScore($pouleOne, 1, 3, 1, 3);
+        $this->setAgainstScore($pouleOne, 2, 3, 2, 3);
 
         $roundRankingCalculator = new RoundRankingCalculator();
         $items = $roundRankingCalculator->getItemsForPoule($pouleOne);
@@ -329,12 +337,12 @@ class RoundTest extends TestCase
 
         $pouleOne = $rootRound->getPoule(1);
 
-        $this->setScoreSingle($pouleOne, 1, 2, 5, 0);
-        $this->setScoreSingle($pouleOne, 1, 3, 0, 1);
-        $this->setScoreSingle($pouleOne, 1, 4, 1, 1);
-        $this->setScoreSingle($pouleOne, 2, 3, 0, 0);
-        // $this->setScoreSingle(pouleOne, 2, 4, 0, 1);
-        $this->setScoreSingle($pouleOne, 3, 4, 0, 1);
+        $this->setAgainstScore($pouleOne, 1, 2, 5, 0);
+        $this->setAgainstScore($pouleOne, 1, 3, 0, 1);
+        $this->setAgainstScore($pouleOne, 1, 4, 1, 1);
+        $this->setAgainstScore($pouleOne, 2, 3, 0, 0);
+        // $this->setAgainstScore(pouleOne, 2, 4, 0, 1);
+        $this->setAgainstScore($pouleOne, 3, 4, 0, 1);
 
         $roundRankingCalculator = new RoundRankingCalculator();
         $items = $roundRankingCalculator->getItemsForPoule($pouleOne);
@@ -362,12 +370,12 @@ class RoundTest extends TestCase
 
         $pouleOne = $rootRound->getPoule(1);
 
-        // $this->setScoreSingle($pouleOne, 1, 2, 1, 0);
-        $this->setScoreSingle($pouleOne, 1, 3, 1, 0);
-        $this->setScoreSingle($pouleOne, 1, 4, 1, 1);
-        $this->setScoreSingle($pouleOne, 2, 3, 0, 0);
-        $this->setScoreSingle($pouleOne, 2, 4, 0, 5);
-        $this->setScoreSingle($pouleOne, 3, 4, 3, 0);
+        // $this->setAgainstScore($pouleOne, 1, 2, 1, 0);
+        $this->setAgainstScore($pouleOne, 1, 3, 1, 0);
+        $this->setAgainstScore($pouleOne, 1, 4, 1, 1);
+        $this->setAgainstScore($pouleOne, 2, 3, 0, 0);
+        $this->setAgainstScore($pouleOne, 2, 4, 0, 5);
+        $this->setAgainstScore($pouleOne, 3, 4, 3, 0);
 
         $roundRankingCalculator = new RoundRankingCalculator();
         $items = $roundRankingCalculator->getItemsForPoule($pouleOne);
@@ -395,9 +403,9 @@ class RoundTest extends TestCase
 
         $pouleOne = $rootRound->getPoule(1);
 
-        $this->setScoreSingle($pouleOne, 1, 2, 1, 1);
-        $this->setScoreSingle($pouleOne, 1, 3, 2, 1);
-        $this->setScoreSingle($pouleOne, 2, 3, 1, 0);
+        $this->setAgainstScore($pouleOne, 1, 2, 1, 1);
+        $this->setAgainstScore($pouleOne, 1, 3, 2, 1);
+        $this->setAgainstScore($pouleOne, 2, 3, 1, 0);
 
         $roundRankingCalculator = new RoundRankingCalculator();
         $items = $roundRankingCalculator->getItemsForPoule($pouleOne);
@@ -426,12 +434,12 @@ class RoundTest extends TestCase
         $pouleOne = $rootRound->getPoule(1);
 
         // 3 gelijk laten eindigen
-        $this->setScoreSingle($pouleOne, 1, 2, 1, 0);
-        // setScoreSingle(pouleOne, 1, 3, 1, 0);
-        // setScoreSingle(pouleOne, 1, 4, 1, 1);
-        $this->setScoreSingle($pouleOne, 2, 3, 0, 1);
-        $this->setScoreSingle($pouleOne, 2, 4, 0, 1);
-        // setScoreSingle(pouleOne, 3, 4, 3, 0);
+        $this->setAgainstScore($pouleOne, 1, 2, 1, 0);
+        // setAgainstScore(pouleOne, 1, 3, 1, 0);
+        // setAgainstScore(pouleOne, 1, 4, 1, 1);
+        $this->setAgainstScore($pouleOne, 2, 3, 0, 1);
+        $this->setAgainstScore($pouleOne, 2, 4, 0, 1);
+        // setAgainstScore(pouleOne, 3, 4, 3, 0);
 
         $roundRankingCalculator = new RoundRankingCalculator();
         $items = $roundRankingCalculator->getItemsForPoule($pouleOne);
@@ -454,12 +462,12 @@ class RoundTest extends TestCase
         $pouleOne = $rootRound->getPoule(1);
 
         // 3 gelijk laten eindigen
-        $this->setScoreSingle($pouleOne, 1, 2, 1, 0);
-        $this->setScoreSingle($pouleOne, 1, 3, 1, 0);
-        $this->setScoreSingle($pouleOne, 1, 4, 0, 1);
-        $this->setScoreSingle($pouleOne, 2, 3, 0, 1);
-        $this->setScoreSingle($pouleOne, 2, 4, 0, 1);
-        $this->setScoreSingle($pouleOne, 3, 4, 1, 0);
+        $this->setAgainstScore($pouleOne, 1, 2, 1, 0);
+        $this->setAgainstScore($pouleOne, 1, 3, 1, 0);
+        $this->setAgainstScore($pouleOne, 1, 4, 0, 1);
+        $this->setAgainstScore($pouleOne, 2, 3, 0, 1);
+        $this->setAgainstScore($pouleOne, 2, 4, 0, 1);
+        $this->setAgainstScore($pouleOne, 3, 4, 1, 0);
 
         $roundRankingCalculator = new RoundRankingCalculator();
         $roundRankingItems = $roundRankingCalculator->getItemsForPoule($pouleOne);
@@ -477,5 +485,99 @@ class RoundTest extends TestCase
         $roundRankingItem = $roundRankingCalculator->getItemByRank($roundRankingItems, 4);
         self::assertNotNull($roundRankingItem);
         self::assertSame($roundRankingItem->getPlace(), $pouleOne->getPlace(2));
+    }
+
+    public function test2SportsByRank(): void
+    {
+        $sportVariantsWithFields = [
+            $this->getAgainstGppSportVariantWithFields(1),
+            $this->getAgainstGppSportVariantWithFields(1),
+            $this->getAgainstGppSportVariantWithFields(1)
+        ];
+        $competition = $this->createCompetition($sportVariantsWithFields);
+
+        $structureEditor = $this->createStructureEditor();
+        $structure = $structureEditor->create($competition, [4]);
+        $poule = $structure->getRootRound()->getFirstPoule();
+
+        (new GamesCreator())->createStructureGames($structure);
+
+        $this->setScoresHelper($poule);
+
+//        $outputGame = new AgainstGameOutput();
+//        $games = $poule->getAgainstGames();
+//        foreach ($games as $gameIt) {
+//            $outputGame->output($gameIt);
+//        }
+
+        $roundRankingCalculator = new RoundRankingCalculator();
+        $roundRankingItems = $roundRankingCalculator->getItemsForPoule($poule);
+        $roundRankingItem = array_shift($roundRankingItems);
+        self::assertNotNull($roundRankingItem);
+        self::assertSame(4, $roundRankingItem->getPlace()->getPlaceNr());
+        $roundRankingItem = array_shift($roundRankingItems);
+        self::assertNotNull($roundRankingItem);
+        self::assertSame(1, $roundRankingItem->getPlace()->getPlaceNr());
+        $roundRankingItem = array_shift($roundRankingItems);
+        self::assertNotNull($roundRankingItem);
+        self::assertSame(3, $roundRankingItem->getPlace()->getPlaceNr());
+        $roundRankingItem = array_shift($roundRankingItems);
+        self::assertNotNull($roundRankingItem);
+        self::assertSame(2, $roundRankingItem->getPlace()->getPlaceNr());
+    }
+
+    public function test2SportsByPerformance(): void
+    {
+        $sportVariantsWithFields = [
+            $this->getAgainstGppSportVariantWithFields(1),
+            $this->getAgainstGppSportVariantWithFields(1),
+            $this->getAgainstGppSportVariantWithFields(1)
+        ];
+        $competition = $this->createCompetition($sportVariantsWithFields);
+
+        $structureEditor = $this->createStructureEditor();
+        $structure = $structureEditor->create($competition, [4]);
+        $poule = $structure->getRootRound()->getFirstPoule();
+
+        (new GamesCreator())->createStructureGames($structure);
+
+        $this->setScoresHelper($poule);
+
+//        $outputGame = new AgainstGameOutput();
+//        $games = $poule->getAgainstGames();
+//        foreach ($games as $gameIt) {
+//            $outputGame->output($gameIt);
+//        }
+
+        $roundRankingCalculator = new RoundRankingCalculator(null, Cumulative::ByPerformance);
+        $roundRankingItems = $roundRankingCalculator->getItemsForPoule($poule);
+        $roundRankingItem = array_shift($roundRankingItems);
+        self::assertNotNull($roundRankingItem);
+        self::assertSame(1, $roundRankingItem->getPlace()->getPlaceNr());
+        $roundRankingItem = array_shift($roundRankingItems);
+        self::assertNotNull($roundRankingItem);
+        self::assertSame(4, $roundRankingItem->getPlace()->getPlaceNr());
+        $roundRankingItem = array_shift($roundRankingItems);
+        self::assertNotNull($roundRankingItem);
+        self::assertSame(3, $roundRankingItem->getPlace()->getPlaceNr());
+        $roundRankingItem = array_shift($roundRankingItems);
+        self::assertNotNull($roundRankingItem);
+        self::assertSame(2, $roundRankingItem->getPlace()->getPlaceNr());
+    }
+
+    protected function setScoresHelper(Poule $poule): void
+    {
+        $this->setAgainstScore($poule, 1, 2, 6, 0); // V
+        $this->setAgainstScore($poule, 3, 4, 1, 0); // V
+        $this->setAgainstScore($poule, 1, 4, 0, 3); // S2
+        $this->setAgainstScore($poule, 2, 3, 0, 2); // S2
+        $this->setAgainstScore($poule, 2, 4, 0, 1); // S3
+        $this->setAgainstScore($poule, 1, 3, 1, 0); // S3
+        // pl     rank      pnt    saldo        cumulativeRank
+        //                                      V   S2      S3      TOT        RANK
+        //  1        1        6      7-3        1    4      1        6          2
+        //  2        4        0      0-9        4    3      2        9          4
+        //  3        3        6      3-1        2    2      2        6          3
+        //  4        2        6      4-1        3    1      1        5          1
     }
 }

@@ -14,7 +14,10 @@ use Sports\Round\Number as RoundNumber;
 
 class PlanningScheduler
 {
-    public function __construct(protected Period|null $blockedPeriod = null)
+    /**
+     * @param list<Period> $blockedPeriods
+     */
+    public function __construct(protected array $blockedPeriods)
     {
     }
 
@@ -67,15 +70,27 @@ class PlanningScheduler
         return $this->addMinutes($gameStartDateTime, $minutes, $planningConfig);
     }
 
-    protected function addMinutes(DateTimeImmutable $dateTime, int $minutes, PlanningConfig $planningConfig): DateTimeImmutable
-    {
+    protected function addMinutes(
+        DateTimeImmutable $dateTime,
+        int $minutes,
+        PlanningConfig $planningConfig
+    ): DateTimeImmutable {
         $newStartDateTime = $dateTime->modify("+" . $minutes . " minutes");
-        if ($this->blockedPeriod !== null) {
-            $newEndDateTime = $newStartDateTime->modify("+" . $planningConfig->getMaxNrOfMinutesPerGame() . " minutes");
-            if ($newStartDateTime < $this->blockedPeriod->getEndDate() && $newEndDateTime > $this->blockedPeriod->getStartDate()) {
-                $newStartDateTime = clone $this->blockedPeriod->getEndDate();
-            }
+        $newEndDateTime = $newStartDateTime->modify("+" . $planningConfig->getMaxNrOfMinutesPerGame() . " minutes");
+        $blockedPeriod = $this->getBlockedPeriod($newStartDateTime, $newEndDateTime);
+        if ($blockedPeriod !== null) {
+            $newStartDateTime = clone $blockedPeriod->getEndDate();
         }
         return $newStartDateTime;
+    }
+
+    protected function getBlockedPeriod(DateTimeImmutable $startDateTime, DateTimeImmutable $endDateTime): Period|null
+    {
+        foreach ($this->blockedPeriods as $blockedPeriod) {
+            if ($startDateTime < $blockedPeriod->getEndDate() && $endDateTime > $blockedPeriod->getStartDate()) {
+                return $blockedPeriod;
+            }
+        }
+        return null;
     }
 }

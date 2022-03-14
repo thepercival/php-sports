@@ -27,8 +27,10 @@ class Round
     /**
      * @param list<GameState>|null $gameStates
      */
-    public function __construct(array $gameStates = null)
-    {
+    public function __construct(
+        array $gameStates = null,
+        protected Cumulative $cumulative = Cumulative::ByRank
+    ) {
         $this->gameStates = $gameStates ?? [GameState::Finished];
     }
 
@@ -147,17 +149,7 @@ class Round
     private function rankItems(array $cumulativeRoundRankingItems): array
     {
         usort($cumulativeRoundRankingItems, function (RoundRankingItem $a, RoundRankingItem $b): int {
-            if ($a->getCumulativeRank() === $b->getCumulativeRank()) {
-                $cmp = $a->compareCumulativePerformances($b);
-                if ($cmp === 0.0) {
-                    if ($a->getPlace()->getPouleNr() === $b->getPlace()->getPouleNr()) {
-                        return $a->getPlace()->getPlaceNr() - $b->getPlace()->getPlaceNr();
-                    }
-                    return $a->getPlace()->getPouleNr() - $b->getPlace()->getPouleNr();
-                }
-                return $cmp > 0 ? 1 : -1;
-            }
-            return $a->getCumulativeRank() < $b->getCumulativeRank() ? -1 : 1;
+            return $this->compareBy($a, $b,);
         });
         /** @var list<RoundRankingItem> $roundRankingItems */
         $roundRankingItems = [];
@@ -165,9 +157,7 @@ class Round
         $rank = 0;
         $previousCumulative = null;
         while ($cumulativeRoundRankingItem = array_shift($cumulativeRoundRankingItems)) {
-            if ($previousCumulative === null || $previousCumulative->getCumulativeRank() < $cumulativeRoundRankingItem->getCumulativeRank() ||
-                $previousCumulative->getCumulativeRank() === $cumulativeRoundRankingItem->getCumulativeRank()
-                && $cumulativeRoundRankingItem->compareCumulativePerformances($previousCumulative) < 0) {
+            if ($this->differs($cumulativeRoundRankingItem, $previousCumulative)) {
                 $rank++;
             }
             $cumulativeRoundRankingItem->setRank($rank, ++$nrOfIterations);
@@ -175,5 +165,32 @@ class Round
             $roundRankingItems[] = $cumulativeRoundRankingItem;
         }
         return $roundRankingItems;
+    }
+
+    protected function compareBy(RoundRankingItem $a, RoundRankingItem $b): int
+    {
+        if ($this->cumulative === Cumulative::ByRank
+            && $a->getCumulativeRank() !== $b->getCumulativeRank()) {
+            return $a->getCumulativeRank() < $b->getCumulativeRank() ? -1 : 1;
+        }
+        $cmp = $a->compareCumulativePerformances($b);
+        if ($cmp !== 0.0) {
+            return $cmp > 0 ? 1 : -1;
+        }
+        if ($a->getPlace()->getPouleNr() === $b->getPlace()->getPouleNr()) {
+            return $a->getPlace()->getPlaceNr() - $b->getPlace()->getPlaceNr();
+        }
+        return $a->getPlace()->getPouleNr() - $b->getPlace()->getPouleNr();
+    }
+
+    protected function differs(RoundRankingItem $a, RoundRankingItem|null $b): bool
+    {
+        if ($b === null) {
+            return true;
+        }
+        if ($this->cumulative === Cumulative::ByRank && $a->getCumulativeRank() !== $b->getCumulativeRank()) {
+            return true;
+        }
+        return $a->compareCumulativePerformances($b) !== 0.0;
     }
 }

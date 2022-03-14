@@ -80,10 +80,10 @@ class CheckerTest extends TestCase
         $competition = $this->createCompetition();
 
         $field1 = $competition->getSingleSport()->getField(1);
-        $checker->checkFieldName($competition, "1", $field1);
-        $checker->checkFieldName($competition, "3");
+        $checker->checkFieldName($competition, '1', $field1);
+        $checker->checkFieldName($competition, '3');
 
         self::expectException(\Exception::class);
-        $checker->checkFieldName($competition, "1");
+        $checker->checkFieldName($competition, '1');
     }
 }

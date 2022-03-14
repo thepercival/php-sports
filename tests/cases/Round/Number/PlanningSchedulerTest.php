@@ -36,11 +36,11 @@ final class PlanningSchedulerTest extends TestCase
         $secondRoundNumber = $firstRoundNumber->getNext();
         self::assertNotNull($secondRoundNumber);
 
-        (new GamesCreator())->createStructureGames($structure, null, new SportRange(2, 2));
+        (new GamesCreator())->createStructureGames($structure, [], new SportRange(2, 2));
 
         $competitionStartDateTime = $competition->getStartDateTime();
 
-        $planningScheduler = new PlanningScheduler();
+        $planningScheduler = new PlanningScheduler([]);
         $planningScheduler->rescheduleGames($firstRoundNumber);
 
         $firstRoundNumberGames = $firstRoundNumber->getGames(GameOrder::ByBatch);
@@ -67,7 +67,7 @@ final class PlanningSchedulerTest extends TestCase
         $secondRoundNumber = $firstRoundNumber->getNext();
         self::assertNotNull($secondRoundNumber);
 
-        (new GamesCreator())->createStructureGames($structure, null, new SportRange(2, 2));
+        (new GamesCreator())->createStructureGames($structure, [], new SportRange(2, 2));
 
 //        foreach( $firstRoundNumber->getGames( Game::ORDER_BY_BATCH ) as $game ) {
 //            (new AgainstGameOutput())->output($game);
@@ -83,7 +83,7 @@ final class PlanningSchedulerTest extends TestCase
             $competitionStartDateTime->modify("-1 minutes"),
             $competitionStartDateTime->modify("+" . (40 - 1) . " minutes")
         );
-        $planningScheduler = new PlanningScheduler($blockedPeriod);
+        $planningScheduler = new PlanningScheduler([$blockedPeriod]);
         $planningScheduler->rescheduleGames($firstRoundNumber);
 
 //        foreach( $firstRoundNumber->getGames( Game::ORDER_BY_BATCH ) as $game ) {
@@ -110,7 +110,7 @@ final class PlanningSchedulerTest extends TestCase
         $secondRoundNumber = $firstRoundNumber->getNext();
         self::assertNotNull($secondRoundNumber);
 
-        (new GamesCreator())->createStructureGames($structure, null, new SportRange(2, 2));
+        (new GamesCreator())->createStructureGames($structure, [], new SportRange(2, 2));
 
 //        foreach( $firstRoundNumber->getGames( Game::ORDER_BY_BATCH ) as $game ) {
 //            (new \SportsPlanning\Output\Game())->output($game);
@@ -124,7 +124,7 @@ final class PlanningSchedulerTest extends TestCase
             $secondBatchGame->getStartDateTime()->modify("-1 minutes"),
             $secondBatchGame->getStartDateTime()->modify("+40 minutes")
         );
-        $planningScheduler = new PlanningScheduler($blockedPeriod);
+        $planningScheduler = new PlanningScheduler([$blockedPeriod]);
         $planningScheduler->rescheduleGames($firstRoundNumber);
 
         $secondRoundNumberStartDateTime = $this->getStartSecond($competitionStartDateTime, 40);
@@ -144,7 +144,7 @@ final class PlanningSchedulerTest extends TestCase
         $secondRoundNumber = $firstRoundNumber->getNext();
         self::assertNotNull($secondRoundNumber);
 
-        (new GamesCreator())->createStructureGames($structure, null, new SportRange(2, 2));
+        (new GamesCreator())->createStructureGames($structure, [], new SportRange(2, 2));
 
 //        foreach( $firstRoundNumber->getGames( Game::ORDER_BY_BATCH ) as $game ) {
 //            (new \SportsPlanning\Output\Game())->output($game);
@@ -158,7 +158,7 @@ final class PlanningSchedulerTest extends TestCase
             $secondBatchGame->getStartDateTime()->modify("+1 minutes"),
             $secondBatchGame->getStartDateTime()->modify("+40 minutes")
         );
-        $planningScheduler = new PlanningScheduler($blockedPeriod);
+        $planningScheduler = new PlanningScheduler([$blockedPeriod]);
         $planningScheduler->rescheduleGames($firstRoundNumber);
 
         $secondRoundNumberStartDateTime = $this->getStartSecond($competitionStartDateTime, 40);
@@ -178,7 +178,7 @@ final class PlanningSchedulerTest extends TestCase
         $secondRoundNumber = $firstRoundNumber->getNext();
         self::assertNotNull($secondRoundNumber);
 
-        (new GamesCreator())->createStructureGames($structure, null, new SportRange(2, 2));
+        (new GamesCreator())->createStructureGames($structure, [], new SportRange(2, 2));
 
 //        foreach( $firstRoundNumber->getGames( Game::ORDER_BY_BATCH ) as $game ) {
 //            (new \SportsPlanning\Output\Game())->output($game);
@@ -192,7 +192,7 @@ final class PlanningSchedulerTest extends TestCase
             clone $secondBatchGame->getStartDateTime(),
             $secondBatchGame->getStartDateTime()->modify("+40 minutes")
         );
-        $planningScheduler = new PlanningScheduler($blockedPeriod);
+        $planningScheduler = new PlanningScheduler([$blockedPeriod]);
         $planningScheduler->rescheduleGames($firstRoundNumber);
 
         $secondRoundNumberStartDateTime = $this->getStartSecond($competitionStartDateTime, 40);
@@ -212,7 +212,7 @@ final class PlanningSchedulerTest extends TestCase
         $secondRoundNumber = $firstRoundNumber->getNext();
         self::assertNotNull($secondRoundNumber);
 
-        (new GamesCreator())->createStructureGames($structure, null, new SportRange(2, 2));
+        (new GamesCreator())->createStructureGames($structure, [], new SportRange(2, 2));
 
 //        foreach( $firstRoundNumber->getGames( Game::ORDER_BY_BATCH ) as $game ) {
 //            (new \SportsPlanning\Output\Game())->output($game);
@@ -226,7 +226,7 @@ final class PlanningSchedulerTest extends TestCase
             $secondRoundNumberStartDateTimeTmp->modify("-1 minutes"),
             $secondRoundNumberStartDateTimeTmp->modify("+40 minutes")
         );
-        $planningScheduler = new PlanningScheduler($blockedPeriod);
+        $planningScheduler = new PlanningScheduler([$blockedPeriod]);
         $planningScheduler->rescheduleGames($firstRoundNumber);
 
         $secondRoundNumberStartDateTime = $this->getStartSecond($competitionStartDateTime, 40);
@@ -253,7 +253,7 @@ final class PlanningSchedulerTest extends TestCase
 //            (new \SportsPlanning\Output\Game())->output($game);
 //        }
 
-        $planningScheduler = new PlanningScheduler();
+        $planningScheduler = new PlanningScheduler([]);
         self::expectException(Exception::class);
         $planningScheduler->rescheduleGames($firstRoundNumber);
     }

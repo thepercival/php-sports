@@ -39,16 +39,16 @@ class ServiceTest extends TestCase
 
         $pouleOne = $rootRound->getPoule(1);
 
-        $this->setScoreSingle($pouleOne, 1, 2, 2, 1);
-        $this->setScoreSingle($pouleOne, 1, 3, 3, 1);
-        $this->setScoreSingle($pouleOne, 1, 4, 4, 1);
-        $this->setScoreSingle($pouleOne, 1, 5, 5, 1);
-        $this->setScoreSingle($pouleOne, 2, 3, 3, 2);
-        $this->setScoreSingle($pouleOne, 2, 4, 4, 2);
-        $this->setScoreSingle($pouleOne, 2, 5, 5, 2);
-        $this->setScoreSingle($pouleOne, 3, 4, 4, 3);
-        $this->setScoreSingle($pouleOne, 3, 5, 5, 3);
-        $this->setScoreSingle($pouleOne, 4, 5, 5, 4);
+        $this->setAgainstScore($pouleOne, 1, 2, 2, 1);
+        $this->setAgainstScore($pouleOne, 1, 3, 3, 1);
+        $this->setAgainstScore($pouleOne, 1, 4, 4, 1);
+        $this->setAgainstScore($pouleOne, 1, 5, 5, 1);
+        $this->setAgainstScore($pouleOne, 2, 3, 3, 2);
+        $this->setAgainstScore($pouleOne, 2, 4, 4, 2);
+        $this->setAgainstScore($pouleOne, 2, 5, 5, 2);
+        $this->setAgainstScore($pouleOne, 3, 4, 4, 3);
+        $this->setAgainstScore($pouleOne, 3, 5, 5, 3);
+        $this->setAgainstScore($pouleOne, 4, 5, 5, 4);
 
         $qualifyService = new QualifyService($rootRound);
         $qualifyService->setQualifiers();
@@ -85,13 +85,13 @@ class ServiceTest extends TestCase
         $winnersRound = $structureEditor->addChildRound($rootRound, QualifyTarget::Winners, [2]);
         $losersRound = $structureEditor->addChildRound($rootRound, QualifyTarget::Losers, [2]);
         // (new StructureOutput())->output($structure);
-        $this->setScoreSingle($pouleOne, 1, 2, 2, 1);
-        $this->setScoreSingle($pouleOne, 1, 3, 3, 1);
-        $this->setScoreSingle($pouleOne, 2, 3, 4, 1);
+        $this->setAgainstScore($pouleOne, 1, 2, 2, 1);
+        $this->setAgainstScore($pouleOne, 1, 3, 3, 1);
+        $this->setAgainstScore($pouleOne, 2, 3, 4, 1);
 
-        $this->setScoreSingle($pouleTwo, 1, 2, 2, 1);
-        $this->setScoreSingle($pouleTwo, 1, 3, 3, 1);
-        $this->setScoreSingle($pouleTwo, 2, 3, 4, 1);
+        $this->setAgainstScore($pouleTwo, 1, 2, 2, 1);
+        $this->setAgainstScore($pouleTwo, 1, 3, 3, 1);
+        $this->setAgainstScore($pouleTwo, 2, 3, 4, 1);
         // 1: A1, B1
         // 2: A2, B3
         // 3: A2, B3
@@ -133,15 +133,15 @@ class ServiceTest extends TestCase
         $pouleTwo = $rootRound->getPoule(2);
         $pouleThree = $rootRound->getPoule(3);
 
-        $this->setScoreSingle($pouleOne, 1, 2, 1, 2);
-        $this->setScoreSingle($pouleOne, 1, 3, 1, 3);
-        $this->setScoreSingle($pouleOne, 2, 3, 2, 3);
-        $this->setScoreSingle($pouleTwo, 1, 2, 1, 2);
-        $this->setScoreSingle($pouleTwo, 1, 3, 1, 3);
-        $this->setScoreSingle($pouleTwo, 2, 3, 2, 4);
-        $this->setScoreSingle($pouleThree, 1, 2, 1, 5);
-        $this->setScoreSingle($pouleThree, 1, 3, 1, 3);
-        $this->setScoreSingle($pouleThree, 2, 3, 2, 5);
+        $this->setAgainstScore($pouleOne, 1, 2, 1, 2);
+        $this->setAgainstScore($pouleOne, 1, 3, 1, 3);
+        $this->setAgainstScore($pouleOne, 2, 3, 2, 3);
+        $this->setAgainstScore($pouleTwo, 1, 2, 1, 2);
+        $this->setAgainstScore($pouleTwo, 1, 3, 1, 3);
+        $this->setAgainstScore($pouleTwo, 2, 3, 2, 4);
+        $this->setAgainstScore($pouleThree, 1, 2, 1, 5);
+        $this->setAgainstScore($pouleThree, 1, 3, 1, 3);
+        $this->setAgainstScore($pouleThree, 2, 3, 2, 5);
         // Rank W 3.3, 2.3, 1.3, 3.2
         // Dropouts  2.2
         // Rank L 1,2, 3.3, 2.3, 1.3
@@ -213,15 +213,15 @@ class ServiceTest extends TestCase
         $pouleTwo = $rootRound->getPoule(2);
         $pouleThree = $rootRound->getPoule(3);
 
-        $this->setScoreSingle($pouleOne, 1, 2, 1, 2);
-        $this->setScoreSingle($pouleOne, 1, 3, 1, 3);
-        $this->setScoreSingle($pouleOne, 2, 3, 2, 3);
-        $this->setScoreSingle($pouleTwo, 1, 2, 1, 2);
-        $this->setScoreSingle($pouleTwo, 1, 3, 1, 3);
-        $this->setScoreSingle($pouleTwo, 2, 3, 2, 4);
-        $this->setScoreSingle($pouleThree, 1, 2, 1, 5);
-        $this->setScoreSingle($pouleThree, 1, 3, 1, 3);
-        // $this->setScoreSingle(pouleThree, 2, 3, 2, 5);
+        $this->setAgainstScore($pouleOne, 1, 2, 1, 2);
+        $this->setAgainstScore($pouleOne, 1, 3, 1, 3);
+        $this->setAgainstScore($pouleOne, 2, 3, 2, 3);
+        $this->setAgainstScore($pouleTwo, 1, 2, 1, 2);
+        $this->setAgainstScore($pouleTwo, 1, 3, 1, 3);
+        $this->setAgainstScore($pouleTwo, 2, 3, 2, 4);
+        $this->setAgainstScore($pouleThree, 1, 2, 1, 5);
+        $this->setAgainstScore($pouleThree, 1, 3, 1, 3);
+        // $this->setAgainstScore(pouleThree, 2, 3, 2, 5);
 
         $qualifyService = new QualifyService($rootRound);
         $qualifyService->setQualifiers();
@@ -250,12 +250,12 @@ class ServiceTest extends TestCase
         $pouleOne = $rootRound->getPoule(1);
         $pouleTwo = $rootRound->getPoule(2);
 
-        $this->setScoreSingle($pouleOne, 1, 2, 1, 0);
-        $this->setScoreSingle($pouleOne, 3, 1, 0, 1);
-        $this->setScoreSingle($pouleOne, 2, 3, 1, 0);
-        $this->setScoreSingle($pouleTwo, 1, 2, 1, 0);
-        $this->setScoreSingle($pouleTwo, 3, 1, 0, 1);
-        $this->setScoreSingle($pouleTwo, 2, 3, 1, 0);
+        $this->setAgainstScore($pouleOne, 1, 2, 1, 0);
+        $this->setAgainstScore($pouleOne, 3, 1, 0, 1);
+        $this->setAgainstScore($pouleOne, 2, 3, 1, 0);
+        $this->setAgainstScore($pouleTwo, 1, 2, 1, 0);
+        $this->setAgainstScore($pouleTwo, 3, 1, 0, 1);
+        $this->setAgainstScore($pouleTwo, 2, 3, 1, 0);
 
         $qualifyService = new QualifyService($rootRound);
         $qualifyService->setQualifiers();

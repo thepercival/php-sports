@@ -32,9 +32,9 @@ class EndTest extends TestCase
 
         $pouleOne = $rootRound->getPoule(1);
 
-        $this->setScoreSingle($pouleOne, 1, 2, 2, 1);
-        $this->setScoreSingle($pouleOne, 1, 3, 3, 1);
-        $this->setScoreSingle($pouleOne, 2, 3, 3, 2);
+        $this->setAgainstScore($pouleOne, 1, 2, 2, 1);
+        $this->setAgainstScore($pouleOne, 1, 3, 3, 1);
+        $this->setAgainstScore($pouleOne, 2, 3, 3, 2);
 
         $calculator = new EndRankingCalculator($structure);
         $items = $calculator->getItems();
@@ -61,9 +61,9 @@ class EndTest extends TestCase
 
         $pouleOne = $rootRound->getPoule(1);
 
-        $this->setScoreSingle($pouleOne, 1, 2, 2, 1);
-        $this->setScoreSingle($pouleOne, 1, 3, 3, 1);
-        // $this->setScoreSingle($pouleOne, 2, 3, 3, 2);
+        $this->setAgainstScore($pouleOne, 1, 2, 2, 1);
+        $this->setAgainstScore($pouleOne, 1, 3, 3, 1);
+        // $this->setAgainstScore($pouleOne, 2, 3, 3, 2);
 
         $calculator = new EndRankingCalculator($structure);
         $items = $calculator->getItems();
@@ -90,21 +90,21 @@ class EndTest extends TestCase
 
         $pouleOne = $rootRound->getPoule(1);
 
-        $this->setScoreSingle($pouleOne, 1, 2, 2, 1);
-        $this->setScoreSingle($pouleOne, 1, 3, 3, 1);
-        $this->setScoreSingle($pouleOne, 1, 4, 4, 1);
-        $this->setScoreSingle($pouleOne, 1, 5, 5, 1);
-        $this->setScoreSingle($pouleOne, 2, 3, 3, 2);
-        $this->setScoreSingle($pouleOne, 2, 4, 4, 2);
-        $this->setScoreSingle($pouleOne, 2, 5, 5, 2);
-        $this->setScoreSingle($pouleOne, 3, 4, 4, 3);
-        $this->setScoreSingle($pouleOne, 3, 5, 5, 3);
-        $this->setScoreSingle($pouleOne, 4, 5, 5, 4);
+        $this->setAgainstScore($pouleOne, 1, 2, 2, 1);
+        $this->setAgainstScore($pouleOne, 1, 3, 3, 1);
+        $this->setAgainstScore($pouleOne, 1, 4, 4, 1);
+        $this->setAgainstScore($pouleOne, 1, 5, 5, 1);
+        $this->setAgainstScore($pouleOne, 2, 3, 3, 2);
+        $this->setAgainstScore($pouleOne, 2, 4, 4, 2);
+        $this->setAgainstScore($pouleOne, 2, 5, 5, 2);
+        $this->setAgainstScore($pouleOne, 3, 4, 4, 3);
+        $this->setAgainstScore($pouleOne, 3, 5, 5, 3);
+        $this->setAgainstScore($pouleOne, 4, 5, 5, 4);
 
         $winnersPoule = $winnersRound->getPoule(1);
-        $this->setScoreSingle($winnersPoule, 1, 2, 2, 1);
+        $this->setAgainstScore($winnersPoule, 1, 2, 2, 1);
         $loserssPoule = $losersRound->getPoule(1);
-        $this->setScoreSingle($loserssPoule, 1, 2, 2, 1);
+        $this->setAgainstScore($loserssPoule, 1, 2, 2, 1);
 
         $qualifyService = new QualifyService($rootRound);
         $qualifyService->setQualifiers();

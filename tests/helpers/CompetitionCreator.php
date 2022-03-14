@@ -27,25 +27,40 @@ trait CompetitionCreator
      */
     protected $competition;
 
+    /**
+     * @param non-empty-list<SportVariantWithFields>|null $sportVariantsWithFields
+     * @return Competition
+     * @throws \League\Period\Exception
+     */
     protected function createCompetition(
-        SportVariantWithFields|null $sportVariantWithFields = null
+        array|null $sportVariantsWithFields = null
     ): Competition {
         if ($this->competition !== null) {
             return $this->competition;
         }
 
         $league = new League(new Association("knvb"), "my league");
-        $season = new Season("2018/2019", new Period(
+        $season = new Season(
+            "2018/2019", new Period(
             new DateTimeImmutable("2018-08-01"),
             new DateTimeImmutable("2019-07-01"),
-        ));
+        )
+        );
         $competition = new Competition($league, $season);
         $competition->setId(0);
         $competition->setStartDateTime(new DateTimeImmutable("2030-01-01T12:00:00.000Z"));
         new Referee($competition, '111');
         new Referee($competition, '222');
 
-        $this->createCompetitionSport($competition, $sportVariantWithFields);
+        if ($sportVariantsWithFields === null) {
+            $sportVariantsWithFields = [
+                new SportVariantWithFields(
+                    new AgainstH2h(1, 1, 1),
+                    2
+                )
+            ];
+        }
+        $this->createCompetitionSports($competition, $sportVariantsWithFields);
         $this->competition = $competition;
         return $competition;
     }
@@ -61,24 +76,32 @@ trait CompetitionCreator
         return $this->sport;
     }*/
 
-    protected function createCompetitionSport(
-        Competition $competition,
-        SportVariantWithFields|null $sportVariantWithFields
-    ): void {
-        $sport = new Sport("voetbal", true, GameMode::Against, 1);
-        $sport->setCustomId(SportCustom::Football);
+    /**
+     * @param Competition $competition
+     * @param non-empty-list<SportVariantWithFields> $sportVariantsWithFields
+     */
+    protected function createCompetitionSports(Competition $competition, array $sportVariantsWithFields): void
+    {
+        $counter = 0;
+        foreach ($sportVariantsWithFields as $sportVariantWithFields) {
+            if (++$counter === 1) {
+                $sport = new Sport('voetbal', true, GameMode::Against, 1);
+                $sport->setCustomId(SportCustom::Football);
+            } else {
+                $sport = new Sport('sport' . $counter, true, GameMode::Against, 1);
+            }
+            if (count($sportVariantsWithFields) === 1) {
+                $sportAbbreviation = '';
+            } else {
+                $sportAbbreviation = mb_substr($sport->getName(), 0, 1);
+            }
 
-        if ($sportVariantWithFields === null) {
-            $sportVariantWithFields = new SportVariantWithFields(
-                new AgainstH2h(1, 1, 1),
-                2
-            );
-        }
-        $persistVariant = $sportVariantWithFields->getSportVariant()->toPersistVariant();
-        $competitionSport = new CompetitionSport($sport, $competition, $persistVariant);
-        for ($fieldNr = 1; $fieldNr <= $sportVariantWithFields->getNrOfFields(); $fieldNr++) {
-            $field = new Field($competitionSport);
-            $field->setName((string)$fieldNr);
+            $persistVariant = $sportVariantWithFields->getSportVariant()->toPersistVariant();
+            $competitionSport = new CompetitionSport($sport, $competition, $persistVariant);
+            for ($fieldNr = 1; $fieldNr <= $sportVariantWithFields->getNrOfFields(); $fieldNr++) {
+                $field = new Field($competitionSport);
+                $field->setName($sportAbbreviation . '' . $fieldNr);
+            }
         }
     }
 

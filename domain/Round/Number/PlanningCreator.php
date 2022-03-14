@@ -35,16 +35,22 @@ class PlanningCreator
         }
     }
 
+    /**
+     * @param CreatePlanningsEvent $createPlanningEvent
+     * @param RoundNumber $roundNumber
+     * @param list<Period> $blockedPeriods
+     * @param int|null $eventPriority
+     */
     public function addFrom(
         CreatePlanningsEvent $createPlanningEvent,
         RoundNumber $roundNumber,
-        Period|null $blockedPeriod,
+        array $blockedPeriods,
         int|null $eventPriority
     ): void {
         if (!$this->allPreviousRoundNumbersHavePlanning($roundNumber)) {
             return;
         }
-        $this->createFrom($createPlanningEvent, $roundNumber, $blockedPeriod, $eventPriority);
+        $this->createFrom($createPlanningEvent, $roundNumber, $blockedPeriods, $eventPriority);
     }
 
     public function allPreviousRoundNumbersHavePlanning(RoundNumber $roundNumber): bool
@@ -59,13 +65,20 @@ class PlanningCreator
         return $this->allPreviousRoundNumbersHavePlanning($previous);
     }
 
+    /**
+     * @param CreatePlanningsEvent $createPlanningEvent
+     * @param RoundNumber $roundNumber
+     * @param list<Period> $blockedPeriods
+     * @param int|null $eventPriority
+     * @throws \Exception
+     */
     protected function createFrom(
         CreatePlanningsEvent $createPlanningEvent,
         RoundNumber $roundNumber,
-        Period|null $blockedPeriod,
+        array $blockedPeriods,
         int|null $eventPriority
     ): void {
-        $scheduler = new PlanningScheduler($blockedPeriod);
+        $scheduler = new PlanningScheduler($blockedPeriods);
         if ($roundNumber->allPoulesHaveGames()) {
             $scheduler->rescheduleGames($roundNumber);
         } else {
@@ -98,7 +111,7 @@ class PlanningCreator
         $nextRoundNumber = $roundNumber->getNext();
         if ($nextRoundNumber !== null) {
             $nextEventPriority = $eventPriority === null ? $eventPriority : $eventPriority - 1;
-            $this->createFrom($createPlanningEvent, $nextRoundNumber, $blockedPeriod, $nextEventPriority);
+            $this->createFrom($createPlanningEvent, $nextRoundNumber, $blockedPeriods, $nextEventPriority);
         }
     }
 }

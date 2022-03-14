@@ -33,16 +33,29 @@ class GamesCreator
         return $logger;
     }
 
-    public function createStructureGames(Structure $structure, Period $blockedPeriod = null, SportRange $range = null): void
-    {
+    /**
+     * @param Structure $structure
+     * @param list<Period> $blockedPeriods
+     * @param SportRange|null $range
+     */
+    public function createStructureGames(
+        Structure $structure,
+        array $blockedPeriods = [],
+        SportRange $range = null
+    ): void {
         $this->removeGamesHelper($structure->getFirstRoundNumber());
-        $this->createGamesHelper($structure->getFirstRoundNumber(), $blockedPeriod, $range);
+        $this->createGamesHelper($structure->getFirstRoundNumber(), $blockedPeriods, $range);
     }
 
-    public function createGames(RoundNumber $roundNumber, Period $blockedPeriod = null, SportRange $range = null): void
+    /**
+     * @param RoundNumber $roundNumber
+     * @param list<Period> $blockedPeriods
+     * @param SportRange|null $range
+     */
+    public function createGames(RoundNumber $roundNumber, array $blockedPeriods = [], SportRange $range = null): void
     {
         $this->removeGamesHelper($roundNumber);
-        $this->createGamesHelper($roundNumber, $blockedPeriod, $range);
+        $this->createGamesHelper($roundNumber, $blockedPeriods, $range);
     }
 
     public function createPlanning(RoundNumber $roundNumber, SportRange $range = null): Planning
@@ -54,10 +67,15 @@ class GamesCreator
         return $planningCreator->createPlanning($planningInput, $range);
     }
 
+    /**
+     * @param RoundNumber $roundNumber
+     * @param list<Period> $blockedPeriods
+     * @param SportRange|null $range
+     */
     private function createGamesHelper(
         RoundNumber $roundNumber,
-        Period $blockedPeriod = null,
-        SportRange $range = null
+        array $blockedPeriods,
+        SportRange|null $range
     ): void {
         $minIsMaxPlanning = $this->createPlanning($roundNumber, $range);
         $firstBatch = $minIsMaxPlanning->createFirstBatch();
@@ -67,11 +85,11 @@ class GamesCreator
             $refereePlaceService->assign($firstBatch);
         }
 
-        $planningAssigner = new PlanningAssigner(new PlanningScheduler($blockedPeriod));
+        $planningAssigner = new PlanningAssigner(new PlanningScheduler($blockedPeriods));
         $planningAssigner->assignPlanningToRoundNumber($roundNumber, $minIsMaxPlanning);
         $nextRoundNumber = $roundNumber->getNext();
         if ($nextRoundNumber !== null) {
-            $this->createGamesHelper($nextRoundNumber);
+            $this->createGamesHelper($nextRoundNumber, $blockedPeriods, $range);
         }
     }
 

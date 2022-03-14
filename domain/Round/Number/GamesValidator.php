@@ -25,31 +25,44 @@ class GamesValidator
     {
     }
 
+    /**
+     * @param Structure $structure
+     * @param int $nrOfReferees
+     * @param bool $validatePriority
+     * @param list<Period> $blockedPeriods
+     */
     public function validateStructure(
         Structure $structure,
         int $nrOfReferees,
         bool $validatePriority = true,
-        Period $period = null
+        array $blockedPeriods = []
     ): void {
         $roundNumber = $structure->getFirstRoundNumber();
         while ($roundNumber !== null) {
-            $this->validate($roundNumber, $nrOfReferees, $validatePriority, $period);
+            $this->validate($roundNumber, $nrOfReferees, $validatePriority, $blockedPeriods);
             $roundNumber = $roundNumber->getNext();
         }
     }
 
+    /**
+     * @param RoundNumber $roundNumber
+     * @param int $nrOfReferees
+     * @param bool $validatePriority
+     * @param list<Period> $blockedPeriods
+     * @throws Exception
+     */
     public function validate(
         RoundNumber $roundNumber,
         int $nrOfReferees,
         bool $validatePriority = true,
-        Period|null $blockedPeriod = null
+        array $blockedPeriods = []
     ): void {
         $this->validateEnoughTotalNrOfGames($roundNumber);
         $this->validateFields($roundNumber);
         $this->validateReferee($roundNumber, $nrOfReferees);
         $this->validateSelfReferee($roundNumber);
-        if ($blockedPeriod !== null) {
-            $this->validateGameNotInBlockedPeriod($roundNumber, $blockedPeriod);
+        if (count($blockedPeriods) > 0) {
+            $this->validateGameNotInBlockedPeriod($roundNumber, $blockedPeriods);
         }
         $this->validateAllPlacesSameNrOfGames($roundNumber);
         $this->validateResourcesPerBatch($roundNumber);
@@ -108,7 +121,12 @@ class GamesValidator
         }
     }
 
-    protected function validateGameNotInBlockedPeriod(RoundNumber $roundNumber, Period $blockedPeriod): void
+    /**
+     * @param RoundNumber $roundNumber
+     * @param non-empty-list<Period> $blockedPeriods
+     * @throws \League\Period\Exception
+     */
+    protected function validateGameNotInBlockedPeriod(RoundNumber $roundNumber, array $blockedPeriods): void
     {
         $maxNrOfMinutesPerGame = $roundNumber->getValidPlanningConfig()->getMaxNrOfMinutesPerGame();
         foreach ($roundNumber->getGames(Order::ByPoule) as $game) {
@@ -116,8 +134,10 @@ class GamesValidator
                 $game->getStartDateTime(),
                 $game->getStartDateTime()->modify("+" . $maxNrOfMinutesPerGame . " minutes")
             );
-            if ($gamePeriod->overlaps($blockedPeriod)) {
-                throw new Exception("a game is during a blocked period", E_ERROR);
+            foreach ($blockedPeriods as $blockedPeriod) {
+                if ($gamePeriod->overlaps($blockedPeriod)) {
+                    throw new Exception("a game is during a blocked period", E_ERROR);
+                }
             }
         }
     }

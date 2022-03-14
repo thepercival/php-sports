@@ -279,12 +279,12 @@ class GamesValidatorTest extends TestCase
         $gamesValidator->validate($firstRoundNumber, $nrOfReferees);
     }
 
-    public function testGameInBreak(): void
+    public function testGameInRecess(): void
     {
         $competition = $this->createCompetition();
 
         $structureEditor = $this->createStructureEditor();
-        $structure = $structureEditor->create($competition, [5,4]);
+        $structure = $structureEditor->create($competition, [5, 4]);
 
         $firstRoundNumber = $structure->getFirstRoundNumber();
         $firstRoundNumber->getValidPlanningConfig()->setSelfReferee(SelfReferee::OtherPoules);
@@ -308,7 +308,7 @@ class GamesValidatorTest extends TestCase
         $gamesValidator = new GamesValidator();
         self::expectException(Exception::class);
         $nrOfReferees = $competition->getReferees()->count();
-        $gamesValidator->validate($firstRoundNumber, $nrOfReferees, true, $blockedPeriod);
+        $gamesValidator->validate($firstRoundNumber, $nrOfReferees, true, [$blockedPeriod]);
     }
 
     public function testValid(): void

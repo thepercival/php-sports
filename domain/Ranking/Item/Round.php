@@ -8,6 +8,7 @@ use Exception;
 use Sports\Place;
 use Sports\Competition\Sport as CompetitionSport;
 use Sports\Place\Performance as PlacePerformance;
+use Sports\Ranking\Calculator\Cumulative;
 use Sports\Ranking\Item\Round as RoundRankingItem;
 use Sports\Ranking\Item\Round\Sport as SportRoundRankingItem;
 
@@ -67,6 +68,7 @@ class Round
     {
         $this->sportItems[] = $item;
         $this->cumulativeRank += $item->getRank();
+
         $this->cumulativePerformance->addSportPerformace($item->getPerformance());
     }
 

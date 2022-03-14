@@ -8,6 +8,8 @@ use PHPUnit\Framework\TestCase;
 use Sports\Round\Number\PlanningInputCreator;
 use Sports\TestHelper\CompetitionCreator;
 use Sports\TestHelper\StructureEditorCreator;
+use SportsHelpers\Sport\Variant\Against\GamesPerPlace as AgainstGpp;
+use SportsHelpers\Sport\VariantWithFields as SportVariantWithFields;
 
 final class PlanningInputCreatorTest extends TestCase
 {
@@ -16,16 +18,12 @@ final class PlanningInputCreatorTest extends TestCase
 
     public function testMultipleSports(): void
     {
-        $sportVariant = $this->getAgainstGppSportVariantWithFields(2, 1, 1, 9);
-        $competition = $this->createCompetition($sportVariant);
-        $this->createCompetitionSport(
-            $competition,
+        $sportVariantsWithFields = [
+            $this->getAgainstGppSportVariantWithFields(2, 1, 1, 9),
+            $this->getAgainstGppSportVariantWithFields(1, 1, 1, 9),
             $this->getAgainstGppSportVariantWithFields(1, 1, 1, 9)
-        );
-        $this->createCompetitionSport(
-            $competition,
-            $this->getAgainstGppSportVariantWithFields(1, 1, 1, 9)
-        );
+        ];
+        $competition = $this->createCompetition($sportVariantsWithFields);
 
         $structureEditor = $this->createStructureEditor();
         $structure = $structureEditor->create($competition, [10]);

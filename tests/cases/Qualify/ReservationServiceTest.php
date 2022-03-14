@@ -40,16 +40,16 @@ final class ReservationServiceTest extends TestCase
 
         $pouleOne = $rootRound->getPoule(1);
 
-        $this->setScoreSingle($pouleOne, 1, 2, 2, 1);
-        $this->setScoreSingle($pouleOne, 1, 3, 3, 1);
-        $this->setScoreSingle($pouleOne, 1, 4, 4, 1);
-        $this->setScoreSingle($pouleOne, 1, 5, 5, 1);
-        $this->setScoreSingle($pouleOne, 2, 3, 3, 2);
-        $this->setScoreSingle($pouleOne, 2, 4, 4, 2);
-        $this->setScoreSingle($pouleOne, 2, 5, 5, 2);
-        $this->setScoreSingle($pouleOne, 3, 4, 4, 3);
-        $this->setScoreSingle($pouleOne, 3, 5, 5, 3);
-        $this->setScoreSingle($pouleOne, 4, 5, 5, 4);
+        $this->setAgainstScore($pouleOne, 1, 2, 2, 1);
+        $this->setAgainstScore($pouleOne, 1, 3, 3, 1);
+        $this->setAgainstScore($pouleOne, 1, 4, 4, 1);
+        $this->setAgainstScore($pouleOne, 1, 5, 5, 1);
+        $this->setAgainstScore($pouleOne, 2, 3, 3, 2);
+        $this->setAgainstScore($pouleOne, 2, 4, 4, 2);
+        $this->setAgainstScore($pouleOne, 2, 5, 5, 2);
+        $this->setAgainstScore($pouleOne, 3, 4, 4, 3);
+        $this->setAgainstScore($pouleOne, 3, 5, 5, 3);
+        $this->setAgainstScore($pouleOne, 4, 5, 5, 4);
 
         $qualifyService = new QualifyService($rootRound);
         $qualifyService->setQualifiers();
@@ -79,18 +79,18 @@ final class ReservationServiceTest extends TestCase
         $pouleThree = $rootRound->getPoule(3);
         $pouleFour = $rootRound->getPoule(4);
 
-        $this->setScoreSingle($pouleOne, 1, 2, 1, 2);
-        $this->setScoreSingle($pouleOne, 1, 3, 1, 3);
-        $this->setScoreSingle($pouleOne, 2, 3, 2, 3);
-        $this->setScoreSingle($pouleTwo, 1, 2, 1, 2);
-        $this->setScoreSingle($pouleTwo, 1, 3, 1, 3);
-        $this->setScoreSingle($pouleTwo, 2, 3, 2, 4);
-        $this->setScoreSingle($pouleThree, 1, 2, 1, 5);
-        $this->setScoreSingle($pouleThree, 1, 3, 1, 3);
-        $this->setScoreSingle($pouleThree, 2, 3, 2, 5);
-        $this->setScoreSingle($pouleFour, 1, 2, 1, 2);
-        $this->setScoreSingle($pouleFour, 1, 3, 1, 3);
-        $this->setScoreSingle($pouleFour, 2, 3, 2, 3);
+        $this->setAgainstScore($pouleOne, 1, 2, 1, 2);
+        $this->setAgainstScore($pouleOne, 1, 3, 1, 3);
+        $this->setAgainstScore($pouleOne, 2, 3, 2, 3);
+        $this->setAgainstScore($pouleTwo, 1, 2, 1, 2);
+        $this->setAgainstScore($pouleTwo, 1, 3, 1, 3);
+        $this->setAgainstScore($pouleTwo, 2, 3, 2, 4);
+        $this->setAgainstScore($pouleThree, 1, 2, 1, 5);
+        $this->setAgainstScore($pouleThree, 1, 3, 1, 3);
+        $this->setAgainstScore($pouleThree, 2, 3, 2, 5);
+        $this->setAgainstScore($pouleFour, 1, 2, 1, 2);
+        $this->setAgainstScore($pouleFour, 1, 3, 1, 3);
+        $this->setAgainstScore($pouleFour, 2, 3, 2, 3);
 
         $qualifyService = new QualifyService($rootRound);
         $qualifyService->setQualifiers();
@@ -147,15 +147,15 @@ final class ReservationServiceTest extends TestCase
         $pouleTwo = $rootRound->getPoule(2);
         $pouleThree = $rootRound->getPoule(3);
 
-        $this->setScoreSingle($pouleOne, 1, 2, 1, 2);
-        $this->setScoreSingle($pouleOne, 1, 3, 1, 3);
-        $this->setScoreSingle($pouleOne, 2, 3, 2, 3);
-        $this->setScoreSingle($pouleTwo, 1, 2, 1, 2);
-        $this->setScoreSingle($pouleTwo, 1, 3, 1, 3);
-        $this->setScoreSingle($pouleTwo, 2, 3, 2, 4);
-        $this->setScoreSingle($pouleThree, 1, 2, 1, 5);
-        $this->setScoreSingle($pouleThree, 1, 3, 1, 3);
-        // $this->setScoreSingle(pouleThree, 2, 3, 2, 5);
+        $this->setAgainstScore($pouleOne, 1, 2, 1, 2);
+        $this->setAgainstScore($pouleOne, 1, 3, 1, 3);
+        $this->setAgainstScore($pouleOne, 2, 3, 2, 3);
+        $this->setAgainstScore($pouleTwo, 1, 2, 1, 2);
+        $this->setAgainstScore($pouleTwo, 1, 3, 1, 3);
+        $this->setAgainstScore($pouleTwo, 2, 3, 2, 4);
+        $this->setAgainstScore($pouleThree, 1, 2, 1, 5);
+        $this->setAgainstScore($pouleThree, 1, 3, 1, 3);
+        // $this->setAgainstScore(pouleThree, 2, 3, 2, 5);
 
         $qualifyService = new QualifyService($rootRound);
         $qualifyService->setQualifiers();

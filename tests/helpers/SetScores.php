@@ -15,17 +15,25 @@ use SportsHelpers\Against\Side as AgainstSide;
 
 trait SetScores
 {
-    protected function setScoreSingle(Poule $poule, int $homePlaceNr, int $awayPlaceNr, int $homeGoals, int $awayGoals, GameState $state = null): void
-    {
+    protected function setAgainstScore(
+        Poule $poule,
+        int $homePlaceNr,
+        int $awayPlaceNr,
+        int $homeGoals,
+        int $awayGoals,
+        GameState $state = null
+    ): void {
         $homePlace = $poule->getPlace($homePlaceNr);
         $awayPlace = $poule->getPlace($awayPlaceNr);
-        $foundGames = array_filter($poule->getAgainstGames()->toArray(), function (AgainstGame $game) use ($homePlace, $awayPlace): bool {
-            $homePlaces = array_map(
-                function (AgainstGamPlace $gamePlace): Place {
-                    return $gamePlace->getPlace();
-                },
-                $game->getSidePlaces(AgainstSide::Home)
-            );
+        $foundGames = array_filter(
+            $poule->getAgainstGames()->toArray(),
+            function (AgainstGame $game) use ($homePlace, $awayPlace): bool {
+                $homePlaces = array_map(
+                    function (AgainstGamPlace $gamePlace): Place {
+                        return $gamePlace->getPlace();
+                    },
+                    $game->getSidePlaces(AgainstSide::Home)
+                );
             $awayPlaces = array_map(
                 function (AgainstGamPlace $gamePlace): Place {
                     return $gamePlace->getPlace();
