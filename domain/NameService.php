@@ -241,8 +241,11 @@ class NameService
             $qualifyGroupMaxDepth = $this->getMaxDepth($qualifyGroup->getChildRound());
             if ($depthAll === null) {
                 $depthAll = $qualifyGroupMaxDepth;
+            } else {
+                if ($depthAll !== $qualifyGroupMaxDepth) {
+                    return false;
+                }
             }
-            return $depthAll === $qualifyGroupMaxDepth;
         }
         return true;
     }
