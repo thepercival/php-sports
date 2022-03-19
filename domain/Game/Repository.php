@@ -13,7 +13,7 @@ use SportsHelpers\Repository as BaseRepository;
  * @template T
  * @template-extends EntityRepository<T>
  */
-class Repository extends EntityRepository
+abstract class Repository extends EntityRepository
 {
     /**
      * @use BaseRepository<T>
