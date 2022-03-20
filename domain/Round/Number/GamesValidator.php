@@ -6,6 +6,7 @@ namespace Sports\Round\Number;
 
 use Exception;
 use League\Period\Period;
+use Sports\Competition\Field;
 use Sports\Competition\Sport as CompetitionSport;
 use Sports\Game\Against as AgainstGame;
 use Sports\Game\Order;
@@ -252,10 +253,11 @@ class GamesValidator
         foreach ($roundNumber->getGames(Order::ByPoule) as $game) {
             $field = $game->getField();
             if ($field !== null) {
-                if (array_key_exists($field->getPriority(), $fields) === false) {
-                    $fields[$field->getPriority()] = 0;
+                $fieldIndex = $this->getFieldIndex($field);
+                if (array_key_exists($fieldIndex, $fields) === false) {
+                    $fields[$fieldIndex] = 0;
                 }
-                $fields[$field->getPriority()]++;
+                $fields[$fieldIndex]++;
             }
 
             $refereePlace = $game->getRefereePlace();
@@ -375,5 +377,15 @@ class GamesValidator
             $game = array_shift($gamesOrderedByRoundNumber);
         }
         return $gamesBatch;
+    }
+
+    protected function getFieldIndex(Field $field): string|int
+    {
+        $fieldId = $field->getId();
+        if ($fieldId !== null) {
+            return $fieldId;
+        }
+        $sportVariant = $field->getCompetitionSport()->createVariant();
+        return $field->getCompetitionSport()->getSport()->getName() . '-' . $sportVariant . '-' . $field->getPriority();
     }
 }

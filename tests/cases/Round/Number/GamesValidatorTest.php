@@ -12,8 +12,10 @@ use Sports\Competition\Referee;
 use Sports\Game\Against as AgainstGame;
 use Sports\Game\Order as GameOrder;
 use Sports\Game\Place\Against as AgainstGamePlace;
+use Sports\Output\Game\Against as AgainstGameOutput;
 use Sports\Place;
 use Sports\Round\Number\GamesValidator;
+use Sports\Round\Number\PlanningInputCreator;
 use Sports\TestHelper\CompetitionCreator;
 use Sports\TestHelper\GamesCreator;
 use Sports\TestHelper\StructureEditorCreator;
@@ -309,6 +311,34 @@ class GamesValidatorTest extends TestCase
         self::expectException(Exception::class);
         $nrOfReferees = $competition->getReferees()->count();
         $gamesValidator->validate($firstRoundNumber, $nrOfReferees, true, [$blockedPeriod]);
+    }
+
+    public function testMultiSportsFieldRange(): void
+    {
+        $sportVariantsWithFields = [
+            $this->getAgainstGppSportVariantWithFields(3),
+            $this->getAgainstGppSportVariantWithFields(3),
+            $this->getAgainstGppSportVariantWithFields(2)
+        ];
+        $competition = $this->createCompetition($sportVariantsWithFields);
+
+        $structureEditor = $this->createStructureEditor();
+        $structure = $structureEditor->create($competition, [3, 3, 3]);
+
+        (new GamesCreator())->createStructureGames($structure);
+
+        $firstRoundNumber = $structure->getFirstRoundNumber();
+
+//        $outputGame = new AgainstGameOutput();
+//        $games = $firstRoundNumber->getGames(GameOrder::ByBatch);
+//        foreach( $games as $gameIt ) {
+//            $outputGame->output( $gameIt );
+//        }
+
+        $gamesValidator = new GamesValidator();
+        self::expectNotToPerformAssertions();
+        $nrOfReferees = $competition->getReferees()->count();
+        $gamesValidator->validate($firstRoundNumber, $nrOfReferees);
     }
 
     public function testValid(): void
