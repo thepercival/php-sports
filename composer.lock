@@ -3144,16 +3144,16 @@
         },
         {
             "name": "thepercival/php-sports-planning",
-            "version": "v1.0.69",
+            "version": "v1.0.70",
             "source": {
                 "type": "git",
                 "url": "https://github.com/thepercival/php-sports-planning.git",
-                "reference": "783af2d441a3e79efdd0fd10bb963b87b71cd2b3"
+                "reference": "e1d5f9a62bf9da97ba4d7e31e71e1ce586027f58"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/thepercival/php-sports-planning/zipball/783af2d441a3e79efdd0fd10bb963b87b71cd2b3",
-                "reference": "783af2d441a3e79efdd0fd10bb963b87b71cd2b3",
+                "url": "https://api.github.com/repos/thepercival/php-sports-planning/zipball/e1d5f9a62bf9da97ba4d7e31e71e1ce586027f58",
+                "reference": "e1d5f9a62bf9da97ba4d7e31e71e1ce586027f58",
                 "shasum": ""
             },
             "require": {
@@ -3209,9 +3209,9 @@
             "support": {
                 "email": "coendunnink@gmail.com",
                 "issues": "https://github.com/thepercival/php-sports-planning/issues",
-                "source": "https://github.com/thepercival/php-sports-planning/tree/v1.0.69"
+                "source": "https://github.com/thepercival/php-sports-planning/tree/v1.0.70"
             },
-            "time": "2022-03-19T13:12:20+00:00"
+            "time": "2022-03-20T08:21:16+00:00"
         }
     ],
     "packages-dev": [
