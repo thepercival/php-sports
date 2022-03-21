@@ -74,6 +74,17 @@ class Sport extends PersistVariant implements \Stringable
         return new SportVariantWithFields($this->createVariant(), $this->getFields()->count());
     }
 
+    public function convertAgainst(): void
+    {
+        if ($this->getNrOfH2H() > 0) {
+            $this->nrOfH2H = 0;
+            $this->nrOfGamesPerPlace = 1;
+        } else {
+            $this->nrOfH2H = 1;
+            $this->nrOfGamesPerPlace = 0;
+        }
+    }
+
     public function __toString(): string
     {
         return $this->createVariant() . ' f=>' . $this->getFields()->count();
