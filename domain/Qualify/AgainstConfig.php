@@ -12,19 +12,15 @@ use SportsHelpers\Identifiable;
 
 class AgainstConfig extends Identifiable
 {
-    protected float $winPoints = 0.0;
-    protected float $drawPoints = 0.0;
-    protected float $winPointsExt = 0.0;
-    protected float $drawPointsExt = 0.0;
-    protected float $losePointsExt = 0.0;
-
-    public const DEFAULT_WINPOINTS = 3;
-    public const DEFAULT_DRAWPOINTS = 1;
-
     public function __construct(
         protected CompetitionSport $competitionSport,
         protected Round $round,
-        protected PointsCalculation $pointsCalculation
+        protected PointsCalculation $pointsCalculation,
+        protected float $winPoints,
+        protected float $drawPoints,
+        protected float $winPointsExt,
+        protected float $drawPointsExt,
+        protected float $losePointsExt
     ) {
         $this->round->getAgainstQualifyConfigs()->add($this);
     }

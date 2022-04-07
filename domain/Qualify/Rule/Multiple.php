@@ -31,6 +31,12 @@ class Multiple extends QualifyRule
         return array_search($place, $this->toPlaces, true) !== false;
     }
 
+    public function getToPlaceNumber(Place $place): int
+    {
+        $index = array_search($place, $this->toPlaces, true);
+        return $index === false ? 0 : $index + 1;
+    }
+
     /**
      * @return list<Place>
      */

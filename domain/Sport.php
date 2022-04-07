@@ -5,7 +5,8 @@ declare(strict_types=1);
 namespace Sports;
 
 use InvalidArgumentException;
-use SportsHelpers\Against\Side as AgainstSide;
+use Sports\Ranking\PointsCalculation;
+use Sports\Sport\Custom as CustomSport;
 use SportsHelpers\GameMode;
 use SportsHelpers\Identifiable;
 use SportsHelpers\Sport\PersistVariant as SportPersistVariant;
@@ -106,5 +107,74 @@ class Sport extends Identifiable
     public function setDefaultGameModeNative(int $defaultGameMode): void
     {
         $this->defaultGameMode = GameMode::from($defaultGameMode);
+    }
+
+    public function hasNextDefaultScoreConfig(): bool
+    {
+        if (
+            $this->customId === CustomSport::Badminton
+            || $this->customId === CustomSport::Darts
+            || $this->customId === CustomSport::Squash
+            || $this->customId === CustomSport::TableTennis
+            || $this->customId === CustomSport::Tennis
+            || $this->customId === CustomSport::Volleyball
+            || $this->customId === CustomSport::Padel
+        ) {
+            return true;
+        }
+        return false;
+    }
+
+    public function getDefaultPointCalculation(): PointsCalculation
+    {
+        if ($this->getDefaultGameMode() === GameMode::Against) {
+            return PointsCalculation::AgainstGamePoints;
+        }
+        return PointsCalculation::Scores;
+    }
+
+    public function getDefaultWinPoints(): float
+    {
+        if ($this->customId === CustomSport::Rugby) {
+            return 4;
+        } elseif ($this->customId === CustomSport::Chess) {
+            return 1;
+        }
+        return 3;
+    }
+
+    public function getDefaultDrawPoints(): float
+    {
+        if ($this->customId === CustomSport::Rugby) {
+            return 2;
+        }
+        if ($this->customId === CustomSport::Chess) {
+            return 0.5;
+        }
+        return 1;
+    }
+
+    public function getDefaultWinPointsExt(): float
+    {
+        if ($this->customId === CustomSport::Chess) {
+            return 1;
+        }
+        return 2;
+    }
+
+    public function getDefaultDrawPointsExt(): float
+    {
+        if ($this->customId === CustomSport::Chess) {
+            return 0.5;
+        }
+        return 1;
+    }
+
+    public function getDefaultLosePointsExt(): float
+    {
+        if ($this->customId === CustomSport::IceHockey) {
+            return 1;
+        }
+        return 0;
     }
 }

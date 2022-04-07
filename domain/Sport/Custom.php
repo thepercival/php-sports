@@ -24,7 +24,8 @@ abstract class Custom
     public const Shuffleboard = 15;
     public const Jass = 16;
     public const Padel = 17;
-    public const Max = 17;
+    public const Rugby = 18;
+    public const Max = 18;
 
     /**
      * @return list<int>
@@ -49,6 +50,7 @@ abstract class Custom
             Custom::Shuffleboard,
             Custom::Jass,
             Custom::Padel,
+            Custom::Rugby,
         ];
     }
 }

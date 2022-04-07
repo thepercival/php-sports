@@ -133,7 +133,7 @@ class RoundHandler extends Handler implements SubscribingHandlerInterface
     }
 
     /**
-     * @param array<string, int|bool|array<string, int|bool|PointsCalculation>> $arrConfig
+     * @param array<string, int|bool|array<string, float|PointsCalculation>> $arrConfig
      * @param CompetitionSport $competitionSport
      * @param Round $round
      * @return AgainstQualifyConfig
@@ -143,16 +143,15 @@ class RoundHandler extends Handler implements SubscribingHandlerInterface
         CompetitionSport $competitionSport,
         Round $round
     ): AgainstQualifyConfig {
-        $config = new AgainstQualifyConfig(
+        return new AgainstQualifyConfig(
             $competitionSport,
             $round,
-            PointsCalculation::from($arrConfig["pointsCalculation"])
+            PointsCalculation::from($arrConfig['pointsCalculation']),
+            $arrConfig['winPoints'],
+            $arrConfig['winPointsExt'],
+            $arrConfig['drawPoints'],
+            $arrConfig['drawPointsExt'],
+            $arrConfig['losePointsExt']
         );
-        $config->setWinPoints($arrConfig["winPoints"]);
-        $config->setWinPointsExt($arrConfig["winPointsExt"]);
-        $config->setDrawPoints($arrConfig["drawPoints"]);
-        $config->setDrawPointsExt($arrConfig["drawPointsExt"]);
-        $config->setLosePointsExt($arrConfig["losePointsExt"]);
-        return $config;
     }
 }

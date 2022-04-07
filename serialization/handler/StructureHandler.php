@@ -38,6 +38,7 @@ class StructureHandler extends Handler implements SubscribingHandlerInterface
         array $type,
         Context $context
     ): Structure {
+        /** @var RoundNumber $firstRoundNumber */
         $firstRoundNumber = $this->getProperty(
             $visitor,
             $fieldValue,
@@ -45,6 +46,7 @@ class StructureHandler extends Handler implements SubscribingHandlerInterface
             RoundNumber::class
         );
         $fieldValue["rootRound"]["roundNumber"] = $firstRoundNumber;
+        /** @var Round $rootRound */
         $rootRound = $this->getProperty(
             $visitor,
             $fieldValue,

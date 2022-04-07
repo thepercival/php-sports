@@ -227,12 +227,18 @@ class Editor
         $this->rulesCreator->create($round, $round->getParent(), true);
     }
 
-    public function addQualifiers(Round $parentRound, QualifyTarget $qualifyTarget, int $nrOfToPlacesToAdd): void
-    {
+    public function addQualifiers(
+        Round $parentRound,
+        QualifyTarget $qualifyTarget,
+        int $nrOfToPlacesToAdd,
+        int|null $maxNrOfPoulePlaces = null
+    ): void {
         $nrOfPlaces = $parentRound->getNrOfPlaces();
         $nrOfToPlaces = $parentRound->getNrOfPlacesChildren();
         if (($nrOfToPlaces + $nrOfToPlacesToAdd) > $nrOfPlaces) {
-            throw new Exception('er mogen maximaal ' . ($nrOfPlaces - $nrOfToPlaces) . ' deelnemers naar de volgende ronde');
+            throw new Exception(
+                'er mogen maximaal ' . ($nrOfPlaces - $nrOfToPlaces) . ' deelnemers naar de volgende ronde'
+            );
         }
         // begin editing
         $qualifyGroup = $parentRound->getBorderQualifyGroup($qualifyTarget);
@@ -261,13 +267,33 @@ class Editor
             $this->horPouleCreator->remove($childRound);
             $this->rulesCreator->remove($parentRound, $childRound);
             // begin editing
-            while ($nrOfToPlacesToAdd-- > 0) {
+            $pouleStructure = $childRound->createPouleStructure();
+            if ($maxNrOfPoulePlaces && $this->canAddPouleByAddingOnePlace($pouleStructure, $maxNrOfPoulePlaces)) {
+                $nrOfPlacesToRemove = count($childRound->addPoule()->getPlaces());
+                for ($i = 0; $i < $nrOfPlacesToRemove - 1; $i++) {
+                    $childRound->removePlace();
+                }
+            } else {
                 $childRound->addPlace();
             }
             // end editing
             $this->horPouleCreator->create($childRound);
             $this->rulesCreator->create($childRound, $parentRound, true);
         }
+    }
+
+    protected function canAddPouleByAddingOnePlace(
+        BalancedPouleStructure $pouleStructure,
+        int $maxNrOfPoulePlaces
+    ): bool {
+        $nrOfPlacesForNewPoule = 0;
+        foreach ($pouleStructure->toArray() as $nrOfPoulePlaces) {
+            $nrOfPoulePlacesForNewPoule = $nrOfPoulePlaces - $maxNrOfPoulePlaces;
+            if ($nrOfPoulePlacesForNewPoule > 0) {
+                $nrOfPlacesForNewPoule += $nrOfPoulePlacesForNewPoule;
+            }
+        }
+        return ($nrOfPlacesForNewPoule + 1) >= $maxNrOfPoulePlaces;
     }
 
     public function removeQualifier(Round $parentRound, QualifyTarget $qualifyTarget): bool

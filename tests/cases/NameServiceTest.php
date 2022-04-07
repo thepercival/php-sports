@@ -44,7 +44,7 @@ final class NameServiceTest extends TestCase
         $rootRound = $structure->getRootRound();
 
         $structureEditor->addChildRound($rootRound, QualifyTarget::Winners, [2,2]);
-        $losersRound = $structureEditor->addChildRound($rootRound, QualifyTarget::Losers, [2,2]);
+        $losersRound = $structureEditor->addChildRound($rootRound, QualifyTarget::Losers, [2, 2]);
         // (new StructureOutput())->output($structure);
         $secondRoundNumber = $firstRoundNumber->getNext();
         self::assertNotNull($secondRoundNumber);
@@ -54,7 +54,7 @@ final class NameServiceTest extends TestCase
         $structureEditor->addChildRound($losersRound, QualifyTarget::Losers, [2]);
         // (new StructureOutput())->output($structure);
         // not all equal
-        self::assertSame('2de ronde', $nameService->getRoundNumberName($secondRoundNumber)); // '2<sup>de</sup> ronde'
+        self::assertSame('2e ronde', $nameService->getRoundNumberName($secondRoundNumber)); // '2<sup>de</sup> ronde'
     }
 
     public function testRoundName(): void
@@ -78,14 +78,14 @@ final class NameServiceTest extends TestCase
         // root needs ranking
         {
             $structureEditor2 = $this->createStructureEditor();
-            $structure2 = $structureEditor2->create($competition, [4,4,4,4]);
+            $structure2 = $structureEditor2->create($competition, [4, 4, 4, 4]);
             $rootRound2 = $structure2->getRootRound();
 
-            self::assertSame($nameService->getRoundName($rootRound2), '1ste ronde'); // '1<sup>ste</sup> ronde'
+            self::assertSame($nameService->getRoundName($rootRound2), '1e ronde'); // '1<sup>ste</sup> ronde'
 
             $rootRound2Child = $structureEditor2->addChildRound($rootRound2, QualifyTarget::Winners, [3]);
 
-            self::assertSame($nameService->getRoundName($rootRound2Child), '2de ronde'); // '2<sup>de</sup> ronde'
+            self::assertSame($nameService->getRoundName($rootRound2Child), '2e ronde'); // '2<sup>de</sup> ronde'
         }
     }
 
@@ -114,7 +114,10 @@ final class NameServiceTest extends TestCase
             // '<span style="font-size: 80%"><sup>1</sup>&frasl;<sub>' . $number . '</sub></span> finale'
             self::assertSame('1/8 finale', $nameService->getRoundName($rootRound));
 
-            self::assertSame('15de/16de' . ' plaats', $nameService->getRoundName($losersFinal)); // '15<sup>de</sup>/16<sup>de</sup>'
+            self::assertSame(
+                '15e/16e' . ' plaats',
+                $nameService->getRoundName($losersFinal)
+            ); // '15<sup>de</sup>/16<sup>de</sup>'
         }
     }
 
@@ -127,21 +130,21 @@ final class NameServiceTest extends TestCase
         {
             $structureEditor = $this->createStructureEditor();
             $poules = [];
-            for ($i = 1 ; $i <= 29 ; $i++) {
+            for ($i = 1; $i <= 29; $i++) {
                 array_push($poules, 3);
             }
             array_push($poules, 2);
             $structure = $structureEditor->create($competition, $poules);
             $rootRound = $structure->getRootRound();
 
-            self::assertSame($nameService->getPouleName($rootRound->getPoule(1), false), 'A');
-            self::assertSame($nameService->getPouleName($rootRound->getPoule(1), true), 'poule A');
+            self::assertSame('A', $nameService->getPouleName($rootRound->getPoule(1), false));
+            self::assertSame('poule A', $nameService->getPouleName($rootRound->getPoule(1), true));
 
-            self::assertSame($nameService->getPouleName($rootRound->getPoule(27), false), 'AA');
-            self::assertSame($nameService->getPouleName($rootRound->getPoule(27), true), 'poule AA');
+            self::assertSame('AA', $nameService->getPouleName($rootRound->getPoule(27), false));
+            self::assertSame('poule AA', $nameService->getPouleName($rootRound->getPoule(27), true));
 
-            self::assertSame($nameService->getPouleName($rootRound->getPoule(30), false), 'AD');
-            self::assertSame($nameService->getPouleName($rootRound->getPoule(30), true), 'wed. AD');
+            self::assertSame('AD', $nameService->getPouleName($rootRound->getPoule(30), false));
+            self::assertSame('wed. AD', $nameService->getPouleName($rootRound->getPoule(30), true),);
         }
     }
 
@@ -166,17 +169,17 @@ final class NameServiceTest extends TestCase
             $competitorMap = new CompetitorMap([$competitor]);
             $nameService = new NameService($competitorMap);
 
-            self::assertSame($nameService->getPlaceName($firstPlace, false, false), 'A1');
-            self::assertSame($nameService->getPlaceName($firstPlace, true, false), 'competitor 1');
-            self::assertSame($nameService->getPlaceName($firstPlace, false, true), 'poule A nr. 1');
-            self::assertSame($nameService->getPlaceName($firstPlace, true, true), 'competitor 1');
+            self::assertSame('A1', $nameService->getPlaceName($firstPlace, false, false));
+            self::assertSame('competitor 1', $nameService->getPlaceName($firstPlace, true, false));
+            self::assertSame('nr. 1 poule A', $nameService->getPlaceName($firstPlace, false, true));
+            self::assertSame('competitor 1', $nameService->getPlaceName($firstPlace, true, true));
 
             $lastPlace = $rootRound->getFirstPlace(QualifyTarget::Losers);
 
-            self::assertSame($nameService->getPlaceName($lastPlace), 'A3');
-            self::assertSame($nameService->getPlaceName($lastPlace, true, false), 'A3');
-            self::assertSame($nameService->getPlaceName($lastPlace, false, true), 'poule A nr. 3');
-            self::assertSame($nameService->getPlaceName($lastPlace, true, true), 'poule A nr. 3');
+            self::assertSame('A3', $nameService->getPlaceName($lastPlace));
+            self::assertSame('A3', $nameService->getPlaceName($lastPlace, true, false));
+            self::assertSame('nr. 3 poule A', $nameService->getPlaceName($lastPlace, false, true));
+            self::assertSame('nr. 3 poule A', $nameService->getPlaceName($lastPlace, true, true));
         }
     }
 
@@ -201,43 +204,43 @@ final class NameServiceTest extends TestCase
             $competitorMap = new CompetitorMap([$competitor]);
             $nameService = new NameService($competitorMap);
 
-            $winnersRound = $structureEditor->addChildRound($rootRound, QualifyTarget::Winners, [2,2]);
+            $winnersRound = $structureEditor->addChildRound($rootRound, QualifyTarget::Winners, [2, 2]);
             $winnersWinnersRound = $structureEditor->addChildRound($winnersRound, QualifyTarget::Winners, [2]);
             $winnersLosersRound = $structureEditor->addChildRound($winnersRound, QualifyTarget::Losers, [2]);
-            // (new StructureOutput())->output($structure);
-            self::assertSame($nameService->getPlaceFromName($firstPlace, false, false), 'A1');
-            self::assertSame($nameService->getPlaceFromName($firstPlace, true, false), 'competitor 1');
-            self::assertSame($nameService->getPlaceFromName($firstPlace, false, true), 'poule A nr. 1');
-            self::assertSame($nameService->getPlaceFromName($firstPlace, true, true), 'competitor 1');
+            // (new StructureOutput())->output($structure);return;
+            self::assertSame('A1', $nameService->getPlaceFromName($firstPlace, false, false));
+            self::assertSame('competitor 1', $nameService->getPlaceFromName($firstPlace, true, false));
+            self::assertSame('nr. 1 poule A', $nameService->getPlaceFromName($firstPlace, false, true),);
+            self::assertSame('competitor 1', $nameService->getPlaceFromName($firstPlace, true, true));
 
             $lastPlace = $rootRound->getFirstPlace(QualifyTarget::Losers);
 
             self::assertSame('C3', $nameService->getPlaceFromName($lastPlace, false, false));
             self::assertSame('C3', $nameService->getPlaceFromName($lastPlace, true, false));
-            self::assertSame('poule C nr. 3', $nameService->getPlaceFromName($lastPlace, false, true));
-            self::assertSame('poule C nr. 3', $nameService->getPlaceFromName($lastPlace, true, true));
+            self::assertSame('nr. 3 poule C', $nameService->getPlaceFromName($lastPlace, false, true));
+            self::assertSame('nr. 3 poule C', $nameService->getPlaceFromName($lastPlace, true, true));
 
 
             $winnersLastPlace = $winnersRound->getFirstPoule()->getPlace(2);
 
-            self::assertSame('?2', $nameService->getPlaceFromName($winnersLastPlace, false, false));
-            self::assertSame('beste nummer 2', $nameService->getPlaceFromName($winnersLastPlace, false, true));
+            self::assertSame('1e2', $nameService->getPlaceFromName($winnersLastPlace, false, false));
+            self::assertSame('1e van 2e plekken', $nameService->getPlaceFromName($winnersLastPlace, false, true));
 
             $winnersFirstPlace = $winnersRound->getPoule(1)->getPlace(1);
 
             self::assertSame('A1', $nameService->getPlaceFromName($winnersFirstPlace, false, false));
-            self::assertSame('poule A nr. 1', $nameService->getPlaceFromName($winnersFirstPlace, false, true));
+            self::assertSame('1e poule A', $nameService->getPlaceFromName($winnersFirstPlace, false, true));
 
             $doubleWinnersFirstPlace = $winnersWinnersRound->getPoule(1)->getPlace(1);
 
-            self::assertSame($nameService->getPlaceFromName($doubleWinnersFirstPlace, false, false), 'D1');
-            self::assertSame($nameService->getPlaceFromName($doubleWinnersFirstPlace, false, true), 'winnaar D');
+            self::assertSame('D1', $nameService->getPlaceFromName($doubleWinnersFirstPlace, false, false));
+            self::assertSame('1e pl. wed. D', $nameService->getPlaceFromName($doubleWinnersFirstPlace, false, true));
 
 
             $winnersLosersFirstPlace = $winnersLosersRound->getPoule(1)->getPlace(1);
 
-            self::assertSame($nameService->getPlaceFromName($winnersLosersFirstPlace, false), 'D2');
-            self::assertSame($nameService->getPlaceFromName($winnersLosersFirstPlace, false, true), 'verliezer D');
+            self::assertSame('D2', $nameService->getPlaceFromName($winnersLosersFirstPlace, false));
+            self::assertSame('2e pl. wed. D', $nameService->getPlaceFromName($winnersLosersFirstPlace, false, true));
         }
     }
 
@@ -277,57 +280,120 @@ final class NameServiceTest extends TestCase
         }
     }
 
-    public function testHourizontalPouleName(): void
+    public function testPlacesFromName2(): void
     {
-        $nameService = new NameService();
         $competition = $this->createCompetition();
+        $competitionSport = $competition->getSingleSport();
+        $field = $competitionSport->getFields()->last();
+        self::assertNotFalse($field);
+        $competitionSport->getFields()->removeElement($field);
 
         // basics
         {
             $structureEditor = $this->createStructureEditor();
-            $structure = $structureEditor->create($competition, [4,4,4]);
+            $structure = $structureEditor->create($competition, [4, 3, 3]);
             $rootRound = $structure->getRootRound();
 
-            $firstWinnersHorPoule = $rootRound->getHorizontalPoule(QualifyTarget::Winners, 1);
-            self::assertSame($nameService->getHorizontalPouleName($firstWinnersHorPoule), 'nummers 1');
+            $nameService = new NameService();
 
-            $structureEditor->addChildRound($rootRound, QualifyTarget::Winners, [2]);
-            $structureEditor->addChildRound($rootRound, QualifyTarget::Losers, [2]);
+            $winnersRound = $structureEditor->addChildRound($rootRound, QualifyTarget::Winners, [2, 2]);
+            $losersRound = $structureEditor->addChildRound($rootRound, QualifyTarget::Losers, [3, 2]);
+//            (new StructureOutput())->output($structure);
 
-            $firstWinnersHorPoule2 = $rootRound->getHorizontalPoule(QualifyTarget::Winners, 1);
-            self::assertSame($nameService->getHorizontalPouleName($firstWinnersHorPoule2), '2 beste nummers 1');
+            $winnersSecondPlaceFirstPoule = $winnersRound->getPoule(1)->getPlace(2); // 1e2
+            self::assertSame(
+                '1e2',
+                $nameService->getPlaceFromName($winnersSecondPlaceFirstPoule, false, false)
+            );
+            self::assertSame(
+                '1e van 2e plekken',
+                $nameService->getPlaceFromName($winnersSecondPlaceFirstPoule, false, true)
+            );
 
-            $firstLosersHorPoule = $rootRound->getHorizontalPoule(QualifyTarget::Losers, 1);
-            self::assertSame($nameService->getHorizontalPouleName($firstLosersHorPoule), '2 slechtste nummers laatste');
+            $losersFirstPlaceFirstPoule = $losersRound->getPoule(1)->getPlace(1); // 3e3
+            self::assertSame(
+                '3e3',
+                $nameService->getPlaceFromName($losersFirstPlaceFirstPoule, false, false)
+            );
+            self::assertSame(
+                '3e van 2e pl. van onderen',
+                $nameService->getPlaceFromName($losersFirstPlaceFirstPoule, false, true)
+            );
 
-            $structureEditor->addQualifiers($rootRound, QualifyTarget::Winners, 1);
-            $structureEditor->addQualifiers($rootRound, QualifyTarget::Winners, 1);
-
-            $structureEditor->addQualifiers($rootRound, QualifyTarget::Losers, 1);
-            $structureEditor->addQualifiers($rootRound, QualifyTarget::Losers, 1);
-
-            $firstWinnersHorPoule3 = $rootRound->getHorizontalPoule(QualifyTarget::Winners, 1);
-            self::assertSame($nameService->getHorizontalPouleName($firstWinnersHorPoule3), 'nummers 1');
-
-            $firstLosersHorPoule3 = $rootRound->getHorizontalPoule(QualifyTarget::Losers, 1);
-            self::assertSame($nameService->getHorizontalPouleName($firstLosersHorPoule3), 'nummers laatste');
-
-            $secondWinnersHorPoule = $rootRound->getHorizontalPoule(QualifyTarget::Winners, 2);
-            self::assertSame($nameService->getHorizontalPouleName($secondWinnersHorPoule), 'beste nummer 2');
-
-            $secondLosersHorPoule = $rootRound->getHorizontalPoule(QualifyTarget::Losers, 2);
-            self::assertSame($nameService->getHorizontalPouleName($secondLosersHorPoule), 'slechtste 1 na laatst');
-
-
-            $structureEditor->addQualifiers($rootRound, QualifyTarget::Winners, 1);
-            $secondWinnersHorPoule2 = $rootRound->getHorizontalPoule(QualifyTarget::Winners, 2);
-            self::assertSame($nameService->getHorizontalPouleName($secondWinnersHorPoule2), '2 beste nummers 2');
-
-            $structureEditor->addQualifiers($rootRound, QualifyTarget::Losers, 1);
-            $secondLosersHorPoule2 = $rootRound->getHorizontalPoule(QualifyTarget::Losers, 2);
-            self::assertSame($nameService->getHorizontalPouleName($secondLosersHorPoule2), '2 slechtste nummers 1 na laatst');
+            $losersSecondPlaceFirstPoule = $losersRound->getPoule(1)->getPlace(2); // 2e2
+            self::assertSame(
+                '2e3',
+                $nameService->getPlaceFromName($losersSecondPlaceFirstPoule, false, false)
+            );
+            self::assertSame(
+                '2e van 2e pl. van onderen',
+                $nameService->getPlaceFromName($losersSecondPlaceFirstPoule, false, true)
+            );
         }
     }
+
+//    public function testHourizontalPouleName(): void
+//    {
+//        $nameService = new NameService();
+//        $competition = $this->createCompetition();
+//
+//        // basics
+//        {
+//            $structureEditor = $this->createStructureEditor();
+//            $structure = $structureEditor->create($competition, [4,4,4]);
+//            $rootRound = $structure->getRootRound();
+
+//            $firstWinnersHorPoule = $rootRound->getHorizontalPoule(QualifyTarget::Winners, 1);
+//            self::assertSame($nameService->getHorizontalPouleName($firstWinnersHorPoule), 'nummers 1');
+
+//            $structureEditor->addChildRound($rootRound, QualifyTarget::Winners, [2]);
+//            $structureEditor->addChildRound($rootRound, QualifyTarget::Losers, [2]);
+
+//            $firstWinnersHorPoule2 = $rootRound->getHorizontalPoule(QualifyTarget::Winners, 1);
+//            $firstWinnersQualifyRule2 = $firstWinnersHorPoule2->getQualifyRule();
+//            self::assertInstanceOf(MultipleQualifyRule::class, $firstWinnersQualifyRule2);
+//            self::assertSame('één van de 1e plekken',
+//                             $nameService->getPlaceFromName($firstWinnersQualifyRule2, true));
+//
+//            $firstLosersHorPoule = $rootRound->getHorizontalPoule(QualifyTarget::Losers, 1);
+//            $firstLosersQualifyRule = $firstLosersHorPoule->getQualifyRule();
+//            self::assertInstanceOf(MultipleQualifyRule::class, $firstLosersQualifyRule);
+//
+//            self::assertSame('één van de 1e plekken van onderen',
+//                             $nameService->getMultipleQualifyRuleName($firstLosersQualifyRule, true));
+
+//            $structureEditor->addQualifiers($rootRound, QualifyTarget::Winners, 1);
+//            $structureEditor->addQualifiers($rootRound, QualifyTarget::Winners, 1);
+//
+//            $structureEditor->addQualifiers($rootRound, QualifyTarget::Losers, 1);
+//            $structureEditor->addQualifiers($rootRound, QualifyTarget::Losers, 1);
+
+//            $firstWinnersHorPoule3 = $rootRound->getHorizontalPoule(QualifyTarget::Winners, 1);
+//            $firstWinnersQualifyRule3 = $firstWinnersHorPoule3->getQualifyRule();
+//            self::assertInstanceOf(MultipleQualifyRule::class, $firstWinnersQualifyRule3);
+//            self::assertSame('1e plekken',
+//                             $nameService->getMultipleQualifyRuleName($firstWinnersQualifyRule3, true));
+
+//            $firstLosersHorPoule3 = $rootRound->getHorizontalPoule(QualifyTarget::Losers, 1);
+//            self::assertSame($nameService->getHorizontalPouleName($firstLosersHorPoule3), 'nummers laatste');
+
+//            $secondWinnersHorPoule = $rootRound->getHorizontalPoule(QualifyTarget::Winners, 2);
+//            $secondWinnersQualifyRule = $secondWinnersHorPoule->getQualifyRule();
+//            self::assertSame($nameService->getPlacesFromName($secondWinnersQualifyRule), 'beste nummer 2');
+//
+//            $secondLosersHorPoule = $rootRound->getHorizontalPoule(QualifyTarget::Losers, 2);
+//            self::assertSame($nameService->getHorizontalPouleName($secondLosersHorPoule), 'slechtste 1 na laatst');
+//
+//
+//            $structureEditor->addQualifiers($rootRound, QualifyTarget::Winners, 1);
+//            $secondWinnersHorPoule2 = $rootRound->getHorizontalPoule(QualifyTarget::Winners, 2);
+//            self::assertSame($nameService->getHorizontalPouleName($secondWinnersHorPoule2), '2 beste nummers 2');
+//
+//            $structureEditor->addQualifiers($rootRound, QualifyTarget::Losers, 1);
+//            $secondLosersHorPoule2 = $rootRound->getHorizontalPoule(QualifyTarget::Losers, 2);
+//            self::assertSame($nameService->getHorizontalPouleName($secondLosersHorPoule2), '2 slechtste nummers 1 na laatst');
+//        }
+//    }
 
     public function testRefereeName(): void
     {

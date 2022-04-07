@@ -14,7 +14,7 @@ use Sports\Competition\Sport as CompetitionSport;
 use Sports\League;
 use Sports\Season;
 use Sports\Sport;
-use Sports\Sport\Custom as SportCustom;
+use Sports\Sport\Custom as CustomSport;
 use SportsHelpers\GameMode;
 use SportsHelpers\Sport\Variant\Against\H2h as AgainstH2h;
 use SportsHelpers\Sport\Variant\Against\GamesPerPlace as AgainstGpp;
@@ -39,16 +39,17 @@ trait CompetitionCreator
             return $this->competition;
         }
 
-        $league = new League(new Association("knvb"), "my league");
+        $league = new League(new Association('knvb'), 'my league');
         $season = new Season(
-            "2018/2019", new Period(
-            new DateTimeImmutable("2018-08-01"),
-            new DateTimeImmutable("2019-07-01"),
-        )
+            '2018/2019',
+            new Period(
+                new DateTimeImmutable('2018-08-01'),
+                new DateTimeImmutable('2019-07-01'),
+            )
         );
         $competition = new Competition($league, $season);
         $competition->setId(0);
-        $competition->setStartDateTime(new DateTimeImmutable("2030-01-01T12:00:00.000Z"));
+        $competition->setStartDateTime(new DateTimeImmutable('2030-01-01T12:00:00.000Z'));
         new Referee($competition, '111');
         new Referee($competition, '222');
 
@@ -71,8 +72,8 @@ trait CompetitionCreator
             return $this->sport;
         }
 
-        $this->sport = new Sport("voetbal", true, 2, GameMode::Against);
-        $this->sport->setCustomId(SportCustom::Football);
+        $this->sport = new Sport('voetbal', true, 2, GameMode::Against);
+        $this->sport->setCustomId(CustomSport::Football);
         return $this->sport;
     }*/
 
@@ -86,7 +87,7 @@ trait CompetitionCreator
         foreach ($sportVariantsWithFields as $sportVariantWithFields) {
             if (++$counter === 1) {
                 $sport = new Sport('voetbal', true, GameMode::Against, 1);
-                $sport->setCustomId(SportCustom::Football);
+                $sport->setCustomId(CustomSport::Football);
             } else {
                 $sport = new Sport('sport' . $counter, true, GameMode::Against, 1);
             }

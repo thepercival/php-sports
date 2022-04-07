@@ -9,7 +9,7 @@ use Sports\Score\AgainstHelper as AgainstScore;
 use Sports\Score\Together as TogetherScore;
 use Sports\Game\Place\Together as TogetherGamePlace;
 use Sports\Game\Against as AgainstGame;
-use Sports\Sport\Custom as SportCustom;
+use Sports\Sport\Custom as CustomSport;
 use Sports\Round;
 use Sports\Competition\Sport as CompetitionSport;
 
@@ -41,13 +41,13 @@ class Service
     protected function hasNext(int $customId): bool
     {
         if (
-            $customId === SportCustom::Badminton
-            || $customId === SportCustom::Darts
-            || $customId === SportCustom::Squash
-            || $customId === SportCustom::TableTennis
-            || $customId === SportCustom::Tennis
-            || $customId === SportCustom::Padel
-            || $customId === SportCustom::Volleyball
+            $customId === CustomSport::Badminton
+            || $customId === CustomSport::Darts
+            || $customId === CustomSport::Squash
+            || $customId === CustomSport::TableTennis
+            || $customId === CustomSport::Tennis
+            || $customId === CustomSport::Padel
+            || $customId === CustomSport::Volleyball
         ) {
             return true;
         }

@@ -5,10 +5,13 @@ declare(strict_types=1);
 namespace Sports;
 
 use Exception;
+use NumberFormatter;
 use Sports\Competitor\Map as CompetitorMap;
 use Sports\Game\Place as GamePlace;
 use Sports\Poule\Horizontal as HorizontalPoule;
 use Sports\Qualify\Rule\Multiple as MultipleQualifyRule;
+use Sports\Qualify\Rule\Single as SingleQualifyRule;
+use Sports\Qualify\Target;
 use Sports\Qualify\Target as QualifyTarget;
 use Sports\Ranking\AgainstRuleSet;
 use Sports\Ranking\Map\PouleStructureNumber as PouleStructureNumberMap;
@@ -45,13 +48,13 @@ class NameService
                 return $this->getRoundName($firstRound, true);
             }
         }
-        return $this->getHtmlNumber($roundNumber->getNumber()) . ' ronde';
+        return $this->getOrdinal($roundNumber->getNumber()) . ' ronde';
     }
 
     public function getRoundName(Round $round, bool $sameName = false): string
     {
         if ($this->roundAndParentsNeedsRanking($round) || !$this->childRoundsHaveEqualDepth($round)) {
-            return $this->getHtmlNumber($round->getNumberAsValue()) . ' ronde';
+            return $this->getOrdinal($round->getNumberAsValue()) . ' ronde';
         }
 
         $nrOfRoundsToGo = $this->getMaxDepth($round);
@@ -61,7 +64,7 @@ class NameService
         // if (round.getNrOfPlaces() > 1) {
         if ($round->getNrOfPlaces() === 2 && $sameName === false) {
             $rank = $this->getPreviousNrOfDropoutsMap($round)->get($round) + 1;
-            return $this->getHtmlNumber($rank) . '/' . $this->getHtmlNumber($rank + 1) . ' plaats';
+            return $this->getOrdinal($rank) . '/' . $this->getOrdinal($rank + 1) . ' plaats';
         }
         return 'finale';
     }
@@ -91,7 +94,7 @@ class NameService
             }
         }
         if ($longName === true) {
-            return $this->getPouleName($place->getPoule(), true) . ' nr. ' . $place->getPlaceNr();
+            return 'nr. ' . $place->getPlaceNr() . ' ' . $this->getPouleName($place->getPoule(), true);
         }
         $name = $this->getPouleName($place->getPoule(), false);
         return $name . $place->getPlaceNr();
@@ -118,22 +121,78 @@ class NameService
         if ($fromQualifyRule === null) {
             return $this->getPlaceName($place, false, $longName);
         }
-
+        $balanced = $place->getRound()->createPouleStructure()->isBalanced();
+        $absolute = !$longName || $fromQualifyRule->getQualifyTarget() === QualifyTarget::Winners || $balanced;
         if ($fromQualifyRule instanceof MultipleQualifyRule) {
-            if ($longName) {
-                return $this->getHorizontalPouleName($fromQualifyRule->getFromHorizontalPoule());
-            }
-            return '?' . $fromQualifyRule->getFromPlaceNumber();
+            return $this->getMultipleQualifyRuleName($fromQualifyRule, $place, $longName, $absolute);
+        }
+        // SingleQualifyRule
+        $fromPlace = $fromQualifyRule->getFromPlace($place);
+        $rank = $fromPlace->getPlaceNr();
+
+        $poule = $fromPlace->getPoule();
+        $pouleName = $this->getPouleName($poule, $longName);
+        $ordinal = $this->getOrdinal($rank) . (!$poule->needsRanking() ? ' pl.' : '');
+        return $longName ? $ordinal . ' ' . $pouleName : $pouleName . $rank;
+    }
+
+    public function getQualifyRuleName(SingleQualifyRule|MultipleQualifyRule $rule): string
+    {
+        $balanced = $rule->getFromRound()->createPouleStructure()->isBalanced();
+        $absolute = $rule->getQualifyTarget() === QualifyTarget::Winners || $balanced;
+
+        $fromHorPoule = $rule->getFromHorizontalPoule();
+        $fromNumber = $absolute ? $fromHorPoule->getPlaceNumber() : $fromHorPoule->getNumber();
+
+        $name = $this->getOrdinal($fromNumber);
+        if ($rule->getQualifyTarget() === QualifyTarget::Losers && !$absolute) {
+            return $name . ' pl. van onderen';
+        }
+        return $name . ' plekken';
+    }
+
+    public function getMultipleQualifyRuleName(
+        MultipleQualifyRule $rule,
+        Place $place,
+        bool $longName,
+        bool $absolute
+    ): string {
+        $fromHorPoule = $rule->getFromHorizontalPoule();
+        $fromNumber = $absolute ? $fromHorPoule->getPlaceNumber() : $fromHorPoule->getNumber();
+
+        $nrOfToPlaces = $rule->getNrOfToPlaces();
+        if ($rule->getQualifyTarget() === QualifyTarget::Winners) {
+            $toPlaceNumber = $rule->getToPlaceNumber($place);
+        } else {
+            $toPlaceNumber = count($fromHorPoule->getPlaces()) - ($nrOfToPlaces - $rule->getToPlaceNumber($place));
         }
 
-        $fromPlace = $fromQualifyRule->getFromPlace($place);
-        if ($longName !== true || $fromPlace->getPoule()->needsRanking()) {
-            return $this->getPlaceName($fromPlace, false, $longName);
+        $ordinal = $this->getOrdinal($toPlaceNumber);
+        if (!$longName) {
+            return $ordinal . $fromNumber;
         }
-        $name = $this->getQualifyTargetDescription(
-            $fromPlace->getPlaceNr() === 1 ? QualifyTarget::Winners : QualifyTarget::Losers
-        );
-        return $name . ' ' . $this->getPouleName($fromPlace->getPoule(), false);
+
+        $firstpart = $ordinal . ' van';
+//        if ($nrOfToPlaces === 1) {
+//            $nrOfHorPlaces = count($rule->getFromHorizontalPoule()->getPlaces());
+//            $rank = ($rule->getQualifyTarget() === QualifyTarget::Winners) ? 1 : $nrOfHorPlaces;
+//            $firstpart = $this->getOrdinal($rank) . ' van';
+//        }
+        $name = $firstpart . ' ' . $this->getOrdinal($fromNumber);
+        if ($rule->getQualifyTarget() === QualifyTarget::Losers && !$absolute) {
+            $name .= ' pl. van onderen';
+        } else {
+            $name .= ' plekken';
+        }
+        return $name;
+    }
+
+    private function getOrdinal(int $number): string
+    {
+        $locale = 'nl_NL';
+        $nf = new NumberFormatter($locale, NumberFormatter::ORDINAL);
+        $output = $nf->format($number);
+        return $output === false ? '' : $output;
     }
 
     /**
@@ -162,28 +221,14 @@ class NameService
      * @param HorizontalPoule $horizontalPoule
      * @return string
      */
-    public function getHorizontalPouleName(HorizontalPoule $horizontalPoule): string
-    {
-        $qualifyRule = $horizontalPoule->getQualifyRule();
-        if ($qualifyRule === null) {
-            return 'nummers ' . $horizontalPoule->getNumber();
-        }
-        $nrOfToPlaces = $qualifyRule->getNrOfToPlaces();
-
-        if ($qualifyRule->getQualifyTarget() === QualifyTarget::Winners) {
-            $name = 'nummer' . ($nrOfToPlaces > 1 ? 's ' : ' ') . $horizontalPoule->getNumber();
-            if ($qualifyRule instanceof MultipleQualifyRule) {
-                return ($nrOfToPlaces > 1 ? ($nrOfToPlaces . ' ') : '') . 'beste ' . $name;
-            }
-            return $name;
-        }
-        $name = ($nrOfToPlaces > 1 ? 'nummers ' : '');
-        $name .= $horizontalPoule->getNumber() > 1 ? (($horizontalPoule->getNumber() - 1) . ' na laatst') : 'laatste';
-        if ($qualifyRule instanceof MultipleQualifyRule) {
-            return ($nrOfToPlaces > 1 ? ($nrOfToPlaces . ' ') : '') . 'slechtste ' . $name;
-        }
-        return $name;
-    }
+//    public function getHorizontalPouleName(HorizontalPoule $horizontalPoule, bool $longName): string
+//    {
+//        $qualifyRule = $horizontalPoule->getQualifyRule();
+//        if ($qualifyRule === null) {
+//            return 'nummers ' . $horizontalPoule->getNumber();
+//        }
+//        return $this->getQualifyRuleName($qualifyRule, $longName);
+//    }
 
     public function getRefereeName(Game $game, bool $longName = null): string
     {
@@ -298,17 +343,17 @@ class NameService
         return '1/' . $number;
     }
 
-    /**
-     * @return string
-     */
-    protected function getHtmlNumber(int $number): string
-    {
-        if ($number === 1) {
-            return $number . 'ste';
-        }
-        return $number . 'de';
-        // return '&frac1' . $number . ';';
-    }
+//    /**
+//     * @return string
+//     */
+//    protected function getHtmlNumber(int $number): string
+//    {
+//        if ($number === 1) {
+//            return $number . 'ste';
+//        }
+//        return $number . 'de';
+//        // return '&frac1' . $number . ';';
+//    }
 
     private function getMaxDepth(Round $round): int
     {
