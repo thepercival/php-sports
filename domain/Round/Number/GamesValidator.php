@@ -67,7 +67,8 @@ class GamesValidator
         }
         $this->validateAllPlacesSameNrOfGames($roundNumber);
         $this->validateResourcesPerBatch($roundNumber);
-        $this->validateEquallyAssigned($roundNumber, $nrOfReferees);
+        $this->validateFieldsEquallyAssigned($roundNumber);
+        $this->validateRefereesEquallyAssigned($roundNumber, $nrOfReferees);
         if ($validatePriority) {
             $this->validatePriorityOfFieldsAndReferees($roundNumber);
         }
@@ -244,13 +245,27 @@ class GamesValidator
         return true;
     }
 
-    protected function validateEquallyAssigned(RoundNumber $roundNumber, int $nrOfReferees): void
+    protected function validateFieldsEquallyAssigned(RoundNumber $roundNumber): void
     {
-        $fields = [];
-        $referees = [];
-        $refereePlaces = [];
+        foreach ($roundNumber->getCompetitionSports() as $competitionSport) {
+            $this->validateFieldsPerSportEquallyAssigned($roundNumber, $competitionSport);
+        }
+    }
 
-        foreach ($roundNumber->getGames(Order::ByPoule) as $game) {
+    protected function validateFieldsPerSportEquallyAssigned(
+        RoundNumber $roundNumber,
+        CompetitionSport $competitionSport
+    ): void {
+        $fields = [];
+
+        $games = array_filter(
+            $roundNumber->getGames(Order::ByPoule),
+            function (AgainstGame|TogetherGame $game) use ($competitionSport): bool {
+                return $game->getCompetitionSport() === $competitionSport;
+            }
+        );
+
+        foreach ($games as $game) {
             $field = $game->getField();
             if ($field !== null) {
                 $fieldIndex = $this->getFieldIndex($field);
@@ -259,7 +274,17 @@ class GamesValidator
                 }
                 $fields[$fieldIndex]++;
             }
+        }
 
+        $this->validateNrOfGamesRange($fields, "fields");
+    }
+
+    protected function validateRefereesEquallyAssigned(RoundNumber $roundNumber, int $nrOfReferees): void
+    {
+        $referees = [];
+        $refereePlaces = [];
+
+        foreach ($roundNumber->getGames(Order::ByPoule) as $game) {
             $refereePlace = $game->getRefereePlace();
             if ($refereePlace !== null) {
                 $pouleNr = $refereePlace->getPoule()->getStructureLocation();
@@ -282,7 +307,6 @@ class GamesValidator
             $referees[$referee->getPriority()]++;
         }
 
-        $this->validateNrOfGamesRange($fields, "fields");
         $this->validateNrOfGamesRange($referees, "referees");
         if (count($refereePlaces) === 0 && $nrOfReferees > 0 and count($referees) === 0) {
             throw new Exception("no referees have been assigned", E_ERROR);

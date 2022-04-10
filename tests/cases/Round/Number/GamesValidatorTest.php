@@ -21,6 +21,10 @@ use Sports\TestHelper\GamesCreator;
 use Sports\TestHelper\StructureEditorCreator;
 use SportsHelpers\Against\Side as AgainstSide;
 use SportsHelpers\SelfReferee;
+use SportsHelpers\Sport\Variant\Against\GamesPerPlace as AgainstGpp;
+use SportsHelpers\Sport\Variant\Against\H2h as AgainstH2h;
+use SportsHelpers\Sport\Variant\Single;
+use SportsHelpers\Sport\VariantWithFields as SportVariantWithFields;
 
 class GamesValidatorTest extends TestCase
 {
@@ -344,6 +348,26 @@ class GamesValidatorTest extends TestCase
     public function testValid(): void
     {
         $competition = $this->createCompetition();
+
+        $structureEditor = $this->createStructureEditor();
+        $structure = $structureEditor->create($competition, [5]);
+
+        (new GamesCreator())->createStructureGames($structure);
+
+        $gamesValidator = new GamesValidator();
+        $nrOfReferees = $competition->getReferees()->count();
+        self::expectNotToPerformAssertions();
+        $gamesValidator->validateStructure($structure, $nrOfReferees);
+    }
+
+    public function testValidMultiSports(): void
+    {
+        $competition = $this->createCompetition(
+            [
+                $this->getAgainstGppSportVariantWithFields(1),
+                new SportVariantWithFields(new Single(1, 1), 1)
+            ]
+        );
 
         $structureEditor = $this->createStructureEditor();
         $structure = $structureEditor->create($competition, [5]);
