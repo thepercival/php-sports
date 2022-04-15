@@ -10,13 +10,15 @@ jobs:
     name: Generate tag
     runs-on: ubuntu-latest
     steps:
+
       - name: Check out code
-        uses: actions/checkout@master
+        uses: actions/checkout@v2
         with:
           fetch-depth: '0'
 
       - name: Bump version and push tag
-        uses: ChloePlanet/github-tag-action@master
+        uses: anothrNick/github-tag-action@1.39.0
         env:
+          DEFAULT_BUMP: patch
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           WITH_V: true
