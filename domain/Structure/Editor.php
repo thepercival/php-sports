@@ -62,7 +62,7 @@ class Editor
         }
         // end editing
         $this->horPouleCreator->create($rootRound);
-        $this->rulesCreator->create($rootRound, null, true);
+        $this->rulesCreator->create($rootRound, null);
         return $structure;
     }
 
@@ -87,7 +87,7 @@ class Editor
         );
         // end editing
         $this->horPouleCreator->create($qualifyGroup->getChildRound());
-        $this->rulesCreator->create($parentRound, null, true);
+        $this->rulesCreator->create($parentRound, null);
         return $qualifyGroup->getChildRound();
     }
 
@@ -130,7 +130,7 @@ class Editor
         $rootRound->addPlace();
         // end editing
         $this->horPouleCreator->create($rootRound);
-        $this->rulesCreator->create($rootRound, null, true);
+        $this->rulesCreator->create($rootRound, null);
 
         return $rootRound->getFirstPlace(QualifyTarget::Losers);
     }
@@ -149,7 +149,7 @@ class Editor
         $rootRound->removePlace();
         // end editing
         $this->horPouleCreator->create($rootRound);
-        $this->rulesCreator->create($rootRound, null, true);
+        $this->rulesCreator->create($rootRound, null);
     }
 
     public function addPouleToRootRound(Round $rootRound): Poule
@@ -162,11 +162,44 @@ class Editor
         $this->rulesCreator->remove($rootRound);
         // begin editing
         $rootRound->addPoule();
-        // end editing
+        $this->addChildRoundPlacesForNonCrossFinals($rootRound);
         $this->horPouleCreator->create($rootRound);
-        $this->rulesCreator->create($rootRound, null, true);
-
+        $this->rulesCreator->create($rootRound, null);
+        // end editing
         return $rootRound->getLastPoule();
+    }
+
+    private function addChildRoundPlacesForNonCrossFinals(Round $parentRound): void
+    {
+        foreach ([QualifyTarget::Winners, QualifyTarget::Losers] as $qualifyTarget) {
+            $qualifyGroups = $parentRound->getTargetQualifyGroups($qualifyTarget);
+            if (count($qualifyGroups) < 2) {
+                continue;
+            }
+
+            $nrOfPoulesBeforeAdd = count($parentRound->getPoules()) - 1;
+
+            $maxNrOfPlaces = $parentRound->getNrOfPlaces();
+            $currentNrOfPlaces = 0;
+            foreach ($qualifyGroups as $qualifyGroup) {
+                $childRound = $qualifyGroup->getChildRound();
+                $this->horPouleCreator->remove($childRound);
+                $this->rulesCreator->remove($childRound);
+
+                if ($maxNrOfPlaces - $currentNrOfPlaces < $this->getMinPlacesPerPouleSmall()) {
+                    $qualifyGroup->detach();
+                    continue;
+                }
+
+                $nrOfPlacesToAdd = (int)($childRound->getNrOfPlaces() / $nrOfPoulesBeforeAdd);
+                for ($i = 1; $i <= $nrOfPlacesToAdd; $i++) {
+                    $childRound->addPlace();
+                }
+                $currentNrOfPlaces += $childRound->getNrOfPlaces();
+                $this->horPouleCreator->create($childRound);
+                $this->rulesCreator->create($childRound, null);
+            }
+        }
     }
 
     public function removePouleFromRootRound(Round $rootRound): void
@@ -189,7 +222,7 @@ class Editor
         $rootRound->removePoule();
         // end editing
         $this->horPouleCreator->create($rootRound);
-        $this->rulesCreator->create($rootRound, null, true);
+        $this->rulesCreator->create($rootRound, null);
     }
 
     public function incrementNrOfPoules(Round $round): void
@@ -203,9 +236,10 @@ class Editor
         for ($i = 0; $i < $nrOfPlacesToRemove; $i++) {
             $round->removePlace();
         }
+        $this->addChildRoundPlacesForNonCrossFinals($round);
         // end editing
         $this->horPouleCreator->create($round);
-        $this->rulesCreator->create($round, $round->getParent(), true);
+        $this->rulesCreator->create($round, $round->getParent());
     }
 
     public function decrementNrOfPoules(Round $round): void
@@ -224,7 +258,7 @@ class Editor
         }
         // end editing
         $this->horPouleCreator->create($round);
-        $this->rulesCreator->create($round, $round->getParent(), true);
+        $this->rulesCreator->create($round, $round->getParent());
     }
 
     public function addQualifiers(
@@ -260,25 +294,32 @@ class Editor
             }
             // end editing
             $this->horPouleCreator->create($parentRound, $childRound);
-            $this->rulesCreator->create($childRound, $parentRound, true);
+            $this->rulesCreator->create($childRound, $parentRound);
         } else {
             $childRound = $qualifyGroup->getChildRound();
             $this->validate($childRound->getNrOfPlaces() + $nrOfToPlacesToAdd, $childRound->getPoules()->count());
             $this->horPouleCreator->remove($childRound);
             $this->rulesCreator->remove($parentRound, $childRound);
             // begin editing
-            $pouleStructure = $childRound->createPouleStructure();
-            if ($maxNrOfPoulePlaces && $this->canAddPouleByAddingOnePlace($pouleStructure, $maxNrOfPoulePlaces)) {
-                $nrOfPlacesToRemove = count($childRound->addPoule()->getPlaces());
-                for ($i = 0; $i < $nrOfPlacesToRemove - 1; $i++) {
-                    $childRound->removePlace();
+            $pouleAdded = false;
+            while ($nrOfToPlacesToAdd-- > 0) {
+                $pouleStructure = $childRound->createPouleStructure();
+                if ($maxNrOfPoulePlaces && $this->canAddPouleByAddingOnePlace($pouleStructure, $maxNrOfPoulePlaces)) {
+                    $nrOfPlacesToRemove = count($childRound->addPoule()->getPlaces());
+                    for ($i = 0; $i < $nrOfPlacesToRemove - 1; $i++) {
+                        $childRound->removePlace();
+                    }
+                    $pouleAdded = true;
+                } else {
+                    $childRound->addPlace();
                 }
-            } else {
-                $childRound->addPlace();
+            }
+            if ($pouleAdded) {
+                $this->addChildRoundPlacesForNonCrossFinals($childRound);
             }
             // end editing
             $this->horPouleCreator->create($childRound);
-            $this->rulesCreator->create($childRound, $parentRound, true);
+            $this->rulesCreator->create($childRound, $parentRound);
         }
     }
 
@@ -311,7 +352,7 @@ class Editor
             $this->removePlaceFromRound($childRound);
         }
         // end editing
-        $this->rulesCreator->create($parentRound, null, true);
+        $this->rulesCreator->create($parentRound, null);
         return true;
     }
 
@@ -384,7 +425,7 @@ class Editor
         $this->fillRound($newChildRound, $balancedPouleStructure);
         $this->horPouleCreator->create($newChildRound);
         // end editing
-        $this->rulesCreator->create($parentRound, null, true);
+        $this->rulesCreator->create($parentRound, null);
     }
 
     // horizontalPoule is split-points, from which qualifyGroup
@@ -432,7 +473,7 @@ class Editor
             $childQualifyTarget = $losersBorderQualifyGroup !== null ? QualifyTarget::Losers : QualifyTarget::Winners;
             $this->removeQualifier($round, $childQualifyTarget);
         } else {
-            $this->rulesCreator->create($round, null, true);
+            $this->rulesCreator->create($round, null);
         }
     }
 
@@ -457,7 +498,7 @@ class Editor
         }
         // end editing
         $this->horPouleCreator->create($childRound);
-        $this->rulesCreator->create($parentRound, null, true);
+        $this->rulesCreator->create($parentRound, null);
     }
 
     protected function renumber(Round $round, QualifyTarget $qualifyTarget): void

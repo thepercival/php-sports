@@ -8,8 +8,7 @@ use SportsHelpers\Output\Color;
 
 final class Cell implements \Stringable
 {
-    use Color;
-    protected int $color = 0;
+    protected Color|null $color = null;
 
     public function __construct(protected string $value)
     {
@@ -25,18 +24,18 @@ final class Cell implements \Stringable
         $this->value = $value;
     }
 
-    public function getColor(): int
+    public function getColor(): Color|null
     {
         return $this->color;
     }
 
-    public function setColor(int $color): void
+    public function setColor(Color|null $color): void
     {
         $this->color = $color;
     }
 
     public function __toString()
     {
-        return $this->color === 0 ? $this->value : $this->getColored($this->color, $this->value);
+        return $this->color === null ? $this->value : Color::getColored($this->color, $this->value);
     }
 }

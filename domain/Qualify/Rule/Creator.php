@@ -26,7 +26,7 @@ class Creator
         }
     }
 
-    public function create(Round $parentRound, Round|null $grandParentRound, bool $tpyeCheckTmp): void
+    public function create(Round $parentRound, Round|null $grandParentRound): void
     {
         if ($grandParentRound !== null) {
             $this->createForParentRound($grandParentRound);

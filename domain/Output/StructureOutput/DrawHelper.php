@@ -12,6 +12,7 @@ use Sports\Poule;
 use Sports\Qualify\Group as QualifyGroup;
 use Sports\Qualify\Rule\Multiple as MultipleQualifyRule;
 use Sports\Qualify\Rule\Single as SingleQualifyRule;
+use Sports\Qualify\Target;
 use Sports\Qualify\Target as QualifyTarget;
 use Sports\Round;
 use Sports\Round\Number as RoundNumber;
@@ -20,8 +21,6 @@ use SportsHelpers\Output\Color;
 
 final class DrawHelper
 {
-    use Color;
-
     protected NameService $nameService;
     protected RangeCalculator $rangeCalculator;
 
@@ -53,6 +52,13 @@ final class DrawHelper
     public function drawRound(Round $round, Coordinate $origin, int $roundNumberHeight): Coordinate
     {
         $this->drawRoundBorder($round, $origin, $roundNumberHeight);
+        if ($round->isRoot()) {
+            $width = $this->rangeCalculator->getRoundWidth($round);
+            $catName = 'Cat "jongens 5/6"';
+            $catName = substr($catName, 0, $width - 4);
+            $startCoord = $origin->addX((int)(($width - mb_strlen($catName)) / 2));
+            $this->drawer->drawToRight($startCoord, $catName, Color::Blue);
+        }
 
         $pouleCoordinate = $this->getPoulesStartCoordinate($origin, $round);
         foreach ($round->getPoules() as $poule) {
@@ -198,7 +204,7 @@ final class DrawHelper
                 $color = $losersColor;
                 if ($winnersMultipleRuleCoordinate !== null
                     && $winnersMultipleRuleCoordinate->getX() === $currentCoordinate->getX()) {
-                    $color = 3; // 'Magenta';
+                    $color = Color::Blue;
                 }
                 $this->drawer->drawVertAwayFromOrigin(
                     $currentCoordinate,
@@ -218,8 +224,12 @@ final class DrawHelper
     protected function drawQualifyGroups(Round $round, Coordinate $origin, int $nextRoundNumberHeight): void
     {
         $qualifyGroupCoordinate = $this->getQualifyGroupsStartCoordinate($origin, $round);
-        foreach ($round->getQualifyGroups() as $qualifyGroup) {
-            $qualifyGroupCoordinate = $this->drawQualifyGroup($qualifyGroup, $qualifyGroupCoordinate, $nextRoundNumberHeight);
+        foreach ($round->getQualifyGroupsLosersReversed() as $qualifyGroup) {
+            $qualifyGroupCoordinate = $this->drawQualifyGroup(
+                $qualifyGroup,
+                $qualifyGroupCoordinate,
+                $nextRoundNumberHeight
+            );
         }
     }
 
@@ -250,31 +260,33 @@ final class DrawHelper
         return $origin->addX($roundWidth + RangeCalculator::PADDING);
     }
 
-    public function getQualifyGroupColor(QualifyGroup $qualifyGroup): int
+    public function getQualifyGroupColor(QualifyGroup $qualifyGroup): Color
     {
         if ($qualifyGroup->getTarget() === QualifyTarget::Winners) {
             switch ($qualifyGroup->getNumber()) {
                 case 1:
-                    return 2; // '#298F00';
+                    return Color::Green; // '#298F00';
                 case 2:
-                    return 2; // '#84CF96';
+                    return Color::Green; // '#84CF96';
                 case 3:
-                    return 2; // '#0588BC';
+                    return Color::Green; // '#0588BC';
                 case 4:
-                    return 2; // '#00578A';
+                    return Color::Green; // '#00578A';
             }
-            return 0; // '#FFFFFF';
+        } else {
+            if ($qualifyGroup->getTarget() === QualifyTarget::Losers) {
+                switch ($qualifyGroup->getNumber()) {
+                    case 1:
+                        return Color::Red; // '#FFFF66';
+                    case 2:
+                        return Color::Red; // '#FFCC00';
+                    case 3:
+                        return Color::Red; // '#FF9900';
+                    case 4:
+                        return Color::Red; // '#FF0000';
+                }
+            }
         }
-        switch ($qualifyGroup->getNumber()) {
-            case 1:
-                return 1; // '#FFFF66';
-            case 2:
-                return 1; // '#FFCC00';
-            case 3:
-                return 1; // '#FF9900';
-            case 4:
-                return 1; // '#FF0000';
-        }
-        return 0; // '#FFFFFF';
+        return Color::White; // '#FFFFFF';
     }
 }

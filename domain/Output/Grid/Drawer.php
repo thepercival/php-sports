@@ -10,8 +10,6 @@ use SportsHelpers\Output\Color;
 
 final class Drawer
 {
-    use Color;
-
     public function __construct(protected Grid $grid)
     {
     }
@@ -21,7 +19,7 @@ final class Drawer
         return $this->grid->getWidth();
     }
 
-    public function drawToRight(Coordinate $coordinate, string $value, int $color = 0): Coordinate
+    public function drawToRight(Coordinate $coordinate, string $value, Color|null $color = null): Coordinate
     {
         $valueAsArray = str_split($value);
         $char = array_shift($valueAsArray);
@@ -33,12 +31,16 @@ final class Drawer
         return $coordinate->decrementX();
     }
 
-    public function drawLineToRight(Coordinate $coordinate, int $length, string $value = '-', int $color = 0): Coordinate
-    {
+    public function drawLineToRight(
+        Coordinate $coordinate,
+        int $length,
+        string $value = '-',
+        Color|null $color = null
+    ): Coordinate {
         return $this->drawToRight($coordinate, $this->initString($length, $value), $color);
     }
 
-    public function drawToLeft(Coordinate $coordinate, string $value, int $color = 0): Coordinate
+    public function drawToLeft(Coordinate $coordinate, string $value, Color|null $color = null): Coordinate
     {
         $valueAsArray = str_split($value);
         $char = array_shift($valueAsArray);
@@ -50,12 +52,16 @@ final class Drawer
         return $coordinate->incrementX();
     }
 
-    public function drawLineToLeft(Coordinate $coordinate, int $length, string $value = '-', int $color = 0): Coordinate
-    {
+    public function drawLineToLeft(
+        Coordinate $coordinate,
+        int $length,
+        string $value = '-',
+        Color|null $color = null
+    ): Coordinate {
         return $this->drawToLeft($coordinate, $this->initString($length, $value), $color);
     }
 
-    public function drawVertAwayFromOrigin(Coordinate $coordinate, string $value, int $color = 0): Coordinate
+    public function drawVertAwayFromOrigin(Coordinate $coordinate, string $value, Color|null $color = null): Coordinate
     {
         $valueAsArray = str_split($value);
         $char = array_shift($valueAsArray);
@@ -67,12 +73,16 @@ final class Drawer
         return $coordinate->decrementY();
     }
 
-    public function drawVertLineAwayFromOrigin(Coordinate $coordinate, int $length, string $value = '|', int $color = 0): Coordinate
-    {
+    public function drawVertLineAwayFromOrigin(
+        Coordinate $coordinate,
+        int $length,
+        string $value = '|',
+        Color|null $color = null
+    ): Coordinate {
         return $this->drawVertAwayFromOrigin($coordinate, $this->initString($length, $value), $color);
     }
 
-    public function drawVertToOrigin(Coordinate $coordinate, string $value, int $color = 0): Coordinate
+    public function drawVertToOrigin(Coordinate $coordinate, string $value, Color|null $color = null): Coordinate
     {
         $valueAsArray = str_split($value);
         $char = array_shift($valueAsArray);
@@ -84,13 +94,22 @@ final class Drawer
         return $coordinate->decrementY();
     }
 
-    public function drawVertLineToOrigin(Coordinate $coordinate, int $length, string $value = '|', int $color = 0): Coordinate
-    {
+    public function drawVertLineToOrigin(
+        Coordinate $coordinate,
+        int $length,
+        string $value = '|',
+        Color|null $color = null
+    ): Coordinate {
         return $this->drawVertToOrigin($coordinate, $this->initString($length, $value), $color);
     }
 
-    public function drawCellToRight(Coordinate $coordinate, string $text, int $width, Align $align, int $color = 0): Coordinate
-    {
+    public function drawCellToRight(
+        Coordinate $coordinate,
+        string $text,
+        int $width,
+        Align $align,
+        Color|null $color = null
+    ): Coordinate {
         $char = ' ';
         if (strlen($text) > $width) {
             $text = substr($text, 0, $width);

@@ -7,6 +7,7 @@ namespace Sports\Output;
 use Psr\Log\LoggerInterface;
 use Sports\Output\Grid\Cell;
 use SportsHelpers\Output as OutputBase;
+use SportsHelpers\Output\Color;
 
 final class Grid extends OutputBase
 {
@@ -29,7 +30,7 @@ final class Grid extends OutputBase
         return $this->width;
     }
 
-    public function setColor(Coordinate $coordinate, int $color): void
+    public function setColor(Coordinate $coordinate, Color|null $color): void
     {
         $this->grid[$coordinate->getY()][$coordinate->getX()]->setColor($color);
     }

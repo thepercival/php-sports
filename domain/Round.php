@@ -22,6 +22,8 @@ use Sports\Structure\PathNode as StructurePathNode;
 use SportsHelpers\Identifiable;
 use SportsHelpers\PouleStructure\Balanced as BalancedPouleStructure;
 
+use function Amp\Iterator\toArray;
+
 class Round extends Identifiable
 {
     protected string|null $name = null;
@@ -124,6 +126,24 @@ class Round extends Identifiable
         return $this->qualifyGroups->filter(function (QualifyGroup $qualifyGroup) use ($target): bool {
             return $qualifyGroup->getTarget() === $target;
         });
+    }
+
+    /**
+     * @return list<QualifyGroup>
+     */
+    public function getQualifyGroupsLosersReversed(): array
+    {
+        $winners = [];
+        foreach ($this->getTargetQualifyGroups(QualifyTarget::Winners) as $qualifyGroup) {
+            array_push($winners, $qualifyGroup);
+        }
+
+        $losers = [];
+        foreach ($this->getTargetQualifyGroups(QualifyTarget::Losers) as $qualifyGroup) {
+            array_unshift($losers, $qualifyGroup);
+        }
+
+        return array_merge($winners, $losers);
     }
 
     public function addQualifyGroup(QualifyGroup $qualifyGroup): void

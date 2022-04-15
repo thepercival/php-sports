@@ -6,6 +6,7 @@ namespace Sports\Tests\Structure;
 
 use Exception;
 use PHPUnit\Framework\TestCase;
+use Sports\Output\StructureOutput;
 use Sports\Qualify\Target as QualifyTarget;
 use Sports\TestHelper\CompetitionCreator;
 use Sports\TestHelper\StructureEditorCreator;
@@ -126,7 +127,7 @@ final class EditorTest extends TestCase
         self::assertSame(7, $rootRound->getNrOfPlaces());
     }
 
-    // 4,3 with childplaces
+    // addPouleToRootRound 4,3 with childplaces
     public function testAddPouleToRootRound2(): void
     {
         $competition = $this->createCompetition();
@@ -149,6 +150,109 @@ final class EditorTest extends TestCase
 
         self::assertSame(2, $fromPlace->getPouleNr());
         self::assertSame(3, $fromPlace->getPlaceNr());
+    }
+
+    // 4,3 with childplaces
+    public function testAddPouleToRootRoundWithSecondsRoundNoCrossFinals(): void
+    {
+        $competition = $this->createCompetition();
+        $structureEditor = $this->createStructureEditor();
+        $structure = $structureEditor->create($competition, [4, 4]);
+        $rootRound = $structure->getRootRound();
+
+        $firstPlacesRound = $structureEditor->addChildRound($rootRound, QualifyTarget::Winners, [2]);
+        $secondPlacesRound = $structureEditor->addChildRound($rootRound, QualifyTarget::Winners, [2]);
+
+//         (new StructureOutput())->output($structure);
+
+        $structureEditor->addPouleToRootRound($rootRound);
+
+//        (new StructureOutput())->output($structure);
+
+        $firstPlaces = $firstPlacesRound->getPoule(1)->getPlaces();
+        self::assertCount(3, $firstPlaces);
+
+        $secondPlaces = $secondPlacesRound->getPoule(1)->getPlaces();
+        self::assertCount(3, $secondPlaces);
+    }
+
+    // 4,3 with childplaces
+    public function testAddPouleToRootRoundWithSecondsRoundNoCrossFinalsWithLosers(): void
+    {
+        $competition = $this->createCompetition();
+        $structureEditor = $this->createStructureEditor();
+        $structure = $structureEditor->create($competition, [4, 4]);
+        $rootRound = $structure->getRootRound();
+
+        $lastPlacesRound = $structureEditor->addChildRound($rootRound, QualifyTarget::Losers, [2]);
+        $secondLastPlacesRound = $structureEditor->addChildRound($rootRound, QualifyTarget::Losers, [2]);
+
+//        (new StructureOutput())->output($structure);
+//
+        $structureEditor->addPouleToRootRound($rootRound);
+
+//        (new StructureOutput())->output($structure);
+
+        $lastPlaces = $lastPlacesRound->getPoule(1)->getPlaces();
+        self::assertCount(3, $lastPlaces);
+
+        $secondLastPlaces = $secondLastPlacesRound->getPoule(1)->getPlaces();
+        self::assertCount(3, $secondLastPlaces);
+    }
+
+    public function testIncNrOfPoulesWithThirdRoundsNoCrossFinals(): void
+    {
+        $competition = $this->createCompetition();
+        $structureEditor = $this->createStructureEditor();
+        $structure = $structureEditor->create($competition, [5, 5]);
+        $rootRound = $structure->getRootRound();
+
+        $winnersRound = $structureEditor->addChildRound($rootRound, QualifyTarget::Winners, [4, 3]);
+
+        $structureEditor->addChildRound($winnersRound, QualifyTarget::Winners, [2]);
+        $structureEditor->addChildRound($winnersRound, QualifyTarget::Winners, [2]);
+        $structureEditor->addChildRound($winnersRound, QualifyTarget::Winners, [2]);
+
+//        (new StructureOutput())->output($structure);
+//
+        $structureEditor->incrementNrOfPoules($winnersRound);
+
+//        (new StructureOutput())->output($structure);
+
+        self::assertCount(2, $winnersRound->getQualifyGroups());
+
+        $firstQualifyGroup = $winnersRound->getQualifyGroups()->first();
+        $lastQualifyGroup = $winnersRound->getQualifyGroups()->last();
+        self::assertNotFalse($firstQualifyGroup);
+        self::assertNotFalse($lastQualifyGroup);
+        self::assertEquals(3, $firstQualifyGroup->getNrOfToPlaces());
+        self::assertEquals(3, $lastQualifyGroup->getNrOfToPlaces());
+    }
+
+    public function testAddQualifierWithThirdRoundsNoCrossFinals(): void
+    {
+        $competition = $this->createCompetition();
+        $structureEditor = $this->createStructureEditor();
+        $structure = $structureEditor->create($competition, [6, 6, 6, 6]);
+        $rootRound = $structure->getRootRound();
+
+        $winnersRound = $structureEditor->addChildRound($rootRound, QualifyTarget::Winners, [4, 4, 3, 3]);
+
+        $structureEditor->addChildRound($winnersRound, QualifyTarget::Winners, [4]);
+        $structureEditor->addChildRound($winnersRound, QualifyTarget::Winners, [4]);
+
+//        (new StructureOutput())->output($structure);
+
+        $structureEditor->addQualifiers($rootRound, QualifyTarget::Winners, 1, 3);
+
+//        (new StructureOutput())->output($structure);
+
+        $firstQualifyGroup = $winnersRound->getQualifyGroups()->first();
+        $lastQualifyGroup = $winnersRound->getQualifyGroups()->last();
+        self::assertNotFalse($firstQualifyGroup);
+        self::assertNotFalse($lastQualifyGroup);
+        self::assertEquals(5, $firstQualifyGroup->getNrOfToPlaces());
+        self::assertEquals(5, $lastQualifyGroup->getNrOfToPlaces());
     }
 
     public function testRemovePouleFromRootRound1(): void

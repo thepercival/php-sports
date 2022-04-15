@@ -112,7 +112,7 @@ class Copier
             // $qualifyGroup->setNrOfHorizontalPoules( $qualifyGroupSerialized->getNrOfHorizontalPoules() );
             $this->copyRound($qualifyGroup->getChildRound(), $newQualifyGroup->getChildRound());
         }
-        $this->qualifyRuleCreator->create($newRound, null, true);
+        $this->qualifyRuleCreator->create($newRound, null);
     }
 
     /**
