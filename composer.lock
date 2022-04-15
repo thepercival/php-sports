@@ -248,20 +248,20 @@
         },
         {
             "name": "doctrine/common",
-            "version": "3.2.2",
+            "version": "3.3.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/doctrine/common.git",
-                "reference": "295082d3750987065912816a9d536c2df735f637"
+                "reference": "c824e95d4c83b7102d8bc60595445a6f7d540f96"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/common/zipball/295082d3750987065912816a9d536c2df735f637",
-                "reference": "295082d3750987065912816a9d536c2df735f637",
+                "url": "https://api.github.com/repos/doctrine/common/zipball/c824e95d4c83b7102d8bc60595445a6f7d540f96",
+                "reference": "c824e95d4c83b7102d8bc60595445a6f7d540f96",
                 "shasum": ""
             },
             "require": {
-                "doctrine/persistence": "^2.0",
+                "doctrine/persistence": "^2.0 || ^3.0",
                 "php": "^7.1 || ^8.0"
             },
             "require-dev": {
@@ -318,7 +318,7 @@
             ],
             "support": {
                 "issues": "https://github.com/doctrine/common/issues",
-                "source": "https://github.com/doctrine/common/tree/3.2.2"
+                "source": "https://github.com/doctrine/common/tree/3.3.0"
             },
             "funding": [
                 {
@@ -334,7 +334,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2022-02-02T09:15:57+00:00"
+            "time": "2022-02-05T18:28:51+00:00"
         },
         {
             "name": "doctrine/dbal",
@@ -921,16 +921,16 @@
         },
         {
             "name": "doctrine/persistence",
-            "version": "2.5.0",
+            "version": "2.5.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/doctrine/persistence.git",
-                "reference": "f8776dd9a0bdcd838812951a75f4ada72065a82a"
+                "reference": "4473480044c88f30e0e8288e7123b60c7eb9efa3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/persistence/zipball/f8776dd9a0bdcd838812951a75f4ada72065a82a",
-                "reference": "f8776dd9a0bdcd838812951a75f4ada72065a82a",
+                "url": "https://api.github.com/repos/doctrine/persistence/zipball/4473480044c88f30e0e8288e7123b60c7eb9efa3",
+                "reference": "4473480044c88f30e0e8288e7123b60c7eb9efa3",
                 "shasum": ""
             },
             "require": {
@@ -1003,9 +1003,9 @@
             ],
             "support": {
                 "issues": "https://github.com/doctrine/persistence/issues",
-                "source": "https://github.com/doctrine/persistence/tree/2.5.0"
+                "source": "https://github.com/doctrine/persistence/tree/2.5.1"
             },
-            "time": "2022-04-06T14:59:40+00:00"
+            "time": "2022-04-14T21:47:17+00:00"
         },
         {
             "name": "drupol/phpermutations",
@@ -1781,16 +1781,16 @@
         },
         {
             "name": "phpstan/phpdoc-parser",
-            "version": "1.4.3",
+            "version": "1.4.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpstan/phpdoc-parser.git",
-                "reference": "34545bb30a6f8bd86cfa371dbd42140a657bbf0d"
+                "reference": "d8e9fd97ca11f2f24fc1aafbcfb1f78bce762267"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpdoc-parser/zipball/34545bb30a6f8bd86cfa371dbd42140a657bbf0d",
-                "reference": "34545bb30a6f8bd86cfa371dbd42140a657bbf0d",
+                "url": "https://api.github.com/repos/phpstan/phpdoc-parser/zipball/d8e9fd97ca11f2f24fc1aafbcfb1f78bce762267",
+                "reference": "d8e9fd97ca11f2f24fc1aafbcfb1f78bce762267",
                 "shasum": ""
             },
             "require": {
@@ -1819,9 +1819,9 @@
             "description": "PHPDoc parser with support for nullable, intersection and generic types",
             "support": {
                 "issues": "https://github.com/phpstan/phpdoc-parser/issues",
-                "source": "https://github.com/phpstan/phpdoc-parser/tree/1.4.3"
+                "source": "https://github.com/phpstan/phpdoc-parser/tree/1.4.4"
             },
-            "time": "2022-04-08T11:30:34+00:00"
+            "time": "2022-04-14T12:24:06+00:00"
         },
         {
             "name": "psr/cache",
@@ -3073,16 +3073,16 @@
         },
         {
             "name": "thepercival/php-sports-helpers",
-            "version": "v1.0.37",
+            "version": "v1.2.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/thepercival/php-sports-helpers.git",
-                "reference": "142ac774f3095af40e254b3b0bd00e032025423f"
+                "reference": "352abe00ffa7b8a47aa3fe50b4e4029c0eabc08d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/thepercival/php-sports-helpers/zipball/142ac774f3095af40e254b3b0bd00e032025423f",
-                "reference": "142ac774f3095af40e254b3b0bd00e032025423f",
+                "url": "https://api.github.com/repos/thepercival/php-sports-helpers/zipball/352abe00ffa7b8a47aa3fe50b4e4029c0eabc08d",
+                "reference": "352abe00ffa7b8a47aa3fe50b4e4029c0eabc08d",
                 "shasum": ""
             },
             "require": {
@@ -3133,22 +3133,22 @@
             "support": {
                 "email": "coendunnink@gmail.com",
                 "issues": "https://github.com/thepercival/php-sports-helpers/issues",
-                "source": "https://github.com/thepercival/php-sports-helpers/tree/v1.0.37"
+                "source": "https://github.com/thepercival/php-sports-helpers/tree/v1.2.2"
             },
-            "time": "2022-04-08T13:51:24+00:00"
+            "time": "2022-04-15T21:20:14+00:00"
         },
         {
             "name": "thepercival/php-sports-planning",
-            "version": "v1.0.74",
+            "version": "v1.0.75",
             "source": {
                 "type": "git",
                 "url": "https://github.com/thepercival/php-sports-planning.git",
-                "reference": "faebaf8dcad8c5986e2987cfa4df642ef23a04a2"
+                "reference": "a0c94c7fc7f84e4e679a2a7f2138fd7500ffa75b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/thepercival/php-sports-planning/zipball/faebaf8dcad8c5986e2987cfa4df642ef23a04a2",
-                "reference": "faebaf8dcad8c5986e2987cfa4df642ef23a04a2",
+                "url": "https://api.github.com/repos/thepercival/php-sports-planning/zipball/a0c94c7fc7f84e4e679a2a7f2138fd7500ffa75b",
+                "reference": "a0c94c7fc7f84e4e679a2a7f2138fd7500ffa75b",
                 "shasum": ""
             },
             "require": {
@@ -3204,9 +3204,9 @@
             "support": {
                 "email": "coendunnink@gmail.com",
                 "issues": "https://github.com/thepercival/php-sports-planning/issues",
-                "source": "https://github.com/thepercival/php-sports-planning/tree/v1.0.74"
+                "source": "https://github.com/thepercival/php-sports-planning/tree/v1.0.75"
             },
-            "time": "2022-04-12T19:04:36+00:00"
+            "time": "2022-04-15T21:27:06+00:00"
         }
     ],
     "packages-dev": [
@@ -4550,16 +4550,16 @@
         },
         {
             "name": "phpstan/phpstan",
-            "version": "1.5.4",
+            "version": "1.5.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpstan/phpstan.git",
-                "reference": "bbf68cae24f6dc023c607ea0f87da55dd9d55c2b"
+                "reference": "799dd8c2d2c9c704bb55d2078078cb970cf0f6d1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/bbf68cae24f6dc023c607ea0f87da55dd9d55c2b",
-                "reference": "bbf68cae24f6dc023c607ea0f87da55dd9d55c2b",
+                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/799dd8c2d2c9c704bb55d2078078cb970cf0f6d1",
+                "reference": "799dd8c2d2c9c704bb55d2078078cb970cf0f6d1",
                 "shasum": ""
             },
             "require": {
@@ -4585,7 +4585,7 @@
             "description": "PHPStan - PHP Static Analysis Tool",
             "support": {
                 "issues": "https://github.com/phpstan/phpstan/issues",
-                "source": "https://github.com/phpstan/phpstan/tree/1.5.4"
+                "source": "https://github.com/phpstan/phpstan/tree/1.5.6"
             },
             "funding": [
                 {
@@ -4605,7 +4605,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2022-04-03T12:39:00+00:00"
+            "time": "2022-04-15T11:13:37+00:00"
         },
         {
             "name": "phpstan/phpstan-doctrine",
