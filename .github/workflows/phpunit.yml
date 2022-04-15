@@ -13,10 +13,12 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: '8.1'
+          extensions: xdebug, intl
 
       - uses: php-actions/composer@v6
 
       - name: PHPUnit Tests
-        uses: php-actions/phpunit@v2
+        uses: php-actions/phpunit@v3
         with:
           configuration: tests/phpunit.xml
+          php_extensions: xdebug, intl
