@@ -107,25 +107,25 @@ class Repository
         return $structure;
     }
 
-    /**
-     * @param array<string, mixed> $filter
-     * @return array<int|string, StructureBase>
-     */
-    public function getStructureMap(array $filter): array
-    {
-        /** @var array<int|string, StructureBase> $structureMap */
-        $structureMap = [];
-        $roundNumbers = $this->roundNumberRepos->findBy($filter, array("number" => "asc"));
-        foreach ($roundNumbers as $roundNumber) {
-            $competitionId = $roundNumber->getCompetition()->getId();
-            if ($competitionId === null || isset($structureMap[$competitionId])) {
-                continue;
-            }
-            $structure = $this->getStructure($roundNumber->getCompetition());
-            $structureMap[$competitionId] = $structure;
-        }
-        return $structureMap;
-    }
+//    /**
+//     * @param array<string, mixed> $filter
+//     * @return array<int|string, StructureBase>
+//     */
+//    public function getStructureMap(array $filter): array
+//    {
+//        /** @var array<int|string, StructureBase> $structureMap */
+//        $structureMap = [];
+//        $roundNumbers = $this->roundNumberRepos->findBy($filter, array("number" => "asc"));
+//        foreach ($roundNumbers as $roundNumber) {
+//            $competitionId = $roundNumber->getCompetition()->getId();
+//            if ($competitionId === null || isset($structureMap[$competitionId])) {
+//                continue;
+//            }
+//            $structure = $this->getStructure($roundNumber->getCompetition());
+//            $structureMap[$competitionId] = $structure;
+//        }
+//        return $structureMap;
+//    }
 
     /**
      * @return void

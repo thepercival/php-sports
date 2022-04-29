@@ -18,6 +18,7 @@ use Sports\Round\Number as RoundNumber;
 use Sports\Structure;
 use Sports\Structure as StructureBase;
 use SportsHelpers\PlaceRanges;
+use SportsHelpers\PouleStructure;
 use SportsHelpers\PouleStructure\Balanced as BalancedPouleStructure;
 use SportsHelpers\PouleStructure\BalancedCreator as BalancedPouleStructureCreator;
 use SportsHelpers\Sport\Variant\MinNrOfPlacesCalculator;
@@ -26,6 +27,7 @@ class Editor
 {
     private HorizontalPouleCreator $horPouleCreator;
     private QualifyRuleCreator $rulesCreator;
+    private RemovalValidator $removalValidator;
     private PlaceRanges|null $placeRanges = null;
 
     public function __construct(
@@ -34,6 +36,7 @@ class Editor
     ) {
         $this->horPouleCreator = new HorizontalPouleCreator();
         $this->rulesCreator = new QualifyRuleCreator();
+        $this->removalValidator = new RemovalValidator();
     }
 
     public function setPlaceRanges(PlaceRanges $placeRanges): void
@@ -208,21 +211,49 @@ class Editor
         if ($poules->count() <= 1) {
             throw new Exception('er moet minimaal 1 poule overblijven', E_ERROR);
         }
-        $lastPoule = $rootRound->getLastPoule();
-        $newNrOfPlaces = $rootRound->getNrOfPlaces() - $lastPoule->getPlaces()->count();
 
-        if ($newNrOfPlaces < $rootRound->getNrOfPlacesChildren()) {
-            throw new Exception('de poule kan niet verwijderd worden, omdat er te weinig deelnemers '
-                            . 'overblijven om naar de volgende ronde gaan', E_ERROR);
-        }
+        $places = array_values($rootRound->getLastPoule()->getPlaces()->toArray());
+        $nrOfPlacesToRemoveMap = $this->removalValidator->getNrOfPlacesToRemoveMap($rootRound, $places);
+        $this->removalValidator->willStructureBeValid(
+            $rootRound,
+            $nrOfPlacesToRemoveMap,
+            $this->getMinPlacesPerPouleSmall()
+        );
 
         $this->horPouleCreator->remove($rootRound);
         $this->rulesCreator->remove($rootRound);
         // begin editing
         $rootRound->removePoule();
+        $this->removeChildRoundPlaces($rootRound, $nrOfPlacesToRemoveMap);
         // end editing
         $this->horPouleCreator->create($rootRound);
         $this->rulesCreator->create($rootRound, null);
+    }
+
+
+    /**
+     * @param Round $parentRound
+     * @param array<string, int> $nrOfPlacesToRemoveMap
+     */
+    private function removeChildRoundPlaces(Round $parentRound, array $nrOfPlacesToRemoveMap): void
+    {
+        foreach ([QualifyTarget::Winners, QualifyTarget::Losers] as $qualifyTarget) {
+            $qualifyGroups = $parentRound->getTargetQualifyGroups($qualifyTarget);
+            if (count($qualifyGroups) < 2) { // kan weg?
+                continue;
+            }
+
+            foreach ($qualifyGroups as $qualifyGroup) {
+                $qualifyGroupIdx = $this->removalValidator->getQualifyGroupIndex($qualifyGroup);
+                $nrOfPlacesToRemove = $nrOfPlacesToRemoveMap[$qualifyGroupIdx];
+
+                $childRound = $qualifyGroup->getChildRound();
+
+                while ($nrOfPlacesToRemove--) {
+                    $this->removePlaceFromRound($childRound, false);
+                }
+            }
+        }
     }
 
     public function incrementNrOfPoules(Round $round): void
@@ -304,7 +335,10 @@ class Editor
             $pouleAdded = false;
             while ($nrOfToPlacesToAdd-- > 0) {
                 $pouleStructure = $childRound->createPouleStructure();
-                if ($maxNrOfPoulePlaces && $this->canAddPouleByAddingOnePlace($pouleStructure, $maxNrOfPoulePlaces)) {
+                if ($maxNrOfPoulePlaces > 0 && $this->canAddPouleByAddingOnePlace(
+                        $pouleStructure,
+                        $maxNrOfPoulePlaces
+                    )) {
                     $nrOfPlacesToRemove = count($childRound->addPoule()->getPlaces());
                     for ($i = 0; $i < $nrOfPlacesToRemove - 1; $i++) {
                         $childRound->removePlace();
@@ -457,7 +491,7 @@ class Editor
     }
 
     // recalc horPoules and rules only downwards
-    protected function removePlaceFromRound(Round $round): void
+    protected function removePlaceFromRound(Round $round, bool $canHaveZeroDropoutPlaces = true): void
     {
         $this->horPouleCreator->remove($round);
         $this->rulesCreator->remove($round);
@@ -467,8 +501,8 @@ class Editor
             $round->addPlace();
         }
         $this->horPouleCreator->create($round);
-        // === because nrOfQualifiers should always go down with at leat one
-        if ($round->getNrOfDropoutPlaces() <= 0) {
+        $nrOfDropoutPlaces = $round->getNrOfDropoutPlaces();
+        if ($nrOfDropoutPlaces < 0 || ($canHaveZeroDropoutPlaces && $round->getNrOfDropoutPlaces() === 0)) {
             $losersBorderQualifyGroup = $round->getBorderQualifyGroup(QualifyTarget::Losers);
             $childQualifyTarget = $losersBorderQualifyGroup !== null ? QualifyTarget::Losers : QualifyTarget::Winners;
             $this->removeQualifier($round, $childQualifyTarget);
