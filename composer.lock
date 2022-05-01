@@ -854,21 +854,21 @@
             "symfony/polyfill-php72": "^1.23",
             "symfony/polyfill-php80": "^1.16"
           },
-            "conflict": {
-                "doctrine/annotations": "<1.13 || >= 2.0"
-            },
-            "require-dev": {
-              "doctrine/annotations": "^1.13",
-              "doctrine/coding-standard": "^9.0",
-              "phpbench/phpbench": "^0.16.10 || ^1.0",
-              "phpstan/phpstan": "~1.4.10 || 1.5.0",
-              "phpunit/phpunit": "^7.5 || ^8.5 || ^9.4",
-              "psr/log": "^1 || ^2 || ^3",
-              "squizlabs/php_codesniffer": "3.6.2",
-              "symfony/cache": "^4.4 || ^5.4 || ^6.0",
-              "symfony/yaml": "^3.4 || ^4.0 || ^5.0 || ^6.0",
-              "vimeo/psalm": "4.22.0"
-            },
+          "conflict": {
+            "doctrine/annotations": "<1.13 || >= 2.0"
+          },
+          "require-dev": {
+            "doctrine/annotations": "^1.13",
+            "doctrine/coding-standard": "^9.0",
+            "phpbench/phpbench": "^0.16.10 || ^1.0",
+            "phpstan/phpstan": "~1.4.10 || 1.5.0",
+            "phpunit/phpunit": "^7.5 || ^8.5 || ^9.4",
+            "psr/log": "^1 || ^2 || ^3",
+            "squizlabs/php_codesniffer": "3.6.2",
+            "symfony/cache": "^4.4 || ^5.4 || ^6.0",
+            "symfony/yaml": "^3.4 || ^4.0 || ^5.0 || ^6.0",
+            "vimeo/psalm": "4.22.0"
+          },
             "suggest": {
                 "symfony/cache": "Provides cache support for Setup Tool with doctrine/cache 2.0",
                 "symfony/yaml": "If you want to use YAML Metadata Mapping Driver"
@@ -900,16 +900,16 @@
                     "email": "kontakt@beberlei.de"
                 },
                 {
-                    "name": "Jonathan Wage",
-                    "email": "jonwage@gmail.com"
+                  "name": "Jonathan Wage",
+                  "email": "jonwage@gmail.com"
                 },
-                {
-                    "name": "Marco Pivetta",
-                    "email": "ocramius@gmail.com"
-                }
+              {
+                "name": "Marco Pivetta",
+                "email": "ocramius@gmail.com"
+              }
             ],
-            "description": "Object-Relational-Mapper for PHP",
-            "homepage": "https://www.doctrine-project.org/projects/orm.html",
+          "description": "Object-Relational-Mapper for PHP",
+          "homepage": "https://www.doctrine-project.org/projects/orm.html",
           "keywords": [
             "database",
             "orm"
@@ -944,18 +944,18 @@
           "doctrine/annotations": "<1.7 || >=2.0",
           "doctrine/common": "<2.10"
         },
-            "require-dev": {
-              "composer/package-versions-deprecated": "^1.11",
-              "doctrine/annotations": "^1.7",
-              "doctrine/coding-standard": "^9.0",
-              "doctrine/common": "^3.0",
-              "phpstan/phpstan": "1.5.0",
-              "phpstan/phpstan-phpunit": "^1",
-              "phpstan/phpstan-strict-rules": "^1.1",
-              "phpunit/phpunit": "^8.5 || ^9.5",
-              "symfony/cache": "^4.4 || ^5.4 || ^6.0",
-              "vimeo/psalm": "4.22.0"
-            },
+        "require-dev": {
+          "composer/package-versions-deprecated": "^1.11",
+          "doctrine/annotations": "^1.7",
+          "doctrine/coding-standard": "^9.0",
+          "doctrine/common": "^3.0",
+          "phpstan/phpstan": "1.5.0",
+          "phpstan/phpstan-phpunit": "^1",
+          "phpstan/phpstan-strict-rules": "^1.1",
+          "phpunit/phpunit": "^8.5 || ^9.5",
+          "symfony/cache": "^4.4 || ^5.4 || ^6.0",
+          "vimeo/psalm": "4.22.0"
+        },
             "type": "library",
             "autoload": {
                 "psr-4": {
@@ -967,14 +967,14 @@
                 "MIT"
             ],
             "authors": [
-                {
-                    "name": "Guilherme Blanco",
-                    "email": "guilhermeblanco@gmail.com"
-                },
-                {
-                    "name": "Roman Borschel",
-                  "email": "roman@code-factory.org"
-                },
+              {
+                "name": "Guilherme Blanco",
+                "email": "guilhermeblanco@gmail.com"
+              },
+              {
+                "name": "Roman Borschel",
+                "email": "roman@code-factory.org"
+              },
               {
                 "name": "Benjamin Eberlei",
                 "email": "kontakt@beberlei.de"
@@ -1031,16 +1031,16 @@
         },
         "dist": {
           "type": "zip",
-                "url": "https://api.github.com/repos/drupol/phpermutations/zipball/869912ebee25a761f09518299004eefd1c73f280",
-                "reference": "869912ebee25a761f09518299004eefd1c73f280",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">= 7.1.3"
-            },
-            "require-dev": {
-                "drupol/php-conventions": "^1.7.1",
-                "phpunit/php-code-coverage": "^4 || ^5",
+          "url": "https://api.github.com/repos/drupol/phpermutations/zipball/869912ebee25a761f09518299004eefd1c73f280",
+          "reference": "869912ebee25a761f09518299004eefd1c73f280",
+          "shasum": ""
+        },
+        "require": {
+          "php": ">= 7.1.3"
+        },
+        "require-dev": {
+          "drupol/php-conventions": "^1.7.1",
+          "phpunit/php-code-coverage": "^4 || ^5",
                 "phpunit/phpunit": "^6 || ^7"
             },
             "type": "library",
@@ -1776,16 +1776,16 @@
                     "LucidFrameTest\\": "tests/"
                 }
             },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Sithu K.",
-                  "email": "cithukyaw@gmail.com"
-                }
-            ],
+          "notification-url": "https://packagist.org/downloads/",
+          "license": [
+            "MIT"
+          ],
+          "authors": [
+            {
+              "name": "Sithu K.",
+              "email": "cithukyaw@gmail.com"
+            }
+          ],
           "description": "Console Table",
           "support": {
             "issues": "https://github.com/phplucidframe/console-table/issues",
@@ -1817,16 +1817,16 @@
           "phpstan/phpstan-strict-rules": "^1.0",
           "phpunit/phpunit": "^9.5",
           "symfony/process": "^5.2"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "PHPStan\\PhpDocParser\\": [
-                        "src/"
-                    ]
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
+        },
+        "type": "library",
+        "autoload": {
+          "psr-4": {
+            "PHPStan\\PhpDocParser\\": [
+              "src/"
+            ]
+          }
+        },
+        "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -2176,16 +2176,16 @@
                     "src/getallheaders.php"
                 ]
             },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Ralph Khattar",
-                  "email": "ralph.khattar@gmail.com"
-                }
-            ],
+          "notification-url": "https://packagist.org/downloads/",
+          "license": [
+            "MIT"
+          ],
+          "authors": [
+            {
+              "name": "Ralph Khattar",
+              "email": "ralph.khattar@gmail.com"
+            }
+          ],
           "description": "A polyfill for getallheaders.",
           "support": {
             "issues": "https://github.com/ralouphie/getallheaders/issues",
@@ -2217,16 +2217,16 @@
           "symfony/dependency-injection": "<5.4",
           "symfony/dotenv": "<5.4",
           "symfony/event-dispatcher": "<5.4",
-                "symfony/lock": "<5.4",
-                "symfony/process": "<5.4"
-            },
-            "provide": {
-                "psr/log-implementation": "1.0|2.0|3.0"
-            },
-            "require-dev": {
-                "psr/log": "^1|^2|^3",
-                "symfony/config": "^5.4|^6.0",
-                "symfony/dependency-injection": "^5.4|^6.0",
+          "symfony/lock": "<5.4",
+          "symfony/process": "<5.4"
+        },
+        "provide": {
+          "psr/log-implementation": "1.0|2.0|3.0"
+        },
+        "require-dev": {
+          "psr/log": "^1|^2|^3",
+          "symfony/config": "^5.4|^6.0",
+          "symfony/dependency-injection": "^5.4|^6.0",
                 "symfony/event-dispatcher": "^5.4|^6.0",
                 "symfony/lock": "^5.4|^6.0",
                 "symfony/process": "^5.4|^6.0",
@@ -2911,14 +2911,14 @@
                 "source": "https://github.com/symfony/service-contracts/tree/v3.0.1"
             },
             "funding": [
-                {
-                    "url": "https://symfony.com/sponsor",
-                    "type": "custom"
-                },
-                {
-                  "url": "https://github.com/fabpot",
-                  "type": "github"
-                },
+              {
+                "url": "https://symfony.com/sponsor",
+                "type": "custom"
+              },
+              {
+                "url": "https://github.com/fabpot",
+                "type": "github"
+              },
               {
                 "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
                 "type": "tidelift"
@@ -2950,16 +2950,16 @@
         "conflict": {
           "symfony/translation-contracts": "<2.0"
         },
-            "require-dev": {
-                "symfony/error-handler": "^5.4|^6.0",
-                "symfony/http-client": "^5.4|^6.0",
-                "symfony/translation-contracts": "^2.0|^3.0",
-                "symfony/var-exporter": "^5.4|^6.0"
-            },
-            "type": "library",
-            "autoload": {
-                "files": [
-                    "Resources/functions.php"
+        "require-dev": {
+          "symfony/error-handler": "^5.4|^6.0",
+          "symfony/http-client": "^5.4|^6.0",
+          "symfony/translation-contracts": "^2.0|^3.0",
+          "symfony/var-exporter": "^5.4|^6.0"
+        },
+        "type": "library",
+        "autoload": {
+          "files": [
+            "Resources/functions.php"
                 ],
                 "psr-4": {
                     "Symfony\\Component\\String\\": ""
@@ -3070,14 +3070,14 @@
                 "source": "https://github.com/symfony/yaml/tree/v6.0.3"
             },
             "funding": [
-                {
-                    "url": "https://symfony.com/sponsor",
-                    "type": "custom"
-                },
-                {
-                  "url": "https://github.com/fabpot",
-                  "type": "github"
-                },
+              {
+                "url": "https://symfony.com/sponsor",
+                "type": "custom"
+              },
+              {
+                "url": "https://github.com/fabpot",
+                "type": "github"
+              },
               {
                 "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
                 "type": "tidelift"
@@ -3087,16 +3087,16 @@
         },
       {
         "name": "thepercival/php-sports-helpers",
-        "version": "v1.2.6",
+        "version": "v1.2.7",
         "source": {
           "type": "git",
           "url": "https://github.com/thepercival/php-sports-helpers.git",
-          "reference": "20cef4b5ce4edf1227e7e99e6af12d2f165a802b"
+          "reference": "f75c4b4a3c7a75ae385f0c23435de7d2171ea820"
         },
         "dist": {
           "type": "zip",
-          "url": "https://api.github.com/repos/thepercival/php-sports-helpers/zipball/20cef4b5ce4edf1227e7e99e6af12d2f165a802b",
-          "reference": "20cef4b5ce4edf1227e7e99e6af12d2f165a802b",
+          "url": "https://api.github.com/repos/thepercival/php-sports-helpers/zipball/f75c4b4a3c7a75ae385f0c23435de7d2171ea820",
+          "reference": "f75c4b4a3c7a75ae385f0c23435de7d2171ea820",
           "shasum": ""
         },
         "require": {
@@ -3109,16 +3109,16 @@
           "phpstan/extension-installer": "^1.0",
           "phpstan/phpstan": "^1.2",
           "phpstan/phpstan-doctrine": "^1.0",
-                "phpstan/phpstan-phpunit": "^1.0",
-                "phpstan/phpstan-strict-rules": "^1.1",
-                "phpunit/phpunit": "^9.5",
-                "psalm/plugin-phpunit": "^0.16",
-                "vimeo/psalm": "^4.15"
-            },
-            "type": "library",
-            "extra": {
-                "phpstan": {
-                    "includes": [
+          "phpstan/phpstan-phpunit": "^1.0",
+          "phpstan/phpstan-strict-rules": "^1.1",
+          "phpunit/phpunit": "^9.5",
+          "psalm/plugin-phpunit": "^0.16",
+          "vimeo/psalm": "^4.15"
+        },
+        "type": "library",
+        "extra": {
+          "phpstan": {
+            "includes": [
                         "extension.neon"
                     ]
                 }
@@ -3134,35 +3134,35 @@
             ],
             "authors": [
                 {
-                    "name": "Coen Dunnink",
-                    "email": "coendunnink@gmail.com"
+                  "name": "Coen Dunnink",
+                  "email": "coendunnink@gmail.com"
                 }
             ],
-            "description": "library  for create sports-helpers",
-            "homepage": "https://github.com/thepercival/php-sports-helpers",
-            "keywords": [
-              "helpers",
-              "sport"
-            ],
+        "description": "library  for create sports-helpers",
+        "homepage": "https://github.com/thepercival/php-sports-helpers",
+        "keywords": [
+          "helpers",
+          "sport"
+        ],
         "support": {
           "email": "coendunnink@gmail.com",
           "issues": "https://github.com/thepercival/php-sports-helpers/issues",
-          "source": "https://github.com/thepercival/php-sports-helpers/tree/v1.2.6"
+          "source": "https://github.com/thepercival/php-sports-helpers/tree/v1.2.7"
         },
-        "time": "2022-05-01T11:44:38+00:00"
+        "time": "2022-05-01T11:54:58+00:00"
       },
       {
         "name": "thepercival/php-sports-planning",
-        "version": "v1.0.78",
+        "version": "v1.0.79",
         "source": {
           "type": "git",
           "url": "https://github.com/thepercival/php-sports-planning.git",
-          "reference": "44d66113f8074feb3c812f0f1bec1219a2fbf817"
+          "reference": "d95bccc88078685e5b67f2c44131227c4172dee1"
         },
         "dist": {
           "type": "zip",
-          "url": "https://api.github.com/repos/thepercival/php-sports-planning/zipball/44d66113f8074feb3c812f0f1bec1219a2fbf817",
-          "reference": "44d66113f8074feb3c812f0f1bec1219a2fbf817",
+          "url": "https://api.github.com/repos/thepercival/php-sports-planning/zipball/d95bccc88078685e5b67f2c44131227c4172dee1",
+          "reference": "d95bccc88078685e5b67f2c44131227c4172dee1",
           "shasum": ""
         },
         "require": {
@@ -3175,16 +3175,16 @@
           "thepercival/php-sports-helpers": "^1.0"
         },
         "require-dev": {
-                "friendsofphp/php-cs-fixer": "^3.2",
-                "phpstan/extension-installer": "^1.0",
-                "phpstan/phpstan": "^1.2",
-                "phpstan/phpstan-doctrine": "^1.0",
-                "phpstan/phpstan-phpunit": "^1.0",
-                "phpstan/phpstan-strict-rules": "^1.1",
-                "phpunit/phpunit": "^9.5",
-                "psalm/plugin-phpunit": "^0.16",
-                "vimeo/psalm": "^4.15",
-                "weirdan/doctrine-psalm-plugin": "^2.0"
+          "friendsofphp/php-cs-fixer": "^3.2",
+          "phpstan/extension-installer": "^1.0",
+          "phpstan/phpstan": "^1.2",
+          "phpstan/phpstan-doctrine": "^1.0",
+          "phpstan/phpstan-phpunit": "^1.0",
+          "phpstan/phpstan-strict-rules": "^1.1",
+          "phpunit/phpunit": "^9.5",
+          "psalm/plugin-phpunit": "^0.16",
+          "vimeo/psalm": "^4.15",
+          "weirdan/doctrine-psalm-plugin": "^2.0"
             },
             "type": "library",
             "extra": {
@@ -3218,9 +3218,9 @@
             "support": {
                 "email": "coendunnink@gmail.com",
                 "issues": "https://github.com/thepercival/php-sports-planning/issues",
-              "source": "https://github.com/thepercival/php-sports-planning/tree/v1.0.78"
+              "source": "https://github.com/thepercival/php-sports-planning/tree/v1.0.79"
             },
-        "time": "2022-05-01T11:46:19+00:00"
+        "time": "2022-05-01T11:56:00+00:00"
         }
     ],
     "packages-dev": [
@@ -4542,16 +4542,16 @@
                 "php-parallel-lint/php-parallel-lint": "^1.2.0",
                 "phpstan/phpstan-strict-rules": "^0.11 || ^0.12"
             },
-            "type": "composer-plugin",
-            "extra": {
-                "class": "PHPStan\\ExtensionInstaller\\Plugin"
-            },
-            "autoload": {
-                "psr-4": {
-                    "PHPStan\\ExtensionInstaller\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
+          "type": "composer-plugin",
+          "extra": {
+            "class": "PHPStan\\ExtensionInstaller\\Plugin"
+          },
+          "autoload": {
+            "psr-4": {
+              "PHPStan\\ExtensionInstaller\\": "src/"
+            }
+          },
+          "notification-url": "https://packagist.org/downloads/",
           "license": [
             "MIT"
           ],
@@ -4586,16 +4586,16 @@
           "phpstan",
           "phpstan.phar"
         ],
-            "type": "library",
-            "autoload": {
-                "files": [
-                    "bootstrap.php"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
+        "type": "library",
+        "autoload": {
+          "files": [
+            "bootstrap.php"
+          ]
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+          "MIT"
+        ],
             "description": "PHPStan - PHP Static Analysis Tool",
             "support": {
                 "issues": "https://github.com/phpstan/phpstan/issues",
@@ -4604,16 +4604,16 @@
             "funding": [
                 {
                     "url": "https://github.com/ondrejmirtes",
-                    "type": "github"
+                  "type": "github"
                 },
-                {
-                    "url": "https://github.com/phpstan",
-                    "type": "github"
-                },
-                {
-                  "url": "https://www.patreon.com/phpstan",
-                  "type": "patreon"
-                },
+              {
+                "url": "https://github.com/phpstan",
+                "type": "github"
+              },
+              {
+                "url": "https://www.patreon.com/phpstan",
+                "type": "patreon"
+              },
               {
                 "url": "https://tidelift.com/funding/github/packagist/phpstan/phpstan",
                 "type": "tidelift"
@@ -4645,16 +4645,16 @@
           "doctrine/mongodb-odm": "<1.2",
           "doctrine/orm": "<2.5",
           "doctrine/persistence": "<1.3"
-            },
-            "require-dev": {
-                "doctrine/annotations": "^1.11.0",
-                "doctrine/collections": "^1.6",
-                "doctrine/common": "^2.7 || ^3.0",
-                "doctrine/dbal": "^2.13.8 || ^3.3.3",
-                "doctrine/lexer": "^1.2.1",
-                "doctrine/mongodb-odm": "^1.3 || ^2.1",
-                "doctrine/orm": "^2.11.0",
-                "doctrine/persistence": "^1.3.8 || ^2.2.1",
+        },
+        "require-dev": {
+          "doctrine/annotations": "^1.11.0",
+          "doctrine/collections": "^1.6",
+          "doctrine/common": "^2.7 || ^3.0",
+          "doctrine/dbal": "^2.13.8 || ^3.3.3",
+          "doctrine/lexer": "^1.2.1",
+          "doctrine/mongodb-odm": "^1.3 || ^2.1",
+          "doctrine/orm": "^2.11.0",
+          "doctrine/persistence": "^1.3.8 || ^2.2.1",
                 "nesbot/carbon": "^2.49",
                 "nikic/php-parser": "^4.13.2",
                 "php-parallel-lint/php-parallel-lint": "^1.2",
@@ -4669,16 +4669,16 @@
                 "phpstan": {
                     "includes": [
                         "extension.neon",
-                        "rules.neon"
+                      "rules.neon"
                     ]
                 }
             },
-            "autoload": {
-                "psr-4": {
-                    "PHPStan\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
+        "autoload": {
+          "psr-4": {
+            "PHPStan\\": "src/"
+          }
+        },
+        "notification-url": "https://packagist.org/downloads/",
         "license": [
           "MIT"
         ],
@@ -4713,24 +4713,24 @@
         "require-dev": {
           "nikic/php-parser": "^4.13.0",
           "php-parallel-lint/php-parallel-lint": "^1.2",
-                "phpstan/phpstan-strict-rules": "^1.0",
-                "phpunit/phpunit": "^9.5"
-            },
-            "type": "phpstan-extension",
-            "extra": {
-                "phpstan": {
-                    "includes": [
-                        "extension.neon",
-                        "rules.neon"
-                    ]
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "PHPStan\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
+          "phpstan/phpstan-strict-rules": "^1.0",
+          "phpunit/phpunit": "^9.5"
+        },
+        "type": "phpstan-extension",
+        "extra": {
+          "phpstan": {
+            "includes": [
+              "extension.neon",
+              "rules.neon"
+            ]
+          }
+        },
+        "autoload": {
+          "psr-4": {
+            "PHPStan\\": "src/"
+          }
+        },
+        "notification-url": "https://packagist.org/downloads/",
         "license": [
           "MIT"
         ],
@@ -4765,16 +4765,16 @@
           "phpstan/phpstan-phpunit": "^1.0",
           "phpunit/phpunit": "^9.5"
         },
-            "type": "phpstan-extension",
-            "extra": {
-                "phpstan": {
-                    "includes": [
-                        "rules.neon"
-                    ]
-                }
-            },
-            "autoload": {
-                "psr-4": {
+        "type": "phpstan-extension",
+        "extra": {
+          "phpstan": {
+            "includes": [
+              "rules.neon"
+            ]
+          }
+        },
+        "autoload": {
+          "psr-4": {
                     "PHPStan\\": "src/"
                 }
             },
@@ -6494,14 +6494,14 @@
                 "source": "https://github.com/symfony/filesystem/tree/v6.0.7"
             },
             "funding": [
-                {
-                    "url": "https://symfony.com/sponsor",
-                    "type": "custom"
-                },
-                {
-                  "url": "https://github.com/fabpot",
-                  "type": "github"
-                },
+              {
+                "url": "https://symfony.com/sponsor",
+                "type": "custom"
+              },
+              {
+                "url": "https://github.com/fabpot",
+                "type": "github"
+              },
               {
                 "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
                 "type": "tidelift"
@@ -6533,16 +6533,16 @@
           },
           "exclude-from-classmap": [
             "/Tests/"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Fabien Potencier",
-                    "email": "fabien@symfony.com"
+          ]
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+          "MIT"
+        ],
+        "authors": [
+          {
+            "name": "Fabien Potencier",
+            "email": "fabien@symfony.com"
                 },
                 {
                     "name": "Symfony Community",
@@ -6701,14 +6701,14 @@
                 "source": "https://github.com/symfony/polyfill-php81/tree/v1.25.0"
             },
             "funding": [
-                {
-                    "url": "https://symfony.com/sponsor",
-                    "type": "custom"
-                },
-                {
-                  "url": "https://github.com/fabpot",
-                  "type": "github"
-                },
+              {
+                "url": "https://symfony.com/sponsor",
+                "type": "custom"
+              },
+              {
+                "url": "https://github.com/fabpot",
+                "type": "github"
+              },
               {
                 "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
                 "type": "tidelift"
@@ -6740,16 +6740,16 @@
           },
           "exclude-from-classmap": [
             "/Tests/"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Fabien Potencier",
-                    "email": "fabien@symfony.com"
+          ]
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+          "MIT"
+        ],
+        "authors": [
+          {
+            "name": "Fabien Potencier",
+            "email": "fabien@symfony.com"
                 },
                 {
                     "name": "Symfony Community",
