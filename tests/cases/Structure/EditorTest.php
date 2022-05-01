@@ -325,18 +325,29 @@ final class EditorTest extends TestCase
         self::assertCount(2, $secondPlacesRound->getPoule(2)->getPlaces());
 
         $structureEditor->removePouleFromRootRound($rootRound);
+    }
+
+    public function testRemovePouleFromRootRoundRemoveLastRoundNumber(): void
+    {
+        $competition = $this->createCompetition();
+        $structureEditor = $this->createStructureEditor();
+        $structure = $structureEditor->create($competition, [4, 4, 4]);
+        $rootRound = $structure->getRootRound();
+
+        $firstPlacesRound = $structureEditor->addChildRound($rootRound, QualifyTarget::Winners, [3]);
+        $secondPlacesRound = $structureEditor->addChildRound($rootRound, QualifyTarget::Winners, [3]);
+
+        $structureEditor->addChildRound($firstPlacesRound, QualifyTarget::Winners, [2]);
+        $structureEditor->addChildRound($secondPlacesRound, QualifyTarget::Winners, [2]);
+
+//         (new StructureOutput())->output($structure);
+
+        $structureEditor->removePouleFromRootRound($rootRound);
 
 //        (new StructureOutput())->output($structure);
-
-        self::assertCount(2, $firstPlacesRound->getTargetQualifyGroups(QualifyTarget::Winners));
-        self::assertCount(2, $firstPlacesRound->getPoule(1)->getPlaces());
-        self::assertCount(2, $firstPlacesRound->getPoule(2)->getPlaces());
-
-        self::assertCount(2, $secondPlacesRound->getPoule(1)->getPlaces());
-        self::assertCount(2, $secondPlacesRound->getPoule(2)->getPlaces());
-
-        self::expectException(Exception::class);
-        $structureEditor->removePouleFromRootRound($rootRound);
+//
+        self::assertCount(0, $firstPlacesRound->getChildren());
+        self::assertCount(0, $secondPlacesRound->getChildren());
     }
 
     // too little placesperpoule

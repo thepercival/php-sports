@@ -35,7 +35,7 @@ abstract class Game extends OutputBase
     protected function getGameRoundNrAsString(int $gameRoundNr): string
     {
         $gameRoundNrColor = $this->useColors() ? ($gameRoundNr % 10) : -1;
-        $gameRoundNrColor = Color::convertNumberToColor($gameRoundNrColor);
+        $gameRoundNrColor = $this->convertNumberToColor($gameRoundNrColor);
         $retVal = ($gameRoundNr < 10 ? ' ' : '') . $gameRoundNr;
         return Color::getColored($gameRoundNrColor, $retVal);
     }
@@ -44,7 +44,7 @@ abstract class Game extends OutputBase
     {
         $batchColor = $this->useColors() ? ($batchNr % 10) : -1;
         $retVal = 'batch ' . ($batchNr < 10 ? ' ' : '') . $batchNr;
-        $batchColor = Color::convertNumberToColor($batchColor);
+        $batchColor = $this->convertNumberToColor($batchColor);
         return Color::getColored($batchColor, $retVal);
     }
 
@@ -70,7 +70,7 @@ abstract class Game extends OutputBase
         $priority = $field->getPriority();
         $fieldColor = $this->useColors() ? ($priority % 10) : -1;
         $retVal = 'field ' . ($priority < 10 ? ' ' : '') . $priority;
-        $fieldColor = Color::convertNumberToColor($fieldColor);
+        $fieldColor = $this->convertNumberToColor($fieldColor);
         return Color::getColored($fieldColor, $retVal);
     }
 
@@ -92,7 +92,7 @@ abstract class Game extends OutputBase
         }
         $useColors = $this->useColors() && $place->getPoule()->getNumber() === 1;
         $placeColor = $useColors ? ($place->getPlaceNr() % 10) : -1;
-        $placeColor = Color::convertNumberToColor($placeColor);
+        $placeColor = $this->convertNumberToColor($placeColor);
         return Color::getColored($placeColor, $retVal);
     }
 
@@ -108,7 +108,7 @@ abstract class Game extends OutputBase
 
 
         $refereeColor = $this->useColors() ? ($refNr % 10) : -1;
-        $refereeColor = Color::convertNumberToColor($refereeColor);
+        $refereeColor = $this->convertNumberToColor($refereeColor);
         return Color::getColored($refereeColor, $refereeDescription);
     }
 

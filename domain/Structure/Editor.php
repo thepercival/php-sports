@@ -383,7 +383,7 @@ class Editor
         if ($childRound->getNrOfPlaces() <= 2) {
             $qualifyGroup->detach();
         } else {
-            $this->removePlaceFromRound($childRound);
+            $this->removePlaceFromRound($childRound, false);
         }
         // end editing
         $this->rulesCreator->create($parentRound, null);
@@ -502,7 +502,7 @@ class Editor
         }
         $this->horPouleCreator->create($round);
         $nrOfDropoutPlaces = $round->getNrOfDropoutPlaces();
-        if ($nrOfDropoutPlaces < 0 || ($canHaveZeroDropoutPlaces && $round->getNrOfDropoutPlaces() === 0)) {
+        if ($nrOfDropoutPlaces < 0 || (!$canHaveZeroDropoutPlaces && $round->getNrOfDropoutPlaces() === 0)) {
             $losersBorderQualifyGroup = $round->getBorderQualifyGroup(QualifyTarget::Losers);
             $childQualifyTarget = $losersBorderQualifyGroup !== null ? QualifyTarget::Losers : QualifyTarget::Winners;
             $this->removeQualifier($round, $childQualifyTarget);

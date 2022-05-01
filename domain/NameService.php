@@ -211,25 +211,6 @@ class NameService
         );
     }
 
-    /**
-     * "nummers 2" voor winners complete
-     * "3 beste nummers 2" voor winners incomplete
-     *
-     * "nummers 2 na laast" voor losers complete
-     * "3 slechtste nummers 2 na laast" voor losers incomplete
-     *
-     * @param HorizontalPoule $horizontalPoule
-     * @return string
-     */
-//    public function getHorizontalPouleName(HorizontalPoule $horizontalPoule, bool $longName): string
-//    {
-//        $qualifyRule = $horizontalPoule->getQualifyRule();
-//        if ($qualifyRule === null) {
-//            return 'nummers ' . $horizontalPoule->getNumber();
-//        }
-//        return $this->getQualifyRuleName($qualifyRule, $longName);
-//    }
-
     public function getRefereeName(Game $game, bool $longName = null): string
     {
         $referee = $game->getReferee();

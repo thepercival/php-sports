@@ -54,10 +54,10 @@ final class DrawHelper
         $this->drawRoundBorder($round, $origin, $roundNumberHeight);
         if ($round->isRoot()) {
             $width = $this->rangeCalculator->getRoundWidth($round);
-            $catName = 'Cat "jongens 5/6"';
+            $catName = 'Cat "?"';
             $catName = substr($catName, 0, $width - 4);
             $startCoord = $origin->addX((int)(($width - mb_strlen($catName)) / 2));
-            $this->drawer->drawToRight($startCoord, $catName, Color::Blue);
+            $this->drawer->drawToRight($startCoord, $catName, Color::Cyan);
         }
 
         $pouleCoordinate = $this->getPoulesStartCoordinate($origin, $round);
