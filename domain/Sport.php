@@ -28,7 +28,7 @@ class Sport extends Identifiable
         string $name,
         private bool $team,
         private GameMode $defaultGameMode,
-        private int $defaultNrOfSidePlaces,
+        private int $defaultNrOfSidePlaces
     ) {
         $this->setName($name);
     }
@@ -55,6 +55,16 @@ class Sport extends Identifiable
     public function getDefaultGameMode(): GameMode
     {
         return $this->defaultGameMode;
+    }
+
+    public function getDefaultGameModeNative(): int
+    {
+        return $this->defaultGameMode->value;
+    }
+
+    public function setDefaultGameModeNative(int $defaultGameMode): void
+    {
+        $this->defaultGameMode = GameMode::from($defaultGameMode);
     }
 
     public function getDefaultNrOfSidePlaces(): int
@@ -99,15 +109,7 @@ class Sport extends Identifiable
         );
     }
 
-    public function getDefaultGameModeNative(): int
-    {
-        return $this->defaultGameMode->value;
-    }
 
-    public function setDefaultGameModeNative(int $defaultGameMode): void
-    {
-        $this->defaultGameMode = GameMode::from($defaultGameMode);
-    }
 
     public function hasNextDefaultScoreConfig(): bool
     {
@@ -123,14 +125,6 @@ class Sport extends Identifiable
             return true;
         }
         return false;
-    }
-
-    public function getDefaultPointCalculation(): PointsCalculation
-    {
-        if ($this->getDefaultGameMode() === GameMode::Against) {
-            return PointsCalculation::AgainstGamePoints;
-        }
-        return PointsCalculation::Scores;
     }
 
     public function getDefaultWinPoints(): float

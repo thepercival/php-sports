@@ -15,6 +15,7 @@ use Sports\Game\Place\Against as AgainstGamePlace;
 use Sports\League;
 use Sports\Person;
 use Sports\Planning\Config\Service as PlanningConfigService;
+use Sports\Ranking\PointsCalculation;
 use Sports\Season;
 use Sports\Sport;
 use Sports\Sport\FootballLine;
@@ -225,9 +226,14 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
         );
         $structure = $structureEditor->create($competition, [1]);
         $poule = $structure->getRootRound()->getFirstPoule();
-        $sport = new Sport('voetbal', true, GameMode::Against, 1);
+        $sport = new Sport(
+            'voetbal',
+            true,
+            GameMode::Against,
+            1
+        );
         $sportVariant = new AgainstH2h(1, 1, 1);
-        $competitionSport = new CompetitionSport($sport, $competition, $sportVariant->toPersistVariant());
+        $competitionSport = new CompetitionSport($sport, $competition, PointsCalculation::AgainstGamePoints, $sportVariant->toPersistVariant());
         $game = new AgainstGame(
             $poule,
             1,

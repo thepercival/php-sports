@@ -7,7 +7,9 @@ namespace Sports\Competition;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Sports\Competition;
+use Sports\Ranking\PointsCalculation;
 use Sports\Sport as SportsSport;
+use SportsHelpers\GameMode;
 use SportsHelpers\Sport\PersistVariant;
 use SportsHelpers\Sport\VariantWithFields as SportVariantWithFields;
 
@@ -17,10 +19,12 @@ class Sport extends PersistVariant implements \Stringable
      * @var Collection<int|string,Field>
      */
     protected $fields;
+    private PointsCalculation $defaultPointsCalculation;
 
     public function __construct(
         protected SportsSport $sport,
         protected Competition $competition,
+        PointsCalculation $defaultPointsCalculation,
         PersistVariant $sportVariant
     ) {
         parent::__construct(
@@ -31,9 +35,26 @@ class Sport extends PersistVariant implements \Stringable
             $sportVariant->getNrOfH2H(),
             $sportVariant->getNrOfGamesPerPlace()
         );
+        $this->defaultPointsCalculation =
+            $sportVariant->getGameMode() === GameMode::Against ? $defaultPointsCalculation : PointsCalculation::Scores;
 
         $this->competition->getSports()->add($this);
         $this->fields = new ArrayCollection();
+    }
+
+    public function getDefaultPointsCalculation(): PointsCalculation
+    {
+        return $this->defaultPointsCalculation;
+    }
+
+    public function getDefaultPointsCalculationNative(): int
+    {
+        return $this->defaultPointsCalculation->value;
+    }
+
+    public function setDefaultPointsCalculationNative(int $defaultPointsCalculation): void
+    {
+        $this->defaultPointsCalculation = PointsCalculation::from($defaultPointsCalculation);
     }
 
     public function getSport(): SportsSport

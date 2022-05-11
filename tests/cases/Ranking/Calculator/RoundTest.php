@@ -11,6 +11,7 @@ use Sports\Qualify\Target as QualifyTarget;
 use Sports\Ranking\AgainstRuleSet;
 use Sports\Ranking\Calculator\Cumulative;
 use Sports\Ranking\Calculator\Round as RoundRankingCalculator;
+use Sports\Ranking\PointsCalculation;
 use Sports\TestHelper\CompetitionCreator;
 use Sports\TestHelper\GamesCreator;
 use Sports\TestHelper\SetScores;
@@ -485,6 +486,46 @@ class RoundTest extends TestCase
         $roundRankingItem = $roundRankingCalculator->getItemByRank($roundRankingItems, 4);
         self::assertNotNull($roundRankingItem);
         self::assertSame($roundRankingItem->getPlace(), $pouleOne->getPlace(2));
+    }
+
+    public function testPointsCalculationIsScoresOnly(): void
+    {
+        $competition = $this->createCompetition();
+
+
+        $structureEditor = $this->createStructureEditor();
+        $structure = $structureEditor->create($competition, [4]);
+        $rootRound = $structure->getRootRound();
+        $qualifyConfig = $rootRound->getAgainstQualifyConfig($competition->getSingleSport());
+        self::assertNotNull($qualifyConfig);
+        $qualifyConfig->setPointsCalculation(PointsCalculation::Scores);
+
+        (new GamesCreator())->createStructureGames($structure);
+
+        $pouleOne = $rootRound->getPoule(1);
+
+        // 3 gelijk laten eindigen
+        $this->setAgainstScore($pouleOne, 1, 2, 7, 6);
+        $this->setAgainstScore($pouleOne, 1, 3, 7, 0);
+        $this->setAgainstScore($pouleOne, 1, 4, 7, 0);
+        $this->setAgainstScore($pouleOne, 2, 3, 0, 1);
+        $this->setAgainstScore($pouleOne, 2, 4, 0, 1);
+        $this->setAgainstScore($pouleOne, 3, 4, 1, 0);
+
+        $roundRankingCalculator = new RoundRankingCalculator();
+        $roundRankingItems = $roundRankingCalculator->getItemsForPoule($pouleOne);
+        $roundRankingItem = array_shift($roundRankingItems);
+        self::assertNotNull($roundRankingItem);
+        self::assertSame($roundRankingItem->getRank(), 1);
+        self::assertSame($roundRankingItem->getPlace(), $pouleOne->getPlace(1));
+        $roundRankingItem = array_shift($roundRankingItems);
+        self::assertNotNull($roundRankingItem);
+        self::assertSame($roundRankingItem->getRank(), 2);
+        self::assertSame($roundRankingItem->getPlace(), $pouleOne->getPlace(2));
+        $roundRankingItem = array_shift($roundRankingItems);
+        self::assertNotNull($roundRankingItem);
+        self::assertSame($roundRankingItem->getRank(), 3);
+        self::assertSame($roundRankingItem->getPlace(), $pouleOne->getPlace(3));
     }
 
     public function test2SportsByRank(): void

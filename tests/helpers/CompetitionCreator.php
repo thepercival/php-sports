@@ -12,6 +12,7 @@ use Sports\Competition\Field;
 use Sports\Competition\Referee;
 use Sports\Competition\Sport as CompetitionSport;
 use Sports\League;
+use Sports\Ranking\PointsCalculation;
 use Sports\Season;
 use Sports\Sport;
 use Sports\Sport\Custom as CustomSport;
@@ -86,10 +87,20 @@ trait CompetitionCreator
         $counter = 0;
         foreach ($sportVariantsWithFields as $sportVariantWithFields) {
             if (++$counter === 1) {
-                $sport = new Sport('voetbal', true, GameMode::Against, 1);
+                $sport = new Sport(
+                    'voetbal',
+                    true,
+                    GameMode::Against,
+                    1
+                );
                 $sport->setCustomId(CustomSport::Football);
             } else {
-                $sport = new Sport('sport' . $counter, true, GameMode::Against, 1);
+                $sport = new Sport(
+                    'sport' . $counter,
+                    true,
+                    GameMode::Against,
+                    1
+                );
             }
             if (count($sportVariantsWithFields) === 1) {
                 $sportAbbreviation = '';
@@ -98,7 +109,7 @@ trait CompetitionCreator
             }
 
             $persistVariant = $sportVariantWithFields->getSportVariant()->toPersistVariant();
-            $competitionSport = new CompetitionSport($sport, $competition, $persistVariant);
+            $competitionSport = new CompetitionSport($sport, $competition, PointsCalculation::AgainstGamePoints, $persistVariant);
             for ($fieldNr = 1; $fieldNr <= $sportVariantWithFields->getNrOfFields(); $fieldNr++) {
                 $field = new Field($competitionSport);
                 $field->setName($sportAbbreviation . '' . $fieldNr);

@@ -3,6 +3,16 @@
 alter table planningConfigs
     drop gamePlaceStrategy;
 
+update 	competitionSports
+set		defaultPointsCalculation = (
+    select 	aqc.pointsCalculation
+    from 	againstQualifyConfigs aqc
+                join rounds r on r.id = aqc.roundId
+                join roundNumbers rn on rn.id = r.numberid
+    where	aqc.competitionSportId = competitionSports.Id
+      and 		rn.number = 1
+);
+
 -- alter table rounds CHANGE parentQualifyId parentQualifyGroupId int NULL;
 
 -- update data in rounds and qualifygroups

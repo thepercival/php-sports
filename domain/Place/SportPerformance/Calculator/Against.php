@@ -11,6 +11,7 @@ use Sports\Game\Together as TogetherGame;
 use Sports\Place;
 use Sports\Place\SportPerformance;
 use Sports\Place\SportPerformance\Calculator;
+use Sports\Ranking\PointsCalculation;
 use Sports\Round;
 use Sports\Score\Against as AgainstGameScore;
 use Sports\Score\Against as AgainstScore;
@@ -72,23 +73,34 @@ class Against extends Calculator
         if ($finalScore === null) {
             return 0;
         }
+        $points = 0;
         $againstQualifyConfig = $game->getAgainstQualifyConfig();
-        if ($finalScore->getResult($side) === AgainstResult::Win) {
-            if ($game->getFinalPhase() === GamePhase::RegularTime) {
-                return $againstQualifyConfig->getWinPoints();
+        if ($againstQualifyConfig->getPointsCalculation() === PointsCalculation::AgainstGamePoints
+            || $againstQualifyConfig->getPointsCalculation() === PointsCalculation::Both) {
+            if ($finalScore->getResult($side) === AgainstResult::Win) {
+                if ($game->getFinalPhase() === GamePhase::RegularTime) {
+                    $points = $againstQualifyConfig->getWinPoints();
+                } elseif ($game->getFinalPhase() === GamePhase::ExtraTime) {
+                    $points = $againstQualifyConfig->getWinPointsExt();
+                }
+            } elseif ($finalScore->getResult($side) === AgainstResult::Draw) {
+                if ($game->getFinalPhase() === GamePhase::RegularTime) {
+                    $points = $againstQualifyConfig->getDrawPoints();
+                } elseif ($game->getFinalPhase() === GamePhase::ExtraTime) {
+                    $points = $againstQualifyConfig->getDrawPointsExt();
+                }
             } elseif ($game->getFinalPhase() === GamePhase::ExtraTime) {
-                return $againstQualifyConfig->getWinPointsExt();
+                $points = $againstQualifyConfig->getLosePointsExt();
             }
-        } elseif ($finalScore->getResult($side) === AgainstResult::Draw) {
-            if ($game->getFinalPhase() === GamePhase::RegularTime) {
-                return $againstQualifyConfig->getDrawPoints();
-            } elseif ($game->getFinalPhase() === GamePhase::ExtraTime) {
-                return $againstQualifyConfig->getDrawPointsExt();
-            }
-        } elseif ($game->getFinalPhase() === GamePhase::ExtraTime) {
-            return $againstQualifyConfig->getLosePointsExt();
         }
-        return 0;
+
+        $againstQualifyConfig = $game->getAgainstQualifyConfig();
+        if ($againstQualifyConfig->getPointsCalculation() === PointsCalculation::Scores
+            || $againstQualifyConfig->getPointsCalculation() === PointsCalculation::Both) {
+            $points += $finalScore->get($side);
+        }
+
+        return $points;
     }
 
     private function getNrOfUnits(?AgainstScoreHelper $finalScore, AgainstSide $side, int $scoredReceived): int

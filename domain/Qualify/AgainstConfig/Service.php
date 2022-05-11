@@ -20,7 +20,7 @@ class Service
         return new QualifyConfig(
             $competitionSport,
             $round,
-            $sport->getDefaultPointCalculation(),
+            $competitionSport->getDefaultPointsCalculation(),
             $sport->getDefaultWinPoints(),
             $sport->getDefaultDrawPoints(),
             $sport->getDefaultWinPointsExt(),

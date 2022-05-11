@@ -8,6 +8,7 @@ use Sports\Association;
 use Sports\Competition;
 use Sports\Competition\Sport as CompetitionSport;
 use Sports\League;
+use Sports\Ranking\PointsCalculation;
 use Sports\Round\Number as RoundNumber;
 use Sports\Season;
 use Sports\Sport;
@@ -63,6 +64,7 @@ class DummyCreator
             $competitionSport = new CompetitionSport(
                 $sport,
                 $competition,
+                PointsCalculation::AgainstGamePoints,
                 new PersistSportVariant(
                     $sport->getDefaultGameMode(),
                     $defaultNrOfSidePlaces,
