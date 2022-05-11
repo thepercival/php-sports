@@ -148,8 +148,8 @@ class RoundHandler extends Handler implements SubscribingHandlerInterface
             $round,
             PointsCalculation::from($arrConfig['pointsCalculation']),
             $arrConfig['winPoints'],
-            $arrConfig['winPointsExt'],
             $arrConfig['drawPoints'],
+            $arrConfig['winPointsExt'],
             $arrConfig['drawPointsExt'],
             $arrConfig['losePointsExt']
         );
