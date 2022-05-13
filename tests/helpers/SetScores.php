@@ -21,7 +21,9 @@ trait SetScores
         int $awayPlaceNr,
         int $homeGoals,
         int $awayGoals,
-        GameState $state = null
+        GameState $state = null,
+        int $homeExtraPoints = 0,
+        int $awayExtraPoints = 0
     ): void {
         $homePlace = $poule->getPlace($homePlaceNr);
         $awayPlace = $poule->getPlace($awayPlaceNr);
@@ -66,7 +68,8 @@ trait SetScores
                 }
             )) > 0;
             return ($homePlacesHasHomePlace && $awayPlacesHasAwayPlace) || ($homePlacesHasAwayPlace && $awayPlacesHasHomePlace);
-        });
+            }
+        );
         $foundGame = reset($foundGames);
         if ($foundGame === false) {
             throw new \Exception('de wedstrijd kan niet gevonden worden', E_ERROR);
@@ -74,7 +77,11 @@ trait SetScores
         $newHomeGoals = $foundGame->getSide($homePlace) === AgainstSide::Home ? $homeGoals : $awayGoals;
         $newAwayGoals = $foundGame->getSide($awayPlace) === AgainstSide::Away ? $awayGoals : $homeGoals;
 
-        $foundGame->getScores()->add(new AgainstGameScore($foundGame, $newHomeGoals, $newAwayGoals, GamePhase::RegularTime));
+        $foundGame->getScores()->add(
+            new AgainstGameScore($foundGame, $newHomeGoals, $newAwayGoals, GamePhase::RegularTime)
+        );
         $foundGame->setState($state !== null ? $state : GameState::Finished);
+        $foundGame->setHomeExtraPoints($homeExtraPoints);
+        $foundGame->setAwayExtraPoints($awayExtraPoints);
     }
 }

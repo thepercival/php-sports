@@ -13,11 +13,11 @@ class SportPerformance extends Performance
     public function __construct(
         private CompetitionSport $competitionSport,
         Place $place,
-        int|null $penaltyPoints = null
+        int|null $extraPoints = null
     ) {
         parent::__construct($place);
-        if ($penaltyPoints !== null) {
-            $this->addPoints(-$penaltyPoints);
+        if ($extraPoints !== null) {
+            $this->addPoints($extraPoints);
         }
     }
 

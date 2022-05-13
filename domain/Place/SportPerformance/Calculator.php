@@ -35,7 +35,7 @@ abstract class Calculator
     protected function createPerformances(array $places): array
     {
         return array_map(function (Place $place): SportPerformance {
-            return new SportPerformance($this->competitionSport, $place, $place->getPenaltyPoints());
+            return new SportPerformance($this->competitionSport, $place, $place->getExtraPoints());
         }, $places);
     }
 

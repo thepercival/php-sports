@@ -32,6 +32,8 @@ class Against extends GameBase
      * @var Collection<int|string, AgainstScore>
      */
     protected Collection $scores;
+    protected int $homeExtraPoints = 0;
+    protected int $awayExtraPoints = 0;
 
     public function __construct(
         Poule $poule,
@@ -188,5 +190,25 @@ class Against extends GameBase
             }
         }
         return null;
+    }
+
+    public function getHomeExtraPoints(): int
+    {
+        return $this->homeExtraPoints;
+    }
+
+    public function setHomeExtraPoints(int $homeExtraPoints): void
+    {
+        $this->homeExtraPoints = $homeExtraPoints;
+    }
+
+    public function getAwayExtraPoints(): int
+    {
+        return $this->awayExtraPoints;
+    }
+
+    public function setAwayExtraPoints(int $awayExtraPoints): void
+    {
+        $this->awayExtraPoints = $awayExtraPoints;
     }
 }

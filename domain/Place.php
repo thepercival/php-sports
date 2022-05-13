@@ -19,7 +19,7 @@ class Place extends PlaceLocation
     protected int|string|null $id = null;
 
     protected string|null $name = null;
-    protected int $penaltyPoints;
+    protected int $extraPoints;
     protected Place|null $qualifiedPlace = null;
 
     public const MAX_LENGTH_NAME = 10;
@@ -34,7 +34,7 @@ class Place extends PlaceLocation
         if (!$poule->getPlaces()->contains($this)) {
             $poule->getPlaces()->add($this) ;
         }
-        $this->setPenaltyPoints(0);
+        $this->setExtraPoints(0);
     }
 
     public function getId(): int|string|null
@@ -71,14 +71,14 @@ class Place extends PlaceLocation
         $this->pouleNr = $pouleNr;
     }
 
-    public function getPenaltyPoints(): int
+    public function getExtraPoints(): int
     {
-        return $this->penaltyPoints;
+        return $this->extraPoints;
     }
 
-    public function setPenaltyPoints(int $penaltyPoints): void
+    public function setExtraPoints(int $extraPoints): void
     {
-        $this->penaltyPoints = $penaltyPoints;
+        $this->extraPoints = $extraPoints;
     }
 
     public function getName(): ?string

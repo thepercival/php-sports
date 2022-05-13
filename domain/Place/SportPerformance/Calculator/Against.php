@@ -92,6 +92,7 @@ class Against extends Calculator
             } elseif ($game->getFinalPhase() === GamePhase::ExtraTime) {
                 $points = $againstQualifyConfig->getLosePointsExt();
             }
+            $points += $side === AgainstSide::Home ? $game->getHomeExtraPoints() : $game->getAwayExtraPoints();
         }
 
         $againstQualifyConfig = $game->getAgainstQualifyConfig();

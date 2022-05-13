@@ -35,7 +35,7 @@ class Service
      */
     public function resetQualifiers(Poule $filterPoule = null): array
     {
-        /** @var array<int|string, Place> $changedPlaces */
+        /** @var list<Place> $changedPlaces */
         $changedPlaces = [];
         $resetQualifiersForSingleRule = function (SingleQualifyRule $singleQualifyRule) use ($filterPoule, &$changedPlaces): void {
             foreach ($singleQualifyRule->getMappings() as $qualifyPlaceMapping) {
@@ -44,7 +44,8 @@ class Service
                     continue;
                 }
                 $qualifyPlaceMapping->getToPlace()->setQualifiedPlace(null);
-                /** @var array<int|string, Place> $changedPlaces */
+                $qualifyPlaceMapping->getToPlace()->setExtraPoints(0);
+                /** @var list<Place> $changedPlaces */
                 array_push($changedPlaces, $qualifyPlaceMapping->getToPlace());
             }
         };
@@ -59,12 +60,13 @@ class Service
             if ($multipleRule !== null) {
                 foreach ($multipleRule->getToPlaces() as $toPlace) {
                     $toPlace->setQualifiedPlace(null);
+                    $toPlace->setExtraPoints(0);
                     array_push($changedPlaces, $toPlace);
                 }
             }
         }
-        /** @var array<int|string, Place> $changedPlaces */
-        return array_values($changedPlaces);
+        /** @var list<Place> $changedPlaces */
+        return $changedPlaces;
     }
 
     /**

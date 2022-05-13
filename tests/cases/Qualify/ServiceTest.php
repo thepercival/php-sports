@@ -269,4 +269,36 @@ class ServiceTest extends TestCase
         self::assertNotNull($loserssPoule->getPlace(1)->getQualifiedPlace());
         self::assertSame($pouleTwo->getPlace(2), $loserssPoule->getPlace(1)->getQualifiedPlace());
     }
+
+    public function testResetNextRound(): void
+    {
+        $competition = $this->createCompetition();
+
+        $structureEditor = $this->createStructureEditor();
+        $structure = $structureEditor->create($competition, [3]);
+        $rootRound = $structure->getRootRound();
+
+        $winnersRound = $structureEditor->addChildRound($rootRound, QualifyTarget::Winners, [2]);
+        $winnersPoule = $winnersRound->getPoule(1);
+        $bestFinalist = $winnersPoule->getPlace(1);
+        $bestFinalist->setExtraPoints(-1);
+
+        (new GamesCreator())->createStructureGames($structure);
+
+        $pouleOne = $rootRound->getPoule(1);
+
+        $this->setAgainstScore($pouleOne, 1, 2, 1, 0);
+        $this->setAgainstScore($pouleOne, 1, 3, 1, 0);
+        $this->setAgainstScore($pouleOne, 2, 3, 1, 0);
+
+        $qualifyService = new QualifyService($rootRound);
+        $qualifyService->setQualifiers();
+
+        self::assertNotNull($bestFinalist->getQualifiedPlace());
+        self::assertSame($pouleOne->getPlace(1), $bestFinalist->getQualifiedPlace());
+        self::assertSame(-1, $bestFinalist->getExtraPoints());
+
+        $qualifyService->resetQualifiers();
+        self::assertSame(0, $bestFinalist->getExtraPoints());
+    }
 }

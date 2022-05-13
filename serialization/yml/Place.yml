@@ -5,9 +5,9 @@ Sports\Place:
     id:
       type: integer
       groups: [structure, noReference]
-    penaltyPoints:
+    extraPoints:
       type: integer
-      groups: [structure, noReference]
+      groups: [ structure, noReference ]
     qualifiedPlace:
       type: Sports\Place
       groups: [structure]

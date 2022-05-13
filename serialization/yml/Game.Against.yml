@@ -8,3 +8,7 @@ Sports\Game\Against:
       type: ArrayCollection<Sports\Game\Place\Against>
     scores:
       type: ArrayCollection<Sports\Score\Against>
+    homeExtraPoints:
+      type: int
+    awayExtraPoints:
+      type: int
