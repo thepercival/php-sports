@@ -6,6 +6,7 @@ namespace Sports\Tests\Team\Role;
 
 use League\Period\Period;
 use Sports\Association;
+use Sports\Category;
 use Sports\Competition;
 use Sports\Competition\Sport as CompetitionSport;
 use Sports\Competition\Sport\Service as CompetitionSportService;
@@ -15,20 +16,25 @@ use Sports\Game\Place\Against as AgainstGamePlace;
 use Sports\League;
 use Sports\Person;
 use Sports\Planning\Config\Service as PlanningConfigService;
+use Sports\Poule;
 use Sports\Ranking\PointsCalculation;
 use Sports\Season;
 use Sports\Sport;
 use Sports\Sport\FootballLine;
+use Sports\Structure;
 use Sports\Structure\Editor;
 use Sports\Team;
 use Sports\Team\Player as TeamPlayer;
 use Sports\Team\Role\Validator as Validator;
+use Sports\TestHelper\CompetitionCreator;
 use SportsHelpers\Against\Side as AgainstSide;
 use SportsHelpers\GameMode;
 use SportsHelpers\Sport\Variant\Against\H2h as AgainstH2h;
 
 class ValidatorTest extends \PHPUnit\Framework\TestCase
 {
+    use CompetitionCreator;
+
     public function testPlayerPartiallyBeforeSeasonStart(): void
     {
         $seasonPeriod = new Period('2015-07-01', '2016-07-01');
@@ -225,7 +231,7 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
             new PlanningConfigService()
         );
         $structure = $structureEditor->create($competition, [1]);
-        $poule = $structure->getRootRound()->getFirstPoule();
+        $poule = $this->getFirstCategory($structure)->getRootRound()->getFirstPoule();
         $sport = new Sport(
             'voetbal',
             true,

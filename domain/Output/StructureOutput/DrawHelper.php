@@ -34,7 +34,7 @@ final class DrawHelper
     {
         $roundNumberHeight = $this->rangeCalculator->getRoundNumberHeight($structure->getFirstRoundNumber());
         $roundCoordinate = $this->getRoundStartCoordinate($origin, $structure->getFirstRoundNumber(), $structure);
-        $rounds = [$structure->getRootRound()];
+        $rounds = $structure->getRootRounds();
         foreach ($rounds as $round) {
             $roundCoordinate = $this->drawRound($round, $roundCoordinate, $roundNumberHeight);
         }

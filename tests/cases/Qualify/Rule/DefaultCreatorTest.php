@@ -23,8 +23,8 @@ class DefaultCreatorTest extends TestCase
         $competition = $this->createCompetition();
 
         $structureEditor = $this->createStructureEditor();
-        $structure = $structureEditor->create($competition, [3,3,3]);
-        $rootRound = $structure->getRootRound();
+        $structure = $structureEditor->create($competition, [3, 3, 3]);
+        $rootRound = $this->getFirstCategory($structure)->getRootRound();
 
         $winnersRound = $structureEditor->addChildRound($rootRound, QualifyTarget::Winners, [2, 2, 2, 2]);
 
@@ -45,8 +45,8 @@ class DefaultCreatorTest extends TestCase
         $competition = $this->createCompetition();
 
         $structureEditor = $this->createStructureEditor();
-        $structure = $structureEditor->create($competition, [4,4,4,4,4]);
-        $rootRound = $structure->getRootRound();
+        $structure = $structureEditor->create($competition, [4, 4, 4, 4, 4]);
+        $rootRound = $this->getFirstCategory($structure)->getRootRound();
 
         $winnersRound = $structureEditor->addChildRound($rootRound, QualifyTarget::Winners, [2, 2, 2, 2, 2, 2, 2, 2]);
 
@@ -67,8 +67,8 @@ class DefaultCreatorTest extends TestCase
         $competition = $this->createCompetition();
 
         $structureEditor = $this->createStructureEditor();
-        $structure = $structureEditor->create($competition, [4,4,4,4]);
-        $rootRound = $structure->getRootRound();
+        $structure = $structureEditor->create($competition, [4, 4, 4, 4]);
+        $rootRound = $this->getFirstCategory($structure)->getRootRound();
 
 
         $winnersRound = $structureEditor->addChildRound($rootRound, QualifyTarget::Winners, [2, 2, 2, 2, 2, 2, 2, 2]);
@@ -112,8 +112,8 @@ class DefaultCreatorTest extends TestCase
         $competition = $this->createCompetition();
 
         $structureEditor = $this->createStructureEditor();
-        $structure = $structureEditor->create($competition, [8,8,8,8,8]);
-        $rootRound = $structure->getRootRound();
+        $structure = $structureEditor->create($competition, [8, 8, 8, 8, 8]);
+        $rootRound = $this->getFirstCategory($structure)->getRootRound();
 
         $secondRound = $structureEditor->addChildRound($rootRound, QualifyTarget::Winners, [6,6,6,6,6]);
         $thirdRound = $structureEditor->addChildRound($secondRound, QualifyTarget::Winners, [4,4,4,4,4]);

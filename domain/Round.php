@@ -22,8 +22,6 @@ use Sports\Structure\PathNode as StructurePathNode;
 use SportsHelpers\Identifiable;
 use SportsHelpers\PouleStructure\Balanced as BalancedPouleStructure;
 
-use function Amp\Iterator\toArray;
-
 class Round extends Identifiable
 {
     protected string|null $name = null;
@@ -68,11 +66,15 @@ class Round extends Identifiable
     public const RANK_POULE_NUMBER = 7;
 
     public function __construct(
+        protected Category $category,
         protected Round\Number $number,
         protected QualifyGroup|null $parentQualifyGroup = null
     ) {
         if (!$number->getRounds()->contains($this)) {
-            $number->getRounds()->add($this) ;
+            $number->getRounds()->add($this);
+        }
+        if (!$category->getRounds()->contains($this)) {
+            $category->getRounds()->add($this);
         }
         $this->structurePathNode = $this->constructStructurePathNode();
         $this->poules = new ArrayCollection();
@@ -81,6 +83,11 @@ class Round extends Identifiable
         $this->scoreConfigs = new ArrayCollection();
         $this->winnersHorizontalPoules = new ArrayCollection();
         $this->losersHorizontalPoules = new ArrayCollection();
+    }
+
+    public function getCategory(): Category
+    {
+        return $this->category;
     }
 
     public function getNumber(): Round\Number
@@ -104,7 +111,10 @@ class Round extends Identifiable
             $name = null;
         }
         if ($name !== null && strlen($name) > self::MAX_LENGTH_NAME) {
-            throw new InvalidArgumentException("de naam mag maximaal ".self::MAX_LENGTH_NAME." karakters bevatten", E_ERROR);
+            throw new InvalidArgumentException(
+                'de naam mag maximaal ' . self::MAX_LENGTH_NAME . ' karakters bevatten',
+                E_ERROR
+            );
         }
         $this->name = $name;
     }
@@ -403,7 +413,6 @@ class Round extends Identifiable
             $games = array_merge($games, $poule->getGames());
         }
         return array_values($games);
-        ;
     }
 
     /**

@@ -10,22 +10,33 @@
                 <cascade-remove/>
             </cascade>
             <join-columns>
-                <join-column name="parentQualifyGroupId" referenced-column-name="id" nullable="true" on-delete="CASCADE"/>
+                <join-column name="parentQualifyGroupId" referenced-column-name="id" nullable="true"
+                             on-delete="CASCADE"/>
             </join-columns>
         </one-to-one>
 
-        <many-to-one field="number" target-entity="Sports\Round\Number" inversed-by="rounds">
+        <many-to-one field="category" target-entity="Sports\Category" inversed-by="rounds">
+            <cascade>
+                <cascade-persist/>
+                <cascade-remove/>
+            </cascade>
             <join-columns>
-                <join-column name="numberId" referenced-column-name="id" nullable="false" on-delete="CASCADE"/>
+                <join-column name="categoryId" referenced-column-name="id" nullable="false" on-delete="CASCADE"/>
             </join-columns>
         </many-to-one>
+        <many-to-one field="number" target-entity="Sports\Round\Number" inversed-by="rounds">
+            <join-columns>
+                <join-column name="numberId" nullable="false" on-delete="CASCADE"/>
+            </join-columns>
+        </many-to-one>
+
         <one-to-many field="poules" target-entity="Sports\Poule" mapped-by="round">
             <cascade>
                 <cascade-persist/>
                 <cascade-remove/>
             </cascade>
             <order-by>
-                <order-by-field name="number" direction="ASC"/>
+                <order-by-field name="number"/>
             </order-by>
         </one-to-many>
         <one-to-many field="qualifyGroups" target-entity="Sports\Qualify\Group" mapped-by="parentRound">
@@ -35,7 +46,7 @@
             </cascade>
             <order-by>
                 <order-by-field name="target" direction="DESC"/>
-                <order-by-field name="number" direction="ASC"/>
+                <order-by-field name="number"/>
             </order-by>
         </one-to-many>
         <one-to-many field="scoreConfigs" target-entity="Sports\Score\Config" mapped-by="round">

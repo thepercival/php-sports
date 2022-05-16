@@ -22,6 +22,15 @@
                 <join-column name="seasonId" referenced-column-name="id" nullable="false" on-delete="RESTRICT"/>
             </join-columns>
         </many-to-one>
+        <one-to-many field="categories" target-entity="Sports\Category" mapped-by="competition"
+                     fetch="EXTRA_LAZY">
+            <cascade>
+                <cascade-remove/>
+            </cascade>
+            <order-by>
+                <order-by-field name="number" direction="ASC"/>
+            </order-by>
+        </one-to-many>
         <one-to-many field="roundNumbers" target-entity="Sports\Round\Number" mapped-by="competition"
                      fetch="EXTRA_LAZY">
             <cascade>

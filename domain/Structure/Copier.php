@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Sports\Structure;
 
 use Exception;
+use Sports\Category;
 use Sports\Competition;
 use Sports\Competition\Sport as CompetitionSport;
 use Sports\Place;
@@ -45,10 +46,13 @@ class Copier
     {
         $newFirstRoundNumber = new RoundNumber($newCompetition);
         $this->copyRoundNumber($structure->getFirstRoundNumber(), $newFirstRoundNumber);
-        $newRootRound = new Round($newFirstRoundNumber);
-        $this->copyRound($structure->getRootRound(), $newRootRound);
-        $newStructure = new Structure($newFirstRoundNumber, $newRootRound);
-        return $newStructure;
+        $newCategories = [];
+        foreach ($structure->getCategories() as $category) {
+            $newCategory = new Category($newCompetition, $category->getName(), $category->getNumber());
+            $newCategories[] = $newCategory;
+            $this->copyCategory($category, $newCategory, $newFirstRoundNumber);
+        }
+        return new Structure($newCategories, $newFirstRoundNumber);
     }
 
     protected function copyRoundNumber(RoundNumber $roundNumber, RoundNumber $newRoundNumber): void
@@ -90,6 +94,12 @@ class Copier
             }
         }
         throw new Exception("een sport kon niet gevonden worden", E_ERROR);
+    }
+
+    protected function copyCategory(Category $category, Category $newCategory, RoundNumber $newFirstRoundNumber): void
+    {
+        $newRootRound = new Round($newCategory, $newFirstRoundNumber);
+        $this->copyRound($category->getRootRound(), $newRootRound);
     }
 
     protected function copyRound(Round $round, Round $newRound): void

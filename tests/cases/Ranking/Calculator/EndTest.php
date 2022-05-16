@@ -26,7 +26,8 @@ class EndTest extends TestCase
 
         $structureEditor = $this->createStructureEditor();
         $structure = $structureEditor->create($competition, [3]);
-        $rootRound = $structure->getRootRound();
+        $firstCategory = $this->getFirstCategory($structure);
+        $rootRound = $firstCategory->getRootRound();
 
         (new GamesCreator())->createStructureGames($structure);
 
@@ -36,7 +37,7 @@ class EndTest extends TestCase
         $this->setAgainstScore($pouleOne, 1, 3, 3, 1);
         $this->setAgainstScore($pouleOne, 2, 3, 3, 2);
 
-        $calculator = new EndRankingCalculator($structure);
+        $calculator = new EndRankingCalculator($firstCategory);
         $items = $calculator->getItems();
 
         for ($rank = 1; $rank <= count($items); $rank++) {
@@ -55,7 +56,8 @@ class EndTest extends TestCase
 
         $structureEditor = $this->createStructureEditor();
         $structure = $structureEditor->create($competition, [3]);
-        $rootRound = $structure->getRootRound();
+        $firstCategory = $this->getFirstCategory($structure);
+        $rootRound = $firstCategory->getRootRound();
 
         (new GamesCreator())->createStructureGames($structure);
 
@@ -65,7 +67,7 @@ class EndTest extends TestCase
         $this->setAgainstScore($pouleOne, 1, 3, 3, 1);
         // $this->setAgainstScore($pouleOne, 2, 3, 3, 2);
 
-        $calculator = new EndRankingCalculator($structure);
+        $calculator = new EndRankingCalculator($firstCategory);
         $items = $calculator->getItems();
 
         for ($rank = 1; $rank <= count($items); $rank++) {
@@ -81,7 +83,8 @@ class EndTest extends TestCase
 
         $structureEditor = $this->createStructureEditor();
         $structure = $structureEditor->create($competition, [5]);
-        $rootRound = $structure->getRootRound();
+        $firstCategory = $this->getFirstCategory($structure);
+        $rootRound = $firstCategory->getRootRound();
 
         $winnersRound = $structureEditor->addChildRound($rootRound, QualifyTarget::Winners, [2]);
         $losersRound = $structureEditor->addChildRound($rootRound, QualifyTarget::Losers, [2]);
@@ -109,7 +112,7 @@ class EndTest extends TestCase
         $qualifyService = new QualifyService($rootRound);
         $qualifyService->setQualifiers();
 
-        $calculator = new EndRankingCalculator($structure);
+        $calculator = new EndRankingCalculator($firstCategory);
         $items = $calculator->getItems();
 
         for ($rank = 1; $rank <= count($items); $rank++) {

@@ -60,7 +60,7 @@ final class PlanningAssignerTest extends TestCase
         $structureEditor = $this->createStructureEditor();
         $structure = $structureEditor->create($competition, [6,5]);
 
-        $rootRound = $structure->getRootRound();
+        $rootRound = $this->getFirstCategory($structure)->getRootRound();
         $structureEditor->addChildRound($rootRound, QualifyTarget::Winners, [7]);
 
         $firstRoundNumber = $structure->getFirstRoundNumber();
@@ -83,7 +83,7 @@ final class PlanningAssignerTest extends TestCase
         $structureEditor = $this->createStructureEditor();
         $structure = $structureEditor->create($competition, [4, 4, 4, 4, 4, 4]);
 
-        $rootRound = $structure->getRootRound();
+        $rootRound = $this->getFirstCategory($structure)->getRootRound();
         $winnersRound = $structureEditor->addChildRound($rootRound, QualifyTarget::Winners, [2, 2, 2]);
         $structureEditor->addChildRound($rootRound, QualifyTarget::Losers, [2, 2, 2]);
         $structureEditor->addChildRound($winnersRound, QualifyTarget::Winners, [3]);
@@ -114,7 +114,7 @@ final class PlanningAssignerTest extends TestCase
         $structureEditor = $this->createStructureEditor();
         $structure = $structureEditor->create($competition, [4, 4, 4, 4, 4, 4]);
 
-        $rootRound = $structure->getRootRound();
+        $rootRound = $this->getFirstCategory($structure)->getRootRound();
         $structureEditor->addChildRound($rootRound, QualifyTarget::Winners, [2, 2, 2]);
         $structureEditor->addChildRound($rootRound, QualifyTarget::Losers, [2, 2, 2]);
 

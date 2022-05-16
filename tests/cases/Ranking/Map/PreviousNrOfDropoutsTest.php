@@ -20,8 +20,8 @@ final class PreviousNrOfDropoutsTest extends TestCase
     {
         $competition = $this->createCompetition();
         $structureEditor = $this->createStructureEditor();
-        $structure = $structureEditor->create($competition, [7,7]);
-        $rootRound = $structure->getRootRound();
+        $structure = $structureEditor->create($competition, [7, 7]);
+        $rootRound = $this->getFirstCategory($structure)->getRootRound();
         $firstRoundNumber = $structure->getFirstRoundNumber();
 
         self::assertSame($firstRoundNumber, $rootRound->getNumber());

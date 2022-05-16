@@ -25,16 +25,18 @@ class Structure
 
         $nameService = new NameService(new CompetitorMap($teamCompetitors));
 
-        foreach ($structure->getRootRound()->getPoules() as $poule) {
-            foreach ($poule->getPlaces() as $place) {
-                $row = array(
-                    $competition->getLeague()->getName(),
-                    $competition->getSeason()->getName(),
-                    $place->getPouleNr(),
-                    $place->getPlaceNr(),
-                    $nameService->getPlaceName($place, true)
-                );
-                $table->addRow($row);
+        foreach ($structure->getRootRounds() as $rootRound) {
+            foreach ($rootRound->getPoules() as $poule) {
+                foreach ($poule->getPlaces() as $place) {
+                    $row = array(
+                        $competition->getLeague()->getName(),
+                        $competition->getSeason()->getName(),
+                        $place->getPouleNr(),
+                        $place->getPlaceNr(),
+                        $nameService->getPlaceName($place, true)
+                    );
+                    $table->addRow($row);
+                }
             }
         }
         $table->display();

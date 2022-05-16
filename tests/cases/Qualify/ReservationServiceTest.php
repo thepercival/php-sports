@@ -9,13 +9,9 @@ use PHPUnit\Framework\TestCase;
 use Sports\TestHelper\CompetitionCreator;
 use Sports\TestHelper\GamesCreator;
 use Sports\TestHelper\SetScores;
-use Sports\Structure\Editor as StructureService;
 use Sports\Qualify\Service as QualifyService;
-use Sports\Ranking\Calculator\Against as AgainstRankingService;
 use Sports\Qualify\ReservationService as QualifyReservationService;
-use Sports\Qualify\Group as QualifyGroup;
 use Sports\TestHelper\StructureEditorCreator;
-use SportsHelpers\PouleStructure;
 
 final class ReservationServiceTest extends TestCase
 {
@@ -29,7 +25,7 @@ final class ReservationServiceTest extends TestCase
 
         $structureEditor = $this->createStructureEditor();
         $structure = $structureEditor->create($competition, [5]);
-        $rootRound = $structure->getRootRound();
+        $rootRound = $this->getFirstCategory($structure)->getRootRound();
         $structureEditor->addChildRound($rootRound, QualifyTarget::Winners, [2]);
         $structureEditor->addChildRound($rootRound, QualifyTarget::Losers, [2]);
 
@@ -67,8 +63,8 @@ final class ReservationServiceTest extends TestCase
         $competition = $this->createCompetition();
 
         $structureEditor = $this->createStructureEditor();
-        $structure = $structureEditor->create($competition, [3,3,3,3]);
-        $rootRound = $structure->getRootRound();
+        $structure = $structureEditor->create($competition, [3, 3, 3, 3]);
+        $rootRound = $this->getFirstCategory($structure)->getRootRound();
 
         $winnersRound = $structureEditor->addChildRound($rootRound, QualifyTarget::Winners, [2, 2, 2]);
 
@@ -136,8 +132,8 @@ final class ReservationServiceTest extends TestCase
         $competition = $this->createCompetition();
 
         $structureEditor = $this->createStructureEditor();
-        $structure = $structureEditor->create($competition, [3,3,3]);
-        $rootRound = $structure->getRootRound();
+        $structure = $structureEditor->create($competition, [3, 3, 3]);
+        $rootRound = $this->getFirstCategory($structure)->getRootRound();
 
         $winnersRound = $structureEditor->addChildRound($rootRound, QualifyTarget::Winners, [4]);
 

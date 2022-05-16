@@ -32,7 +32,7 @@ class Group extends Identifiable
             $this->number = $parentRound->getTargetQualifyGroups($target)->count() + 1;
             $this->addQualifyGroup($parentRound);
         }
-        $this->childRound = new Round($nextRoundNumber, $this);
+        $this->childRound = new Round($parentRound->getCategory(), $nextRoundNumber, $this);
     }
 
     public function getTarget(): Target

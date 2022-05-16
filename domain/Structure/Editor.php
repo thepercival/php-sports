@@ -3,6 +3,7 @@
 namespace Sports\Structure;
 
 use Exception;
+use Sports\Category;
 use Sports\Competition;
 use Sports\Competition\Sport\Service as CompetitionSportService;
 use Sports\Place;
@@ -47,26 +48,56 @@ class Editor
     /**
      * @param Competition $competition
      * @param list<int> $pouleStructure
+     * @param string|null $categoryName
      * @return StructureBase
      * @throws Exception
      */
-    public function create(Competition $competition, array $pouleStructure): Structure
+    public function create(Competition $competition, array $pouleStructure, string|null $categoryName = null): Structure
     {
+        if (count($competition->getCategories()) > 0) {
+            throw new \Exception('can not create structure, competition already has categories', E_ERROR);
+        }
+
         $balancedPouleStructure = new BalancedPouleStructure(...$pouleStructure);
         // begin editing
         $firstRoundNumber = new RoundNumber($competition);
         $this->planningConfigService->createDefault($firstRoundNumber);
 
-        $rootRound = new Round($firstRoundNumber, null);
-        $this->fillRound($rootRound, $balancedPouleStructure);
-        $structure = new Structure($firstRoundNumber, $rootRound);
+        $category = $this->addCategory(
+            $categoryName ?? Category::DEFAULTNAME,
+            $firstRoundNumber,
+            $balancedPouleStructure
+        );
+
+        return new Structure([$category], $firstRoundNumber);
+    }
+
+    /**
+     * @param string $name
+     * @param Competition $competition
+     * @param BalancedPouleStructure $pouleStructure
+     * @return Category
+     * @throws Exception
+     */
+    protected function addCategory(
+        string $name,
+        RoundNumber $firstRoundNumber,
+        BalancedPouleStructure $pouleStructure
+    ): Category {
+        $competition = $firstRoundNumber->getCompetition();
+        $category = new Category($competition, $name);
+
+        $rootRound = new Round($category, $firstRoundNumber, null);
+        $this->fillRound($rootRound, $pouleStructure);
+
+        $structure = new Structure([$category], $firstRoundNumber);
         foreach ($competition->getSports() as $competitionSport) {
             $this->competitionSportService->addToStructure($competitionSport, $structure);
         }
         // end editing
         $this->horPouleCreator->create($rootRound);
         $this->rulesCreator->create($rootRound, null);
-        return $structure;
+        return $category;
     }
 
     /**

@@ -22,8 +22,8 @@ final class EditorTest extends TestCase
     {
         $competition = $this->createCompetition();
         $structureEditor = $this->createStructureEditor();
-        $structure = $structureEditor->create($competition, [4,4,4,4]);
-        $rootRound = $structure->getRootRound();
+        $structure = $structureEditor->create($competition, [4, 4, 4, 4]);
+        $rootRound = $this->getFirstCategory($structure)->getRootRound();
         $firstRoundNumber = $structure->getFirstRoundNumber();
 
         self::assertSame($firstRoundNumber, $rootRound->getNumber());
@@ -46,7 +46,7 @@ final class EditorTest extends TestCase
         $competition = $this->createCompetition();
         $structureEditor = $this->createStructureEditor();
         $structure = $structureEditor->create($competition, [4, 4, 4, 4]);
-        $rootRound = $structure->getRootRound();
+        $rootRound = $this->getFirstCategory($structure)->getRootRound();
         $firstRoundNumber = $structure->getFirstRoundNumber();
 
         self::assertSame($firstRoundNumber, $rootRound->getNumber());
@@ -73,7 +73,7 @@ final class EditorTest extends TestCase
         $competition = $this->createCompetition();
         $structureEditor = $this->createStructureEditor();
         $structure = $structureEditor->create($competition, [4, 4, 4, 4]);
-        $rootRound = $structure->getRootRound();
+        $rootRound = $this->getFirstCategory($structure)->getRootRound();
         $firstRoundNumber = $structure->getFirstRoundNumber();
 
         self::assertSame($firstRoundNumber, $rootRound->getNumber());
@@ -99,7 +99,7 @@ final class EditorTest extends TestCase
         $competition = $this->createCompetition();
         $structureEditor = $this->createStructureEditor();
         $structure = $structureEditor->create($competition, [4, 4]);
-        $rootRound = $structure->getRootRound();
+        $rootRound = $this->getFirstCategory($structure)->getRootRound();
         $firstRoundNumber = $structure->getFirstRoundNumber();
 
         self::assertSame($firstRoundNumber, $rootRound->getNumber());
@@ -117,7 +117,7 @@ final class EditorTest extends TestCase
         $competition = $this->createCompetition();
         $structureEditor = $this->createStructureEditor();
         $structure = $structureEditor->create($competition, [3, 2]);
-        $rootRound = $structure->getRootRound();
+        $rootRound = $this->getFirstCategory($structure)->getRootRound();
 
         $structureEditor->addPouleToRootRound($rootRound);
         // (new StructureOutput())->output($structure, console);
@@ -133,7 +133,7 @@ final class EditorTest extends TestCase
         $competition = $this->createCompetition();
         $structureEditor = $this->createStructureEditor();
         $structure = $structureEditor->create($competition, [4, 3]);
-        $rootRound = $structure->getRootRound();
+        $rootRound = $this->getFirstCategory($structure)->getRootRound();
 
         $structureEditor->addChildRound($rootRound, QualifyTarget::Winners, [3]);
         $losersRound = $structureEditor->addChildRound($rootRound, QualifyTarget::Losers, [3]);
@@ -158,7 +158,7 @@ final class EditorTest extends TestCase
         $competition = $this->createCompetition();
         $structureEditor = $this->createStructureEditor();
         $structure = $structureEditor->create($competition, [4, 4]);
-        $rootRound = $structure->getRootRound();
+        $rootRound = $this->getFirstCategory($structure)->getRootRound();
 
         $firstPlacesRound = $structureEditor->addChildRound($rootRound, QualifyTarget::Winners, [2]);
         $secondPlacesRound = $structureEditor->addChildRound($rootRound, QualifyTarget::Winners, [2]);
@@ -182,7 +182,7 @@ final class EditorTest extends TestCase
         $competition = $this->createCompetition();
         $structureEditor = $this->createStructureEditor();
         $structure = $structureEditor->create($competition, [4, 4]);
-        $rootRound = $structure->getRootRound();
+        $rootRound = $this->getFirstCategory($structure)->getRootRound();
 
         $lastPlacesRound = $structureEditor->addChildRound($rootRound, QualifyTarget::Losers, [2]);
         $secondLastPlacesRound = $structureEditor->addChildRound($rootRound, QualifyTarget::Losers, [2]);
@@ -205,7 +205,7 @@ final class EditorTest extends TestCase
         $competition = $this->createCompetition();
         $structureEditor = $this->createStructureEditor();
         $structure = $structureEditor->create($competition, [5, 5]);
-        $rootRound = $structure->getRootRound();
+        $rootRound = $this->getFirstCategory($structure)->getRootRound();
 
         $winnersRound = $structureEditor->addChildRound($rootRound, QualifyTarget::Winners, [4, 3]);
 
@@ -234,7 +234,7 @@ final class EditorTest extends TestCase
         $competition = $this->createCompetition();
         $structureEditor = $this->createStructureEditor();
         $structure = $structureEditor->create($competition, [6, 6, 6, 6]);
-        $rootRound = $structure->getRootRound();
+        $rootRound = $this->getFirstCategory($structure)->getRootRound();
 
         $winnersRound = $structureEditor->addChildRound($rootRound, QualifyTarget::Winners, [4, 4, 3, 3]);
 
@@ -260,7 +260,7 @@ final class EditorTest extends TestCase
         $competition = $this->createCompetition();
         $structureEditor = $this->createStructureEditor();
         $structure = $structureEditor->create($competition, [4]);
-        $rootRound = $structure->getRootRound();
+        $rootRound = $this->getFirstCategory($structure)->getRootRound();
 
         self::expectException(Exception::class);
         $structureEditor->removePouleFromRootRound($rootRound);
@@ -272,7 +272,7 @@ final class EditorTest extends TestCase
         $competition = $this->createCompetition();
         $structureEditor = $this->createStructureEditor();
         $structure = $structureEditor->create($competition, [3, 3, 3, 3]);
-        $rootRound = $structure->getRootRound();
+        $rootRound = $this->getFirstCategory($structure)->getRootRound();
 
         $structureEditor->addChildRound($rootRound, QualifyTarget::Winners, [5, 5]);
 
@@ -286,7 +286,7 @@ final class EditorTest extends TestCase
         $competition = $this->createCompetition();
         $structureEditor = $this->createStructureEditor();
         $structure = $structureEditor->create($competition, [3, 3, 3]);
-        $rootRound = $structure->getRootRound();
+        $rootRound = $this->getFirstCategory($structure)->getRootRound();
 
         $structureEditor->addChildRound($rootRound, QualifyTarget::Winners, [3]);
         $structureEditor->addChildRound($rootRound, QualifyTarget::Losers, [3]);
@@ -303,7 +303,7 @@ final class EditorTest extends TestCase
         $competition = $this->createCompetition();
         $structureEditor = $this->createStructureEditor();
         $structure = $structureEditor->create($competition, [3, 3, 3, 3, 3, 3]);
-        $rootRound = $structure->getRootRound();
+        $rootRound = $this->getFirstCategory($structure)->getRootRound();
 
         $firstPlacesRound = $structureEditor->addChildRound($rootRound, QualifyTarget::Winners, [3, 3]);
         $secondPlacesRound = $structureEditor->addChildRound($rootRound, QualifyTarget::Winners, [3, 3]);
@@ -332,7 +332,7 @@ final class EditorTest extends TestCase
         $competition = $this->createCompetition();
         $structureEditor = $this->createStructureEditor();
         $structure = $structureEditor->create($competition, [4, 4, 4]);
-        $rootRound = $structure->getRootRound();
+        $rootRound = $this->getFirstCategory($structure)->getRootRound();
 
         $firstPlacesRound = $structureEditor->addChildRound($rootRound, QualifyTarget::Winners, [3]);
         $secondPlacesRound = $structureEditor->addChildRound($rootRound, QualifyTarget::Winners, [3]);
@@ -370,7 +370,7 @@ final class EditorTest extends TestCase
 
         $structureEditor = $this->createStructureEditor($placeRanges);
         $structure = $structureEditor->create($competition, [3, 2]);
-        $rootRound = $structure->getRootRound();
+        $rootRound = $this->getFirstCategory($structure)->getRootRound();
 
         self::expectException(Exception::class);
         $structureEditor->incrementNrOfPoules($rootRound);
@@ -383,7 +383,7 @@ final class EditorTest extends TestCase
 
         $structureEditor = $this->createStructureEditor();
         $structure = $structureEditor->create($competition, [5, 5]);
-        $rootRound = $structure->getRootRound();
+        $rootRound = $this->getFirstCategory($structure)->getRootRound();
 
         $winnersRound = $structureEditor->addChildRound($rootRound, QualifyTarget::Winners, [3, 3]);
         $structureEditor->addChildRound($winnersRound, QualifyTarget::Winners, [4]);
@@ -402,7 +402,7 @@ final class EditorTest extends TestCase
 
         $structureEditor = $this->createStructureEditor();
         $structure = $structureEditor->create($competition, [3]);
-        $rootRound = $structure->getRootRound();
+        $rootRound = $this->getFirstCategory($structure)->getRootRound();
 
         self::expectException(Exception::class);
         $structureEditor->decrementNrOfPoules($rootRound);
@@ -414,7 +414,7 @@ final class EditorTest extends TestCase
 
         $structureEditor = $this->createStructureEditor();
         $structure = $structureEditor->create($competition, [3, 3, 2]);
-        $rootRound = $structure->getRootRound();
+        $rootRound = $this->getFirstCategory($structure)->getRootRound();
 
         $structureEditor->decrementNrOfPoules($rootRound);
 
@@ -430,7 +430,7 @@ final class EditorTest extends TestCase
 
         $structureEditor = $this->createStructureEditor();
         $structure = $structureEditor->create($competition, [4]);
-        $rootRound = $structure->getRootRound();
+        $rootRound = $this->getFirstCategory($structure)->getRootRound();
 
         self::expectException(Exception::class);
         $structureEditor->addQualifiers($rootRound, QualifyTarget::Winners, 1);
@@ -453,8 +453,8 @@ final class EditorTest extends TestCase
             null
         );
         $structureEditor = $this->createStructureEditor($placeRanges);
-        $structure = $structureEditor->create($competition, [3,3]);
-        $rootRound = $structure->getRootRound();
+        $structure = $structureEditor->create($competition, [3, 3]);
+        $rootRound = $this->getFirstCategory($structure)->getRootRound();
 
         $structureEditor->addChildRound($rootRound, QualifyTarget::Winners, [4]);
 
@@ -468,7 +468,7 @@ final class EditorTest extends TestCase
         $competition = $this->createCompetition();
         $structureEditor = $this->createStructureEditor();
         $structure = $structureEditor->create($competition, [4]);
-        $rootRound = $structure->getRootRound();
+        $rootRound = $this->getFirstCategory($structure)->getRootRound();
 
         $structureEditor->addQualifiers($rootRound, QualifyTarget::Winners, 2);
 
@@ -482,8 +482,8 @@ final class EditorTest extends TestCase
     {
         $competition = $this->createCompetition();
         $structureEditor = $this->createStructureEditor();
-        $structure = $structureEditor->create($competition, [4,4,4,4]);
-        $rootRound = $structure->getRootRound();
+        $structure = $structureEditor->create($competition, [4, 4, 4, 4]);
+        $rootRound = $this->getFirstCategory($structure)->getRootRound();
 
         $quarterFinals = $structureEditor->addChildRound($rootRound, QualifyTarget::Winners, [2, 2, 2, 2]);
         $semiFinals = $structureEditor->addChildRound($quarterFinals, QualifyTarget::Winners, [2, 2]);
@@ -515,8 +515,8 @@ final class EditorTest extends TestCase
     {
         $competition = $this->createCompetition();
         $structureEditor = $this->createStructureEditor();
-        $structure = $structureEditor->create($competition, [4,4,4,4]);
-        $rootRound = $structure->getRootRound();
+        $structure = $structureEditor->create($competition, [4, 4, 4, 4]);
+        $rootRound = $this->getFirstCategory($structure)->getRootRound();
         $firstRoundNumber = $structure->getFirstRoundNumber();
 
         self::assertSame($firstRoundNumber, $rootRound->getNumber());
@@ -541,7 +541,7 @@ final class EditorTest extends TestCase
         $competition = $this->createCompetition();
         $structureEditor = $this->createStructureEditor();
         $structure = $structureEditor->create($competition, [6]);
-        $rootRound = $structure->getRootRound();
+        $rootRound = $this->getFirstCategory($structure)->getRootRound();
 
         $firstSix = $structureEditor->addChildRound($rootRound, QualifyTarget::Winners, [3]);
 
@@ -562,7 +562,7 @@ final class EditorTest extends TestCase
         $competition = $this->createCompetition();
         $structureEditor = $this->createStructureEditor();
         $structure = $structureEditor->create($competition, [3, 3, 3, 3, 3, 3]);
-        $rootRound = $structure->getRootRound();
+        $rootRound = $this->getFirstCategory($structure)->getRootRound();
 
         $firstSix = $structureEditor->addChildRound($rootRound, QualifyTarget::Winners, [6, 6]);
 
@@ -583,7 +583,7 @@ final class EditorTest extends TestCase
         $competition = $this->createCompetition();
         $structureEditor = $this->createStructureEditor();
         $structure = $structureEditor->create($competition, [8]);
-        $rootRound = $structure->getRootRound();
+        $rootRound = $this->getFirstCategory($structure)->getRootRound();
 
         $nextRound = $structureEditor->addChildRound($rootRound, QualifyTarget::Winners, [3]);
         $qualifyGroup = $nextRound->getParentQualifyGroup();
@@ -601,8 +601,8 @@ final class EditorTest extends TestCase
     {
         $competition = $this->createCompetition();
         $structureEditor = $this->createStructureEditor();
-        $structure = $structureEditor->create($competition, [3,3]);
-        $rootRound = $structure->getRootRound();
+        $structure = $structureEditor->create($competition, [3, 3]);
+        $rootRound = $this->getFirstCategory($structure)->getRootRound();
 
         $winnersRound = $structureEditor->addChildRound($rootRound, QualifyTarget::Winners, [3]);
         $losersRound = $structureEditor->addChildRound($rootRound, QualifyTarget::Losers, [3]);
@@ -627,8 +627,8 @@ final class EditorTest extends TestCase
     {
         $competition = $this->createCompetition();
         $structureEditor = $this->createStructureEditor();
-        $structure = $structureEditor->create($competition, [4,4]);
-        $rootRound = $structure->getRootRound();
+        $structure = $structureEditor->create($competition, [4, 4]);
+        $rootRound = $this->getFirstCategory($structure)->getRootRound();
 
         $nextRound = $structureEditor->addChildRound($rootRound, QualifyTarget::Winners, [4]);
         // (new StructureOutput())->output($structure, console);
@@ -645,8 +645,8 @@ final class EditorTest extends TestCase
     {
         $competition = $this->createCompetition();
         $structureEditor = $this->createStructureEditor();
-        $structure = $structureEditor->create($competition, [4,4]);
-        $rootRound = $structure->getRootRound();
+        $structure = $structureEditor->create($competition, [4, 4]);
+        $rootRound = $this->getFirstCategory($structure)->getRootRound();
 
         $firstSecond = $structureEditor->addChildRound($rootRound, QualifyTarget::Winners, [2]);
         $thirdFourth = $structureEditor->addChildRound($rootRound, QualifyTarget::Winners, [2]);
@@ -673,8 +673,8 @@ final class EditorTest extends TestCase
     {
         $competition = $this->createCompetition();
         $structureEditor = $this->createStructureEditor();
-        $structure = $structureEditor->create($competition, [5,5]);
-        $rootRound = $structure->getRootRound();
+        $structure = $structureEditor->create($competition, [5, 5]);
+        $rootRound = $this->getFirstCategory($structure)->getRootRound();
 
         $firstSecond = $structureEditor->addChildRound($rootRound, QualifyTarget::Winners, [2]);
         $thirdFourth = $structureEditor->addChildRound($rootRound, QualifyTarget::Winners, [2]);
@@ -696,8 +696,8 @@ final class EditorTest extends TestCase
     {
         $competition = $this->createCompetition();
         $structureEditor = $this->createStructureEditor();
-        $structure = $structureEditor->create($competition, [5,5]);
-        $rootRound = $structure->getRootRound();
+        $structure = $structureEditor->create($competition, [5, 5]);
+        $rootRound = $this->getFirstCategory($structure)->getRootRound();
 
         $structureEditor->addChildRound($rootRound, QualifyTarget::Winners, [2]);
         $thirdFourth = $structureEditor->addChildRound($rootRound, QualifyTarget::Winners, [2]);
@@ -719,8 +719,8 @@ final class EditorTest extends TestCase
     {
         $competition = $this->createCompetition();
         $structureEditor = $this->createStructureEditor();
-        $structure = $structureEditor->create($competition, [5,5]);
-        $rootRound = $structure->getRootRound();
+        $structure = $structureEditor->create($competition, [5, 5]);
+        $rootRound = $this->getFirstCategory($structure)->getRootRound();
 
         $structureEditor->addChildRound($rootRound, QualifyTarget::Winners, [2]);
         $structureEditor->addChildRound($rootRound, QualifyTarget::Winners, [2]);

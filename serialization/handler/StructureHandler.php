@@ -7,13 +7,14 @@ namespace Sports\SerializationHandler;
 use JMS\Serializer\Handler\SubscribingHandlerInterface;
 use JMS\Serializer\JsonDeserializationVisitor;
 use JMS\Serializer\Context;
+use Sports\Category;
 use Sports\Round;
 use Sports\Round\Number as RoundNumber;
 use Sports\Structure;
 
 class StructureHandler extends Handler implements SubscribingHandlerInterface
 {
-    public function __construct(protected DummyCreator $dummyCreator)
+    public function __construct()
     {
     }
 
@@ -37,7 +38,8 @@ class StructureHandler extends Handler implements SubscribingHandlerInterface
         array $fieldValue,
         array $type,
         Context $context
-    ): Structure {
+    ): Structure
+    {
         /** @var RoundNumber $firstRoundNumber */
         $firstRoundNumber = $this->getProperty(
             $visitor,
@@ -45,16 +47,34 @@ class StructureHandler extends Handler implements SubscribingHandlerInterface
             "firstRoundNumber",
             RoundNumber::class
         );
-        $fieldValue["rootRound"]["roundNumber"] = $firstRoundNumber;
-        /** @var Round $rootRound */
-        $rootRound = $this->getProperty(
-            $visitor,
-            $fieldValue,
-            "rootRound",
-            Round::class
-        );
+        // $fieldValue["rootRound"]["roundNumber"] = $firstRoundNumber;
+//        /** @var Round $rootRound */
+//        $rootRound = $this->getProperty(
+//            $visitor,
+//            $fieldValue,
+//            "rootRound",
+//            Round::class
+//        );
+        $categories = [];
+        foreach ($fieldValue["categories"] as $arrCategory) {
+            // Start RootRound
+            $category = new Category($firstRoundNumber->getCompetition(), $arrCategory['name'], $arrCategory['number']);
+            $category->setId($arrCategory['id']);
 
-        return new Structure($firstRoundNumber, $rootRound);
+            $arrCategory["rootRound"]["category"] = $category;
+            $arrCategory["rootRound"]["roundNumber"] = $firstRoundNumber;
+            $this->getProperty(
+                $visitor,
+                $arrCategory,
+                "rootRound",
+                Round::class
+            );
+            // End RootRound
+
+            $categories[] = $category;
+        }
+
+        return new Structure($categories, $firstRoundNumber);
     }
 
 

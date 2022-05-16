@@ -52,7 +52,7 @@ class RoundHandler extends Handler implements SubscribingHandlerInterface
         if ($parentQualifyGroup instanceof QualifyGroup) {
             $round = $parentQualifyGroup->getChildRound();
         } else {
-            $round = new Round($fieldValue["roundNumber"], null);
+            $round = new Round($fieldValue["category"], $fieldValue["roundNumber"], null);
         }
         $roundNumber = $round->getNumber();
 

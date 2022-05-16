@@ -5,22 +5,49 @@ declare(strict_types=1);
 namespace Sports;
 
 use Closure;
+use Sports\Exceptions\NoStructureException;
 use Sports\Round\Number as RoundNumber;
 
 class Structure
 {
-    public function __construct(protected RoundNumber $firstRoundNumber, protected Round $rootRound)
+    /**
+     * @var non-empty-list<Category>
+     */
+    protected array $categories;
+
+    /**
+     * @param list<Category> $categories
+     * @param RoundNumber $firstRoundNumber
+     */
+    public function __construct(array $categories, protected RoundNumber $firstRoundNumber)
     {
+        if (count($categories) < 1) {
+            throw new NoStructureException('a structure should have at least 1 category', E_ERROR);
+        }
+        $this->categories = $categories;
+    }
+
+    /**
+     * @return non-empty-list<Category>
+     */
+    public function getCategories(): array
+    {
+        return $this->categories;
+    }
+
+    /**
+     * @return list<Round>
+     */
+    public function getRootRounds(): array
+    {
+        return array_map(function (Category $category): Round {
+            return $category->getRootRound();
+        }, $this->categories);
     }
 
     public function getFirstRoundNumber(): RoundNumber
     {
         return $this->firstRoundNumber;
-    }
-
-    public function getRootRound(): Round
-    {
-        return $this->rootRound;
     }
 
     public function getLastRoundNumber(): RoundNumber
@@ -35,15 +62,6 @@ class Structure
         };
         return $getLastRoundNumber($this->getFirstRoundNumber());
     }
-
-//    public function getLastRoundNumber(): RoundNumber
-//    {
-//        $first = $this->getFirstRoundNumber();
-//        while ($second = $first->getNext()) {
-//            $first = $second;
-//        }
-//        return $first;
-//    }
 
     /**
      * @return list<RoundNumber>

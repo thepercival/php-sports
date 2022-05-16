@@ -5,12 +5,15 @@ declare(strict_types=1);
 namespace Sports\Structure;
 
 use Doctrine\ORM\EntityManagerInterface;
+use Sports\Category;
 use Sports\Competition;
+use Sports\Exceptions\NoStructureException;
 use Sports\Poule\Horizontal\Creator as HorizontalPouleCreator;
 use Sports\Qualify\Rule\Creator as QualifyRuleCreator;
 use Sports\Round;
 use Sports\Round\Number as RoundNumber;
 use Sports\Round\Number\Repository as RoundNumberRepository;
+use Sports\Structure;
 use Sports\Structure as StructureBase;
 
 class Repository
@@ -26,46 +29,37 @@ class Repository
         $this->roundNumberRepos = new RoundNumberRepository($em, $metaData);
     }
 
-    public function removeAndAdd(Competition $competition, StructureBase $newStructure, int $roundNumberValue = null): RoundNumber
+    public function remove(Competition $competition): void
     {
-        $conn = $this->em->getConnection();
-        $conn->beginTransaction();
-        try {
-            $this->remove($competition, $roundNumberValue);
-            $roundNumber = $this->addNoFlush($newStructure, $roundNumberValue);
-
-            $this->em->flush();
-            $conn->commit();
-            return $roundNumber;
-        } catch (\Exception $e) {
-            $conn->rollBack();
-            throw $e;
-        }
+        $structure = $this->getStructure($competition);
+        $this->removeCategories($competition);
+        $this->removeRoundNumbers($structure, null);
     }
 
-    public function add(StructureBase $structure, int $roundNumberValue = null): RoundNumber
-    {
-        $conn = $this->em->getConnection();
-        $conn->beginTransaction();
-        try {
-            $roundNumber = $this->addNoFlush($structure, $roundNumberValue);
+//    public function add(StructureBase $structure/*, int $roundNumberValue = null*/): RoundNumber
+//    {
+//        $conn = $this->em->getConnection();
+//        $conn->beginTransaction();
+//        try {
+//            $roundNumber = $this->addNoFlush($structure/*, $roundNumberValue*/);
+//
+//            $this->em->flush();
+//            $conn->commit();
+//            return $roundNumber;
+//        } catch (\Exception $e) {
+//            $conn->rollBack();
+//            throw $e;
+//        }
+//    }
 
-            $this->em->flush();
-            $conn->commit();
-            return $roundNumber;
-        } catch (\Exception $e) {
-            $conn->rollBack();
-            throw $e;
-        }
-    }
-
-    protected function addNoFlush(StructureBase $structure, int $roundNumberValue = null): RoundNumber
+    public function add(StructureBase $structure/*, int $roundNumberValue = null*/): RoundNumber
     {
-        $roundNumber = $structure->getRoundNumber($roundNumberValue !== null ? $roundNumberValue : 1);
-        if ($roundNumber === null) {
-            throw new \Exception("rondenummer kon niet gevonden worden", E_ERROR);
+        $roundNumber = $structure->getFirstRoundNumber();
+        foreach ($structure->getCategories() as $category) {
+            $this->customPersistCategory($category);
         }
-        $this->customPersistHelper($roundNumber);
+        $this->customPersistRoundNumber($roundNumber);
+        $this->em->flush();
         return $roundNumber;
     }
 
@@ -81,6 +75,26 @@ class Repository
         }
     }
 
+    protected function customPersistCategory(Category $category): void
+    {
+        foreach ($category->getRounds() as $round) {
+            $this->em->persist($round);
+        }
+        $this->em->persist($category);
+    }
+
+    protected function customPersistRoundNumber(RoundNumber $roundNumber): void
+    {
+        foreach ($roundNumber->getRounds() as $round) {
+            $this->em->persist($round);
+        }
+        $this->em->persist($roundNumber);
+        $nextRoundNumber = $roundNumber->getNext();
+        if ($nextRoundNumber !== null) {
+            $this->customPersistRoundNumber($nextRoundNumber);
+        }
+    }
+
     public function hasStructure(Competition $competition): bool
     {
         $roundNumbers = $this->roundNumberRepos->findBy(array("competition" => $competition));
@@ -92,18 +106,15 @@ class Repository
         $roundNumbers = $this->roundNumberRepos->findBy(array("competition" => $competition), array("number" => "asc"));
         $firstRoundNumber = reset($roundNumbers);
         if ($firstRoundNumber === false) {
-            throw new \Exception('mallformed structure, no roundnumbers', E_ERROR);
+            throw new NoStructureException('mallformed structure, no roundnumbers', E_ERROR);
         }
 
-        $rootRound = $firstRoundNumber->getRounds()->first();
-        if ($rootRound === false) {
-            throw new \Exception('mallformed structure, no rootround', E_ERROR);
+        $structure = new StructureBase(array_values($competition->getCategories()->toArray()), $firstRoundNumber);
+        foreach ($structure->getCategories() as $category) {
+            $rootRound = $category->getRootRound();
+            $this->addHorizontalPoules($rootRound);
+            $this->addQualifyRules($rootRound);
         }
-        $structure = new StructureBase($firstRoundNumber, $rootRound);
-
-        $this->addHorizontalPoules($rootRound);
-        $this->addQualifyRules($rootRound);
-
         return $structure;
     }
 
@@ -127,26 +138,50 @@ class Repository
 //        return $structureMap;
 //    }
 
-    /**
-     * @return void
-     */
-    protected function remove(Competition $competition, int $roundNumberAsValue = null)
+
+    protected function removeCategories(Competition $competition): void
+    {
+        while ($category = $competition->getCategories()->last()) {
+            $competition->getCategories()->removeElement($category);
+            $this->em->remove($category);
+        }
+        $this->em->flush();
+    }
+
+    protected function removeRoundNumbers(Structure $structure, int|null $roundNumberAsValue): void
     {
         if ($roundNumberAsValue === null) {
             $roundNumberAsValue = 1;
         }
-        $structure = $this->getStructure($competition);
         $roundNumber = $structure->getRoundNumber($roundNumberAsValue);
         if ($roundNumber === null) {
             return;
         }
         if ($roundNumber->hasNext()) {
-            $this->remove($competition, $roundNumberAsValue + 1);
+            $this->removeRoundNumbers($structure, $roundNumberAsValue + 1);
         }
 
         $this->em->remove($roundNumber);
         $this->em->flush();
     }
+
+//    protected function remove(Competition $competition, int $roundNumberAsValue = null)
+//    {
+//        if ($roundNumberAsValue === null) {
+//            $roundNumberAsValue = 1;
+//        }
+//        $structure = $this->getStructure($competition);
+//        $roundNumber = $structure->getRoundNumber($roundNumberAsValue);
+//        if ($roundNumber === null) {
+//            return;
+//        }
+//        if ($roundNumber->hasNext()) {
+//            $this->remove($competition, $roundNumberAsValue + 1);
+//        }
+//
+//        $this->em->remove($roundNumber);
+//        $this->em->flush();
+//    }
 
     protected function addHorizontalPoules(Round $parentRound): void
     {

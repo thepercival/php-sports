@@ -1,0 +1,13 @@
+Sports\Category:
+  exclusion_policy: ALL
+  exclude: false
+  access_type: property
+
+  properties:
+    name:
+      type: string
+    rootRound:
+      type: Sports\Round
+      access_type: public_method
+      accessor:
+        getter: getRootRound

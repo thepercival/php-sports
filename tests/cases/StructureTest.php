@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace Sports\Tests;
 
+use Sports\Category;
 use Sports\Qualify\Target as QualifyTarget;
 use PHPUnit\Framework\TestCase;
+use Sports\Structure;
 use Sports\Structure\Editor as StructureService;
 use Sports\Qualify\Group as QualifyGroup;
 use Sports\TestHelper\CompetitionCreator;
@@ -23,7 +25,7 @@ class StructureTest extends TestCase
         $structureEditor = $this->createStructureEditor();
         $structure = $structureEditor->create($competition, [4,4,4,4]);
         $firstRoundNumber = $structure->getFirstRoundNumber();
-        $rootRound = $structure->getRootRound();
+        $rootRound = $this->getFirstCategory($structure)->getRootRound();
 
         self::assertSame($rootRound->getNumber(), $firstRoundNumber);
 

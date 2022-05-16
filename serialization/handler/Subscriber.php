@@ -17,7 +17,7 @@ class Subscriber
 
     public function subscribeHandlers(HandlerRegistry $registry): void
     {
-        $registry->registerSubscribingHandler(new StructureHandler($this->dummyCreator));
+        $registry->registerSubscribingHandler(new StructureHandler());
         $registry->registerSubscribingHandler(new RoundNumberHandler($this->dummyCreator));
         $registry->registerSubscribingHandler(new QualifyGroupHandler());
         $registry->registerSubscribingHandler(new RoundHandler($this->dummyCreator));

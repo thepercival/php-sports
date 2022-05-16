@@ -7,6 +7,7 @@ namespace Sports\TestHelper;
 use DateTimeImmutable;
 use League\Period\Period;
 use Sports\Association;
+use Sports\Category;
 use Sports\Competition;
 use Sports\Competition\Field;
 use Sports\Competition\Referee;
@@ -16,6 +17,7 @@ use Sports\Ranking\PointsCalculation;
 use Sports\Season;
 use Sports\Sport;
 use Sports\Sport\Custom as CustomSport;
+use Sports\Structure;
 use SportsHelpers\GameMode;
 use SportsHelpers\Sport\Variant\Against\H2h as AgainstH2h;
 use SportsHelpers\Sport\Variant\Against\GamesPerPlace as AgainstGpp;
@@ -155,5 +157,15 @@ trait CompetitionCreator
         int $nrOfGamesPerPlace = 1
     ): AgainstGpp {
         return new AgainstGpp($nrOfHomePlaces, $nrOfAwayPlaces, $nrOfGamesPerPlace);
+    }
+
+    private function getFirstCategory(Structure $structure): Category
+    {
+        foreach ($structure->getCategories() as $category) {
+            if ($category->getNumber() === 1) {
+                return $category;
+            }
+        }
+        throw new \Exception('There must be at least 1 category', E_ERROR);
     }
 }

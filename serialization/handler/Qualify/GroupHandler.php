@@ -51,6 +51,7 @@ class GroupHandler extends Handler implements SubscribingHandlerInterface
         );
         //$fieldValue["childRound"] = $qualifyGroup->getChildRound();
         $fieldValue["childRound"]["parentQualifyGroup"] = $qualifyGroup;
+        $fieldValue["childRound"]["category"] = $qualifyGroup->getParentRound()->getCategory();
         $this->getProperty(
             $visitor,
             $fieldValue,

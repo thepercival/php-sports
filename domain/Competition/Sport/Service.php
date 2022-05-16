@@ -53,7 +53,7 @@ class Service
                 $addToRounds($round->getChildren());
             }
         };
-        $addToRounds([$structure->getRootRound()]);
+        $addToRounds($structure->getRootRounds());
     }
 
     public function remove(CompetitionSport $competitionSport, Structure $structure): void
@@ -98,6 +98,6 @@ class Service
                 $removeFromRounds($round->getChildren());
             }
         };
-        $removeFromRounds([$structure->getRootRound()]);
+        $removeFromRounds($structure->getRootRounds());
     }
 }
