@@ -45,7 +45,12 @@ class PlanningAssigner
         $this->assignPlanningBatchGames($batch, $gameStartDateTime, $mapper);
         $nextBatch = $batch->getNext();
         if ($nextBatch !== null) {
-            $nextGameStartDateTime = $this->scheduler->getNextGameStartDateTime($planningConfig, $gameStartDateTime);
+            $minutesDelta = $planningConfig->getMaxNrOfMinutesPerGame() + $planningConfig->getMinutesBetweenGames();
+            $nextGameStartDateTime = $gameStartDateTime->modify('+' . $minutesDelta . ' minutes');
+            $nextGamePeriod = $this->scheduler->createGamePeriod($nextGameStartDateTime, $planningConfig);
+
+            $nextGameStartDateTime = $this->scheduler->moveToFirstAvailableSlot($nextGamePeriod)->getStartDate();
+
             $this->assignPlanningBatch($nextBatch, $planningConfig, $nextGameStartDateTime, $mapper);
         }
     }

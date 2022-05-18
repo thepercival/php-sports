@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Sports\Round\Number;
 
-use Ahamed\JsPhp\JsArray;
 use DateTimeImmutable;
 use League\Period\Period;
 use Sports\Game\Order as GameOrder;
@@ -37,9 +36,13 @@ class PlanningScheduler
         if (count($games) === 0) {
             throw new \Exception("roundnumber has no games", E_ERROR);
         }
+        $planningConfig = $roundNumber->getValidPlanningConfig();
         foreach ($games as $game) {
             if ($previousBatchNr !== $game->getBatchNr()) {
-                $gameStartDateTime = $this->getNextGameStartDateTime($roundNumber->getValidPlanningConfig(), $gameStartDateTime);
+                $minutesDelta = $planningConfig->getMaxNrOfMinutesPerGame() + $planningConfig->getMinutesBetweenGames();
+                $nextGameStartDateTime = $gameStartDateTime->modify('+' . $minutesDelta . ' minutes');
+                $nextGamePeriod = $this->createGamePeriod($nextGameStartDateTime, $planningConfig);
+                $gameStartDateTime = $this->moveToFirstAvailableSlot($nextGamePeriod)->getStartDate();
                 $gameDates[] = $gameStartDateTime;
                 $previousBatchNr = $game->getBatchNr();
             }
@@ -55,63 +58,65 @@ class PlanningScheduler
     public function getRoundNumberStartDateTime(RoundNumber $roundNumber): DateTimeImmutable
     {
         $previousRoundNumber = $roundNumber->getPrevious();
+        $planningConfig = $roundNumber->getValidPlanningConfig();
         if ($previousRoundNumber === null) {
             $startDateTime = $roundNumber->getCompetition()->getStartDateTime();
-            $maxNrOfMinutesPerGame = $roundNumber->getValidPlanningConfig()->getMaxNrOfMinutesPerGame();
-            $gameEndDateTime = $startDateTime->modify('+' . $maxNrOfMinutesPerGame . ' minutes');
-            $newGamePeriod = new Period($startDateTime, $gameEndDateTime);
-            return $this->calculateGameStartDatetime($newGamePeriod);
+            $endDateTime = $startDateTime->modify('+' . $planningConfig->getMaxNrOfMinutesPerGame() . ' minutes');
+
+            $firstGamePeriod = $this->moveToFirstAvailableSlot(new Period($startDateTime, $endDateTime));
+            return $firstGamePeriod->getStartDate();
         }
         $previousRoundLastStartDateTime = $previousRoundNumber->getLastStartDateTime();
         $previousPlanningConfig = $previousRoundNumber->getValidPlanningConfig();
-        $minutes = $previousPlanningConfig->getMaxNrOfMinutesPerGame() + $previousPlanningConfig->getMinutesAfter();
-        $startDateTime = $previousRoundLastStartDateTime->modify('+' . $minutes . ' minutes');
-        $maxNrOfMinutesPerGame = $roundNumber->getValidPlanningConfig()->getMaxNrOfMinutesPerGame();
-        $gameEndDateTime = $startDateTime->modify('+' . $maxNrOfMinutesPerGame . ' minutes');
-        $newGamePeriod = new Period($startDateTime, $gameEndDateTime);
-        return $this->calculateGameStartDatetime($newGamePeriod);
+        $previousRoundEnd = $previousRoundLastStartDateTime->modify(
+            '+' . $previousPlanningConfig->getMaxNrOfMinutesPerGame() . ' minutes'
+        );
+        $roundStartDateTime = $previousRoundEnd->modify(
+            '+' . $previousPlanningConfig->getMinutesAfter() . ' minutes'
+        );
+        $gamePeriod = $this->createGamePeriod($roundStartDateTime, $planningConfig);
+        $firstGamePeriod = $this->moveToFirstAvailableSlot($gamePeriod);
+        return $firstGamePeriod->getStartDate();
     }
 
-    public function getNextGameStartDateTime(
-        PlanningConfig $planningConfig,
-        DateTimeImmutable $gameStartDateTime
-    ): DateTimeImmutable {
-        $maxNrOfMinutesPerGame = $planningConfig->getMaxNrOfMinutesPerGame();
-        $minutes = $maxNrOfMinutesPerGame + $planningConfig->getMinutesBetweenGames();
-        $newGameStartDateTime = $gameStartDateTime->modify('+' . $minutes . ' minutes');
-        $newGameEndDateTime = $newGameStartDateTime->modify('+' . $maxNrOfMinutesPerGame . ' minutes');
-        $newGamePeriod = new Period($newGameStartDateTime, $newGameEndDateTime);
-        return $this->calculateGameStartDatetime($newGamePeriod);
+    public function createGamePeriod(DateTimeImmutable $startDateTime, PlanningConfig $planningConfig): Period
+    {
+        return new Period(
+            $startDateTime,
+            $startDateTime->modify(
+                '+' . $planningConfig->getMaxNrOfMinutesPerGame() . ' minutes'
+            )
+        );
     }
 
-//    protected function addMinutes(
-//        DateTimeImmutable $dateTime,
-//        int $minutes,
-//        int $maxNrOfMinutesPerGame
-//    ): DateTimeImmutable {
-//        $newStartDateTime = $dateTime->modify('+' . $minutes . ' minutes');
-//        // $maxNrOfMinutesPerGame = $planningConfig->getMaxNrOfMinutesPerGame();
-//        // $newEndDateTime = $newStartDateTime->modify("+" . $maxNrOfMinutesPerGame . " minutes");
-//        return $this->calculateNewStartDatetime($newStartDateTime, $maxNrOfMinutesPerGame);
+
+//    public function getNextGameStartDateTime(PlanningConfig $planningConfig, DateTimeImmutable $gameStartDateTime): DateTimeImmutable
+//    {
+//        $minutes = $planningConfig->getMaxNrOfMinutesPerGame() + $planningConfig->getMinutesBetweenGames();
+//        return $this->addMinutes($gameStartDateTime, $minutes, $planningConfig);
 //    }
 
-    protected function calculateGameStartDatetime(Period $gamePeriod): DateTimeImmutable
-    {
-        // $endDateTime = $startDateTime->modify("+" . $minutesPerGame . " minutes");
+
+    public function moveToFirstAvailableSlot(
+        Period $gamePeriod,
+    ): Period {
         $blockedPeriod = $this->getOverlapsingBlockedPeriod($gamePeriod);
         if ($blockedPeriod === null) {
-            return $gamePeriod->getStartDate();
+            return $gamePeriod;
         }
-
-        $startDateTime = $blockedPeriod->getEndDate();
-        $endDateTime = $startDateTime->modify("+" . $gamePeriod->timeDuration() . " seconds");
-        return $this->calculateGameStartDatetime(new Period($startDateTime, $endDateTime));
+        return $this->moveToFirstAvailableSlot(
+            new Period(
+                clone $blockedPeriod->getEndDate(),
+                $blockedPeriod->getEndDate()->modify('+' . $gamePeriod->timeDuration() . ' seconds')
+            )
+        );
     }
 
-    protected function getOverlapsingBlockedPeriod(Period $period): Period|null
+    protected function getOverlapsingBlockedPeriod(Period $gamePeriod): Period|null
     {
         foreach ($this->blockedPeriods as $blockedPeriod) {
-            if ($period->overlaps($blockedPeriod)) {
+            if ($gamePeriod->getStartDate() < $blockedPeriod->getEndDate()
+                && $gamePeriod->getEndDate() > $blockedPeriod->getStartDate()) {
                 return $blockedPeriod;
             }
         }
