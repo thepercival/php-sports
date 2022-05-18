@@ -230,7 +230,40 @@ final class PlanningSchedulerTest extends TestCase
         $planningScheduler->rescheduleGames($firstRoundNumber);
 
         $secondRoundNumberStartDateTime = $this->getStartSecond($competitionStartDateTime, 40);
-        self::assertEquals($secondRoundNumberStartDateTime, $secondRoundNumber->getGames(GameOrder::ByPoule)[0]->getStartDateTime());
+        self::assertEquals(
+            $secondRoundNumberStartDateTime,
+            $secondRoundNumber->getGames(GameOrder::ByPoule)[0]->getStartDateTime()
+        );
+    }
+
+    public function testTwoBlockedPeriodNoGameBetween(): void
+    {
+        $competition = $this->createCompetition();
+
+        $structureEditor = $this->createStructureEditor();
+        $structure = $structureEditor->create($competition, [3, 3]);
+
+        $rootRound = $structure->getRootRound();
+        $firstRoundNumber = $structure->getFirstRoundNumber();
+
+        (new GamesCreator())->createStructureGames($structure, [], new SportRange(2, 2));
+
+        (new \Sports\Output\Games())->outputRoundNumber($firstRoundNumber);
+
+        $competitionStartDateTime = $competition->getStartDateTime();
+
+        $blockedPeriod = new Period(
+            $competitionStartDateTime->modify('+15 minutes'),
+            $competitionStartDateTime->modify('+30 minutes')
+        );
+        $blockedPeriod2 = new Period(
+            $blockedPeriod->getEndDate()->modify('+15 minutes'),
+            $blockedPeriod->getEndDate()->modify('+30 minutes')
+        );
+        $planningScheduler = new PlanningScheduler([$blockedPeriod, $blockedPeriod2]);
+        $planningScheduler->rescheduleGames($firstRoundNumber);
+
+        self::assertEquals($firstRoundNumber->getFirstStartDateTime(), $blockedPeriod2->getEndDate());
     }
 
     public function testRoundNumberNoGames(): void
@@ -238,7 +271,7 @@ final class PlanningSchedulerTest extends TestCase
         $competition = $this->createCompetition();
 
         $structureEditor = $this->createStructureEditor();
-        $structure = $structureEditor->create($competition, [3,3]);
+        $structure = $structureEditor->create($competition, [3, 3]);
 
         $rootRound = $structure->getRootRound();
         $structureEditor->addChildRound($rootRound, QualifyTarget::Winners, [2]);
