@@ -2,10 +2,9 @@
 
 namespace Sports\Competitor;
 
-use Sports\Place\Location as PlaceLocation;
 use Sports\Competitor;
 
-class Map
+class StartLocationMap
 {
     /**
      * @var array<string, Competitor>
@@ -19,14 +18,14 @@ class Map
     {
         $this->map = [];
         foreach ($competitors as $competitor) {
-            $this->map[$competitor->getRoundLocationId()] = $competitor;
+            $this->map[$competitor->getStartId()] = $competitor;
         }
     }
 
-    public function getCompetitor(PlaceLocation $placeLocation): ?Competitor
+    public function getCompetitor(StartLocation $startLocation): ?Competitor
     {
-        if (array_key_exists($placeLocation->getRoundLocationId(), $this->map)) {
-            return  $this->map[$placeLocation->getRoundLocationId()];
+        if (array_key_exists($startLocation->getStartId(), $this->map)) {
+            return $this->map[$startLocation->getStartId()];
         }
         return null;
     }

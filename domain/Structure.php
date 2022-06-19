@@ -35,6 +35,39 @@ class Structure
         return $this->categories;
     }
 
+    public function getCategory(int $number): Category|null
+    {
+        foreach ($this->categories as $category) {
+            if ($category->getNumber() === $number) {
+                return $category;
+            }
+        }
+        return null;
+    }
+
+    public function getNextCategory(Category $category): Category|null
+    {
+        return $this->getCategory($category->getNumber() + 1);
+    }
+
+    public function hasSingleCategory(): bool
+    {
+        return count($this->getCategories()) === 1;
+    }
+
+    public function getSingleCategory(): Category
+    {
+        $categories = $this->getCategories();
+        if (count($categories) !== 1) {
+            throw new \Exception('There must be 1 category', E_ERROR);
+        }
+        $category = array_pop($categories);
+        if ($category->getNumber() === 1) {
+            return $category;
+        }
+        throw new \Exception('There must be at least 1 category', E_ERROR);
+    }
+
     /**
      * @return list<Round>
      */

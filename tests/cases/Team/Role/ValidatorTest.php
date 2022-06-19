@@ -231,7 +231,7 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
             new PlanningConfigService()
         );
         $structure = $structureEditor->create($competition, [1]);
-        $poule = $this->getFirstCategory($structure)->getRootRound()->getFirstPoule();
+        $poule = $structure->getSingleCategory()->getRootRound()->getFirstPoule();
         $sport = new Sport(
             'voetbal',
             true,

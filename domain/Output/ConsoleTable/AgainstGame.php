@@ -15,29 +15,25 @@ use Sports\Game\Event\Goal as GoalEvent;
 use Sports\Game\Event\Substitution as SubstitutionEvent;
 use Sports\Game\Participation;
 use Sports\Game\Participation as GameParticipation;
-use Sports\NameService;
+use Sports\Structure\NameService as StructureNameService;
 use Sports\Score\Config\Service as ScoreConfigService;
 use Sports\Sport;
 use SportsHelpers\Against\Side as AgainstSide;
 
 class AgainstGame
 {
-    /**
-     * @param Competition $competition
-     * @param AgainstGameBase $game
-     * @param list<TeamCompetitor> $teamCompetitors
-     * @return void
-     */
-    public function display(Competition $competition, AgainstGameBase $game, array $teamCompetitors): void
-    {
+//    $competitorMap = new CompetitorMap($teamCompetitors);
+//    $structureNameService = new StructureNameService($competitorMap);
+    public function display(
+        Competition $competition,
+        AgainstGameBase $game,
+        StructureNameService $structureNameService
+    ): void {
         $table = new ConsoleTable();
         // $table->setHeaders(array('league', 'season', 'batchNr', 'id', 'datetime', 'state', 'home', 'score', 'away' ) );
 
-        $competitorMap = new CompetitorMap($teamCompetitors);
-        $nameService = new NameService($competitorMap);
-
         $table->addRow($this->getGameRow($competition, $game));
-        $table->addRow($this->getScoreRow($game, $nameService));
+        $table->addRow($this->getScoreRow($game, $structureNameService));
         $table->addRow(["", "", "", "", "", "", ""]);
 
         $this->displayLineups($table, $game);
@@ -64,12 +60,12 @@ class AgainstGame
 
     /**
      * @param AgainstGameBase $game
-     * @param NameService $nameService
+     * @param StructureNameService $structureNameService
      * @return list<string>
      */
     protected function getScoreRow(
         AgainstGameBase $game,
-        NameService $nameService
+        StructureNameService $structureNameService
     ): array {
         $scoreConfigService = new ScoreConfigService();
         $finalScore = $scoreConfigService->getFinalAgainstScore($game);
@@ -81,11 +77,13 @@ class AgainstGame
         $homePlaces = $game->getSidePlaces(AgainstSide::Home);
         $awayPlaces = $game->getSidePlaces(AgainstSide::Away);
         return [
-            $nameService->getPlacesFromName($homePlaces, true, true),
-            '', '',
+            $structureNameService->getPlacesFromName($homePlaces, true, true),
+            '',
+            '',
             '  ' . $score,
-            $nameService->getPlacesFromName($awayPlaces, true, true),
-            '', ''
+            $structureNameService->getPlacesFromName($awayPlaces, true, true),
+            '',
+            ''
         ];
     }
 

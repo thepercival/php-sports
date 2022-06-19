@@ -6,6 +6,7 @@ namespace Sports\Output\Game;
 
 use Psr\Log\LoggerInterface;
 use Sports\Competitor\Map as CompetitorMap;
+use Sports\Competitor\StartLocationMap;
 use Sports\Game\Against as AgainstGame;
 use Sports\Game\Phase as GamePhase;
 use Sports\Game\Place\Against as AgainstGamePlace;
@@ -17,9 +18,9 @@ use SportsHelpers\Against\Side as AgainstSide;
 
 class Against extends OutputGame
 {
-    public function __construct(CompetitorMap $competitorMap = null, LoggerInterface $logger = null)
+    public function __construct(StartLocationMap $startLocationMap = null, LoggerInterface $logger = null)
     {
-        parent::__construct($competitorMap, $logger);
+        parent::__construct($startLocationMap, $logger);
     }
 
     /**

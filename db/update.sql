@@ -20,6 +20,9 @@ insert into categories(number, name, competitionId) (select 1, 'standaard', comp
 update rounds join roundNumbers rn on rn.id = rounds.numberId
 set rounds.categoryId = (select id from categories where competitionId = rn.competitionId);
 
+update competitors
+set categoryNr = 1;
+
 -- alter table rounds CHANGE parentQualifyId parentQualifyGroupId int NULL;
 
 -- update data in rounds and qualifygroups

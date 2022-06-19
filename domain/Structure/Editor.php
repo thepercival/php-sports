@@ -63,11 +63,21 @@ class Editor
         $firstRoundNumber = new RoundNumber($competition);
         $this->planningConfigService->createDefault($firstRoundNumber);
 
-        $category = $this->addCategory(
+        $category = $this->addCategoryHelper(
             $categoryName ?? Category::DEFAULTNAME,
             $firstRoundNumber,
             $balancedPouleStructure
         );
+
+        $structure = new Structure([$category], $firstRoundNumber);
+        foreach ($competition->getSports() as $competitionSport) {
+            $this->competitionSportService->addToStructure($competitionSport, $structure);
+        }
+
+        $rootRound = $category->getRootRound();
+        // end editing
+        $this->horPouleCreator->create($rootRound);
+        $this->rulesCreator->create($rootRound, null);
 
         return new Structure([$category], $firstRoundNumber);
     }
@@ -79,24 +89,40 @@ class Editor
      * @return Category
      * @throws Exception
      */
-    protected function addCategory(
+    public function addCategory(
+        string $name,
+        RoundNumber $firstRoundNumber,
+        BalancedPouleStructure $pouleStructure
+    ): Category {
+        $category = $this->addCategoryHelper($name, $firstRoundNumber, $pouleStructure);
+        foreach ($firstRoundNumber->getCompetitionSports() as $competitionSport) {
+            $this->competitionSportService->addToCategory($competitionSport, $category);
+        }
+        // end editing
+
+        $rootRound = $category->getRootRound();
+        $this->horPouleCreator->create($rootRound);
+        $this->rulesCreator->create($rootRound, null);
+        return $category;
+    }
+
+    /**
+     * @param string $name
+     * @param Competition $competition
+     * @param BalancedPouleStructure $pouleStructure
+     * @return Category
+     * @throws Exception
+     */
+    protected function addCategoryHelper(
         string $name,
         RoundNumber $firstRoundNumber,
         BalancedPouleStructure $pouleStructure
     ): Category {
         $competition = $firstRoundNumber->getCompetition();
         $category = new Category($competition, $name);
-
-        $rootRound = new Round($category, $firstRoundNumber, null);
+        $structureCell = new Cell($category, $firstRoundNumber);
+        $rootRound = new Round($structureCell, null);
         $this->fillRound($rootRound, $pouleStructure);
-
-        $structure = new Structure([$category], $firstRoundNumber);
-        foreach ($competition->getSports() as $competitionSport) {
-            $this->competitionSportService->addToStructure($competitionSport, $structure);
-        }
-        // end editing
-        $this->horPouleCreator->create($rootRound);
-        $this->rulesCreator->create($rootRound, null);
         return $category;
     }
 
@@ -129,12 +155,13 @@ class Editor
         Round $parentRound,
         QualifyTarget $qualifyTarget,
         BalancedPouleStructure $pouleStructure
-    ): QualifyGroup {
-        $nextRoundNumber = $parentRound->getNumber()->getNext();
-        if ($nextRoundNumber === null) {
-            $nextRoundNumber = $parentRound->getNumber()->createNext();
+    ): QualifyGroup
+    {
+        $nextStructureCell = $parentRound->getStructureCell()->getNext();
+        if ($nextStructureCell === null) {
+            $nextStructureCell = $parentRound->getStructureCell()->createNext();
         }
-        $qualifyGroup = new QualifyGroup($parentRound, $qualifyTarget, $nextRoundNumber);
+        $qualifyGroup = new QualifyGroup($parentRound, $qualifyTarget, $nextStructureCell);
         $this->fillRound($qualifyGroup->getChildRound(), $pouleStructure);
         return $qualifyGroup;
     }
@@ -501,7 +528,7 @@ class Editor
         $newQualifyGroup = new QualifyGroup(
             $parentRound,
             $qualifyGroup->getTarget(),
-            $childRound->getNumber(),
+            $childRound->getStructureCell(),
             $qualifyGroup->getNumber() + 1
         );
         $this->renumber($parentRound, $qualifyGroup->getTarget());

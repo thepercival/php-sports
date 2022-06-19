@@ -10,7 +10,7 @@
                 <join-column name="competitionId" referenced-column-name="id" nullable="false" on-delete="CASCADE"/>
             </join-columns>
         </many-to-one>
-        <one-to-many field="rounds" target-entity="Sports\Round" mapped-by="category">
+        <one-to-many field="structureCells" target-entity="Sports\Structure\Cell" mapped-by="category">
             <cascade>
                 <cascade-persist/>
                 <cascade-remove/>

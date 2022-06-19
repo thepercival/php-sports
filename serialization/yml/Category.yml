@@ -6,6 +6,8 @@ Sports\Category:
   properties:
     name:
       type: string
+    number:
+      type: integer
     rootRound:
       type: Sports\Round
       access_type: public_method

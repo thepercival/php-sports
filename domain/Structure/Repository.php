@@ -77,8 +77,11 @@ class Repository
 
     protected function customPersistCategory(Category $category): void
     {
-        foreach ($category->getRounds() as $round) {
-            $this->em->persist($round);
+        foreach ($category->getStructureCells() as $structureCell) {
+            foreach ($structureCell->getRounds() as $round) {
+                $this->em->persist($round);
+            }
+            $this->em->persist($structureCell);
         }
         $this->em->persist($category);
     }

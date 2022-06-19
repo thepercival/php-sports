@@ -25,7 +25,7 @@ class StructureTest extends TestCase
         $structureEditor = $this->createStructureEditor();
         $structure = $structureEditor->create($competition, [4,4,4,4]);
         $firstRoundNumber = $structure->getFirstRoundNumber();
-        $rootRound = $this->getFirstCategory($structure)->getRootRound();
+        $rootRound = $structure->getSingleCategory()->getRootRound();
 
         self::assertSame($rootRound->getNumber(), $firstRoundNumber);
 

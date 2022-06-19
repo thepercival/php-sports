@@ -8,6 +8,7 @@ use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Exception;
+use Sports\Category;
 use Sports\Competition;
 use Sports\Competition\Sport as CompetitionSport;
 use Sports\Game\Against as AgainstGame;
@@ -15,6 +16,7 @@ use Sports\Game\Order as GameOrder;
 use Sports\Game\State as GameState;
 use Sports\Game\Together as TogetherGame;
 use Sports\Place;
+use Sports\Structure\Cell as StructureCell;
 use Sports\Planning\Config as PlanningConfig;
 use Sports\Planning\GameAmountConfig as GameAmountConfig;
 use Sports\Poule;
@@ -31,10 +33,11 @@ class Number extends Identifiable
 {
     protected int $number;
     protected RoundNumber|null $next = null;
+
     /**
-     * @var Collection<int|string, Round>
+     * @var Collection<int|string, StructureCell>
      */
-    protected Collection $rounds;
+    protected Collection $structureCells;
     protected PlanningConfig|null $planningConfig = null;
     /**
      * @var Collection<int|string, GameAmountConfig>
@@ -44,7 +47,7 @@ class Number extends Identifiable
     public function __construct(protected Competition $competition, protected RoundNumber|null $previous = null)
     {
         $this->number = $previous === null ? 1 : $previous->getNumber() + 1;
-        $this->rounds = new ArrayCollection();
+        $this->structureCells = new ArrayCollection();
         $this->gameAmountConfigs = new ArrayCollection();
     }
 
@@ -123,21 +126,37 @@ class Number extends Identifiable
     }
 
     /**
-     * @return Collection<int|string, Round>
+     * @return Collection<int|string, StructureCell>
      */
-    public function getRounds(): Collection
+    public function getStructureCells(): Collection
     {
-        return $this->rounds;
+        return $this->structureCells;
     }
 
-    public function needsRanking(): bool
+    public function getStructureCell(Category $category): StructureCell
     {
-        foreach ($this->getRounds() as $round) {
-            if ($round->needsRanking()) {
-                return true;
+        $structureCells = $this->getStructureCells()->filter(
+            function (StructureCell $structureCell) use ($category): bool {
+                return $structureCell->getCategory() === $category;
             }
+        );
+        $structureCell = $structureCells->first();
+        if ($structureCell === false) {
+            throw new Exception('de structuurcel kan niet gevonden worden', E_ERROR);
         }
-        return false;
+        return $structureCell;
+    }
+
+    /**
+     * @return list<Round>
+     */
+    public function getRounds(): array
+    {
+        $rounds = [];
+        foreach ($this->getStructureCells() as $structureCell) {
+            $rounds = array_merge($rounds, $structureCell->getRounds()->toArray());
+        }
+        return array_values($rounds);
     }
 
     public function getGamesState(): GameState

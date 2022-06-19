@@ -30,7 +30,7 @@ class RoundTest extends TestCase
 
         $structureEditor = $this->createStructureEditor();
         $structure = $structureEditor->create($competition, [3]);
-        $rootRound = $this->getFirstCategory($structure)->getRootRound();
+        $rootRound = $structure->getSingleCategory()->getRootRound();
 
         (new GamesCreator())->createStructureGames($structure);
 
@@ -59,7 +59,7 @@ class RoundTest extends TestCase
 
         $structureEditor = $this->createStructureEditor();
         $structure = $structureEditor->create($competition, [3, 3]);
-        $rootRound = $this->getFirstCategory($structure)->getRootRound();
+        $rootRound = $structure->getSingleCategory()->getRootRound();
 
         (new GamesCreator())->createStructureGames($structure);
 
@@ -89,7 +89,7 @@ class RoundTest extends TestCase
 
         $structureEditor = $this->createStructureEditor();
         $structure = $structureEditor->create($competition, [3, 3]);
-        $rootRound = $this->getFirstCategory($structure)->getRootRound();
+        $rootRound = $structure->getSingleCategory()->getRootRound();
 
         (new GamesCreator())->createStructureGames($structure);
 
@@ -119,7 +119,7 @@ class RoundTest extends TestCase
 
         $structureEditor = $this->createStructureEditor();
         $structure = $structureEditor->create($competition, [3]);
-        $rootRound = $this->getFirstCategory($structure)->getRootRound();
+        $rootRound = $structure->getSingleCategory()->getRootRound();
 
         (new GamesCreator())->createStructureGames($structure);
 
@@ -153,7 +153,7 @@ class RoundTest extends TestCase
 
         $structureEditor = $this->createStructureEditor();
         $structure = $structureEditor->create($competition, [3]);
-        $rootRound = $this->getFirstCategory($structure)->getRootRound();
+        $rootRound = $structure->getSingleCategory()->getRootRound();
 
         (new GamesCreator())->createStructureGames($structure);
 
@@ -189,7 +189,7 @@ class RoundTest extends TestCase
 
         $structureEditor = $this->createStructureEditor();
         $structure = $structureEditor->create($competition, [3, 3]);
-        $rootRound = $this->getFirstCategory($structure)->getRootRound();
+        $rootRound = $structure->getSingleCategory()->getRootRound();
 
         (new GamesCreator())->createStructureGames($structure);
 
@@ -226,7 +226,7 @@ class RoundTest extends TestCase
 //
 //        $structureEditor = new StructureService([]);
 //        $structure = $structureEditor->create($competition, new PouleStructure([3,3]));
-//        $rootRound = $this->getFirstCategory($structure)->getRootRound();
+//        $rootRound = $structure->getSingleCategory()->getRootRound();
 //
 //        $structureEditor->addQualifier($rootRound, QualifyTarget::Winners);
 //
@@ -257,7 +257,7 @@ class RoundTest extends TestCase
 
         $structureEditor = $this->createStructureEditor();
         $structure = $structureEditor->create($competition, [4]);
-        $rootRound = $this->getFirstCategory($structure)->getRootRound();
+        $rootRound = $structure->getSingleCategory()->getRootRound();
 
         (new GamesCreator())->createStructureGames($structure);
 
@@ -302,7 +302,7 @@ class RoundTest extends TestCase
 
         $structureEditor = $this->createStructureEditor();
         $structure = $structureEditor->create($competition, [3]);
-        $rootRound = $this->getFirstCategory($structure)->getRootRound();
+        $rootRound = $structure->getSingleCategory()->getRootRound();
 
         (new GamesCreator())->createStructureGames($structure);
 
@@ -332,7 +332,7 @@ class RoundTest extends TestCase
 
         $structureEditor = $this->createStructureEditor();
         $structure = $structureEditor->create($competition, [4]);
-        $rootRound = $this->getFirstCategory($structure)->getRootRound();
+        $rootRound = $structure->getSingleCategory()->getRootRound();
 
         (new GamesCreator())->createStructureGames($structure);
 
@@ -365,7 +365,7 @@ class RoundTest extends TestCase
 
         $structureEditor = $this->createStructureEditor();
         $structure = $structureEditor->create($competition, [4]);
-        $rootRound = $this->getFirstCategory($structure)->getRootRound();
+        $rootRound = $structure->getSingleCategory()->getRootRound();
 
         (new GamesCreator())->createStructureGames($structure);
 
@@ -398,7 +398,7 @@ class RoundTest extends TestCase
 
         $structureEditor = $this->createStructureEditor();
         $structure = $structureEditor->create($competition, [3]);
-        $rootRound = $this->getFirstCategory($structure)->getRootRound();
+        $rootRound = $structure->getSingleCategory()->getRootRound();
 
         (new GamesCreator())->createStructureGames($structure);
 
@@ -428,7 +428,7 @@ class RoundTest extends TestCase
 
         $structureEditor = $this->createStructureEditor();
         $structure = $structureEditor->create($competition, [4]);
-        $rootRound = $this->getFirstCategory($structure)->getRootRound();
+        $rootRound = $structure->getSingleCategory()->getRootRound();
 
         (new GamesCreator())->createStructureGames($structure);
 
@@ -456,7 +456,7 @@ class RoundTest extends TestCase
 
         $structureEditor = $this->createStructureEditor();
         $structure = $structureEditor->create($competition, [4]);
-        $rootRound = $this->getFirstCategory($structure)->getRootRound();
+        $rootRound = $structure->getSingleCategory()->getRootRound();
 
         (new GamesCreator())->createStructureGames($structure);
 
@@ -495,7 +495,7 @@ class RoundTest extends TestCase
 
         $structureEditor = $this->createStructureEditor();
         $structure = $structureEditor->create($competition, [4]);
-        $rootRound = $this->getFirstCategory($structure)->getRootRound();
+        $rootRound = $structure->getSingleCategory()->getRootRound();
         $qualifyConfig = $rootRound->getAgainstQualifyConfig($competition->getSingleSport());
         self::assertNotNull($qualifyConfig);
         $qualifyConfig->setPointsCalculation(PointsCalculation::Scores);
@@ -534,7 +534,7 @@ class RoundTest extends TestCase
 
         $structureEditor = $this->createStructureEditor();
         $structure = $structureEditor->create($competition, [3]);
-        $rootRound = $this->getFirstCategory($structure)->getRootRound();
+        $rootRound = $structure->getSingleCategory()->getRootRound();
 
         (new GamesCreator())->createStructureGames($structure);
 
@@ -564,7 +564,7 @@ class RoundTest extends TestCase
 
         $structureEditor = $this->createStructureEditor();
         $structure = $structureEditor->create($competition, [3]);
-        $rootRound = $this->getFirstCategory($structure)->getRootRound();
+        $rootRound = $structure->getSingleCategory()->getRootRound();
 
         (new GamesCreator())->createStructureGames($structure);
 
@@ -598,7 +598,7 @@ class RoundTest extends TestCase
 
         $structureEditor = $this->createStructureEditor();
         $structure = $structureEditor->create($competition, [4]);
-        $poule = $this->getFirstCategory($structure)->getRootRound()->getFirstPoule();
+        $poule = $structure->getSingleCategory()->getRootRound()->getFirstPoule();
 
         (new GamesCreator())->createStructureGames($structure);
 
@@ -637,7 +637,7 @@ class RoundTest extends TestCase
 
         $structureEditor = $this->createStructureEditor();
         $structure = $structureEditor->create($competition, [4]);
-        $poule = $this->getFirstCategory($structure)->getRootRound()->getFirstPoule();
+        $poule = $structure->getSingleCategory()->getRootRound()->getFirstPoule();
 
         (new GamesCreator())->createStructureGames($structure);
 

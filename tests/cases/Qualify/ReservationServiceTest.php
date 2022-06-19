@@ -25,7 +25,7 @@ final class ReservationServiceTest extends TestCase
 
         $structureEditor = $this->createStructureEditor();
         $structure = $structureEditor->create($competition, [5]);
-        $rootRound = $this->getFirstCategory($structure)->getRootRound();
+        $rootRound = $structure->getSingleCategory()->getRootRound();
         $structureEditor->addChildRound($rootRound, QualifyTarget::Winners, [2]);
         $structureEditor->addChildRound($rootRound, QualifyTarget::Losers, [2]);
 
@@ -64,7 +64,7 @@ final class ReservationServiceTest extends TestCase
 
         $structureEditor = $this->createStructureEditor();
         $structure = $structureEditor->create($competition, [3, 3, 3, 3]);
-        $rootRound = $this->getFirstCategory($structure)->getRootRound();
+        $rootRound = $structure->getSingleCategory()->getRootRound();
 
         $winnersRound = $structureEditor->addChildRound($rootRound, QualifyTarget::Winners, [2, 2, 2]);
 
@@ -133,7 +133,7 @@ final class ReservationServiceTest extends TestCase
 
         $structureEditor = $this->createStructureEditor();
         $structure = $structureEditor->create($competition, [3, 3, 3]);
-        $rootRound = $this->getFirstCategory($structure)->getRootRound();
+        $rootRound = $structure->getSingleCategory()->getRootRound();
 
         $winnersRound = $structureEditor->addChildRound($rootRound, QualifyTarget::Winners, [4]);
 

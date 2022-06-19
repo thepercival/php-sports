@@ -7,12 +7,12 @@ namespace Sports\Output;
 use Psr\Log\LoggerInterface;
 use Sports\Competition\Field;
 use Sports\Competition\Referee;
-use Sports\Competitor\Map as CompetitorMap;
+use Sports\Competitor\StartLocationMap;
 use Sports\Game\Against as AgainstGame;
 use Sports\Game\Place\Against as AgainstGamePlace;
 use Sports\Game\Place\Together as TogetherGamePlace;
 use Sports\Game\Together as TogetherGame;
-use Sports\NameService;
+use Sports\Structure\NameService as StructureNameService;
 use Sports\Place;
 use Sports\Score\Config\Service as ScoreConfigService;
 use SportsHelpers\Output as OutputBase;
@@ -20,15 +20,15 @@ use SportsHelpers\Output\Color;
 
 abstract class Game extends OutputBase
 {
-    protected NameService $nameService;
-    protected CompetitorMap|null $competitorMap;
+    protected StructureNameService $structureNameService;
+    protected StartLocationMap|null $startLocationMap;
     protected ScoreConfigService $scoreConfigService;
 
-    public function __construct(CompetitorMap $competitorMap = null, LoggerInterface $logger = null)
+    public function __construct(StartLocationMap $startLocationMap = null, LoggerInterface $logger = null)
     {
         parent::__construct($logger);
-        $this->nameService = new NameService();
-        $this->competitorMap = $competitorMap;
+        $this->structureNameService = new StructureNameService($startLocationMap);
+        $this->startLocationMap = $startLocationMap;
         $this->scoreConfigService = new ScoreConfigService();
     }
 
@@ -76,10 +76,10 @@ abstract class Game extends OutputBase
 
     protected function getPlaceAsString(Place $place): string
     {
-        $retVal = $this->nameService->getPlaceFromName($place, false, false);
+        $retVal = $this->structureNameService->getPlaceFromName($place, false, false);
         $startLocation = $place->getStartLocation();
-        if ($this->competitorMap !== null && $startLocation !== null) {
-            $competitor = $this->competitorMap->getCompetitor($startLocation);
+        if ($this->startLocationMap !== null && $startLocation !== null) {
+            $competitor = $this->startLocationMap->getCompetitor($startLocation);
             if ($competitor !== null) {
                 $retVal .= ' ' . $competitor->getName();
             }
@@ -118,7 +118,7 @@ abstract class Game extends OutputBase
             return '';
         }
         if ($refPlace !== null) {
-            $description = $this->nameService->getPlaceFromName($refPlace, false, false);
+            $description = $this->structureNameService->getPlaceFromName($refPlace, false, false);
         } else {
             $description = $referee->getInitials();
         }

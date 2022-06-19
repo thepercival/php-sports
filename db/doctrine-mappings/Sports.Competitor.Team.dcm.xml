@@ -3,6 +3,9 @@
                   xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
                   xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
     <entity name="Sports\Competitor\Team" table="teamCompetitors" repository-class="Sports\Competitor\Team\Repository">
+        <id name="id" type="integer" column="id">
+            <generator strategy="AUTO"/>
+        </id>
         <field name="registered" column="registered" type="boolean" nullable="false" unique="false"/>
         <field name="info" column="info" type="string" length="200" nullable="true" unique="false"/>
         <many-to-one field="team" target-entity="Sports\Team">

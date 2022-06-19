@@ -42,8 +42,9 @@ final class ValidatorTest extends TestCase
 
         $category = new Category($competition, Category::DEFAULTNAME);
         $firstRoundNumber = new RoundNumber($competition);
-        new Round($category, $firstRoundNumber);
-        $firstRoundNumber->getRounds()->clear();
+        $structureCell = new Structure\Cell($category, $firstRoundNumber);
+        new Round($structureCell);
+        $structureCell->getRounds()->clear();
         $structure = new Structure([$category], $firstRoundNumber);
 
         $structureValidator = new StructureValidator();
@@ -58,7 +59,7 @@ final class ValidatorTest extends TestCase
         $structureEditor = $this->createStructureEditor();
         $structure = $structureEditor->create($competition, [4]);
 
-        $rootRound = $this->getFirstCategory($structure)->getRootRound();
+        $rootRound = $structure->getSingleCategory()->getRootRound();
         $rootRound->getScoreConfigs()->clear();
 
         $structureValidator = new StructureValidator();
@@ -73,7 +74,7 @@ final class ValidatorTest extends TestCase
         $structureEditor = $this->createStructureEditor();
         $structure = $structureEditor->create($competition, [4]);
 
-        $rootRound = $this->getFirstCategory($structure)->getRootRound();
+        $rootRound = $structure->getSingleCategory()->getRootRound();
 
         $rootRound->getPoules()->clear();
 
@@ -89,7 +90,7 @@ final class ValidatorTest extends TestCase
         $structureEditor = $this->createStructureEditor();
         $structure = $structureEditor->create($competition, [4]);
 
-        $rootRound = $this->getFirstCategory($structure)->getRootRound();
+        $rootRound = $structure->getSingleCategory()->getRootRound();
 
         $rootRound->getPoule(1)->getPlaces()->clear();
 
@@ -107,7 +108,7 @@ final class ValidatorTest extends TestCase
 
         (new GamesCreator())->createStructureGames($structure);
 
-        $rootRound = $this->getFirstCategory($structure)->getRootRound();
+        $rootRound = $structure->getSingleCategory()->getRootRound();
 
         $firstPoule = $rootRound->getPoule(1);
         new Place($firstPoule);
@@ -151,7 +152,7 @@ final class ValidatorTest extends TestCase
 
         $structureEditor = $this->createStructureEditor();
         $structure = $structureEditor->create($competition, [3, 3]);
-        $rootRound = $this->getFirstCategory($structure)->getRootRound();
+        $rootRound = $structure->getSingleCategory()->getRootRound();
         $structureEditor->addChildRound($rootRound, QualifyTarget::Winners, [2]);
 
         (new GamesCreator())->createStructureGames($structure);
@@ -172,7 +173,7 @@ final class ValidatorTest extends TestCase
         $structureEditor = $this->createStructureEditor();
         $structure = $structureEditor->create($competition, [3,3]);
 
-        $rootRound = $this->getFirstCategory($structure)->getRootRound();
+        $rootRound = $structure->getSingleCategory()->getRootRound();
 
         (new GamesCreator())->createStructureGames($structure);
 
@@ -195,7 +196,7 @@ final class ValidatorTest extends TestCase
         $structureEditor = $this->createStructureEditor();
         $structure = $structureEditor->create($competition, [3,3]);
 
-        $rootRound = $this->getFirstCategory($structure)->getRootRound();
+        $rootRound = $structure->getSingleCategory()->getRootRound();
 
         (new GamesCreator())->createStructureGames($structure);
 
@@ -216,13 +217,15 @@ final class ValidatorTest extends TestCase
         $competition = $this->createCompetition();
 
         $structureEditor = $this->createStructureEditor();
-        $structure = $structureEditor->create($competition, [3,3]);
+        $structure = $structureEditor->create($competition, [3, 3]);
 
-        $rootRound = $this->getFirstCategory($structure)->getRootRound();
+        $category = $structure->getSingleCategory();
+        $rootRound = $category->getRootRound();
 
         $secondRoundNumber = new RoundNumber($competition);
+        $nextStructureCell = new Structure\Cell($category, $secondRoundNumber);
 
-        new QualifyGroup($rootRound, QualifyTarget::Winners, $secondRoundNumber);
+        new QualifyGroup($rootRound, QualifyTarget::Winners, $nextStructureCell);
 
         (new GamesCreator())->createStructureGames($structure);
 
@@ -238,7 +241,7 @@ final class ValidatorTest extends TestCase
         $structureEditor = $this->createStructureEditor();
         $structure = $structureEditor->create($competition, [3,3]);
 
-        $rootRound = $this->getFirstCategory($structure)->getRootRound();
+        $rootRound = $structure->getSingleCategory()->getRootRound();
 
         $structureEditor->addChildRound($rootRound, QualifyTarget::Winners, [2]);
 

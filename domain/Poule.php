@@ -30,7 +30,7 @@ class Poule extends Identifiable
      */
     protected Collection $togetherGames;
 
-    protected string|null $structureLocation = null;
+    protected string|null $categoryLocation = null;
 
     public const MAX_LENGTH_NAME = 10;
 
@@ -87,12 +87,17 @@ class Poule extends Identifiable
         $this->name = $name;
     }
 
+    public function getCategoryLocation(): string
+    {
+        if ($this->categoryLocation === null) {
+            $this->categoryLocation = $this->round->getStructurePathNode() . '.' . $this->getNumber();
+        }
+        return $this->categoryLocation;
+    }
+
     public function getStructureLocation(): string
     {
-        if ($this->structureLocation === null) {
-            $this->structureLocation = $this->round->getStructurePathNode() . '.' . $this->getNumber();
-        }
-        return $this->structureLocation;
+        return $this->round->getCategory()->getNumber() . '.' . $this->getCategoryLocation();
     }
 
     /**

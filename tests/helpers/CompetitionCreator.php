@@ -158,14 +158,4 @@ trait CompetitionCreator
     ): AgainstGpp {
         return new AgainstGpp($nrOfHomePlaces, $nrOfAwayPlaces, $nrOfGamesPerPlace);
     }
-
-    private function getFirstCategory(Structure $structure): Category
-    {
-        foreach ($structure->getCategories() as $category) {
-            if ($category->getNumber() === 1) {
-                return $category;
-            }
-        }
-        throw new \Exception('There must be at least 1 category', E_ERROR);
-    }
 }

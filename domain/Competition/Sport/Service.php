@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Sports\Competition\Sport;
 
+use Sports\Category;
 use Sports\Round;
 use Closure;
 use Sports\Planning\Config as PlanningConfig;
@@ -40,6 +41,13 @@ class Service
             $roundNumber = $roundNumber->getNext();
         }
 
+        foreach ($structure->getCategories() as $category) {
+            $this->addToCategory($competitionSport, $category);
+        }
+    }
+
+    public function addToCategory(CompetitionSport $competitionSport, Category $category): void
+    {
         $addToRounds = function (array $rounds) use ($competitionSport, &$addToRounds): void {
             /** @var list<Round> $rounds */
             foreach ($rounds as $round) {
@@ -53,7 +61,7 @@ class Service
                 $addToRounds($round->getChildren());
             }
         };
-        $addToRounds($structure->getRootRounds());
+        $addToRounds([$category->getRootRound()]);
     }
 
     public function remove(CompetitionSport $competitionSport, Structure $structure): void

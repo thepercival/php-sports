@@ -7,10 +7,10 @@ namespace Sports\Output\ConsoleTable;
 use DateTimeInterface;
 use LucidFrame\Console\ConsoleTable;
 use Sports\Competition;
-use Sports\Competitor\Map as CompetitorMap;
+use Sports\Competitor\StartLocationMap;
 use Sports\Competitor\Team as TeamCompetitor;
 use Sports\Game\Against as AgainstGame;
-use Sports\NameService;
+use Sports\Structure\NameService as StructureNameService;
 use Sports\Score\Against as AgainstScore;
 use SportsHelpers\Against\Side as AgainstSide;
 
@@ -26,7 +26,7 @@ class AgainstGames
         $table = new ConsoleTable();
         $table->setHeaders(array('league', 'season', 'gameRoundNr', 'batchNr', 'id', 'datetime', 'state', 'home', 'score', 'away' ));
 
-        $nameService = new NameService(new CompetitorMap($teamCompetitors));
+        $structureNameService = new StructureNameService(new StartLocationMap($teamCompetitors));
 
         foreach ($games as $game) {
             $row = array(
@@ -37,9 +37,9 @@ class AgainstGames
                 $game->getId(),
                 $game->getStartDateTime()->format(DateTimeInterface::ATOM),
                 $game->getState()->name,
-                $nameService->getPlacesFromName($game->getSidePlaces(AgainstSide::Home), true, true),
+                $structureNameService->getPlacesFromName($game->getSidePlaces(AgainstSide::Home), true, true),
                 $this->getScore($game),
-                $nameService->getPlacesFromName($game->getSidePlaces(AgainstSide::Away), true, true),
+                $structureNameService->getPlacesFromName($game->getSidePlaces(AgainstSide::Away), true, true),
             );
             $table->addRow($row);
         }

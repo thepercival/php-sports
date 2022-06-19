@@ -6,7 +6,8 @@ namespace Sports\Output\ConsoleTable;
 
 use LucidFrame\Console\ConsoleTable;
 use Sports\Competition;
-use Sports\NameService;
+use Sports\Competitor\StartLocationMap;
+use Sports\Structure\NameService as StructureNameService;
 use Sports\Competitor\Map as CompetitorMap;
 use Sports\Structure as StructureBase;
 use Sports\Competitor\Team as TeamCompetitor;
@@ -23,7 +24,7 @@ class Structure
         $table = new ConsoleTable();
         $table->setHeaders(array('league', 'season', 'pouleNr', 'placeNr', 'team'));
 
-        $nameService = new NameService(new CompetitorMap($teamCompetitors));
+        $structureNameService = new StructureNameService(new StartLocationMap($teamCompetitors));
 
         foreach ($structure->getRootRounds() as $rootRound) {
             foreach ($rootRound->getPoules() as $poule) {
@@ -33,7 +34,7 @@ class Structure
                         $competition->getSeason()->getName(),
                         $place->getPouleNr(),
                         $place->getPlaceNr(),
-                        $nameService->getPlaceName($place, true)
+                        $structureNameService->getPlaceName($place, true)
                     );
                     $table->addRow($row);
                 }

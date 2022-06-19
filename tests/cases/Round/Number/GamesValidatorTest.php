@@ -42,7 +42,7 @@ class GamesValidatorTest extends TestCase
 
         $firstRoundNumber = $structure->getFirstRoundNumber();
 
-        $firstPoule = $this->getFirstCategory($structure)->getRootRound()->getFirstPoule();
+        $firstPoule = $structure->getSingleCategory()->getRootRound()->getFirstPoule();
         $firstGame = $firstPoule->getAgainstGames()->first();
         self::assertInstanceOf(AgainstGame::class, $firstGame);
         $firstGame->setField(null);
@@ -64,7 +64,7 @@ class GamesValidatorTest extends TestCase
 
         $firstRoundNumber = $structure->getFirstRoundNumber();
 
-        $firstPoule = $this->getFirstCategory($structure)->getRootRound()->getFirstPoule();
+        $firstPoule = $structure->getSingleCategory()->getRootRound()->getFirstPoule();
         $removedGame = $firstPoule->getAgainstGames()->first();
         self::assertInstanceOf(AgainstGame::class, $removedGame);
         $firstPoule->getAgainstGames()->removeElement($removedGame);
@@ -86,7 +86,7 @@ class GamesValidatorTest extends TestCase
 
         $firstRoundNumber = $structure->getFirstRoundNumber();
 
-        $firstPoule = $this->getFirstCategory($structure)->getRootRound()->getFirstPoule();
+        $firstPoule = $structure->getSingleCategory()->getRootRound()->getFirstPoule();
         $game = $firstPoule->getAgainstGames()->first();
         self::assertInstanceOf(AgainstGame::class, $game);
         $homeGamePlaces = $game->getSidePlaces(AgainstSide::Home);
@@ -111,7 +111,7 @@ class GamesValidatorTest extends TestCase
 
         $firstRoundNumber = $structure->getFirstRoundNumber();
 
-        $firstPoule = $this->getFirstCategory($structure)->getRootRound()->getFirstPoule();
+        $firstPoule = $structure->getSingleCategory()->getRootRound()->getFirstPoule();
         $game = $firstPoule->getAgainstGames()->first();
         self::assertInstanceOf(AgainstGame::class, $game);
         $field = $game->getField();
@@ -136,7 +136,7 @@ class GamesValidatorTest extends TestCase
 
         $firstRoundNumber = $structure->getFirstRoundNumber();
 
-        $firstPoule = $this->getFirstCategory($structure)->getRootRound()->getFirstPoule();
+        $firstPoule = $structure->getSingleCategory()->getRootRound()->getFirstPoule();
         $game = $firstPoule->getAgainstGames()->first();
         self::assertInstanceOf(AgainstGame::class, $game);
         $referee = $game->getReferee();
@@ -161,7 +161,7 @@ class GamesValidatorTest extends TestCase
 
         $firstRoundNumber = $structure->getFirstRoundNumber();
 
-        $firstPoule = $this->getFirstCategory($structure)->getRootRound()->getFirstPoule();
+        $firstPoule = $structure->getSingleCategory()->getRootRound()->getFirstPoule();
 
 //        $outputGame = new \Sports\Output\Game();
 //        $games = $firstRoundNumber->getGames(Game::ORDER_BY_BATCH);
@@ -190,7 +190,7 @@ class GamesValidatorTest extends TestCase
 
         $firstRoundNumber = $structure->getFirstRoundNumber();
 
-        $firstPoule = $this->getFirstCategory($structure)->getRootRound()->getFirstPoule();
+        $firstPoule = $structure->getSingleCategory()->getRootRound()->getFirstPoule();
 
 //        $outputGame = new AgainstGameOutput();
 //        $games = $firstRoundNumber->getGames(AgainstGame::ORDER_BY_BATCH);
@@ -236,7 +236,7 @@ class GamesValidatorTest extends TestCase
 //            $outputGame->output( $gameIt );
 //        }
 
-        $firstPoule = $this->getFirstCategory($structure)->getRootRound()->getFirstPoule();
+        $firstPoule = $structure->getSingleCategory()->getRootRound()->getFirstPoule();
 
         $game = $firstPoule->getAgainstGames()->first();
         self::assertInstanceOf(AgainstGame::class, $game);

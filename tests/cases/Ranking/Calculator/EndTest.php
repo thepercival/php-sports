@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Sports\Tests\Ranking\Calculator;
 
 use PHPUnit\Framework\TestCase;
+use Sports\Competitor\StartLocation;
 use Sports\Place\Location as PlaceLocation;
 use Sports\Qualify\Service as QualifyService;
 use Sports\Qualify\Target as QualifyTarget;
@@ -26,7 +27,7 @@ class EndTest extends TestCase
 
         $structureEditor = $this->createStructureEditor();
         $structure = $structureEditor->create($competition, [3]);
-        $firstCategory = $this->getFirstCategory($structure);
+        $firstCategory = $structure->getSingleCategory();
         $rootRound = $firstCategory->getRootRound();
 
         (new GamesCreator())->createStructureGames($structure);
@@ -43,9 +44,9 @@ class EndTest extends TestCase
         for ($rank = 1; $rank <= count($items); $rank++) {
             $endRankingItem = array_shift($items);
             // self::assertInstanceOf(EndRankingItem::class, $endRankingItem);
-            $placeLocation = $endRankingItem->getPlaceLocation();
-            self::assertInstanceOf(PlaceLocation::class, $placeLocation);
-            self::assertSame($placeLocation->getPlaceNr(), $rank);
+            $startLocation = $endRankingItem->getStartLocation();
+            self::assertInstanceOf(StartLocation::class, $startLocation);
+            self::assertSame($startLocation->getPlaceNr(), $rank);
             self::assertSame($endRankingItem->getUniqueRank(), $rank);
         }
     }
@@ -56,7 +57,7 @@ class EndTest extends TestCase
 
         $structureEditor = $this->createStructureEditor();
         $structure = $structureEditor->create($competition, [3]);
-        $firstCategory = $this->getFirstCategory($structure);
+        $firstCategory = $structure->getSingleCategory();
         $rootRound = $firstCategory->getRootRound();
 
         (new GamesCreator())->createStructureGames($structure);
@@ -73,7 +74,7 @@ class EndTest extends TestCase
         for ($rank = 1; $rank <= count($items); $rank++) {
             $endRankingItem = array_shift($items);
             // self::assertInstanceOf(EndRankingItem::class, $endRankingItem);
-            self::assertNull($endRankingItem->getPlaceLocation());
+            self::assertNull($endRankingItem->getStartLocation());
         }
     }
 
@@ -83,7 +84,7 @@ class EndTest extends TestCase
 
         $structureEditor = $this->createStructureEditor();
         $structure = $structureEditor->create($competition, [5]);
-        $firstCategory = $this->getFirstCategory($structure);
+        $firstCategory = $structure->getSingleCategory();
         $rootRound = $firstCategory->getRootRound();
 
         $winnersRound = $structureEditor->addChildRound($rootRound, QualifyTarget::Winners, [2]);
@@ -118,9 +119,9 @@ class EndTest extends TestCase
         for ($rank = 1; $rank <= count($items); $rank++) {
             $endRankingItem = array_shift($items);
             // self::assertNotNull($endRankingItem);
-            $placeLocation = $endRankingItem->getPlaceLocation();
-            self::assertInstanceOf(PlaceLocation::class, $placeLocation);
-            self::assertSame($placeLocation->getPlaceNr(), $rank);
+            $startLocation = $endRankingItem->getStartLocation();
+            self::assertInstanceOf(StartLocation::class, $startLocation);
+            self::assertSame($startLocation->getPlaceNr(), $rank);
         }
     }
 }

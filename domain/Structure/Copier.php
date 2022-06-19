@@ -96,13 +96,28 @@ class Copier
         throw new Exception("een sport kon niet gevonden worden", E_ERROR);
     }
 
-    protected function copyCategory(Category $category, Category $newCategory, RoundNumber $newFirstRoundNumber): void
+    protected function copyCategory(Category $category, Category $newCategory, RoundNumber $firstRoundNumber): void
     {
-        $newRootRound = new Round($newCategory, $newFirstRoundNumber);
-        $this->copyRound($category->getRootRound(), $newRootRound);
+        $this->deepCopyStructureCell($category, $newCategory, $firstRoundNumber);
+
+        $newRootRound = new Round($newCategory->getFirstStructureCell());
+        $this->deepCopyRound($category->getRootRound(), $newRootRound);
     }
 
-    protected function copyRound(Round $round, Round $newRound): void
+    protected function deepCopyStructureCell(
+        Category $category,
+        Category $newCategory,
+        RoundNumber $newRoundNumber
+    ): void {
+        new Cell($newCategory, $newRoundNumber);
+
+        $nextNewRoundNumber = $newRoundNumber->getNext();
+        if ($nextNewRoundNumber !== null) {
+            $this->deepCopyStructureCell($category, $newCategory, $nextNewRoundNumber);
+        }
+    }
+
+    protected function deepCopyRound(Round $round, Round $newRound): void
     {
         $this->copyRoundHelper(
             $newRound,
@@ -112,15 +127,15 @@ class Copier
         );
         $this->horPouleCreator->create($newRound);
 
-        $newNextRoundNumber = $newRound->getNumber()->getNext();
-        if ($newNextRoundNumber === null) {
+        $newNextCell = $newRound->getStructureCell()->getNext();
+        if ($newNextCell === null) {
             return;
         }
         foreach ($round->getQualifyGroups() as $qualifyGroup) {
-            $newQualifyGroup = new QualifyGroup($newRound, $qualifyGroup->getTarget(), $newNextRoundNumber);
+            $newQualifyGroup = new QualifyGroup($newRound, $qualifyGroup->getTarget(), $newNextCell);
             $newQualifyGroup->setNumber($qualifyGroup->getNumber());
             // $qualifyGroup->setNrOfHorizontalPoules( $qualifyGroupSerialized->getNrOfHorizontalPoules() );
-            $this->copyRound($qualifyGroup->getChildRound(), $newQualifyGroup->getChildRound());
+            $this->deepCopyRound($qualifyGroup->getChildRound(), $newQualifyGroup->getChildRound());
         }
         $this->qualifyRuleCreator->create($newRound, null);
     }

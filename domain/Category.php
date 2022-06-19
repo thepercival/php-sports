@@ -4,31 +4,31 @@ declare(strict_types=1);
 
 namespace Sports;
 
-use Ahamed\JsPhp\JsArray;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Sports\Competition\Sport as CompetitionSport;
 use Sports\Exceptions\NoStructureException;
+use Sports\Round\Number as RoundNumber;
+use Sports\Structure\Cell as StructureCell;
 use SportsHelpers\Identifiable;
 use InvalidArgumentException;
 
 class Category extends Identifiable
 {
-    public const MAX_LENGTH_NAME = 20;
+    public const MAX_LENGTH_NAME = 15;
     public const DEFAULTNAME = 'standaard';
     protected int $number;
     protected string $name;
     /**
-     * @var Collection<int|string, Round>
+     * @var Collection<int|string, StructureCell>
      */
-    protected Collection $rounds;
-    protected Round|null $rootRound = null;
+    protected Collection $structureCells;
 
     public function __construct(protected Competition $competition, string $name, int|null $number = null)
     {
         $this->number = $number ?? count($competition->getCategories()) + 1;
         $this->setName($name);
-        $this->rounds = new ArrayCollection();
+        $this->structureCells = new ArrayCollection();
         if (!$competition->getCategories()->contains($this)) {
             $competition->getCategories()->add($this);
         }
@@ -39,9 +39,9 @@ class Category extends Identifiable
         return $this->number;
     }
 
-//    public function setCompetition(Competition $competition): void
+//    public function setNumber(int $number): void
 //    {
-//        $this->competition = $competition;
+//        $this->number = $number;
 //    }
 
     public function getName(): string
@@ -61,31 +61,45 @@ class Category extends Identifiable
     }
 
     /**
-     * @return Collection<int|string, Round>
+     * @return Collection<int|string, StructureCell>
      */
-    public function getRounds(): Collection
+    public function getStructureCells(): Collection
     {
-        return $this->rounds;
+        return $this->structureCells;
+    }
+
+    public function getStructureCell(RoundNumber $roundNumber): StructureCell
+    {
+        return $this->getStructureCellByValue($roundNumber->getNumber());
+    }
+
+    public function getFirstStructureCell(): StructureCell
+    {
+        return $this->getStructureCellByValue(1);
+    }
+
+    public function getStructureCellByValue(int $roundNumber): StructureCell
+    {
+        foreach ($this->structureCells as $structureCell) {
+            if ($structureCell->getRoundNumber()->getNumber() === $roundNumber) {
+                return $structureCell;
+            }
+        }
+        throw new \Exception('de structuurcel kan niet gevonden worden');
     }
 
     public function getRootRound(): Round
     {
-        $rootRound = $this->rootRound;
-        if ($rootRound !== null) {
-            return $rootRound;
+        $structureCell = $this->getStructureCellByValue(1);
+        $rounds = $structureCell->getRounds();
+        if ($rounds->count() !== 1) {
+            throw new NoStructureException('there must be 1 rootRound, "' . count($rounds) . '" given', E_ERROR);
         }
-        foreach ($this->rounds as $round) {
-            if ($round->getParent() === null) {
-                $this->rootRound = $round;
-                return $round;
-            }
+        $rootRound = $rounds->first();
+        if ($rootRound === false) {
+            throw new NoStructureException('there must be 1 rootRound, "' . count($rounds) . '" given', E_ERROR);
         }
-        throw new NoStructureException('there must be 1 rootRound, "' . count($this->rounds) . '" given', E_ERROR);
-    }
-
-    public function setRootRound(Round $round): void
-    {
-        $this->rootRound = $round;
+        return $rootRound;
     }
 
     public function hasMultipleSports(): bool

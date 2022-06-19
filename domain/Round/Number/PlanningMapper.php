@@ -11,9 +11,9 @@ use Sports\Competition\Referee;
 use Sports\Competition\Sport as CompetitionSport;
 use Sports\Place;
 use Sports\Poule;
-use Sports\Ranking\Map\PouleStructureNumber as PouleStructureNumberMap;
-use Sports\Ranking\Map\PreviousNrOfDropouts as PreviousNrOfDropoutsMap;
+use Sports\Qualify\RoundRank\Service as RoundRankService;
 use Sports\Round\Number as RoundNumber;
+use Sports\Structure\PouleStructureNumberMap;
 use SportsPlanning\Field as PlanningField;
 use SportsPlanning\Game as PlanningGame;
 use SportsPlanning\Game\Against as PlanningAgainstGame;
@@ -147,12 +147,7 @@ class PlanningMapper
         if ($roundNumber->isFirst()) {
             usort($poules, $fncBaseSort);
         } else {
-            $someRound = $roundNumber->getRounds()->first();
-            if ($someRound === false) {
-                throw new Exception("rondenummer heeft geen rondes", E_ERROR);
-            }
-            $previousNrOfDropoutsMap = new PreviousNrOfDropoutsMap($someRound);
-            $pouleStructureNumberMap = new PouleStructureNumberMap($roundNumber, $previousNrOfDropoutsMap);
+            $pouleStructureNumberMap = new PouleStructureNumberMap($roundNumber, new RoundRankService());
             usort(
                 $poules,
                 function (Poule $pouleA, Poule $pouleB) use ($fncBaseSort, $pouleStructureNumberMap): int {

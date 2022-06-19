@@ -10,6 +10,7 @@ use Sports\Competition\Field;
 use Sports\Competition\Referee;
 use Sports\Competition\Sport as CompetitionSport;
 use Sports\Competitor;
+use Sports\Competitor\StartLocation;
 use Sports\Place\LocationInterface as PlaceLocationInterface;
 use Sports\Priority\Prioritizable;
 
@@ -106,18 +107,25 @@ class Checker
     }
 
     /**
+     * @param int $categoryNr ,
      * @param list<Competitor> $competitors
      * @param string $name
      * @param Competitor|null $competitorToCheck
-     * @throws Exception
      * @return void
+     * @throws Exception
      */
-    public function checkCompetitorName(array $competitors, string $name, Competitor $competitorToCheck = null): void
-    {
+    public function checkCompetitorName(
+        int $categoryNr,
+        array $competitors,
+        string $name,
+        Competitor $competitorToCheck = null
+    ): void {
         $nonUniqueFields = array_filter(
             $competitors,
-            function (Competitor $competitorIt) use ($name, $competitorToCheck): bool {
-                return $competitorIt->getName() === $name && $competitorToCheck !== $competitorIt;
+            function (Competitor $competitorIt) use ($categoryNr, $name, $competitorToCheck): bool {
+                return $categoryNr === $competitorIt->getCategoryNr()
+                    && $competitorIt->getName() === $name
+                    && $competitorToCheck !== $competitorIt;
             }
         );
         if (count($nonUniqueFields) > 0) {
@@ -130,18 +138,22 @@ class Checker
 
     /**
      * @param list<Competitor> $competitors
-     * @param PlaceLocationInterface $placeLocation
+     * @param StartLocation $startLocation
      * @param Competitor|null $competitorToCheck
      * @throws Exception
      * @return void
      */
-    public function checkCompetitorPlaceLocation(array $competitors, PlaceLocationInterface $placeLocation, Competitor $competitorToCheck = null): void
-    {
+    public function checkCompetitorStartLocation(
+        array $competitors,
+        StartLocation $startLocation,
+        Competitor $competitorToCheck = null
+    ): void {
         $nonUniqueFields = array_filter(
             $competitors,
-            function (Competitor $competitorIt) use ($placeLocation, $competitorToCheck): bool {
-                return $competitorIt->getPouleNr() === $placeLocation->getPouleNr()
-                    && $competitorIt->getPlaceNr() === $placeLocation->getPlaceNr()
+            function (Competitor $competitorIt) use ($startLocation, $competitorToCheck): bool {
+                return $competitorIt->getCategoryNr() === $startLocation->getCategoryNr()
+                    && $competitorIt->getPouleNr() === $startLocation->getPouleNr()
+                    && $competitorIt->getPlaceNr() === $startLocation->getPlaceNr()
                     && $competitorToCheck !== $competitorIt;
             }
         );

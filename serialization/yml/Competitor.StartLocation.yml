@@ -1,0 +1,10 @@
+Sports\Competitor\StartLocation:
+  exclusion_policy: ALL
+  exclude: false
+  properties:
+    categoryNr:
+      type: integer
+    pouleNr:
+      type: integer
+    placeNr:
+      type: integer
