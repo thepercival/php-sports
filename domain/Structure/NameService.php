@@ -29,6 +29,11 @@ class NameService
         $this->roundRankService = new RoundRankService();
     }
 
+    public function getStartLocationMap(): StartLocationMap|null
+    {
+        return $this->startLocationMap;
+    }
+
     public function getQualifyTargetDescription(QualifyTarget $qualifyTarget, bool $multiple = false): string
     {
         $description = $qualifyTarget === QualifyTarget::Winners ? 'winnaar' : ($qualifyTarget === QualifyTarget::Losers ? 'verliezer' : '');
