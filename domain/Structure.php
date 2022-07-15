@@ -69,7 +69,7 @@ class Structure
     }
 
     /**
-     * @return list<Round>
+     * @return non-empty-list<Round>
      */
     public function getRootRounds(): array
     {

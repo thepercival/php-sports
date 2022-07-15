@@ -11,6 +11,7 @@ use Sports\Category;
 use Sports\Round;
 use Sports\Round\Number as RoundNumber;
 use Sports\Structure;
+use Sports\Structure\Cell;
 
 class StructureHandler extends Handler implements SubscribingHandlerInterface
 {
@@ -28,7 +29,7 @@ class StructureHandler extends Handler implements SubscribingHandlerInterface
 
     /**
      * @param JsonDeserializationVisitor $visitor
-     * @param array<string, array> $fieldValue
+     * @param array{categories: list<Category>, firstRoundNumber: RoundNumber} $fieldValue
      * @param array<string, int|string> $type
      * @param Context $context
      * @return Structure
@@ -38,8 +39,7 @@ class StructureHandler extends Handler implements SubscribingHandlerInterface
         array $fieldValue,
         array $type,
         Context $context
-    ): Structure
-    {
+    ): Structure {
         /** @var RoundNumber $firstRoundNumber */
         $firstRoundNumber = $this->getProperty(
             $visitor,
@@ -56,13 +56,26 @@ class StructureHandler extends Handler implements SubscribingHandlerInterface
 //            Round::class
 //        );
         $categories = [];
+        /** @var array{id: string|int, name: string, number: int, firstStructureCell: array} $arrCategory */
         foreach ($fieldValue["categories"] as $arrCategory) {
             // Start RootRound
             $category = new Category($firstRoundNumber->getCompetition(), $arrCategory['name'], $arrCategory['number']);
             $category->setId($arrCategory['id']);
 
-            $arrCategory["rootRound"]["category"] = $category;
-            $arrCategory["rootRound"]["roundNumber"] = $firstRoundNumber;
+
+            $this->createStructureCells($arrCategory['firstStructureCell'], $category, $firstRoundNumber);
+
+//            if (isset($fieldValue["structureCells"])) {
+//                $categories = $competition->getCategories();
+//                foreach ($fieldValue["structureCells"] as $arrStructureCell) {
+//                    new Cell(
+//                        $competition->getCategory($arrStructureCell["categoryNr"]),
+//                        $roundNumber
+//                    );
+//                }
+//            }
+
+            $arrCategory["rootRound"]["structureCell"] = $category->getFirstStructureCell();
             $this->getProperty(
                 $visitor,
                 $arrCategory,
@@ -77,6 +90,20 @@ class StructureHandler extends Handler implements SubscribingHandlerInterface
         return new Structure($categories, $firstRoundNumber);
     }
 
+    /**
+     * @psalm-suppress MixedArgument
+     * @param array $arrStructureCell
+     * @param Category $category
+     * @param RoundNumber $roundNumber
+     */
+    protected function createStructureCells(array $arrStructureCell, Category $category, RoundNumber $roundNumber): void
+    {
+        new Cell($category, $roundNumber);
+        $nextRoundNumber = $roundNumber->getNext();
+        if (array_key_exists('next', $arrStructureCell) && $nextRoundNumber !== null) {
+            $this->createStructureCells($arrStructureCell['next'], $category, $nextRoundNumber);
+        }
+    }
 
 
     //function postSerialize( Structure $structure, Competition $competition ) {

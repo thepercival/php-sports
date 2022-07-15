@@ -8,8 +8,9 @@ use Sports\Category;
 use Sports\Structure\Cell as StructureCell;
 use Sports\Round;
 use Sports\Round\Number as RoundNumber;
+use SportsHelpers\Identifiable;
 
-class Cell
+class Cell extends Identifiable
 {
     /**
      * @var Collection<int|string, Round>
@@ -27,6 +28,11 @@ class Cell
         if (!$roundNumber->getStructureCells()->contains($this)) {
             $roundNumber->getStructureCells()->add($this);
         }
+    }
+
+    public function isFirst(): bool
+    {
+        return $this->getRoundNumber()->getNumber() === 1;
     }
 
     public function getNext(): Cell|null
@@ -50,6 +56,11 @@ class Cell
     public function getCategory(): Category
     {
         return $this->category;
+    }
+
+    public function getCategoryNr(): int
+    {
+        return $this->getCategory()->getNumber();
     }
 
     public function createNext(): StructureCell
@@ -89,7 +100,7 @@ class Cell
 //
 //    hasNext(): boolean {
 //    return this.next !== undefined;
-//}
+    //}
 
     public function detach(): void
     {

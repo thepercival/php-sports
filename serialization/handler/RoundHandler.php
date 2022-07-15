@@ -16,7 +16,16 @@ use Sports\Qualify\Group as QualifyGroup;
 use Sports\Round\Number as RoundNumber;
 use Sports\Score\Config as ScoreConfig;
 use Sports\Qualify\AgainstConfig as AgainstQualifyConfig;
+use Sports\Structure\Cell;
 
+/**
+ * @psalm-type _Sport = array{id: int|string}
+ * @psalm-type _CompetitionSport = array{id: int|string, sport: _Sport}
+ * @psalm-type _AgainstQualifyConfig = array{pointsCalculation: int, winPoints: float, drawPoints: float, winPointsExt: float, drawPointsExt: float, losePointsExt: float, competitionSport: _CompetitionSport}
+ * @psalm-type _ScoreConfig = array{direction: int, maximum: int, enabled: bool, competitionSport: _CompetitionSport}
+ * @psalm-type _Poule = array{round: Round}
+ * @psalm-type _QualifyGroup = array{parentRound: Round, nextStructureCell: Cell}
+ */
 class RoundHandler extends Handler implements SubscribingHandlerInterface
 {
     public function __construct(protected DummyCreator $dummyCreator)
@@ -33,7 +42,7 @@ class RoundHandler extends Handler implements SubscribingHandlerInterface
 
     /**
      * @param JsonDeserializationVisitor $visitor
-     * @param array<string, bool|RoundNumber|QualifyGroup|array> $fieldValue
+     * @param array{parentQualifyGroup: QualifyGroup|null, structureCell: Cell, poules: list<_Poule>, qualifyGroups: list<_QualifyGroup>, againstQualifyConfigs: list<_AgainstQualifyConfig>, scoreConfigs: list<_ScoreConfig>} $fieldValue
      * @param array<string, array<string, RoundNumber>> $type
      * @param Context $context
      * @return Round
@@ -48,13 +57,12 @@ class RoundHandler extends Handler implements SubscribingHandlerInterface
         if (isset($fieldValue["parentQualifyGroup"])) {
             $parentQualifyGroup = $fieldValue["parentQualifyGroup"];
         }
-        $round = null;
         if ($parentQualifyGroup instanceof QualifyGroup) {
             $round = $parentQualifyGroup->getChildRound();
         } else {
-            $round = new Round($fieldValue["category"], $fieldValue["roundNumber"], null);
+            $round = new Round($fieldValue["structureCell"], null);
         }
-        $roundNumber = $round->getNumber();
+        $structureCell = $round->getStructureCell();
 
         if (isset($fieldValue["scoreConfigs"])) {
             foreach ($fieldValue["scoreConfigs"] as $arrScoreConfig) {
@@ -88,12 +96,12 @@ class RoundHandler extends Handler implements SubscribingHandlerInterface
             );
         }
 
-        $nextRoundNumber = $roundNumber->getNext();
-        if ($nextRoundNumber !== null && isset($fieldValue["qualifyGroups"])) {
+        $nextStructureCell = $structureCell->getNext();
+        if ($nextStructureCell !== null && isset($fieldValue["qualifyGroups"])) {
             foreach ($fieldValue["qualifyGroups"] as $arrQualifyGroup) {
                 $fieldValue["qualifyGroup"] = $arrQualifyGroup;
                 $fieldValue["qualifyGroup"]["parentRound"] = $round;
-                $fieldValue["qualifyGroup"]["nextRoundNumber"] = $nextRoundNumber;
+                $fieldValue["qualifyGroup"]["nextStructureCell"] = $nextStructureCell;
                 $this->getProperty(
                     $visitor,
                     $fieldValue,
@@ -106,14 +114,14 @@ class RoundHandler extends Handler implements SubscribingHandlerInterface
     }
 
     /**
-     * @param array<string, int|bool|array<string, int|bool>> $arrConfig
+     * @param _ScoreConfig $arrScoreConfig
      * @param CompetitionSport $competitionSport
      * @param Round $round
      * @param ScoreConfig|null $previous
      * @return ScoreConfig
      */
     protected function createScoreConfig(
-        array $arrConfig,
+        array $arrScoreConfig,
         CompetitionSport $competitionSport,
         Round $round,
         ScoreConfig $previous = null
@@ -121,19 +129,20 @@ class RoundHandler extends Handler implements SubscribingHandlerInterface
         $config = new ScoreConfig(
             $competitionSport,
             $round,
-            $arrConfig["direction"],
-            $arrConfig["maximum"],
-            $arrConfig["enabled"],
+            $arrScoreConfig["direction"],
+            $arrScoreConfig["maximum"],
+            $arrScoreConfig["enabled"],
             $previous
         );
-        if (isset($arrConfig["next"])) {
-            $this->createScoreConfig($arrConfig["next"], $competitionSport, $round, $config);
+        if (isset($arrScoreConfig["next"])) {
+            /** @psalm-suppress MixedArgument */
+            $this->createScoreConfig($arrScoreConfig["next"], $competitionSport, $round, $config);
         }
         return $config;
     }
 
     /**
-     * @param array<string, int|bool|array<string, float|PointsCalculation>> $arrConfig
+     * @param _AgainstQualifyConfig $arrConfig
      * @param CompetitionSport $competitionSport
      * @param Round $round
      * @return AgainstQualifyConfig

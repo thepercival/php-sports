@@ -24,6 +24,8 @@ class Category extends Identifiable
      */
     protected Collection $structureCells;
 
+//    protected StructureCell|null $firstStructureCell = null;
+
     public function __construct(protected Competition $competition, string $name, int|null $number = null)
     {
         $this->number = $number ?? count($competition->getCategories()) + 1;
@@ -32,6 +34,10 @@ class Category extends Identifiable
         if (!$competition->getCategories()->contains($this)) {
             $competition->getCategories()->add($this);
         }
+    }
+
+    public function isSingle(): bool {
+        return count($this->getCompetition()->getCategories()) === 1;
     }
 
     public function getNumber(): int
@@ -68,14 +74,14 @@ class Category extends Identifiable
         return $this->structureCells;
     }
 
-    public function getStructureCell(RoundNumber $roundNumber): StructureCell
-    {
-        return $this->getStructureCellByValue($roundNumber->getNumber());
-    }
-
     public function getFirstStructureCell(): StructureCell
     {
         return $this->getStructureCellByValue(1);
+    }
+
+    public function getStructureCell(RoundNumber $roundNumber): StructureCell
+    {
+        return $this->getStructureCellByValue($roundNumber->getNumber());
     }
 
     public function getStructureCellByValue(int $roundNumber): StructureCell

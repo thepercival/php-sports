@@ -8,8 +8,10 @@ Sports\Category:
       type: string
     number:
       type: integer
-    rootRound:
+  virtual_properties:
+    getFirstStructureCell:
+      type: Sports\Structure\Cell
+      serialized_name: firstStructureCell
+    getRootRound:
       type: Sports\Round
-      access_type: public_method
-      accessor:
-        getter: getRootRound
+      serialized_name: rootRound

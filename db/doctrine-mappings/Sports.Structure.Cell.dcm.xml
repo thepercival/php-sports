@@ -3,7 +3,6 @@
                   xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
                   xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
     <entity name="Sports\Structure\Cell" table="structureCells" repository-class="Sports\Structure\Cell\Repository">
-        <field name="number" column="number" type="smallint" nullable="false" unique="false"/>
         <many-to-one field="category" target-entity="Sports\Category" inversed-by="structureCells">
             <cascade>
                 <cascade-persist/>
@@ -13,12 +12,12 @@
                 <join-column name="categoryId" referenced-column-name="id" nullable="false" on-delete="CASCADE"/>
             </join-columns>
         </many-to-one>
-        <many-to-one field="number" target-entity="Sports\Round\Number" inversed-by="structureCells">
+        <many-to-one field="roundNumber" target-entity="Sports\Round\Number" inversed-by="structureCells">
             <join-columns>
-                <join-column name="numberId" nullable="false" on-delete="CASCADE"/>
+                <join-column name="roundNumberId" nullable="false" on-delete="CASCADE"/>
             </join-columns>
         </many-to-one>
-        <one-to-many field="rounds" target-entity="Sports\Round" mapped-by="number">
+        <one-to-many field="rounds" target-entity="Sports\Round" mapped-by="structureCell">
             <cascade>
                 <cascade-persist/>
                 <cascade-remove/>

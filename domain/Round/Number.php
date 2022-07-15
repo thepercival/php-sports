@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Sports\Round;
 
+use _PHPStan_43cb6abb8\Nette\Utils\DateTime;
 use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -123,6 +124,16 @@ class Number extends Identifiable
     public function isFirst(): bool
     {
         return ($this->getPrevious() === null);
+    }
+
+    public function getLast(): RoundNumber
+    {
+        return $this->next === null ? $this : $this->next->getLast();
+    }
+
+    public function isLast(): bool
+    {
+        return $this->next === null;
     }
 
     /**
@@ -326,7 +337,7 @@ class Number extends Identifiable
         return $this->getCompetition()->getSports();
     }
 
-    public function getFirstStartDateTime(): DateTimeImmutable
+    public function getFirstGameStartDateTime(): DateTimeImmutable
     {
         $games = $this->getGames(GameOrder::ByDate);
         $firstGame = reset($games);
@@ -336,7 +347,7 @@ class Number extends Identifiable
         return $firstGame->getStartDateTime();
     }
 
-    public function getLastStartDateTime(): DateTimeImmutable
+    public function getLastGameStartDateTime(): DateTimeImmutable
     {
         $games = $this->getGames(GameOrder::ByDate);
         $lastRecentGame = end($games);
@@ -345,6 +356,11 @@ class Number extends Identifiable
         }
         return $lastRecentGame->getStartDateTime();
     }
+
+    public function getLastGameEndDateTime(): DateTimeImmutable {
+        $nrOfMinutesToAdd = $this->getValidPlanningConfig()->getMaxNrOfMinutesPerGame();
+        return $this->getLastGameStartDateTime()->modify('+' . $nrOfMinutesToAdd . ' minutes');
+}
 
     /**
      * @return Collection<int|string, GameAmountConfig>

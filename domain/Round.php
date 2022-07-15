@@ -17,7 +17,7 @@ use Sports\Poule\Horizontal as HorizontalPoule;
 use Sports\Qualify\AgainstConfig as AgainstQualifyConfig;
 use Sports\Qualify\Group as QualifyGroup;
 use Sports\Qualify\Target as QualifyTarget;
-use Sports\Round\Number;
+use Sports\Round\Number as RoundNumber;
 use Sports\Structure\Cell as StructureCell;
 use Sports\Score\Config as ScoreConfig;
 use Sports\Structure\PathNode as StructurePathNode;
@@ -67,6 +67,8 @@ class Round extends Identifiable
     public const RANK_NUMBER_POULE = 6;
     public const RANK_POULE_NUMBER = 7;
 
+    protected RoundNumber|null $numberDep = null; // @TODO CDK REMOVE
+
     public function __construct(
         protected StructureCell $structureCell,
         protected QualifyGroup|null $parentQualifyGroup = null
@@ -96,7 +98,7 @@ class Round extends Identifiable
         return $this->getStructureCell()->getCategory();
     }
 
-    public function getNumber(): Number
+    public function getNumber(): RoundNumber
     {
         return $this->structureCell->getRoundNumber();
     }

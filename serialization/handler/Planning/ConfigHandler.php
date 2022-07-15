@@ -31,7 +31,7 @@ class ConfigHandler extends Handler implements SubscribingHandlerInterface
 
     /**
      * @param JsonDeserializationVisitor $visitor
-     * @param array<string, int|bool|RoundNumber|GameMode|SelfReferee> $fieldValue
+     * @param array{roundNumber: RoundNumber, editMode: int, extension: bool, enableTime: bool, minutesPerGame: int, minutesPerGameExt: int, minutesBetweenGames: int, minutesAfter: int, selfReferee: int} $fieldValue
      * @param array<string, int|string> $type
      * @param Context $context
      * @return PlanningConfig

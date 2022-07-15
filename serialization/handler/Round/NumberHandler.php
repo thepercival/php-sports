@@ -21,7 +21,15 @@ use Sports\SerializationHandler\Handler;
 use Sports\Planning\GameAmountConfig;
 use Sports\Planning\Config as PlanningConfig;
 use Sports\Competition\Sport as CompetitionSport;
+use Sports\Structure\Cell;
 
+/**
+ * @psalm-type _Sport = array{id: int|string}
+ * @psalm-type _CompetitionSport = array{id: int|string, sport: _Sport}
+ * @psalm-type _PlanningConfig = array{roundNumber: RoundNumber}
+ * @psalm-type _GameAmountConfig = array{amount: int, competitionSport: _CompetitionSport}
+ *
+ **/
 class NumberHandler extends Handler implements SubscribingHandlerInterface
 {
     public function __construct(protected DummyCreator $dummyCreator)
@@ -38,7 +46,7 @@ class NumberHandler extends Handler implements SubscribingHandlerInterface
 
     /**
      * @param JsonDeserializationVisitor $visitor
-     * @param array<string, bool|RoundNumber|array> $fieldValue
+     * @param array{previous: RoundNumber|null, planningConfig: _PlanningConfig|null, gameAmountConfigs: list<_GameAmountConfig>} $fieldValue
      * @param array<string, array<string, RoundNumber>> $type
      * @param Context $context
      * @return RoundNumber
@@ -49,14 +57,10 @@ class NumberHandler extends Handler implements SubscribingHandlerInterface
         array $type,
         Context $context
     ): RoundNumber {
-        $roundNumber = null;
-        /** @var RoundNumber|null $previous */
-        $previous = null;
         if (isset($fieldValue["previous"])) {
             $roundNumber = $fieldValue["previous"]->createNext();
         } else {
-            $competition = $this->dummyCreator->createCompetition();
-            $roundNumber = new RoundNumber($competition, $previous);
+            $roundNumber = new RoundNumber($this->dummyCreator->createCompetition(), null);
         }
 
         if (isset($fieldValue["planningConfig"])) {
@@ -85,6 +89,7 @@ class NumberHandler extends Handler implements SubscribingHandlerInterface
         }
 
         if (isset($fieldValue["next"])) {
+            /** @psalm-suppress MixedArrayAssignment */
             $fieldValue["next"]["previous"] = $roundNumber;
             $this->getProperty(
                 $visitor,

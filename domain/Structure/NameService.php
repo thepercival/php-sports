@@ -84,7 +84,7 @@ class NameService
         // if (round.getNrOfPlaces() > 1) {
         if ($round->getNrOfPlaces() === 2 && $sameName === false) {
             $rank = $this->roundRankService->getRank($round) + 1;
-            return $this->getOrdinal($rank) . '/' . $this->getOrdinal($rank + 1) . ' plaats';
+            return $this->getOrdinal($rank) . '/' . $this->getOrdinal($rank + 1) . ' pl';
         }
         return 'finale';
     }

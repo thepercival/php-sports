@@ -58,7 +58,7 @@ class PlanningScheduler
             $startDateTime = $roundNumber->getCompetition()->getStartDateTime();
             return $this->addMinutes($startDateTime, 0, $roundNumber->getValidPlanningConfig());
         }
-        $previousRoundLastStartDateTime = $previousRoundNumber->getLastStartDateTime();
+        $previousRoundLastStartDateTime = $previousRoundNumber->getLastGameStartDateTime();
         $previousPlanningConfig = $previousRoundNumber->getValidPlanningConfig();
         $minutes = $previousPlanningConfig->getMaxNrOfMinutesPerGame() + $previousPlanningConfig->getMinutesAfter();
         return $this->addMinutes($previousRoundLastStartDateTime, $minutes, $previousPlanningConfig);

@@ -117,7 +117,7 @@ final class NameServiceTest extends TestCase
             self::assertSame('1/8 finale', $nameService->getRoundName($rootRound));
 
             self::assertSame(
-                '15e/16e' . ' plaats',
+                '15e/16e' . ' pl',
                 $nameService->getRoundName($losersFinal)
             ); // '15<sup>de</sup>/16<sup>de</sup>'
         }

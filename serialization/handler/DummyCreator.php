@@ -17,9 +17,6 @@ use SportsHelpers\Sport\PersistVariant as PersistSportVariant;
 
 class DummyCreator
 {
-    /**
-     * @var Competition|null
-     */
     private Competition|null $competition = null;
     /**
      * @var array<string|int, CompetitionSport>
@@ -61,6 +58,7 @@ class DummyCreator
                 $defaultNrOfSidePlaces * 2
             );
             $sport->setId($sportId);
+            /** @psalm-suppress RedundantCondition, TypeDoesNotContainType */
             $competitionSport = new CompetitionSport(
                 $sport,
                 $competition,
