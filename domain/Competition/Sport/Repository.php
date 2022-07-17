@@ -34,18 +34,25 @@ class Repository extends EntityRepository
         try {
             $this->save($competitionSport);
 
-            $metaData = $em->getClassMetadata(ScoreConfig::class);
-            $rootRound = $structure->getRootRound();
-            $scoreRepos = new ScoreConfigRepos($em, $metaData);
-            $scoreRepos->addObjects($competitionSport, $rootRound);
-            $metaData = $em->getClassMetadata(AgainstQualifyConfig::class);
-            $againstQualifyConfigRepos = new AgainstQualifyConfigRepos($em, $metaData);
-            $againstQualifyConfigRepos->addObjects($competitionSport, $rootRound);
-
             $firstRoundNumber = $structure->getFirstRoundNumber();
-            $metaData = $em->getClassMetadata(GameAmountConfig::class);
-            $gameAmountRepos = new GameAmountConfigRepos($em, $metaData);
-            $gameAmountRepos->addObjects($competitionSport, $firstRoundNumber);
+
+            $rootRounds = $structure->getRootRounds();
+            foreach ($rootRounds as $rootRound) {
+                $scoreRepos = new ScoreConfigRepos($em, $em->getClassMetadata(ScoreConfig::class));
+                $scoreRepos->addObjects($competitionSport, $rootRound);
+
+                $againstQualifyConfigRepos = new AgainstQualifyConfigRepos(
+                    $em,
+                    $em->getClassMetadata(
+                        AgainstQualifyConfig::class
+                    )
+                );
+                $againstQualifyConfigRepos->addObjects($competitionSport, $rootRound);
+
+                $gameAmountRepos = new GameAmountConfigRepos($em, $em->getClassMetadata(GameAmountConfig::class));
+                $gameAmountRepos->addObjects($competitionSport, $firstRoundNumber);
+            }
+
 
             $em->flush();
             $conn->commit();

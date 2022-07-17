@@ -4,23 +4,38 @@ declare(strict_types=1);
 
 namespace Sports\Competitor;
 
+use InvalidArgumentException;
 use Sports\Competition;
 use Sports\Competitor as CompetitorInterface;
-use Sports\Place\LocationInterface;
 use Sports\Team as TeamBase;
 
-class Team extends Base implements LocationInterface, CompetitorInterface
+class Team extends StartLocation implements CompetitorInterface
 {
+    public const MAX_LENGTH_INGO = 200;
+
+    protected int|string|null $id = null;
+    protected bool $registered = false;
+    protected string|null $info = null;
+
     public function __construct(
         protected Competition $competition,
-        int $pouleNr,
-        int $placeNr,
+        StartLocation $startLoc,
         protected TeamBase $team
     ) {
-        parent::__construct($pouleNr, $placeNr);
+        parent::__construct($startLoc->getCategoryNr(), $startLoc->getPouleNr(), $startLoc->getPlaceNr());
         if (!$competition->getTeamCompetitors()->contains($this)) {
             $competition->getTeamCompetitors()->add($this);
         }
+    }
+
+    public function getId(): int|string|null
+    {
+        return $this->id;
+    }
+
+    public function setId(int|string|null $id): void
+    {
+        $this->id = $id;
     }
 
     public function getName(): string
@@ -36,5 +51,33 @@ class Team extends Base implements LocationInterface, CompetitorInterface
     public function getCompetition(): Competition
     {
         return $this->competition;
+    }
+
+    public function getRegistered(): bool
+    {
+        return $this->registered;
+    }
+
+    public function setRegistered(bool $registered): void
+    {
+        $this->registered = $registered;
+    }
+
+    public function getInfo(): ?string
+    {
+        return $this->info;
+    }
+
+    public function setInfo(string $info = null): void
+    {
+        if ($info !== null && strlen($info) === 0) {
+            $info = null;
+        }
+        if ($info !== null && strlen($info) > self::MAX_LENGTH_INGO) {
+            throw new InvalidArgumentException(
+                'de extra-info mag maximaal ' . self::MAX_LENGTH_INGO . ' karakters bevatten', E_ERROR
+            );
+        }
+        $this->info = $info;
     }
 }

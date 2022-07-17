@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace Sports\Tests\Ranking\Map;
+namespace Sports\Tests\Qualify\RoundRank;
 
 use PHPUnit\Framework\TestCase;
+use Sports\Qualify\RoundRank\Service as RoundRankService;
 use Sports\TestHelper\CompetitionCreator;
 use Sports\Qualify\Target as QualifyTarget;
 use Sports\TestHelper\StructureEditorCreator;
-use Sports\Ranking\Map\PreviousNrOfDropouts as PreviousNrOfDropoutsMap;
 
-final class PreviousNrOfDropoutsTest extends TestCase
+final class ServiceTest extends TestCase
 {
     use CompetitionCreator;
     use StructureEditorCreator;
@@ -20,8 +20,8 @@ final class PreviousNrOfDropoutsTest extends TestCase
     {
         $competition = $this->createCompetition();
         $structureEditor = $this->createStructureEditor();
-        $structure = $structureEditor->create($competition, [7,7]);
-        $rootRound = $structure->getRootRound();
+        $structure = $structureEditor->create($competition, [7, 7]);
+        $rootRound = $structure->getSingleCategory()->getRootRound();
         $firstRoundNumber = $structure->getFirstRoundNumber();
 
         self::assertSame($firstRoundNumber, $rootRound->getNumber());
@@ -36,14 +36,13 @@ final class PreviousNrOfDropoutsTest extends TestCase
         $round10and11 = $structureEditor->addChildRound($losersChildRound, QualifyTarget::Winners, [2]);
         $round13and14 = $structureEditor->addChildRound($losersChildRound, QualifyTarget::Losers, [2]);
 
-        $previousDropoutsMap = new PreviousNrOfDropoutsMap($rootRound);
-        self::assertSame(0, $previousDropoutsMap->get($round1and2));
-        self::assertSame(9, $previousDropoutsMap->get($round10and11));
-        self::assertSame(12, $previousDropoutsMap->get($round13and14));
-        self::assertSame(2, $previousDropoutsMap->get($winnersChildRound));
-        self::assertSame(11, $previousDropoutsMap->get($losersChildRound));
-        self::assertSame(5, $previousDropoutsMap->get($rootRound));
-
+        $roundRankService = new RoundRankService();
+        self::assertSame(0, $roundRankService->getRank($round1and2));
+        self::assertSame(9, $roundRankService->getRank($round10and11));
+        self::assertSame(12, $roundRankService->getRank($round13and14));
+        self::assertSame(2, $roundRankService->getRank($winnersChildRound));
+        self::assertSame(11, $roundRankService->getRank($losersChildRound));
+        self::assertSame(5, $roundRankService->getRank($rootRound));
         // (new StructureOutput()).output(structure, console);
     }
 }

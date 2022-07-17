@@ -27,7 +27,7 @@ final class PlanningMapperTest extends TestCase
 
         $structureEditor = $this->createStructureEditor();
         $structure = $structureEditor->create($competition, [4, 4]);
-        $rootRound = $structure->getRootRound();
+        $rootRound = $structure->getSingleCategory()->getRootRound();
         $firstRoundNumber = $rootRound->getNumber();
 
         $winnersRound = $structureEditor->addChildRound($rootRound, QualifyTarget::Winners, [2]);
@@ -64,7 +64,7 @@ final class PlanningMapperTest extends TestCase
 
         $structureEditor = $this->createStructureEditor();
         $structure = $structureEditor->create($competition, [4, 4]);
-        $rootRound = $structure->getRootRound();
+        $rootRound = $structure->getSingleCategory()->getRootRound();
         $firstRoundNumber = $rootRound->getNumber();
 
         $winnersRound = $structureEditor->addChildRound($rootRound, QualifyTarget::Winners, [2, 2]);

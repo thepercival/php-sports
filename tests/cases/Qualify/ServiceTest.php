@@ -30,7 +30,7 @@ class ServiceTest extends TestCase
 
         $structureEditor = $this->createStructureEditor();
         $structure = $structureEditor->create($competition, [5]);
-        $rootRound = $structure->getRootRound();
+        $rootRound = $structure->getSingleCategory()->getRootRound();
 
         $winnersRound = $structureEditor->addChildRound($rootRound, QualifyTarget::Winners, [2]);
         $losersRound = $structureEditor->addChildRound($rootRound, QualifyTarget::Losers, [2]);
@@ -75,7 +75,7 @@ class ServiceTest extends TestCase
         $structureEditor = $this->createStructureEditor();
         $structure = $structureEditor->create($competition, [3,3]);
         // $competitorMap = new CompetitorMap($this->createTeamCompetitors($competition, $firstRoundNumber));
-        $rootRound = $structure->getRootRound();
+        $rootRound = $structure->getSingleCategory()->getRootRound();
 
         (new GamesCreator())->createStructureGames($structure);
 
@@ -119,8 +119,8 @@ class ServiceTest extends TestCase
         $competition = $this->createCompetition();
 
         $structureEditor = $this->createStructureEditor();
-        $structure = $structureEditor->create($competition, [3,3,3]);
-        $rootRound = $structure->getRootRound();
+        $structure = $structureEditor->create($competition, [3, 3, 3]);
+        $rootRound = $structure->getSingleCategory()->getRootRound();
 
         $winnersRound = $structureEditor->addChildRound($rootRound, QualifyTarget::Winners, [4]);
         $losersRound = $structureEditor->addChildRound($rootRound, QualifyTarget::Losers, [4]);
@@ -202,8 +202,8 @@ class ServiceTest extends TestCase
         $competition = $this->createCompetition();
 
         $structureEditor = $this->createStructureEditor();
-        $structure = $structureEditor->create($competition, [3,3,3]);
-        $rootRound = $structure->getRootRound();
+        $structure = $structureEditor->create($competition, [3, 3, 3]);
+        $rootRound = $structure->getSingleCategory()->getRootRound();
 
         $winnersRound = $structureEditor->addChildRound($rootRound, QualifyTarget::Winners, [4]);
 
@@ -239,8 +239,8 @@ class ServiceTest extends TestCase
         $competition = $this->createCompetition();
 
         $structureEditor = $this->createStructureEditor();
-        $structure = $structureEditor->create($competition, [3,3]);
-        $rootRound = $structure->getRootRound();
+        $structure = $structureEditor->create($competition, [3, 3]);
+        $rootRound = $structure->getSingleCategory()->getRootRound();
 
         $winnersRound = $structureEditor->addChildRound($rootRound, QualifyTarget::Winners, [3]);
         $losersRound = $structureEditor->addChildRound($rootRound, QualifyTarget::Losers, [3]);
@@ -276,7 +276,7 @@ class ServiceTest extends TestCase
 
         $structureEditor = $this->createStructureEditor();
         $structure = $structureEditor->create($competition, [3]);
-        $rootRound = $structure->getRootRound();
+        $rootRound = $structure->getSingleCategory()->getRootRound();
 
         $winnersRound = $structureEditor->addChildRound($rootRound, QualifyTarget::Winners, [2]);
         $winnersPoule = $winnersRound->getPoule(1);

@@ -28,8 +28,8 @@ final class PlanningSchedulerTest extends TestCase
         $competition = $this->createCompetition();
 
         $structureEditor = $this->createStructureEditor();
-        $structure = $structureEditor->create($competition, [3,3]);
-        $rootRound = $structure->getRootRound();
+        $structure = $structureEditor->create($competition, [3, 3]);
+        $rootRound = $structure->getSingleCategory()->getRootRound();
         $structureEditor->addChildRound($rootRound, QualifyTarget::Winners, [2]);
 
         $firstRoundNumber = $structure->getFirstRoundNumber();
@@ -61,7 +61,7 @@ final class PlanningSchedulerTest extends TestCase
         $structureEditor = $this->createStructureEditor();
         $structure = $structureEditor->create($competition, [3,3]);
 
-        $rootRound = $structure->getRootRound();
+        $rootRound = $structure->getSingleCategory()->getRootRound();
         $structureEditor->addChildRound($rootRound, QualifyTarget::Winners, [2]);
         $firstRoundNumber = $structure->getFirstRoundNumber();
         $secondRoundNumber = $firstRoundNumber->getNext();
@@ -104,7 +104,7 @@ final class PlanningSchedulerTest extends TestCase
         $structureEditor = $this->createStructureEditor();
         $structure = $structureEditor->create($competition, [3,3]);
 
-        $rootRound = $structure->getRootRound();
+        $rootRound = $structure->getSingleCategory()->getRootRound();
         $structureEditor->addChildRound($rootRound, QualifyTarget::Winners, [2]);
         $firstRoundNumber = $structure->getFirstRoundNumber();
         $secondRoundNumber = $firstRoundNumber->getNext();
@@ -138,7 +138,7 @@ final class PlanningSchedulerTest extends TestCase
         $structureEditor = $this->createStructureEditor();
         $structure = $structureEditor->create($competition, [3,3]);
 
-        $rootRound = $structure->getRootRound();
+        $rootRound = $structure->getSingleCategory()->getRootRound();
         $structureEditor->addChildRound($rootRound, QualifyTarget::Winners, [2]);
         $firstRoundNumber = $structure->getFirstRoundNumber();
         $secondRoundNumber = $firstRoundNumber->getNext();
@@ -172,7 +172,7 @@ final class PlanningSchedulerTest extends TestCase
         $structureEditor = $this->createStructureEditor();
         $structure = $structureEditor->create($competition, [3,3]);
 
-        $rootRound = $structure->getRootRound();
+        $rootRound = $structure->getSingleCategory()->getRootRound();
         $structureEditor->addChildRound($rootRound, QualifyTarget::Winners, [2]);
         $firstRoundNumber = $structure->getFirstRoundNumber();
         $secondRoundNumber = $firstRoundNumber->getNext();
@@ -206,7 +206,7 @@ final class PlanningSchedulerTest extends TestCase
         $structureEditor = $this->createStructureEditor();
         $structure = $structureEditor->create($competition, [3,3]);
 
-        $rootRound = $structure->getRootRound();
+        $rootRound = $structure->getSingleCategory()->getRootRound();
         $structureEditor->addChildRound($rootRound, QualifyTarget::Winners, [2]);
         $firstRoundNumber = $structure->getFirstRoundNumber();
         $secondRoundNumber = $firstRoundNumber->getNext();
@@ -273,7 +273,7 @@ final class PlanningSchedulerTest extends TestCase
         $structureEditor = $this->createStructureEditor();
         $structure = $structureEditor->create($competition, [3, 3]);
 
-        $rootRound = $structure->getRootRound();
+        $rootRound = $structure->getSingleCategory()->getRootRound();
         $structureEditor->addChildRound($rootRound, QualifyTarget::Winners, [2]);
         $firstRoundNumber = $structure->getFirstRoundNumber();
         $secondRoundNumber = $firstRoundNumber->getNext();

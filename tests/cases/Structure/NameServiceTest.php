@@ -2,8 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Sports\Tests;
+namespace Sports\Tests\Structure;
 
+use Sports\Competitor\StartLocation;
+use Sports\Competitor\StartLocationMap;
 use Sports\Qualify\Target as QualifyTarget;
 use PHPUnit\Framework\TestCase;
 use Sports\Competition\Field;
@@ -12,7 +14,7 @@ use Sports\Output\StructureOutput;
 use Sports\Team;
 use Sports\Game\Against as AgainstGame;
 use Sports\TestHelper\CompetitionCreator;
-use Sports\NameService;
+use Sports\Structure\NameService;
 use Sports\Competitor\Team as TeamCompetitor;
 use Sports\Competition\Referee;
 use Sports\TestHelper\GamesCreator;
@@ -41,7 +43,7 @@ final class NameServiceTest extends TestCase
         $structureEditor = $this->createStructureEditor();
         $structure = $structureEditor->create($competition, [3,3,2]);
         $firstRoundNumber = $structure->getFirstRoundNumber();
-        $rootRound = $structure->getRootRound();
+        $rootRound = $structure->getSingleCategory()->getRootRound();
 
         $structureEditor->addChildRound($rootRound, QualifyTarget::Winners, [2,2]);
         $losersRound = $structureEditor->addChildRound($rootRound, QualifyTarget::Losers, [2, 2]);
@@ -57,36 +59,36 @@ final class NameServiceTest extends TestCase
         self::assertSame('2e ronde', $nameService->getRoundNumberName($secondRoundNumber)); // '2<sup>de</sup> ronde'
     }
 
-    public function testRoundName(): void
+    public function testRoundNameRootNeedsRankingUnequalDepth(): void
     {
         $nameService = new NameService();
         $competition = $this->createCompetition();
 
-        // root needs no ranking, unequal depth
-        {
-            $structureEditor = $this->createStructureEditor();
-            $structure = $structureEditor->create($competition, [2,2]);
-            $rootRound = $structure->getRootRound();
+        $structureEditor = $this->createStructureEditor();
+        $structure = $structureEditor->create($competition, [2, 2]);
+        $rootRound = $structure->getSingleCategory()->getRootRound();
 
-            $structureEditor->addChildRound($rootRound, QualifyTarget::Winners, [2]);
-            self::assertSame($nameService->getRoundName($rootRound), 'halve finale'); // '&frac12; finale'
+        $structureEditor->addChildRound($rootRound, QualifyTarget::Winners, [2]);
+        self::assertSame($nameService->getRoundName($rootRound), 'halve finale'); // '&frac12; finale'
 
-            $structureEditor->addChildRound($rootRound, QualifyTarget::Losers, [2]);
-            self::assertSame($nameService->getRoundName($rootRound), 'halve finale'); // '&frac12; finale'
-        }
+        $structureEditor->addChildRound($rootRound, QualifyTarget::Losers, [2]);
+        self::assertSame($nameService->getRoundName($rootRound), 'halve finale'); // '&frac12; finale'
+    }
 
-        // root needs ranking
-        {
-            $structureEditor2 = $this->createStructureEditor();
-            $structure2 = $structureEditor2->create($competition, [4, 4, 4, 4]);
-            $rootRound2 = $structure2->getRootRound();
+    public function testRoundNameRootNeedsNoRankingUnequalDepth(): void
+    {
+        $nameService = new NameService();
+        $competition = $this->createCompetition();
 
-            self::assertSame($nameService->getRoundName($rootRound2), '1e ronde'); // '1<sup>ste</sup> ronde'
+        $structureEditor = $this->createStructureEditor();
+        $structure = $structureEditor->create($competition, [4, 4, 4, 4]);
+        $rootRound = $structure->getSingleCategory()->getRootRound();
 
-            $rootRound2Child = $structureEditor2->addChildRound($rootRound2, QualifyTarget::Winners, [3]);
+        self::assertSame($nameService->getRoundName($rootRound), '1e ronde'); // '1<sup>ste</sup> ronde'
 
-            self::assertSame($nameService->getRoundName($rootRound2Child), '2e ronde'); // '2<sup>de</sup> ronde'
-        }
+        $rootRoundChild = $structureEditor->addChildRound($rootRound, QualifyTarget::Winners, [3]);
+
+        self::assertSame($nameService->getRoundName($rootRoundChild), '2e ronde'); // '2<sup>de</sup> ronde'
     }
 
     public function testRoundNameHtmlFractialNumber(): void
@@ -97,8 +99,8 @@ final class NameServiceTest extends TestCase
         // root needs ranking, depth 2
         {
             $structureEditor = $this->createStructureEditor();
-            $structure = $structureEditor->create($competition, [2,2,2,2,2,2,2,2]);
-            $rootRound = $structure->getRootRound();
+            $structure = $structureEditor->create($competition, [2, 2, 2, 2, 2, 2, 2, 2]);
+            $rootRound = $structure->getSingleCategory()->getRootRound();
 
             $winnersRound = $structureEditor->addChildRound($rootRound, QualifyTarget::Winners, [4,4]);
             $losersRound = $structureEditor->addChildRound($rootRound, QualifyTarget::Losers, [4,4]);
@@ -115,7 +117,7 @@ final class NameServiceTest extends TestCase
             self::assertSame('1/8 finale', $nameService->getRoundName($rootRound));
 
             self::assertSame(
-                '15e/16e' . ' plaats',
+                '15e/16e' . ' pl',
                 $nameService->getRoundName($losersFinal)
             ); // '15<sup>de</sup>/16<sup>de</sup>'
         }
@@ -135,7 +137,7 @@ final class NameServiceTest extends TestCase
             }
             array_push($poules, 2);
             $structure = $structureEditor->create($competition, $poules);
-            $rootRound = $structure->getRootRound();
+            $rootRound = $structure->getSingleCategory()->getRootRound();
 
             self::assertSame('A', $nameService->getPouleName($rootRound->getPoule(1), false));
             self::assertSame('poule A', $nameService->getPouleName($rootRound->getPoule(1), true));
@@ -156,18 +158,23 @@ final class NameServiceTest extends TestCase
         {
             $structureEditor = $this->createStructureEditor();
             $structure = $structureEditor->create($competition, [3]);
-            $rootRound = $structure->getRootRound();
+            $rootRound = $structure->getSingleCategory()->getRootRound();
 
             $firstPlace = $rootRound->getFirstPlace(QualifyTarget::Winners);
+            $startLocation = new StartLocation(
+                $structure->getSingleCategory()->getNumber(),
+                $firstPlace->getPouleNr(),
+                $firstPlace->getPlaceNr()
+            );
+
             $competitor = new TeamCompetitor(
                 $competition,
-                $firstPlace->getPouleNr(),
-                $firstPlace->getPlaceNr(),
+                $startLocation,
                 new Team($competition->getLeague()->getAssociation(), 'competitor 1')
             );
 
-            $competitorMap = new CompetitorMap([$competitor]);
-            $nameService = new NameService($competitorMap);
+            $startLocationMap = new StartLocationMap([$competitor]);
+            $nameService = new NameService($startLocationMap);
 
             self::assertSame('A1', $nameService->getPlaceName($firstPlace, false, false));
             self::assertSame('competitor 1', $nameService->getPlaceName($firstPlace, true, false));
@@ -190,19 +197,22 @@ final class NameServiceTest extends TestCase
         // basics
         {
             $structureEditor = $this->createStructureEditor();
-            $structure = $structureEditor->create($competition, [3,3,3]);
-            $rootRound = $structure->getRootRound();
+            $structure = $structureEditor->create($competition, [3, 3, 3]);
+            $rootRound = $structure->getSingleCategory()->getRootRound();
 
             $firstPlace = $rootRound->getFirstPlace(QualifyTarget::Winners);
-            $competitor = new TeamCompetitor(
-                $competition,
+            $startLocation = new StartLocation(
+                $structure->getSingleCategory()->getNumber(),
                 $firstPlace->getPouleNr(),
-                $firstPlace->getPlaceNr(),
+                $firstPlace->getPlaceNr()
+            );
+            $competitor = new TeamCompetitor(
+                $competition, $startLocation,
                 new Team($competition->getLeague()->getAssociation(), 'competitor 1')
             );
 
-            $competitorMap = new CompetitorMap([$competitor]);
-            $nameService = new NameService($competitorMap);
+            $startLocationMap = new StartLocationMap([$competitor]);
+            $nameService = new NameService($startLocationMap);
 
             $winnersRound = $structureEditor->addChildRound($rootRound, QualifyTarget::Winners, [2, 2]);
             $winnersWinnersRound = $structureEditor->addChildRound($winnersRound, QualifyTarget::Winners, [2]);
@@ -256,18 +266,21 @@ final class NameServiceTest extends TestCase
         {
             $structureEditor = $this->createStructureEditor();
             $structure = $structureEditor->create($competition, [2]);
-            $rootRound = $structure->getRootRound();
-
+            $rootRound = $structure->getSingleCategory()->getRootRound();
             $firstPlace = $rootRound->getFirstPlace(QualifyTarget::Winners);
+            $startLocation = new StartLocation(
+                $structure->getSingleCategory()->getNumber(),
+                $firstPlace->getPouleNr(),
+                $firstPlace->getPlaceNr()
+            );
             $competitor = new TeamCompetitor(
                 $competition,
-                $firstPlace->getPouleNr(),
-                $firstPlace->getPlaceNr(),
+                $startLocation,
                 new Team($competition->getLeague()->getAssociation(), 'competitor 1')
             );
 
-            $competitorMap = new CompetitorMap([$competitor]);
-            $nameService = new NameService($competitorMap);
+            $startLocationMap = new StartLocationMap([$competitor]);
+            $nameService = new NameService($startLocationMap);
 
             (new GamesCreator())->createStructureGames($structure);
 
@@ -292,13 +305,13 @@ final class NameServiceTest extends TestCase
         {
             $structureEditor = $this->createStructureEditor();
             $structure = $structureEditor->create($competition, [4, 3, 3]);
-            $rootRound = $structure->getRootRound();
+            $rootRound = $structure->getSingleCategory()->getRootRound();
 
             $nameService = new NameService();
 
             $winnersRound = $structureEditor->addChildRound($rootRound, QualifyTarget::Winners, [2, 2]);
             $losersRound = $structureEditor->addChildRound($rootRound, QualifyTarget::Losers, [3, 2]);
-//            (new StructureOutput())->output($structure);
+            // (new StructureOutput())->output($structure);
 
             $winnersSecondPlaceFirstPoule = $winnersRound->getPoule(1)->getPlace(2); // 1e2
             self::assertSame(
@@ -341,7 +354,7 @@ final class NameServiceTest extends TestCase
 //        {
 //            $structureEditor = $this->createStructureEditor();
 //            $structure = $structureEditor->create($competition, [4,4,4]);
-//            $rootRound = $structure->getRootRound();
+//            $rootRound = $structure->getSingleCategory()->getRootRound();
 
 //            $firstWinnersHorPoule = $rootRound->getHorizontalPoule(QualifyTarget::Winners, 1);
 //            self::assertSame($nameService->getHorizontalPouleName($firstWinnersHorPoule), 'nummers 1');
@@ -395,52 +408,4 @@ final class NameServiceTest extends TestCase
 //        }
 //    }
 
-    public function testRefereeName(): void
-    {
-        $competition = $this->createCompetition();
-        $competitionSport = $competition->getSingleSport();
-        $lastField = $competitionSport->getFields()->last();
-        self::assertInstanceOf(Field::class, $lastField);
-        $competitionSport->getFields()->removeElement($lastField);
-
-        // basics
-        {
-            $structureEditor = $this->createStructureEditor();
-            $structure = $structureEditor->create($competition, [2]);
-            $rootRound = $structure->getRootRound();
-
-            $firstPlace = $rootRound->getFirstPlace(QualifyTarget::Winners);
-            $competitor = new TeamCompetitor(
-                $competition,
-                $firstPlace->getPouleNr(),
-                $firstPlace->getPlaceNr(),
-                new Team($competition->getLeague()->getAssociation(), 'competitor 1')
-            );
-
-            $competitorMap = new CompetitorMap([$competitor]);
-            $nameService = new NameService($competitorMap);
-
-            (new GamesCreator())->createStructureGames($structure);
-
-            $game = $firstPlace->getPoule()->getAgainstGames()->first();
-            self::assertInstanceOf(AgainstGame::class, $game);
-            self::assertSame($nameService->getRefereeName($game), '111');
-
-            $referee = new Referee($competition, 'CDK');
-            $referee->setName('Co Du');
-
-            $game->setReferee($referee);
-
-            self::assertSame($nameService->getRefereeName($game), 'CDK');
-            self::assertSame($nameService->getRefereeName($game, false), 'CDK');
-            self::assertSame($nameService->getRefereeName($game, true), 'Co Du');
-
-            $game->setReferee(null);
-            $game->setRefereePlace($firstPlace);
-
-            self::assertSame($nameService->getRefereeName($game), 'competitor 1');
-            self::assertSame($nameService->getRefereeName($game, false), 'competitor 1');
-            self::assertSame($nameService->getRefereeName($game, true), 'competitor 1');
-        }
-    }
 }

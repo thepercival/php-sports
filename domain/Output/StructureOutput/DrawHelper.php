@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace Sports\Output\StructureOutput;
 
-use Sports\NameService;
+use Sports\Category;
+use Sports\Structure\NameService as StructureNameService;
 use Sports\Output\Coordinate;
 use Sports\Output\Grid\Align;
 use Sports\Output\Grid\Drawer;
@@ -12,7 +13,6 @@ use Sports\Poule;
 use Sports\Qualify\Group as QualifyGroup;
 use Sports\Qualify\Rule\Multiple as MultipleQualifyRule;
 use Sports\Qualify\Rule\Single as SingleQualifyRule;
-use Sports\Qualify\Target;
 use Sports\Qualify\Target as QualifyTarget;
 use Sports\Round;
 use Sports\Round\Number as RoundNumber;
@@ -21,40 +21,53 @@ use SportsHelpers\Output\Color;
 
 final class DrawHelper
 {
-    protected NameService $nameService;
+    protected StructureNameService $structureNameService;
     protected RangeCalculator $rangeCalculator;
 
     public function __construct(protected Drawer $drawer)
     {
-        $this->nameService = new NameService();
         $this->rangeCalculator = new RangeCalculator();
+        $this->structureNameService = new StructureNameService();
     }
 
     public function drawStructure(Structure $structure, Coordinate $origin): Coordinate
     {
+        $this->structureNameService = new StructureNameService();
+
         $roundNumberHeight = $this->rangeCalculator->getRoundNumberHeight($structure->getFirstRoundNumber());
-        $roundCoordinate = $this->getRoundStartCoordinate($origin, $structure->getFirstRoundNumber(), $structure);
-        $rounds = [$structure->getRootRound()];
-        foreach ($rounds as $round) {
-            $roundCoordinate = $this->drawRound($round, $roundCoordinate, $roundNumberHeight);
+        $roundCoordinate = $this->getCategoryStartCoordinate($origin, $structure->getFirstRoundNumber(), $structure);
+        foreach ($structure->getCategories() as $category) {
+            $roundCoordinate = $this->drawCategory($category, $roundCoordinate, $roundNumberHeight);
         }
         return $roundCoordinate;
     }
 
-    protected function getRoundStartCoordinate(Coordinate $origin, RoundNumber $roundNumber, Structure $structure): Coordinate
-    {
+    protected function getCategoryStartCoordinate(
+        Coordinate $origin,
+        RoundNumber $roundNumber,
+        Structure $structure
+    ): Coordinate {
         $structureWidth = $this->rangeCalculator->getStructureWidth($structure);
         $roundNumberWidth = $this->rangeCalculator->getRoundNumberWidth($roundNumber);
         $delta = (int)floor(($structureWidth - $roundNumberWidth) / 2);
         return $origin->addX($delta);
     }
 
-    public function drawRound(Round $round, Coordinate $origin, int $roundNumberHeight): Coordinate
+    protected function drawCategory(Category $category, Coordinate $origin, int $roundNumberHeight): Coordinate
     {
+        $newCoord = $this->drawRound($category->getRootRound(), $origin, $roundNumberHeight, $category->getName());
+        return $newCoord->addX(RangeCalculator::PADDING);
+    }
+
+    protected function drawRound(
+        Round $round,
+        Coordinate $origin,
+        int $roundNumberHeight,
+        string|null $catName = null
+    ): Coordinate {
         $this->drawRoundBorder($round, $origin, $roundNumberHeight);
-        if ($round->isRoot()) {
+        if ($catName !== null) {
             $width = $this->rangeCalculator->getRoundWidth($round);
-            $catName = 'Cat "?"';
             $catName = substr($catName, 0, $width - 4);
             $startCoord = $origin->addX((int)(($width - mb_strlen($catName)) / 2));
             $this->drawer->drawToRight($startCoord, $catName, Color::Cyan);
@@ -105,14 +118,14 @@ final class DrawHelper
     protected function drawPoule(Poule $poule, Coordinate $origin): Coordinate
     {
         $pouleWidth = $this->rangeCalculator->getPouleWidth($poule);
-        $pouleName = $this->nameService->getPouleName($poule, false);
+        $pouleName = $this->structureNameService->getPouleName($poule, false);
         $nextPouleCoordrinate = $this->drawer->drawCellToRight($origin, $pouleName, $pouleWidth, Align::Center);
 
         $this->drawer->drawLineToRight($origin->addY(1), $pouleWidth);
 
         $placeCoordinate = $origin->addY(2);
         foreach ($poule->getPlaces() as $place) {
-            $placeName = $this->nameService->getPlaceFromName($place, false);
+            $placeName = $this->structureNameService->getPlaceFromName($place, false);
             $this->drawer->drawCellToRight($placeCoordinate, $placeName, $pouleWidth, Align::Center);
             $placeCoordinate = $placeCoordinate->incrementY();
         }

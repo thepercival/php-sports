@@ -7,6 +7,7 @@ namespace Sports;
 use Exception;
 use InvalidArgumentException;
 use Sports\Competition\Sport as CompetitionSport;
+use Sports\Competitor\StartLocation;
 use Sports\Game\Against as AgainstGame;
 use Sports\Game\Place\Together as TogetherGamePlace;
 use Sports\Game\Together as TogetherGame;
@@ -187,11 +188,15 @@ class Place extends PlaceLocation
         $this->qualifiedPlace = $place;
     }
 
-    public function getStartLocation(): PlaceLocation|null
+    public function getStartLocation(): StartLocation|null
     {
         if ($this->qualifiedPlace === null) {
             if ($this->getRound()->isRoot()) {
-                return $this;
+                return new StartLocation(
+                    $this->getRound()->getCategory()->getNumber(),
+                    $this->getPouleNr(),
+                    $this->getPlaceNr()
+                );
             }
             return null;
         }

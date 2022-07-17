@@ -45,7 +45,7 @@ class Serializer
         $dummyCreator = new DummyCreator();
         $serializerBuilder->configureHandlers(
             function (HandlerRegistry $registry) use ($dummyCreator): void {
-                $registry->registerSubscribingHandler(new StructureSerializationHandler($dummyCreator));
+                $registry->registerSubscribingHandler(new StructureSerializationHandler());
                 $registry->registerSubscribingHandler(new RoundNumberSerializationHandler($dummyCreator));
                 $registry->registerSubscribingHandler(new RoundSerializationHandler($dummyCreator));
                 // $registry->registerSubscribingHandler(new QualifyGroupSerializationHandler());

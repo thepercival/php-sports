@@ -9,7 +9,7 @@ use Sports\Place;
 use Sports\Qualify\Rule\Multiple as MultipleQualifyRule;
 use Sports\Qualify\Rule\Single as SingleQualifyRule;
 use Sports\Round;
-use Sports\Round\Number as RoundNumber;
+use Sports\Structure\Cell as StructureCell;
 use SportsHelpers\Identifiable;
 
 class Group extends Identifiable
@@ -22,7 +22,7 @@ class Group extends Identifiable
     public function __construct(
         protected Round $parentRound,
         protected Target $target,
-        RoundNumber $nextRoundNumber,
+        StructureCell $nextStructureCell,
         int|null $numberAsValue = null
     ) {
         if ($numberAsValue !== null) {
@@ -32,7 +32,7 @@ class Group extends Identifiable
             $this->number = $parentRound->getTargetQualifyGroups($target)->count() + 1;
             $this->addQualifyGroup($parentRound);
         }
-        $this->childRound = new Round($nextRoundNumber, $this);
+        $this->childRound = new Round($nextStructureCell, $this);
     }
 
     public function getTarget(): Target

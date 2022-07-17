@@ -4,9 +4,10 @@ declare(strict_types=1);
 
 namespace Sports\Structure;
 
+use Sports\Category;
 use Sports\Qualify\Target as QualifyTarget;
 use Exception;
-use Sports\NameService;
+use Sports\Structure\NameService as StructureNameService;
 use Sports\Place;
 use Sports\Qualify\Group as QualifyGroup;
 use Sports\Poule;
@@ -18,11 +19,11 @@ use SportsHelpers\PlaceRanges;
 
 class Validator
 {
-    protected NameService $nameService;
+    protected StructureNameService $structureNameService;
 
     public function __construct()
     {
-        $this->nameService = new NameService();
+        $this->structureNameService = new StructureNameService();
     }
 
     public function checkValidity(Competition $competition, Structure $structure = null, PlaceRanges|null $placeRanges): void
@@ -33,11 +34,33 @@ class Validator
             throw new \Exception($prefix . " heeft geen rondenummers", E_ERROR);
         }
 
-        $firstRoundNumber = $structure->getFirstRoundNumber();
+        $this->checkCategoryValidity($structure->getCategories());
 
+        $firstRoundNumber = $structure->getFirstRoundNumber();
         $this->checkRoundNumberValidity($firstRoundNumber, $competition);
         foreach ($firstRoundNumber->getRounds() as $round) {
             $this->checkRoundValidity($round, $placeRanges);
+        }
+    }
+
+    /**
+     * @param list<Category> $categories
+     * @throws Exception
+     */
+    public function checkCategoryValidity(array $categories): void
+    {
+        if (count($categories) === 0) {
+            throw new Exception('de structuur bevat geen categorien', E_ERROR);
+        }
+
+        $categoryNr = 1;
+        foreach ($categories as $category) {
+            if ($category->getNumber() !== $categoryNr++) {
+                throw new Exception('de categorie-nummers zijn niet opvolgend', E_ERROR);
+            }
+
+            // throws if null
+            $category->getRootRound();
         }
     }
 
@@ -46,7 +69,7 @@ class Validator
         Competition $competition
     ): void {
         $prefix = "rondenummer " . $roundNumber->getNumber() . $this->getIdOutput($roundNumber->getId());
-        if ($roundNumber->getRounds()->count() === 0) {
+        if (count($roundNumber->getRounds()) === 0) {
             throw new Exception($prefix . " bevat geen ronden", E_ERROR);
         }
 
@@ -166,10 +189,10 @@ class Validator
     {
         $this->checkPlacesNumberGap(array_values($poule->getPlaces()->toArray()));
         if ($poule->getPlaces()->count() === 0) {
-            $prefix = "poule " . $this->getIdOutput($poule->getId()) . "(" . $this->nameService->getPouleName(
-                $poule,
-                false
-            ) . ", rondenummer: " . $poule->getRound()->getNumberAsValue() . " )";
+            $prefix = "poule " . $this->getIdOutput($poule->getId()) . "(" . $this->structureNameService->getPouleName(
+                    $poule,
+                    false
+                ) . ", rondenummer: " . $poule->getRound()->getNumberAsValue() . " )";
             throw new Exception($prefix . " bevat geen plekken", E_ERROR);
         }
     }

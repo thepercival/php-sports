@@ -2,13 +2,16 @@
 
 namespace Sports\Ranking\Item;
 
+use Sports\Competitor\StartLocationInterface;
 use Sports\Place\Location as PlaceLocation;
 
 class End
 {
-    public function __construct(private int $uniqueRank, private int $rank, private PlaceLocation|null $placeLocation = null)
-    {
-        $this->placeLocation = $placeLocation;
+    public function __construct(
+        private int $uniqueRank,
+        private int $rank,
+        private StartLocationInterface|null $startLocation = null
+    ) {
     }
 
     public function getUniqueRank(): int
@@ -21,8 +24,8 @@ class End
         return $this->rank;
     }
 
-    public function getPlaceLocation(): PlaceLocation|null
+    public function getStartLocation(): StartLocationInterface|null
     {
-        return $this->placeLocation;
+        return $this->startLocation;
     }
 }

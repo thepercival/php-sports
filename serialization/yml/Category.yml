@@ -1,0 +1,17 @@
+Sports\Category:
+  exclusion_policy: ALL
+  exclude: false
+  access_type: property
+
+  properties:
+    name:
+      type: string
+    number:
+      type: integer
+  virtual_properties:
+    getFirstStructureCell:
+      type: Sports\Structure\Cell
+      serialized_name: firstStructureCell
+    getRootRound:
+      type: Sports\Round
+      serialized_name: rootRound

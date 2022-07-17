@@ -6,6 +6,7 @@ namespace Sports\Output\Game;
 
 use Psr\Log\LoggerInterface;
 use Sports\Competitor\Map as CompetitorMap;
+use Sports\Competitor\StartLocationMap;
 use Sports\Output\Game as OutputGame;
 use Sports\Game\Together as TogetherGame;
 use Sports\Game\Place\Together as TogetherGamePlace;
@@ -13,9 +14,9 @@ use Sports\Game\State as GameState;
 
 class Together extends OutputGame
 {
-    public function __construct(CompetitorMap $competitorMap = null, LoggerInterface $logger = null)
+    public function __construct(StartLocationMap $startLocationMap = null, LoggerInterface $logger = null)
     {
-        parent::__construct($competitorMap, $logger);
+        parent::__construct($startLocationMap, $logger);
     }
 
     public function output(TogetherGame $game, string $prefix = null): void

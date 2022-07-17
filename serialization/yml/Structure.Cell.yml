@@ -1,0 +1,15 @@
+Sports\Structure\Cell:
+  exclusion_policy: ALL
+  exclude: false
+  access_type: property
+
+  virtual_properties:
+    getNext:
+      type: Sports\Structure\Cell
+      serialized_name: next
+#  properties:
+#    next:
+#      type: Sports\Structure\Cell
+#      access_type: public_method
+#      accessor:
+#        getter: getNext

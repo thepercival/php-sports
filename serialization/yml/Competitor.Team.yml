@@ -2,6 +2,8 @@ Sports\Competitor\Team:
   exclusion_policy: ALL
   exclude: false
   properties:
+    id:
+      type: integer
     team:
       type: Sports\Team
     abbreviation:

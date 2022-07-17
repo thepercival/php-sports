@@ -17,12 +17,12 @@ use Sports\Poule\Horizontal as HorizontalPoule;
 use Sports\Qualify\AgainstConfig as AgainstQualifyConfig;
 use Sports\Qualify\Group as QualifyGroup;
 use Sports\Qualify\Target as QualifyTarget;
+use Sports\Round\Number as RoundNumber;
+use Sports\Structure\Cell as StructureCell;
 use Sports\Score\Config as ScoreConfig;
 use Sports\Structure\PathNode as StructurePathNode;
 use SportsHelpers\Identifiable;
 use SportsHelpers\PouleStructure\Balanced as BalancedPouleStructure;
-
-use function Amp\Iterator\toArray;
 
 class Round extends Identifiable
 {
@@ -67,13 +67,18 @@ class Round extends Identifiable
     public const RANK_NUMBER_POULE = 6;
     public const RANK_POULE_NUMBER = 7;
 
+    protected RoundNumber|null $numberDep = null; // @TODO CDK REMOVE
+
     public function __construct(
-        protected Round\Number $number,
+        protected StructureCell $structureCell,
         protected QualifyGroup|null $parentQualifyGroup = null
     ) {
-        if (!$number->getRounds()->contains($this)) {
-            $number->getRounds()->add($this) ;
+        if (!$structureCell->getRounds()->contains($this)) {
+            $structureCell->getRounds()->add($this);
         }
+//        if (!$category->getRounds()->contains($this)) {
+//            $category->getRounds()->add($this);
+//        }
         $this->structurePathNode = $this->constructStructurePathNode();
         $this->poules = new ArrayCollection();
         $this->qualifyGroups = new ArrayCollection();
@@ -83,14 +88,24 @@ class Round extends Identifiable
         $this->losersHorizontalPoules = new ArrayCollection();
     }
 
-    public function getNumber(): Round\Number
+    public function getStructureCell(): StructureCell
     {
-        return $this->number;
+        return $this->structureCell;
+    }
+
+    public function getCategory(): Category
+    {
+        return $this->getStructureCell()->getCategory();
+    }
+
+    public function getNumber(): RoundNumber
+    {
+        return $this->structureCell->getRoundNumber();
     }
 
     public function getNumberAsValue(): int
     {
-        return $this->number->getNumber();
+        return $this->getNumber()->getNumber();
     }
 
     public function getName(): string|null
@@ -104,7 +119,10 @@ class Round extends Identifiable
             $name = null;
         }
         if ($name !== null && strlen($name) > self::MAX_LENGTH_NAME) {
-            throw new InvalidArgumentException("de naam mag maximaal ".self::MAX_LENGTH_NAME." karakters bevatten", E_ERROR);
+            throw new InvalidArgumentException(
+                'de naam mag maximaal ' . self::MAX_LENGTH_NAME . ' karakters bevatten',
+                E_ERROR
+            );
         }
         $this->name = $name;
     }
@@ -158,9 +176,9 @@ class Round extends Identifiable
         return $this->qualifyGroups->removeElement($qualifyGroup);
     }
 
-    public function clearRoundAndQualifyGroups(QualifyTarget $target): void
+    /*public function clearRoundAndQualifyGroups(QualifyTarget $target): void
     {
-        $nextRoundNumber = $this->number->getNext();
+        $nextRoundNumber = $this->getStructureCell()->getRoundNumber()->getNext();
         $rounds = $nextRoundNumber !== null ? $nextRoundNumber->getRounds() : null;
         $qualifyGroupsToRemove = $this->getTargetQualifyGroups($target);
         foreach ($qualifyGroupsToRemove as $qualifyGroupToRemove) {
@@ -169,7 +187,7 @@ class Round extends Identifiable
                 $rounds->removeElement($qualifyGroupToRemove->getChildRound());
             }
         }
-    }
+    }*/
 
 
 //    protected function sortQualifyGroups() {
@@ -403,7 +421,6 @@ class Round extends Identifiable
             $games = array_merge($games, $poule->getGames());
         }
         return array_values($games);
-        ;
     }
 
     /**
@@ -470,14 +487,16 @@ class Round extends Identifiable
 
     public function getCompetition(): Competition
     {
-        return $this->number->getCompetition();
+        return $this->getStructureCell()->getRoundNumber()->getCompetition();
     }
 
     public function getCompetitionSport(Sport $sport): ?CompetitionSport
     {
-        $filtered = $this->number->getCompetitionSports()->filter(function (CompetitionSport $competitionSport) use ($sport): bool {
-            return $competitionSport->getSport() === $sport;
-        });
+        $filtered = $this->getCategory()->getCompetitionSports()->filter(
+            function (CompetitionSport $competitionSport) use ($sport): bool {
+                return $competitionSport->getSport() === $sport;
+            }
+        );
         $first = $filtered->first();
         return $first !== false ? $first : null;
     }
@@ -526,11 +545,13 @@ class Round extends Identifiable
      */
     public function getValidScoreConfigs(): array
     {
-        return array_values($this->number->getCompetitionSports()->map(
-            function (CompetitionSport $competitionSport): ScoreConfig {
-                return $this->getValidScoreConfig($competitionSport);
-            }
-        )->toArray());
+        return array_values(
+            $this->getCategory()->getCompetitionSports()->map(
+                function (CompetitionSport $competitionSport): ScoreConfig {
+                    return $this->getValidScoreConfig($competitionSport);
+                }
+            )->toArray()
+        );
     }
 
     /**
@@ -586,11 +607,13 @@ class Round extends Identifiable
      */
     public function getValidAgainstQualifyConfigs(): array
     {
-        return array_values($this->number->getCompetitionSports()->map(
-            function (CompetitionSport $competitionSport): AgainstQualifyConfig {
-                return $this->getValidAgainstQualifyConfig($competitionSport);
-            },
-        )->toArray());
+        return array_values(
+            $this->getStructureCell()->getRoundNumber()->getCompetitionSports()->map(
+                function (CompetitionSport $competitionSport): AgainstQualifyConfig {
+                    return $this->getValidAgainstQualifyConfig($competitionSport);
+                },
+            )->toArray()
+        );
     }
 
     public function getStructurePathNode(): StructurePathNode
@@ -623,10 +646,10 @@ class Round extends Identifiable
 
     public function detach(): void
     {
-        $rounds = $this->getNumber()->getRounds();
+        $rounds = $this->getStructureCell()->getRounds();
         $rounds->removeElement($this);
         if ($rounds->count() === 0) {
-            $this->getNumber()->detach();
+            $this->getStructureCell()->detach();
         }
         $this->parentQualifyGroup = null;
     }

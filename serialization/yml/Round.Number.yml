@@ -11,5 +11,5 @@ Sports\Round\Number:
       type: Sports\Round\Number
     planningConfig:
       type: Sports\Planning\Config
-    gameAmountConfigs:
+    gameAmountConfigs: #naar ronden?
       type: ArrayCollection<Sports\Planning\GameAmountConfig>

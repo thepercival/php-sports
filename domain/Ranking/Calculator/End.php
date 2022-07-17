@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Sports\Ranking\Calculator;
 
 use Closure;
+use Sports\Category;
 use Sports\Game\State as GameState;
 use Sports\Place;
 use Sports\Poule\Horizontal as HorizontalPoule;
@@ -13,13 +14,12 @@ use Sports\Qualify\Target as QualifyTarget;
 use Sports\Ranking\Calculator\Round as RoundRankingCalculator;
 use Sports\Ranking\Item\End as EndRankingItem;
 use Sports\Round;
-use Sports\Structure;
 
 class End
 {
     private int $currentRank = 1;
 
-    public function __construct(private Structure $structure)
+    public function __construct(private Category $category)
     {
     }
 
@@ -45,7 +45,7 @@ class End
             }
             return $items;
         };
-        return $getItems($this->structure->getRootRound());
+        return $getItems($this->category->getRootRound());
     }
 
     /**

@@ -66,7 +66,7 @@ class PlanningScheduler
             $firstGamePeriod = $this->moveToFirstAvailableSlot(new Period($startDateTime, $endDateTime));
             return $firstGamePeriod->getStartDate();
         }
-        $previousRoundLastStartDateTime = $previousRoundNumber->getLastStartDateTime();
+        $previousRoundLastStartDateTime = $previousRoundNumber->getLastGameStartDateTime();
         $previousPlanningConfig = $previousRoundNumber->getValidPlanningConfig();
         $previousRoundEnd = $previousRoundLastStartDateTime->modify(
             '+' . $previousPlanningConfig->getMaxNrOfMinutesPerGame() . ' minutes'

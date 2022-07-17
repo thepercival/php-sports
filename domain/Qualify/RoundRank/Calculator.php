@@ -2,24 +2,25 @@
 
 declare(strict_types=1);
 
-namespace Sports\Ranking\Map;
+namespace Sports\Qualify\RoundRank;
 
+use Sports\Category;
 use Sports\Round;
 use Sports\Qualify\Target as QualifyTarget;
 
-class PreviousNrOfDropouts
+class Calculator
 {
     /**
      * @var array<string, int>
      */
     protected array $map;
 
-    public function __construct(Round $rootRound)
+    public function __construct(Category $category)
     {
-        $this->constructMap($rootRound->getRoot());
+        $this->constructMap($category->getRootRound());
     }
 
-    public function get(Round $round): int
+    public function getRank(Round $round): int
     {
         return $this->map[(string)$round->getStructurePathNode()];
     }

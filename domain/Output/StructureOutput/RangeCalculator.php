@@ -53,7 +53,7 @@ final class RangeCalculator
             }
             $roundNumber = $roundNumber->getNext();
         }
-        return $maxWidth;
+        return $maxWidth + ((count($structure->getCategories()) - 1) * RangeCalculator::PADDING);
     }
 
     public function getRoundNumberHeight(RoundNumber $roundNumber): int

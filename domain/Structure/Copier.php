@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Sports\Structure;
 
 use Exception;
+use Sports\Category;
 use Sports\Competition;
 use Sports\Competition\Sport as CompetitionSport;
 use Sports\Place;
@@ -45,10 +46,13 @@ class Copier
     {
         $newFirstRoundNumber = new RoundNumber($newCompetition);
         $this->copyRoundNumber($structure->getFirstRoundNumber(), $newFirstRoundNumber);
-        $newRootRound = new Round($newFirstRoundNumber);
-        $this->copyRound($structure->getRootRound(), $newRootRound);
-        $newStructure = new Structure($newFirstRoundNumber, $newRootRound);
-        return $newStructure;
+        $newCategories = [];
+        foreach ($structure->getCategories() as $category) {
+            $newCategory = new Category($newCompetition, $category->getName(), $category->getNumber());
+            $newCategories[] = $newCategory;
+            $this->copyCategory($category, $newCategory, $newFirstRoundNumber);
+        }
+        return new Structure($newCategories, $newFirstRoundNumber);
     }
 
     protected function copyRoundNumber(RoundNumber $roundNumber, RoundNumber $newRoundNumber): void
@@ -92,7 +96,28 @@ class Copier
         throw new Exception("een sport kon niet gevonden worden", E_ERROR);
     }
 
-    protected function copyRound(Round $round, Round $newRound): void
+    protected function copyCategory(Category $category, Category $newCategory, RoundNumber $firstRoundNumber): void
+    {
+        $this->deepCopyStructureCell($category, $newCategory, $firstRoundNumber);
+
+        $newRootRound = new Round($newCategory->getFirstStructureCell());
+        $this->deepCopyRound($category->getRootRound(), $newRootRound);
+    }
+
+    protected function deepCopyStructureCell(
+        Category $category,
+        Category $newCategory,
+        RoundNumber $newRoundNumber
+    ): void {
+        new Cell($newCategory, $newRoundNumber);
+
+        $nextNewRoundNumber = $newRoundNumber->getNext();
+        if ($nextNewRoundNumber !== null) {
+            $this->deepCopyStructureCell($category, $newCategory, $nextNewRoundNumber);
+        }
+    }
+
+    protected function deepCopyRound(Round $round, Round $newRound): void
     {
         $this->copyRoundHelper(
             $newRound,
@@ -102,15 +127,15 @@ class Copier
         );
         $this->horPouleCreator->create($newRound);
 
-        $newNextRoundNumber = $newRound->getNumber()->getNext();
-        if ($newNextRoundNumber === null) {
+        $newNextCell = $newRound->getStructureCell()->getNext();
+        if ($newNextCell === null) {
             return;
         }
         foreach ($round->getQualifyGroups() as $qualifyGroup) {
-            $newQualifyGroup = new QualifyGroup($newRound, $qualifyGroup->getTarget(), $newNextRoundNumber);
+            $newQualifyGroup = new QualifyGroup($newRound, $qualifyGroup->getTarget(), $newNextCell);
             $newQualifyGroup->setNumber($qualifyGroup->getNumber());
             // $qualifyGroup->setNrOfHorizontalPoules( $qualifyGroupSerialized->getNrOfHorizontalPoules() );
-            $this->copyRound($qualifyGroup->getChildRound(), $newQualifyGroup->getChildRound());
+            $this->deepCopyRound($qualifyGroup->getChildRound(), $newQualifyGroup->getChildRound());
         }
         $this->qualifyRuleCreator->create($newRound, null);
     }

@@ -140,12 +140,12 @@ class Against extends GameBase
         return null;
     }
 
-    /**
-     * @param CompetitorMap $competitorMap
-     * @param AgainstSide|null $side
-     * @return list<Competitor|null>
-     */
-    public function getCompetitors(CompetitorMap $competitorMap, AgainstSide $side = null): array
+//    /**
+//     * @param CompetitorMap $competitorMap
+//     * @param AgainstSide|null $side
+//     * @return list<Competitor|null>
+//     */
+    /*public function getCompetitors(CompetitorMap $competitorMap, AgainstSide $side = null): array
     {
         return array_map(
             function (AgainstGamePlace $gamePlace) use ($competitorMap): Competitor|null {
@@ -153,7 +153,7 @@ class Against extends GameBase
             },
             $this->getSidePlaces($side)
         );
-    }
+    }*/
 
     public function getFinalPhase(): int
     {
