@@ -243,7 +243,7 @@ final class PlanningSchedulerTest extends TestCase
         $structureEditor = $this->createStructureEditor();
         $structure = $structureEditor->create($competition, [3, 3]);
 
-        $rootRound = $structure->getRootRound();
+        // $rootRound = $structure->getRootRound();
         $firstRoundNumber = $structure->getFirstRoundNumber();
 
         (new GamesCreator())->createStructureGames($structure, [], new SportRange(2, 2));
@@ -263,7 +263,7 @@ final class PlanningSchedulerTest extends TestCase
         $planningScheduler = new PlanningScheduler([$blockedPeriod, $blockedPeriod2]);
         $planningScheduler->rescheduleGames($firstRoundNumber);
 
-        self::assertEquals($firstRoundNumber->getFirstStartDateTime(), $blockedPeriod2->getEndDate());
+        self::assertEquals($firstRoundNumber->getFirstGameStartDateTime(), $blockedPeriod2->getEndDate());
     }
 
     public function testRoundNumberNoGames(): void

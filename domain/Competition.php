@@ -112,6 +112,19 @@ class Competition extends Identifiable
         return $this->categories;
     }
 
+    public function getSingleCategory(): Category
+    {
+        $categories = $this->getCategories();
+        if (count($categories) !== 1) {
+            throw new \Exception('There must be 1 category', E_ERROR);
+        }
+        $category = $categories->first();
+        if ($category === false || $category->getNumber() !== 1) {
+            throw new \Exception('There must be at least 1 category', E_ERROR);
+        }
+        return $category;
+    }
+
     /**
      * @return Collection<int|string, Round\Number>
      */
