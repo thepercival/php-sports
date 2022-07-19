@@ -146,7 +146,8 @@ class Repository extends GameRepository
         $query = $this->createQueryBuilder('g')
             ->join("g.poule", "p")
             ->join("p.round", "r")
-            ->join("r.number", "rn")
+            ->join("r.structureCell", "sc")
+            ->join("sc.roundNumber", "rn")
             ->where('rn.competition = :competition')
             ->setParameter('competition', $competition);
         ;
@@ -173,7 +174,8 @@ class Repository extends GameRepository
             ->join("gp.game", "g")
             ->join("g.poule", "p")
             ->join("p.round", "r")
-            ->join("r.number", "rn")
+            ->join("r.structureCell", "sc")
+            ->join("sc.roundNumber", "rn")
             ->where('rn.competition = :competition')
             ->setParameter('competition', $competition);
         ;
@@ -222,8 +224,8 @@ class Repository extends GameRepository
         $query = $this->createQueryBuilder('g')
             ->join("g.poule", "p")
             ->join("p.round", "r")
-            ->join("r.number", "rn")
-            ->where('rn.roundNumber = :roundNumber')
+            ->join("r.structureCell", "sc")
+            ->where('sc.roundNumber = :roundNumber')
             ->setParameter('roundNumber', $roundNumber);
         ;
         return $this->applyExtraFilters($query, $gameStates, $gameRoundNumber);
