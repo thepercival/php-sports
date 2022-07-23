@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Sports\Round;
 
-use _PHPStan_43cb6abb8\Nette\Utils\DateTime;
 use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
