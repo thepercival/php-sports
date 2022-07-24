@@ -6,6 +6,7 @@ namespace Sports\Competition;
 
 use DateTimeImmutable;
 use Exception;
+use League\Period\Period;
 use Sports\Competition;
 use Sports\League;
 use Sports\Ranking\AgainstRuleSet;
@@ -42,18 +43,26 @@ class Service
     /**
      * @param Competition $competition
      * @param DateTimeImmutable $startDateTime
-     * @return Competition
+     * @return Period|null
      * @throws Exception
      */
-    public function changeStartDateTime(Competition $competition, DateTimeImmutable $startDateTime): Competition
+    public function changeStartDateTime(Competition $competition, DateTimeImmutable $startDateTime): Period|null
     {
         if (!$competition->getSeason()->getPeriod()->contains($startDateTime)) {
             throw new Exception("de startdatum van de competitie valt buiten het seizoen", E_ERROR);
         }
 
+        $periodStart = $competition->getStartDateTime();
+        $periodEnd = $startDateTime;
+        if ($periodEnd->getTimestamp() < $periodStart->getTimestamp()) {
+            $period = new Period($periodStart, $periodEnd);
+        } else {
+            $period = null;
+        }
+
         $competition->setStartDateTime($startDateTime);
 
-        return $competition;
+        return $period;
     }
 
     /**

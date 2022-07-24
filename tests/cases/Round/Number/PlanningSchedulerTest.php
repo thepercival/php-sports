@@ -248,7 +248,7 @@ final class PlanningSchedulerTest extends TestCase
 
         (new GamesCreator())->createStructureGames($structure, [], new SportRange(2, 2));
 
-        (new \Sports\Output\Games())->outputRoundNumber($firstRoundNumber);
+        // (new \Sports\Output\Games())->outputRoundNumber($firstRoundNumber);
 
         $competitionStartDateTime = $competition->getStartDateTime();
 
