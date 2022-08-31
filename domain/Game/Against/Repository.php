@@ -88,6 +88,28 @@ class Repository extends GameRepository
      * @param list<GameState>|null $gameStates
      * @param int|null $gameRoundNumber
      * @param Period|null $period
+     * @return list<int>
+     */
+    public function getCompetitionGameRoundNumbers(
+        Competition $competition,
+        array $gameStates = null,
+        Period $period = null
+    ): array {
+        $qb = $this->getCompetitionGamesQuery($competition, $gameStates, null, $period);
+        $qb = $qb->orderBy('g.startDateTime', 'ASC');
+        /** @var list<AgainstGame> $games */
+        $games = $qb->getQuery()->getResult();
+        $gameRoundNumbers = array_map(function (AgainstGame $game): int {
+            return $game->getGameRoundNumber();
+        }, $games);
+        return array_values(array_unique($gameRoundNumbers, SORT_NUMERIC));
+    }
+
+    /**
+     * @param Competition $competition
+     * @param list<GameState>|null $gameStates
+     * @param int|null $gameRoundNumber
+     * @param Period|null $period
      * @return bool
      */
     public function hasCompetitionGames(
