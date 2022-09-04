@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Sports\Tests\Team\Role;
 
 use League\Period\Period;
+use Monolog\Logger;
 use Sports\Association;
 use Sports\Person;
 use Sports\Season;
@@ -15,7 +16,7 @@ class EditorTest extends \PHPUnit\Framework\TestCase
 {
     public function testGameDateTimeOutsideSeason(): void
     {
-        $editor = new Team\Role\Editor();
+        $editor = new Team\Role\Editor(new Logger('tmp'));
 
         $association = new Association('testAssociation');
         $team = new Team($association, 'testTeam');
@@ -37,7 +38,7 @@ class EditorTest extends \PHPUnit\Framework\TestCase
 
     public function testCreateWithoutOther(): void
     {
-        $editor = new Team\Role\Editor();
+        $editor = new Team\Role\Editor(new Logger('tmp'));
 
         $association = new Association('testAssociation');
         $team = new Team($association, 'testTeam');
@@ -57,7 +58,7 @@ class EditorTest extends \PHPUnit\Framework\TestCase
 
     public function testOverlappingSameTeamSameLine(): void
     {
-        $editor = new Team\Role\Editor();
+        $editor = new Team\Role\Editor(new Logger('tmp'));
 
         $association = new Association('testAssociation');
         $team = new Team($association, 'testTeam');
@@ -79,7 +80,7 @@ class EditorTest extends \PHPUnit\Framework\TestCase
 
     public function testOverlappingSameTeamOtherLine(): void
     {
-        $editor = new Team\Role\Editor();
+        $editor = new Team\Role\Editor(new Logger('tmp'));
 
         $association = new Association('testAssociation');
         $team = new Team($association, 'testTeam');
@@ -101,7 +102,7 @@ class EditorTest extends \PHPUnit\Framework\TestCase
 
     public function testOverlappingOtherTeamSameLine(): void
     {
-        $editor = new Team\Role\Editor();
+        $editor = new Team\Role\Editor(new Logger('tmp'));
 
         $association = new Association('testAssociation');
         $team = new Team($association, 'testTeam');
@@ -125,7 +126,7 @@ class EditorTest extends \PHPUnit\Framework\TestCase
 
     public function testOneBeforeSameTeamSameLine(): void
     {
-        $editor = new Team\Role\Editor();
+        $editor = new Team\Role\Editor(new Logger('tmp'));
 
         $association = new Association('testAssociation');
         $team = new Team($association, 'testTeam');
@@ -149,7 +150,7 @@ class EditorTest extends \PHPUnit\Framework\TestCase
 
     public function testOneBeforeSameTeamOtherLine(): void
     {
-        $editor = new Team\Role\Editor();
+        $editor = new Team\Role\Editor(new Logger('tmp'));
 
         $association = new Association('testAssociation');
         $team = new Team($association, 'testTeam');
@@ -171,7 +172,7 @@ class EditorTest extends \PHPUnit\Framework\TestCase
 
     public function testOneBeforeOtherTeamSameLine(): void
     {
-        $editor = new Team\Role\Editor();
+        $editor = new Team\Role\Editor(new Logger('tmp'));
 
         $association = new Association('testAssociation');
         $team = new Team($association, 'testTeam');
@@ -199,7 +200,7 @@ class EditorTest extends \PHPUnit\Framework\TestCase
 
     public function testTwoBefore(): void
     {
-        $editor = new Team\Role\Editor();
+        $editor = new Team\Role\Editor(new Logger('tmp'));
 
         $association = new Association('testAssociation');
         $team = new Team($association, 'testTeam');
@@ -228,7 +229,7 @@ class EditorTest extends \PHPUnit\Framework\TestCase
 
     public function testOneAftereSameTeamSameLine(): void
     {
-        $editor = new Team\Role\Editor();
+        $editor = new Team\Role\Editor(new Logger('tmp'));
 
         $association = new Association('testAssociation');
         $team = new Team($association, 'testTeam');
@@ -252,7 +253,7 @@ class EditorTest extends \PHPUnit\Framework\TestCase
 
     public function testOneAfterSameTeamOtherLine(): void
     {
-        $editor = new Team\Role\Editor();
+        $editor = new Team\Role\Editor(new Logger('tmp'));
 
         $association = new Association('testAssociation');
         $team = new Team($association, 'testTeam');
@@ -274,7 +275,7 @@ class EditorTest extends \PHPUnit\Framework\TestCase
 
     public function testOneAfterOtherTeamSameLine(): void
     {
-        $editor = new Team\Role\Editor();
+        $editor = new Team\Role\Editor(new Logger('tmp'));
 
         $association = new Association('testAssociation');
         $team = new Team($association, 'testTeam');
@@ -302,7 +303,7 @@ class EditorTest extends \PHPUnit\Framework\TestCase
 
     public function testTwoAfter(): void
     {
-        $editor = new Team\Role\Editor();
+        $editor = new Team\Role\Editor(new Logger('tmp'));
 
         $association = new Association('testAssociation');
         $team = new Team($association, 'testTeam');
@@ -331,7 +332,7 @@ class EditorTest extends \PHPUnit\Framework\TestCase
 
     public function testOneWithinOther(): void
     {
-        $editor = new Team\Role\Editor();
+        $editor = new Team\Role\Editor(new Logger('tmp'));
 
         $association = new Association('testAssociation');
         $team = new Team($association, 'testTeam');

@@ -2,7 +2,9 @@
 
 namespace Sports\Team\Role;
 
+use DateTimeImmutable;
 use League\Period\Period;
+use Psr\Log\LoggerInterface;
 use Sports\Person;
 use Sports\Season;
 use Sports\Sport\FootballLine;
@@ -15,27 +17,18 @@ class Editor
 
     // protected const MAX_MONTHS_FOR_MERGE = 1;
 
-    public function __construct()
+    public function __construct(protected LoggerInterface $logger)
     {
     }
 
     public function update(
         Season $season,
         Person $person,
-        \DateTimeImmutable $gameDateTime,
+        DateTimeImmutable $dateTime,
         Team $newTeam,
         FootballLine $newLine
     ): Player|null {
-        $checkPeriod = new Period(
-            $season->getPeriod()->getStartDate()->modify('+' . self::DELTA),
-            $season->getPeriod()->getEndDate()->modify('-' . self::DELTA)
-        );
-        if (!$checkPeriod->contains($gameDateTime)) {
-            throw new \Exception(
-                'gamedatetime should be at least ' . self::DELTA . ' from start and end of season',
-                E_ERROR
-            );
-        }
+        $seasonPeriod = $this->checkPeriod($person, $season, $dateTime);
 
         // players within season
         $players = $person->getPlayers(null, $season->getPeriod())->toArray();
@@ -44,7 +37,7 @@ class Editor
         });
         $players = array_values($players);
         // get overlapping player
-        $overlappingPlayer = $this->getOverlapping($players, $gameDateTime);
+        $overlappingPlayer = $this->getOverlapping($players, $dateTime);
         if ($overlappingPlayer !== null) {
             if ($overlappingPlayer->getLine() !== $newLine->value) {
                 throw new \Exception('line is different from overlapping', E_ERROR);
@@ -52,8 +45,8 @@ class Editor
             if ($overlappingPlayer->getTeam() == $newTeam) {
                 return null;
             }
-            $overlappingPlayer->setEndDateTime($gameDateTime->modify('-' . self::DELTA));
-            $newPeriod = new Period($gameDateTime->modify('-' . self::DELTA), $checkPeriod->getEndDate());
+            $overlappingPlayer->setEndDateTime($dateTime->modify('-' . self::DELTA));
+            $newPeriod = new Period($dateTime->modify('-' . self::DELTA), $seasonPeriod->getEndDate());
             return new Player($newTeam, $person, $newPeriod, $newLine->value);
 //            if ($overlappingPlayer->getTeam() !== $newTeam) {
 //                // new maken en oude stoppen
@@ -67,7 +60,7 @@ class Editor
         // no overlap
 
         // check period before gamedatetime
-        $firstBefore = $this->getFirstBefore($players, $gameDateTime);
+        $firstBefore = $this->getFirstBefore($players, $dateTime);
         if ($firstBefore !== null) {
             // try to merge
             if ($firstBefore->getTeam() == $newTeam) {
@@ -75,13 +68,13 @@ class Editor
                     throw new \Exception('line is different from firstBefore', E_ERROR);
                 }
                 // merge
-                $firstBefore->setEndDateTime($gameDateTime->modify('+' . self::DELTA));
+                $firstBefore->setEndDateTime($dateTime->modify('+' . self::DELTA));
                 return $firstBefore;
             }
         }
 
         // check period after gamedatetime
-        $firstAfter = $this->getFirstAfter($players, $gameDateTime);
+        $firstAfter = $this->getFirstAfter($players, $dateTime);
         if ($firstAfter !== null) {
             // try to merge
             if ($firstAfter->getTeam() == $newTeam) {
@@ -89,13 +82,13 @@ class Editor
                     throw new \Exception('line is different from firstAfter', E_ERROR);
                 }
                 // merge
-                $firstAfter->setStartDateTime($gameDateTime->modify('-' . self::DELTA));
+                $firstAfter->setStartDateTime($dateTime->modify('-' . self::DELTA));
                 return $firstAfter;
             }
         }
 
         // $newPeriod = new Period($gameDateTime->modify('-' . self::DELTA), $gameDateTime->modify('+' . self::DELTA));
-        $newPeriod = new Period($gameDateTime->modify('-' . self::DELTA), $checkPeriod->getEndDate());
+        $newPeriod = new Period($dateTime->modify('-' . self::DELTA), $seasonPeriod->getEndDate());
 
 //        if (!$this->isPeriodFree($players, $newPeriod)) {
 //            throw new \Exception('period already taken', E_ERROR);
@@ -105,10 +98,10 @@ class Editor
 
     /**
      * @param list<Player> $players
-     * @param \DateTimeImmutable $dateTime
+     * @param DateTimeImmutable $dateTime
      * @return Player|null
      */
-    protected function getOverlapping(array $players, \DateTimeImmutable $dateTime): Player|null
+    protected function getOverlapping(array $players, DateTimeImmutable $dateTime): Player|null
     {
         foreach ($players as $player) {
             if ($player->getPeriod()->contains($dateTime)) {
@@ -120,10 +113,10 @@ class Editor
 
     /**
      * @param list<Player> $players
-     * @param \DateTimeImmutable $dateTime
+     * @param DateTimeImmutable $dateTime
      * @return Player|null
      */
-    protected function getFirstBefore(array $players, \DateTimeImmutable $dateTime): Player|null
+    protected function getFirstBefore(array $players, DateTimeImmutable $dateTime): Player|null
     {
         $firstBefore = null;
         $firstBeforeDateTime = null;
@@ -141,10 +134,10 @@ class Editor
 
     /**
      * @param list<Player> $players
-     * @param \DateTimeImmutable $dateTime
+     * @param DateTimeImmutable $dateTime
      * @return Player|null
      */
-    protected function getFirstAfter(array $players, \DateTimeImmutable $dateTime): Player|null
+    protected function getFirstAfter(array $players, DateTimeImmutable $dateTime): Player|null
     {
         $firstAfter = null;
         $firstAfterDateTime = null;
@@ -158,6 +151,55 @@ class Editor
             }
         }
         return $firstAfter;
+    }
+
+    protected function checkPeriod(Person $person, Season $season, DateTimeImmutable $dateTime): Period
+    {
+        $periodWithDelta = $this->getPeriodWithDelta($season->getPeriod());
+        if (!$this->withInPeriod($season->getPeriod(), $dateTime)) {
+            throw new \Exception(
+                'roleEditor: for "' . $person->getName() . '" "' . $dateTime->format(
+                    \DateTimeInterface::ISO8601
+                ) . '" should be in ' . $periodWithDelta->toIso8601(),
+                E_ERROR
+            );
+        }
+        return $this->getPeriodWithDelta($season->getPeriod());
+    }
+
+    public function getPeriodWithDelta(Period $period): Period
+    {
+        return new Period(
+            $period->getStartDate()->modify('+' . self::DELTA),
+            $period->getEndDate()->modify('-' . self::DELTA)
+        );
+    }
+
+    public function withInPeriod(Period $period, DateTimeImmutable $dateTime): bool
+    {
+        return $this->getPeriodWithDelta($period)->contains($dateTime);
+    }
+
+    public function stop(
+        Season $season,
+        Person $person,
+        DateTimeImmutable $dateTime
+    ): Player|null {
+        $this->checkPeriod($person, $season, $dateTime);
+
+        // players within season
+        $players = $person->getPlayers(null, $season->getPeriod())->toArray();
+        uasort($players, function (Player $playerA, Player $playerB): int {
+            return $playerA->getStartDateTime() < $playerB->getStartDateTime() ? -1 : 1;
+        });
+        $players = array_values($players);
+        // get overlapping player
+        $overlappingPlayer = $this->getOverlapping($players, $dateTime);
+        if ($overlappingPlayer === null) {
+            return null;
+        }
+        $overlappingPlayer->setEndDateTime($dateTime->modify('-' . self::DELTA));
+        return $overlappingPlayer;
     }
 
 //    /**
