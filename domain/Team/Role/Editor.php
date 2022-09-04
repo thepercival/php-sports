@@ -39,11 +39,14 @@ class Editor
         // get overlapping player
         $overlappingPlayer = $this->getOverlapping($players, $dateTime);
         if ($overlappingPlayer !== null) {
-            if ($overlappingPlayer->getLine() !== $newLine->value) {
-                throw new \Exception('line is different from overlapping', E_ERROR);
-            }
             if ($overlappingPlayer->getTeam() == $newTeam) {
                 return null;
+            }
+            if ($overlappingPlayer->getLine() !== $newLine->value) {
+                $msg = 'for person "' . $person->getName() . '" ';
+                $msg .= 'overlapping playerperiod-line  "' . $overlappingPlayer->getLine(
+                    ) . '" is different from line "' . $newLine->value . '"';
+                throw new \Exception($msg, E_ERROR);
             }
             $overlappingPlayer->setEndDateTime($dateTime->modify('-' . self::DELTA));
             $newPeriod = new Period($dateTime->modify('-' . self::DELTA), $seasonPeriod->getEndDate());
