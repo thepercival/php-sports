@@ -38,6 +38,13 @@ class StartLocation implements StartLocationInterface
         $this->placeNr = $placeNr;
     }
 
+    public function equals(StartLocationInterface $startLocation): bool
+    {
+        return $startLocation->getCategoryNr() === $this->getCategoryNr()
+            && $startLocation->getPouleNr() === $this->getPouleNr()
+            && $startLocation->getPlaceNr() === $this->getPlaceNr();
+    }
+
     public function getStartId(): string
     {
         return $this->getCategoryNr() . '.' . $this->getPouleNr() . '.' . $this->getPlaceNr();

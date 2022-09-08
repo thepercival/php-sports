@@ -59,7 +59,7 @@ abstract class Game extends Identifiable
     public function getEndDateTime(): DateTimeImmutable
     {
         $minutes = $this->getPlanningConfig()->getMaxNrOfMinutesPerGame();
-        return $this->getStartDateTime()->modify("+ " . $minutes . "minutes");
+        return $this->getStartDateTime()->add(new \DateInterval('PT' . $minutes . 'M'));
     }
 
     public function getCompetitionSport(): CompetitionSport

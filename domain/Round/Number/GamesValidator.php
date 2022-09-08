@@ -134,7 +134,7 @@ class GamesValidator
         foreach ($roundNumber->getGames(Order::ByPoule) as $game) {
             $gamePeriod = new Period(
                 $game->getStartDateTime(),
-                $game->getStartDateTime()->modify("+" . $maxNrOfMinutesPerGame . " minutes")
+                $game->getStartDateTime()->add(new \DateInterval('PT' . $maxNrOfMinutesPerGame . 'M'))
             );
             foreach ($blockedPeriods as $blockedPeriod) {
                 if ($gamePeriod->overlaps($blockedPeriod)) {

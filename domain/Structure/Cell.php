@@ -5,6 +5,7 @@ namespace Sports\Structure;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Sports\Category;
+use Sports\Game\State as GameState;
 use Sports\Structure\Cell as StructureCell;
 use Sports\Round;
 use Sports\Round\Number as RoundNumber;
@@ -48,6 +49,11 @@ class Cell extends Identifiable
         return null;
     }
 
+    public function isLast(): bool
+    {
+        return $this->getNext() !== null;
+    }
+
     public function getRoundNumber(): RoundNumber
     {
         return $this->roundNumber;
@@ -88,6 +94,26 @@ class Cell extends Identifiable
     public function getRounds(): Collection
     {
         return $this->rounds;
+    }
+
+    public function getGamesState(): GameState
+    {
+        $allPlayed = true;
+        foreach ($this->getRounds() as $round) {
+            if ($round->getGamesState() !== GameState::Finished) {
+                $allPlayed = false;
+                break;
+            }
+        }
+        if ($allPlayed) {
+            return GameState::Finished;
+        }
+        foreach ($this->getRounds() as $round) {
+            if ($round->getGamesState() !== GameState::Created) {
+                return GameState::InProgress;
+            }
+        }
+        return GameState::Created;
     }
 
 //    public function getPoules(): Poule[] {

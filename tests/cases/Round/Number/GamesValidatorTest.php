@@ -297,14 +297,14 @@ class GamesValidatorTest extends TestCase
 
         // 2 pak vervolgend een wedstrijd en laatr deze in de pauze zijn
         // 3 en laat de validator de boel opsporen!
-        $start = $competition->getStartDateTime()->modify("+30 minutes");
-        $blockedPeriod = new Period($start, $start->modify("+30 minutes"));
+        $start = $competition->getStartDateTime()->add(new \DateInterval('PT30M'));
+        $blockedPeriod = new Period($start, $start->add(new \DateInterval('PT30M')));
         (new GamesCreator())->createStructureGames($structure);
 
         $games = $firstRoundNumber->getGames(GameOrder::ByBatch);
         $game = reset($games);
         self::assertInstanceOf(AgainstGame::class, $game);
-        $game->setStartDateTime($start->modify("+10 minutes"));
+        $game->setStartDateTime($start->add(new \DateInterval('PT10M')));
 //        $outputGame = new \Sports\Output\Game();
 //        $games = $firstRoundNumber->getGames(Game::ORDER_BY_BATCH);
 //        foreach( $games as $gameIt ) {

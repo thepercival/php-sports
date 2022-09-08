@@ -40,7 +40,7 @@ class PlanningScheduler
         foreach ($games as $game) {
             if ($previousBatchNr !== $game->getBatchNr()) {
                 $minutesDelta = $planningConfig->getMaxNrOfMinutesPerGame() + $planningConfig->getMinutesBetweenGames();
-                $nextGameStartDateTime = $gameStartDateTime->modify('+' . $minutesDelta . ' minutes');
+                $nextGameStartDateTime = $gameStartDateTime->add(new \DateInterval('PT' . $minutesDelta . 'M'));
                 $nextGamePeriod = $this->createGamePeriod($nextGameStartDateTime, $planningConfig);
                 $gameStartDateTime = $this->moveToFirstAvailableSlot($nextGamePeriod)->getStartDate();
                 $gameDates[] = $gameStartDateTime;
@@ -61,18 +61,20 @@ class PlanningScheduler
         $planningConfig = $roundNumber->getValidPlanningConfig();
         if ($previousRoundNumber === null) {
             $startDateTime = $roundNumber->getCompetition()->getStartDateTime();
-            $endDateTime = $startDateTime->modify('+' . $planningConfig->getMaxNrOfMinutesPerGame() . ' minutes');
+            $endDateTime = $startDateTime->add(
+                new \DateInterval('PT' . $planningConfig->getMaxNrOfMinutesPerGame() . 'M')
+            );
 
             $firstGamePeriod = $this->moveToFirstAvailableSlot(new Period($startDateTime, $endDateTime));
             return $firstGamePeriod->getStartDate();
         }
         $previousRoundLastStartDateTime = $previousRoundNumber->getLastGameStartDateTime();
         $previousPlanningConfig = $previousRoundNumber->getValidPlanningConfig();
-        $previousRoundEnd = $previousRoundLastStartDateTime->modify(
-            '+' . $previousPlanningConfig->getMaxNrOfMinutesPerGame() . ' minutes'
+        $previousRoundEnd = $previousRoundLastStartDateTime->add(
+            new \DateInterval('PT' . $previousPlanningConfig->getMaxNrOfMinutesPerGame() . 'M')
         );
-        $roundStartDateTime = $previousRoundEnd->modify(
-            '+' . $previousPlanningConfig->getMinutesAfter() . ' minutes'
+        $roundStartDateTime = $previousRoundEnd->add(
+            new \DateInterval('PT' . $previousPlanningConfig->getMinutesAfter() . 'M')
         );
         $gamePeriod = $this->createGamePeriod($roundStartDateTime, $planningConfig);
         $firstGamePeriod = $this->moveToFirstAvailableSlot($gamePeriod);
@@ -83,9 +85,7 @@ class PlanningScheduler
     {
         return new Period(
             $startDateTime,
-            $startDateTime->modify(
-                '+' . $planningConfig->getMaxNrOfMinutesPerGame() . ' minutes'
-            )
+            $startDateTime->add(new \DateInterval('PT' . $planningConfig->getMaxNrOfMinutesPerGame() . 'M'))
         );
     }
 
@@ -107,7 +107,7 @@ class PlanningScheduler
         return $this->moveToFirstAvailableSlot(
             new Period(
                 clone $blockedPeriod->getEndDate(),
-                $blockedPeriod->getEndDate()->modify('+' . $gamePeriod->timeDuration() . ' seconds')
+                $blockedPeriod->getEndDate()->add(new \DateInterval('PT' . $gamePeriod->timeDuration() . 'S'))
             )
         );
     }

@@ -358,7 +358,7 @@ class Number extends Identifiable
 
     public function getLastGameEndDateTime(): DateTimeImmutable {
         $nrOfMinutesToAdd = $this->getValidPlanningConfig()->getMaxNrOfMinutesPerGame();
-        return $this->getLastGameStartDateTime()->modify('+' . $nrOfMinutesToAdd . ' minutes');
+        return $this->getLastGameStartDateTime()->add(new \DateInterval('PT' . $nrOfMinutesToAdd . 'M'));
 }
 
     /**

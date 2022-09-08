@@ -8,6 +8,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Sports\Competition\Sport as CompetitionSport;
 use Sports\Exceptions\NoStructureException;
+use Sports\Game\State as GameState;
 use Sports\Round\Number as RoundNumber;
 use Sports\Structure\Cell as StructureCell;
 use SportsHelpers\Identifiable;
@@ -79,6 +80,17 @@ class Category extends Identifiable
         return $this->getStructureCellByValue(1);
     }
 
+    public function getLastStructureCell(): StructureCell
+    {
+        $structureCell = $this->getFirstStructureCell();
+        $nextStructureCell = $structureCell->getNext();
+        while ($nextStructureCell !== null) {
+            $structureCell = $nextStructureCell;
+            $nextStructureCell = $nextStructureCell->getNext();
+        }
+        return $structureCell;
+    }
+
     public function getStructureCell(RoundNumber $roundNumber): StructureCell
     {
         return $this->getStructureCellByValue($roundNumber->getNumber());
@@ -92,6 +104,22 @@ class Category extends Identifiable
             }
         }
         throw new \Exception('de structuurcel kan niet gevonden worden');
+    }
+
+    public function getGamesState(): GameState
+    {
+        $firstStructureCell = $this->getFirstStructureCell();
+        $firstGameState = $firstStructureCell->getGamesState();
+        if ($firstGameState !== GameState::Finished) {
+            return $firstGameState;
+        }
+
+        $lastStructureCell = $this->getLastStructureCell();
+        $lastGameState = $lastStructureCell->getGamesState();
+        if ($lastGameState === GameState::Finished) {
+            return GameState::Finished;
+        }
+        return GameState::InProgress;
     }
 
     public function getRootRound(): Round

@@ -39,10 +39,9 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
     {
         $seasonPeriod = new Period('2015-07-01', '2016-07-01');
         $season = new Season('2015/2016', $seasonPeriod);
-        $period = new Period(
-            $seasonPeriod->getStartDate()->modify('-1 days'),
-            $seasonPeriod->getStartDate()->modify('+5 days')
-        );
+        $seasonStart = $seasonPeriod->getStartDate()->sub(new \DateInterval('P1D'));
+        self::assertInstanceOf(\DateTimeImmutable::class, $seasonStart);
+        $period = new Period($seasonStart, $seasonPeriod->getStartDate()->add(new \DateInterval('P5D')));
         $this->testPlayerPartiallyHelper($season, $period);
     }
 
@@ -67,9 +66,12 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
     {
         $seasonPeriod = new Period('2015-07-01', '2016-07-01');
         $season = new Season('2015/2016', $seasonPeriod);
+        $seasonStart = $seasonPeriod->getEndDate()->sub(new \DateInterval('P5D'));
+        self::assertInstanceOf(\DateTimeImmutable::class, $seasonStart);
         $period = new Period(
-            $seasonPeriod->getEndDate()->modify('-5 days'),
-            $seasonPeriod->getEndDate()->modify('+5 days')
+            $seasonStart,
+            $seasonPeriod->getEndDate()->add(new \DateInterval('P5D'))
+
         );
         $this->testPlayerPartiallyHelper($season, $period);
     }
@@ -89,8 +91,11 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
         $person = new Person('FirstName', null, 'LastName');
 
         $seasonStart = $seasonPeriod->getStartDate();
-        $periodA = new Period($seasonStart, $seasonStart->modify('+8 days'));
-        $periodB = new Period($seasonStart->modify('+4 days'), $seasonStart->modify('+12 days'));
+        $periodA = new Period($seasonStart, $seasonStart->add(new \DateInterval('P8D')));
+        $periodB = new Period(
+            $seasonStart->add(new \DateInterval('P4D')),
+            $seasonStart->add(new \DateInterval('P12D'))
+        );
 
         new TeamPlayer($team, $person, $periodA, FootballLine::Defense->value);
         $teamPlayerB = new TeamPlayer($team, $person, $periodB, FootballLine::Defense->value);
@@ -114,8 +119,10 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
         $person = new Person('FirstName', null, 'LastName');
 
         $seasonStart = $seasonPeriod->getStartDate();
-        $periodA = new Period($seasonStart, $seasonStart->modify('+8 days'));
-        $periodB = new Period($seasonStart->modify('+8 days'), $seasonPeriod->getEndDate());
+        $periodA = new Period($seasonStart, $seasonStart->add(new \DateInterval('P8D')));
+        $periodB = new Period(
+            $seasonStart->add(new \DateInterval('P8D')), $seasonPeriod->getEndDate()
+        );
 
         new TeamPlayer($team, $person, $periodA, FootballLine::Defense->value);
         $teamPlayerB = new TeamPlayer($team, $person, $periodB, FootballLine::Defense->value);
@@ -139,8 +146,11 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
         $person = new Person('FirstName', null, 'LastName');
 
         $seasonStart = $seasonPeriod->getStartDate();
-        $periodA = new Period($seasonStart, $seasonStart->modify('+8 days'));
-        $periodB = new Period($seasonStart->modify('+4 days'), $seasonStart->modify('+12 days'));
+        $periodA = new Period($seasonStart, $seasonStart->add(new \DateInterval('P8D')));
+        $periodB = new Period(
+            $seasonStart->add(new \DateInterval('P4D')),
+            $seasonStart->add(new \DateInterval('P12D'))
+        );
 
         new TeamPlayer($team, $person, $periodA, FootballLine::Defense->value);
         $teamPlayerB = new TeamPlayer($team, $person, $periodB, FootballLine::Defense->value);
@@ -164,8 +174,11 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
         $person = new Person('FirstName', null, 'LastName');
 
         $seasonStart = $seasonPeriod->getStartDate();
-        $periodA = new Period($seasonStart->modify('+4 days'), $seasonStart->modify('+8 days'));
-        $periodB = new Period($seasonStart, $seasonStart->modify('+12 days'));
+        $periodA = new Period(
+            $seasonStart->add(new \DateInterval('P4D')),
+            $seasonStart->add(new \DateInterval('P8D'))
+        );
+        $periodB = new Period($seasonStart, $seasonStart->add(new \DateInterval('P12D')));
 
         new TeamPlayer($team, $person, $periodA, FootballLine::Defense->value);
         $teamPlayerB = new TeamPlayer($team, $person, $periodB, FootballLine::Defense->value);
@@ -189,8 +202,11 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
         $person = new Person('FirstName', null, 'LastName');
 
         $seasonStart = $seasonPeriod->getStartDate();
-        $periodA = new Period($seasonStart, $seasonStart->modify('+12 days'));
-        $periodB = new Period($seasonStart->modify('+4 days'), $seasonStart->modify('+8 days'));
+        $periodA = new Period($seasonStart, $seasonStart->add(new \DateInterval('P12D')));
+        $periodB = new Period(
+            $seasonStart->add(new \DateInterval('P4D')),
+            $seasonStart->add(new \DateInterval('P8D'))
+        );
 
         new TeamPlayer($team, $person, $periodA, FootballLine::Defense->value);
         $teamPlayerB = new TeamPlayer($team, $person, $periodB, FootballLine::Defense->value);
@@ -214,11 +230,20 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
         $person = new Person('FirstName', null, 'LastName');
 
         $seasonStart = $seasonPeriod->getStartDate();
-        $period = new Period($seasonStart->modify('+4 days'), $seasonStart->modify('+8 days'));
+        $period = new Period(
+            $seasonStart->add(new \DateInterval('P4D')),
+            $seasonStart->add(new \DateInterval('P8D'))
+        );
 
         $teamPlayer = new TeamPlayer($team, $person, $period, FootballLine::Defense->value);
 
-        $this->createGame($competition, $teamPlayer, $period->getStartDate()->modify('-2 days'));
+        $dateTime = $period->getStartDate()->sub(new \DateInterval('P2D'));
+        self::assertInstanceOf(\DateTimeImmutable::class, $dateTime);
+        $this->createGame(
+            $competition,
+            $teamPlayer,
+            $dateTime
+        );
 
         self::expectException(\Exception::class);
         $validator->validate($teamPlayer, $competition);

@@ -13,7 +13,7 @@ use Sports\Team\Player;
 
 class Editor
 {
-    private const DELTA = '1 days';
+    private const DELTAINTERVAL = 'P1D';
 
     // protected const MAX_MONTHS_FOR_MERGE = 1;
 
@@ -48,8 +48,16 @@ class Editor
                     ) . '" is different from line "' . $newLine->value . '"';
                 throw new \Exception($msg, E_ERROR);
             }
-            $overlappingPlayer->setEndDateTime($dateTime->modify('-' . self::DELTA));
-            $newPeriod = new Period($dateTime->modify('-' . self::DELTA), $seasonPeriod->getEndDate());
+            $startDateTime = $dateTime->sub(new \DateInterval(self::DELTAINTERVAL));
+            if ($startDateTime === false) {
+                throw new \Exception('date subtraction results in false', E_ERROR);
+            }
+            $endDateTime = $dateTime->sub(new \DateInterval(self::DELTAINTERVAL));
+            if ($endDateTime === false) {
+                throw new \Exception('date subtraction results in false', E_ERROR);
+            }
+            $overlappingPlayer->setEndDateTime($endDateTime);
+            $newPeriod = new Period($startDateTime, $seasonPeriod->getEndDate());
             return new Player($newTeam, $person, $newPeriod, $newLine->value);
 //            if ($overlappingPlayer->getTeam() !== $newTeam) {
 //                // new maken en oude stoppen
@@ -71,7 +79,7 @@ class Editor
                     throw new \Exception('line is different from firstBefore', E_ERROR);
                 }
                 // merge
-                $firstBefore->setEndDateTime($dateTime->modify('+' . self::DELTA));
+                $firstBefore->setEndDateTime($dateTime->add(new \DateInterval(self::DELTAINTERVAL)));
                 return $firstBefore;
             }
         }
@@ -84,14 +92,22 @@ class Editor
                 if ($firstAfter->getLine() !== $newLine->value) {
                     throw new \Exception('line is different from firstAfter', E_ERROR);
                 }
+                $startDateTime = $dateTime->sub(new \DateInterval(self::DELTAINTERVAL));
+                if ($startDateTime === false) {
+                    throw new \Exception('date subtraction results in false', E_ERROR);
+                }
                 // merge
-                $firstAfter->setStartDateTime($dateTime->modify('-' . self::DELTA));
+                $firstAfter->setStartDateTime($startDateTime);
                 return $firstAfter;
             }
         }
 
+        $startDateTime = $dateTime->sub(new \DateInterval(self::DELTAINTERVAL));
+        if ($startDateTime === false) {
+            throw new \Exception('date subtraction results in false', E_ERROR);
+        }
         // $newPeriod = new Period($gameDateTime->modify('-' . self::DELTA), $gameDateTime->modify('+' . self::DELTA));
-        $newPeriod = new Period($dateTime->modify('-' . self::DELTA), $seasonPeriod->getEndDate());
+        $newPeriod = new Period($startDateTime, $seasonPeriod->getEndDate());
 
 //        if (!$this->isPeriodFree($players, $newPeriod)) {
 //            throw new \Exception('period already taken', E_ERROR);
@@ -172,9 +188,13 @@ class Editor
 
     public function getPeriodWithDelta(Period $period): Period
     {
+        $endDate = $period->getEndDate()->sub(new \DateInterval(self::DELTAINTERVAL));
+        if ($endDate === false) {
+            throw new \Exception('date subtraction results in false', E_ERROR);
+        }
         return new Period(
-            $period->getStartDate()->modify('+' . self::DELTA),
-            $period->getEndDate()->modify('-' . self::DELTA)
+            $period->getStartDate()->add(new \DateInterval(self::DELTAINTERVAL)),
+            $endDate
         );
     }
 
@@ -201,7 +221,11 @@ class Editor
         if ($overlappingPlayer === null) {
             return null;
         }
-        $overlappingPlayer->setEndDateTime($dateTime->modify('-' . self::DELTA));
+        $endDateTime = $dateTime->sub(new \DateInterval(self::DELTAINTERVAL));
+        if ($endDateTime === false) {
+            return null;
+        }
+        $overlappingPlayer->setEndDateTime($endDateTime);
         return $overlappingPlayer;
     }
 

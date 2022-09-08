@@ -46,7 +46,7 @@ class PlanningAssigner
         $nextBatch = $batch->getNext();
         if ($nextBatch !== null) {
             $minutesDelta = $planningConfig->getMaxNrOfMinutesPerGame() + $planningConfig->getMinutesBetweenGames();
-            $nextGameStartDateTime = $gameStartDateTime->modify('+' . $minutesDelta . ' minutes');
+            $nextGameStartDateTime = $gameStartDateTime->add(new \DateInterval('PT' . $minutesDelta . 'M'));
             $nextGamePeriod = $this->scheduler->createGamePeriod($nextGameStartDateTime, $planningConfig);
 
             $nextGameStartDateTime = $this->scheduler->moveToFirstAvailableSlot($nextGamePeriod)->getStartDate();
