@@ -74,10 +74,14 @@ class Repository extends GameRepository
         Competition $competition,
         array $gameStates = null,
         int $gameRoundNumber = null,
-        Period $period = null
+        Period $period = null,
+        int $maxResults = null
     ): array {
         $qb = $this->getCompetitionGamesQuery($competition, $gameStates, $gameRoundNumber, $period);
         $qb = $qb->orderBy('g.startDateTime', 'ASC');
+        if ($maxResults !== null) {
+            $qb->setMaxResults($maxResults);
+        }
         /** @var list<AgainstGame> $games */
         $games = $qb->getQuery()->getResult();
         return $games;

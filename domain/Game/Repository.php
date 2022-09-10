@@ -59,7 +59,7 @@ abstract class Repository extends EntityRepository
         Competition $competition,
         array $gameStates = null,
         int $gameRoundNumber = null,
-        Period $period = null
+        Period $period = null,
     ): QueryBuilder {
         $query = $this->createQueryBuilder('g')
             ->join("g.poule", "p")
