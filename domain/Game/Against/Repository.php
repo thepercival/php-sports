@@ -12,6 +12,7 @@ use Sports\Game\Against as AgainstGame;
 use Sports\Game\Place\Against as AgainstGamePlace;
 use Sports\Game\Repository as GameRepository;
 use Sports\Game\State as GameState;
+use Sports\Game\Together as TogetherGame;
 use Sports\Round\Number as RoundNumber;
 use SportsHelpers\Against\Side as AgainstSide;
 
@@ -76,8 +77,10 @@ class Repository extends GameRepository
         int $gameRoundNumber = null,
         Period $period = null,
         int $maxResults = null
-    ): array {
-        $qb = $this->getCompetitionGamesQuery($competition, $gameStates, $gameRoundNumber, $period);
+    ): array
+    {
+        $qb = $this->getCompetitionGamesQuery($competition);
+        $qb = $this->applyExtraFilters($qb, $gameStates, $gameRoundNumber, $period);
         $qb = $qb->orderBy('g.startDateTime', 'ASC');
         if ($maxResults !== null) {
             $qb->setMaxResults($maxResults);
@@ -98,8 +101,10 @@ class Repository extends GameRepository
         Competition $competition,
         array $gameStates = null,
         Period $period = null
-    ): array {
-        $qb = $this->getCompetitionGamesQuery($competition, $gameStates, null, $period);
+    ): array
+    {
+        $qb = $this->getCompetitionGamesQuery($competition);
+        $qb = $this->applyExtraFilters($qb, $gameStates, null, $period);
         $qb = $qb->orderBy('g.startDateTime', 'ASC');
         /** @var list<AgainstGame> $games */
         $games = $qb->getQuery()->getResult();
@@ -156,10 +161,30 @@ class Repository extends GameRepository
             ->join("r.structureCell", "sc")
             ->join("sc.roundNumber", "rn")
             ->where('rn.competition = :competition')
-            ->setParameter('competition', $competition);
-        ;
+            ->setParameter('competition', $competition);;
         return $this->applyExtraFilters($query, $gameStates, $gameRoundNumber, $period);
     }
+
+    /**
+     * @param Competition $competition
+     * @param list<GameState>|null $gameStates
+     * @param int|null $gameRoundNumber
+     * @param Period|null $period
+     * @return bool
+     */
+    public function hasCompetitionGames(
+        Competition $competition,
+        array $gameStates = null,
+        int $gameRoundNumber = null,
+        Period $period = null
+    ): bool {
+        $qb = $this->getCompetitionGamesQuery($competition);
+        $qb = $this->applyExtraFilters($qb, $gameStates, $gameRoundNumber, $period);
+        /** @var list<AgainstGame> $games */
+        $games = $qb->setMaxResults(1)->getQuery()->getResult();
+        return count($games) === 1;
+    }
+
 
     /**
      * @param RoundNumber $roundNumber
@@ -167,8 +192,11 @@ class Repository extends GameRepository
      * @param int|null $gameRoundNumber
      * @return list<AgainstGamePlace>
      */
-    public function getRoundNumberGames(RoundNumber $roundNumber, array $gameStates = null, int $gameRoundNumber = null): array
-    {
+    public function getRoundNumberGames(
+        RoundNumber $roundNumber,
+        array $gameStates = null,
+        int $gameRoundNumber = null
+    ): array {
         /** @var list<AgainstGamePlace> $games */
         $games = $this->getRoundNumberGamesQuery($roundNumber, $gameStates, $gameRoundNumber)->getQuery()->getResult();
         return $games;
@@ -205,8 +233,41 @@ class Repository extends GameRepository
             ->join("p.round", "r")
             ->join("r.structureCell", "sc")
             ->where('sc.roundNumber = :roundNumber')
-            ->setParameter('roundNumber', $roundNumber);
-        ;
+            ->setParameter('roundNumber', $roundNumber);;
         return $this->applyExtraFilters($query, $gameStates, $gameRoundNumber);
+    }
+
+    /**
+     * @param QueryBuilder $query
+     * @param list<GameState>|null $gameStates
+     * @param int|null $gameRoundNumber
+     * @param Period|null $period
+     * @return QueryBuilder
+     * @throws \Exception
+     */
+    protected function applyExtraFilters(
+        QueryBuilder $query,
+        array $gameStates = null,
+        int $gameRoundNumber = null,
+        Period $period = null
+    ): QueryBuilder {
+        if ($gameStates !== null) {
+            $query = $query
+                ->andWhere('g.state IN(:gamestates)')
+                ->setParameter('gamestates', array_map(fn(GameState $gameState) => $gameState->value, $gameStates));
+        }
+        if ($gameRoundNumber !== null) {
+            $query = $query
+                ->andWhere('g.gameRoundNumber = :gameRoundNumber')
+                ->setParameter('gameRoundNumber', $gameRoundNumber);
+        }
+        if ($period !== null) {
+            $query = $query
+                ->andWhere('g.startDateTime <= :end')
+                ->andWhere('g.startDateTime >= :start')
+                ->setParameter('end', $period->getEndDate())
+                ->setParameter('start', $period->getStartDate());
+        }
+        return $query;
     }
 }
