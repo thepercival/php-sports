@@ -118,32 +118,38 @@ class Against extends GamePlaceBase
     {
         $substituteEvents = [];
         $substitutes = $this->getSubstitutes($teamCompetitor);
-        $fncRemoveSubstitute = function (int $minute) use (&$substitutes): Participation|null {
-            /** @var list<Participation> $substitutes */
-            foreach ($substitutes as $substitute) {
-                if ($substitute->getBeginMinute() === $minute) {
-                    /** @var callable(mixed, mixed): int $callable */
-                    $callable = function (Participation $a, Participation $b): int {
-                        return $a === $b ? 0 : 1;
-                    };
-                    $substitutes = array_udiff(
-                        $substitutes,
-                        [$substitute],
-                        $callable
-                    );
-                    return $substitute;
-                }
-            }
-            return null;
-        };
+
         foreach ($this->getSubstituted($teamCompetitor) as $substituted) {
-            $substitute = $fncRemoveSubstitute($substituted->getEndMinute());
+            $substitute = $this->removeSubstitute($substitutes, $substituted->getEndMinute());
             if ($substitute === null) {
                 continue;
             }
             $substituteEvents[] = new SubstitutionEvent($substitute->getBeginMinute(), $substituted, $substitute);
         }
         return $substituteEvents;
+    }
+
+    /**
+     * @param list<Participation> $substitutes
+     * @param int $minute
+     * @return Participation|null
+     */
+    private function removeSubstitute(array &$substitutes, int $minute): Participation|null
+    {
+        $minuteSubstitutes = array_filter($substitutes, function (Participation $participation) use ($minute): bool {
+            return $participation->getBeginMinute() === $minute;
+        });
+        $minuteSubstitute = array_shift($minuteSubstitutes);
+        if ($minuteSubstitute === null) {
+            return null;
+        }
+
+        $idx = array_search($minuteSubstitute, $substitutes, true);
+        if ($idx === false) {
+            return null;
+        }
+        array_splice($substitutes, $idx, 1);
+        return $minuteSubstitute;
     }
 
     /**
