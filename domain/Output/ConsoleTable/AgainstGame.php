@@ -206,7 +206,33 @@ class AgainstGame
         $currentScore[$side->name]++;
         $score = '  ' . $currentScore[AgainstSide::Home->name] . ' - ' . $currentScore[AgainstSide::Away->name];
         $rows[] = array_merge($valueHome, [$score], $valueAway);
+        $assistRow = $this->getAssistEventRow($event, $side);
+        if ($assistRow !== null) {
+            $rows[] = $assistRow;
+        }
+
         return $rows;
+    }
+
+    /**
+     * @param GoalEvent $event
+     * @param AgainstSide $side
+     * @return list<string>|null
+     */
+    protected function getAssistEventRow(GoalEvent $event, AgainstSide $side): array|null
+    {
+        $assistParticipation = $event->getAssistGameParticipation();
+        if ($assistParticipation === null) {
+            return $assistParticipation;
+        }
+        $valueHome = ['', '', ''];
+        $valueAway = ['', '', ''];
+        if ($side === AgainstSide::Home) {
+            $valueHome = [$assistParticipation->getPlayer()->getPerson()->getName(), 'ASS', ''];
+        } else {
+            $valueAway = [$assistParticipation->getPlayer()->getPerson()->getName(), 'ASS', ''];
+        }
+        return array_merge($valueHome, [''], $valueAway);
     }
 
     /**
@@ -216,8 +242,8 @@ class AgainstGame
      */
     protected function getCardEventRows(CardEvent $event, AgainstSide $side): array
     {
-        $valueHome = ['','',''];
-        $valueAway = ['','',''];
+        $valueHome = ['', '', ''];
+        $valueAway = ['', '', ''];
         $rows = [];
         if ($side === AgainstSide::Home) {
             $valueHome = [
