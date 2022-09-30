@@ -9,6 +9,7 @@ use Doctrine\Common\Collections\Collection;
 use Exception;
 use InvalidArgumentException;
 use Sports\Competition\Sport as CompetitionSport;
+use Sports\Competitor\StartLocation;
 use Sports\Game\Against as AgainstGame;
 use Sports\Game\State as GameState;
 use Sports\Game\Together as TogetherGame;
@@ -652,5 +653,15 @@ class Round extends Identifiable
             $this->getStructureCell()->detach();
         }
         $this->parentQualifyGroup = null;
+    }
+
+    public function hasQualified(StartLocation $startLocation): bool
+    {
+        foreach ($this->getPlaces() as $place) {
+            if ($place->getStartLocation()?->equals($startLocation)) {
+                return true;
+            }
+        }
+        return false;
     }
 }
