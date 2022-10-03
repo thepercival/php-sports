@@ -86,6 +86,20 @@ class Against extends GameBase
     }
 
     /**
+     * @param AgainstSide $side
+     * @return AgainstGamePlace
+     */
+    public function getSingleSidePlace(AgainstSide $side): AgainstGamePlace
+    {
+        $againstGamePlaces = $this->getSidePlaces($side);
+        $againstGamePlace = array_shift($againstGamePlaces);
+        if ($againstGamePlace === null || count($againstGamePlaces) !== 0) {
+            throw new \Exception('againstGameSidePlaces not equal to 1', E_ERROR);
+        }
+        return $againstGamePlace;
+    }
+
+    /**
      * @return list<AgainstGamePlace>
      */
     public function getHomePlaces(): array
