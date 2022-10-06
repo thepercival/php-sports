@@ -20,6 +20,9 @@
             </join-columns>
         </many-to-one>
         <one-to-many field="places" target-entity="Sports\Game\Place\Against" mapped-by="game" orphan-removal="true">
+            <order-by>
+                <order-by-field name="side"/>
+            </order-by>
             <cascade>
                 <cascade-persist/>
                 <cascade-remove/>
