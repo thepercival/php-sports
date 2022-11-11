@@ -10,6 +10,8 @@ use Sports\Competition\Sport as CompetitionSport;
 use Sports\Competitor\StartLocation;
 use Sports\Game\Against as AgainstGame;
 use Sports\Game\Place\Together as TogetherGamePlace;
+use Sports\Game\State;
+use Sports\Game\State as GameState;
 use Sports\Game\Together as TogetherGame;
 use Sports\Place\Location as PlaceLocation;
 use Sports\Poule\Horizontal as HorizontalPoule;
@@ -120,10 +122,10 @@ class Place extends PlaceLocation
     /**
      * @return list<AgainstGame|TogetherGame>
      */
-    public function getGames(): array
+    public function getGames(CompetitionSport|null $competitionSport = null): array
     {
         return array_values(array_filter(
-            $this->getPoule()->getGames(),
+            $this->getPoule()->getGames($competitionSport),
             function (AgainstGame|TogetherGame $game): bool {
                 return $game->isParticipating($this);
             }
@@ -206,5 +208,26 @@ class Place extends PlaceLocation
     public function getStructureLocation(): string
     {
         return $this->poule->getStructureLocation() . '.' . $this->getPlaceNr();
+    }
+
+    public function getGamesState(CompetitionSport|null $competitionSport = null): GameState
+    {
+        $allPlayed = true;
+        $games = $this->getGames($competitionSport);
+        foreach ($games as $game) {
+            if ($game->getState() !== GameState::Finished) {
+                $allPlayed = false;
+                break;
+            }
+        }
+        if (count($games) > 0 && $allPlayed) {
+            return GameState::Finished;
+        }
+        foreach ($games as $game) {
+            if ($game->getState() !== GameState::Created) {
+                return GameState::InProgress;
+            }
+        }
+        return GameState::Created;
     }
 }

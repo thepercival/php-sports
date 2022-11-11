@@ -49,13 +49,7 @@ class Editor
                 throw new \Exception($msg, E_ERROR);
             }
             $startDateTime = $dateTime->sub(new \DateInterval(self::DELTAINTERVAL));
-            if ($startDateTime === false) {
-                throw new \Exception('date subtraction results in false', E_ERROR);
-            }
             $endDateTime = $dateTime->sub(new \DateInterval(self::DELTAINTERVAL));
-            if ($endDateTime === false) {
-                throw new \Exception('date subtraction results in false', E_ERROR);
-            }
             $overlappingPlayer->setEndDateTime($endDateTime);
             $newPeriod = new Period($startDateTime, $seasonPeriod->getEndDate());
             return new Player($newTeam, $person, $newPeriod, $newLine->value);
@@ -93,9 +87,6 @@ class Editor
                     throw new \Exception('line is different from firstAfter', E_ERROR);
                 }
                 $startDateTime = $dateTime->sub(new \DateInterval(self::DELTAINTERVAL));
-                if ($startDateTime === false) {
-                    throw new \Exception('date subtraction results in false', E_ERROR);
-                }
                 // merge
                 $firstAfter->setStartDateTime($startDateTime);
                 return $firstAfter;
@@ -103,9 +94,6 @@ class Editor
         }
 
         $startDateTime = $dateTime->sub(new \DateInterval(self::DELTAINTERVAL));
-        if ($startDateTime === false) {
-            throw new \Exception('date subtraction results in false', E_ERROR);
-        }
         // $newPeriod = new Period($gameDateTime->modify('-' . self::DELTA), $gameDateTime->modify('+' . self::DELTA));
         $newPeriod = new Period($startDateTime, $seasonPeriod->getEndDate());
 
@@ -189,13 +177,7 @@ class Editor
     public function getPeriodWithDelta(Period $period): Period
     {
         $endDate = $period->getEndDate()->sub(new \DateInterval(self::DELTAINTERVAL));
-        if ($endDate === false) {
-            throw new \Exception('date subtraction results in false', E_ERROR);
-        }
-        return new Period(
-            $period->getStartDate()->add(new \DateInterval(self::DELTAINTERVAL)),
-            $endDate
-        );
+        return new Period($period->getStartDate()->add(new \DateInterval(self::DELTAINTERVAL)),$endDate);
     }
 
     public function withInPeriod(Period $period, DateTimeImmutable $dateTime): bool
@@ -222,9 +204,6 @@ class Editor
             return null;
         }
         $endDateTime = $dateTime->sub(new \DateInterval(self::DELTAINTERVAL));
-        if ($endDateTime === false) {
-            return null;
-        }
         $overlappingPlayer->setEndDateTime($endDateTime);
         return $overlappingPlayer;
     }
