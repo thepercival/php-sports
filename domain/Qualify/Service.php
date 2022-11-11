@@ -164,6 +164,9 @@ class Service
 
     protected function getQualifiedPlace(Poule $poule, int $rank): ?Place
     {
+        if( count($poule->getPlaces()) === 1 ) {
+            return $poule->getPlace(1);
+        }
         if (!$this->isPouleFinished($poule)) {
             return null;
         }
