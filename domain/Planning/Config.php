@@ -23,6 +23,7 @@ class Config extends Identifiable
         protected int $minutesPerGameExt,
         protected int $minutesBetweenGames,
         protected int $minutesAfter,
+        protected bool $perPoule,
         protected SelfReferee $selfReferee
     ) {
         $this->roundNumber->setPlanningConfig($this);
@@ -106,6 +107,16 @@ class Config extends Identifiable
     {
         $this->minutesPerGameExt = $minutesPerGameExt;
     }
+
+    public function getPerPoule(): bool
+    {
+        return $this->perPoule;
+    }
+
+//    public function setMinutesPerGameExt(int $minutesPerGameExt): void
+//    {
+//        $this->minutesPerGameExt = $minutesPerGameExt;
+//    }
 
     public function getSelfReferee(): SelfReferee
     {

@@ -22,6 +22,7 @@ class Service
             $this->getDefaultMinutesPerGameExt(),
             $this->getDefaultMinutesBetweenGames(),
             $this->getDefaultMinutesAfter(),
+            false,
             SelfReferee::Disabled
         );
     }
@@ -37,6 +38,7 @@ class Service
             $planningConfig->getMinutesPerGameExt(),
             $planningConfig->getMinutesBetweenGames(),
             $planningConfig->getMinutesAfter(),
+            $planningConfig->getPerPoule(),
             $planningConfig->getSelfReferee(),
         );
     }

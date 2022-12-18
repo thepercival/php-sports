@@ -20,6 +20,8 @@ Sports\Planning\Config:
       type: integer
     minutesBetweenGames:
       type: integer
+    perPoule:
+      type: boolean
     selfReferee:
       type: int
       access_type: public_method

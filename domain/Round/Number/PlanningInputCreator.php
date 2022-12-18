@@ -42,7 +42,8 @@ class PlanningInputCreator
         return new PlanningInput(
             $pouleStructure,
             $efficientSportVariants,
-            $refereeInfo
+            $refereeInfo,
+            $config->getPerPoule()
         );
     }
 
