@@ -15,6 +15,7 @@ use SportsPlanning\Input;
 use SportsPlanning\Planning;
 use SportsPlanning\Planning\State as PlanningState;
 use SportsPlanning\Schedule\Creator as ScheduleCreator;
+use SportsPlanning\Schedule\Output as ScheduleOutput;
 
 class PlanningCreator
 {
@@ -29,7 +30,7 @@ class PlanningCreator
         return $logger;
     }
 
-    public function createPlanning(Input $input, SportRange $range = null): Planning
+    public function createPlanning(Input $input, SportRange $range = null, int|null $allowedGppMargin = null): Planning
     {
         if ($range === null) {
             $range = new SportRange(1, 1);
@@ -37,8 +38,11 @@ class PlanningCreator
         $planning = new Planning($input, $range, 0);
 
         $scheduleCreator = new ScheduleCreator($this->getLogger());
+        if( $allowedGppMargin !== null) {
+            $scheduleCreator->setAllowedGppMargin($allowedGppMargin);
+        }
         $schedules = $scheduleCreator->createFromInput($input);
-
+        // (new ScheduleOutput($this->getLogger()))->output($schedules);
         $gameCreator = new GameCreator($this->getLogger());
         // $gameCreator->disableThrowOnTimeout();
         $gameCreator->createGames($planning, $schedules);

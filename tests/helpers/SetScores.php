@@ -36,38 +36,38 @@ trait SetScores
                     },
                     $game->getSidePlaces(AgainstSide::Home)
                 );
-            $awayPlaces = array_map(
-                function (AgainstGamPlace $gamePlace): Place {
-                    return $gamePlace->getPlace();
-                },
-                $game->getSidePlaces(AgainstSide::Away)
-            );
+                $awayPlaces = array_map(
+                    function (AgainstGamPlace $gamePlace): Place {
+                        return $gamePlace->getPlace();
+                    },
+                    $game->getSidePlaces(AgainstSide::Away)
+                );
 
-            $homePlacesHasHomePlace = count(array_filter(
-                $homePlaces,
-                function (Place $homePlaceIt) use ($homePlace): bool {
-                    return $homePlaceIt === $homePlace;
-                }
-            )) > 0;
-            $homePlacesHasAwayPlace = count(array_filter(
-                $homePlaces,
-                function (Place $homePlaceIt) use ($awayPlace): bool {
-                    return $homePlaceIt === $awayPlace;
-                }
-            )) > 0;
-            $awayPlacesHasHomePlace = count(array_filter(
-                $awayPlaces,
-                function (Place $awayPlaceIt) use ($homePlace): bool {
-                    return $awayPlaceIt === $homePlace;
-                }
-            )) > 0;
-            $awayPlacesHasAwayPlace = count(array_filter(
-                $awayPlaces,
-                function (Place $awayPlaceIt) use ($awayPlace): bool {
-                    return $awayPlaceIt === $awayPlace;
-                }
-            )) > 0;
-            return ($homePlacesHasHomePlace && $awayPlacesHasAwayPlace) || ($homePlacesHasAwayPlace && $awayPlacesHasHomePlace);
+                $homePlacesHasHomePlace = count(array_filter(
+                    $homePlaces,
+                    function (Place $homePlaceIt) use ($homePlace): bool {
+                        return $homePlaceIt === $homePlace;
+                    }
+                )) > 0;
+                $homePlacesHasAwayPlace = count(array_filter(
+                    $homePlaces,
+                    function (Place $homePlaceIt) use ($awayPlace): bool {
+                        return $homePlaceIt === $awayPlace;
+                    }
+                )) > 0;
+                $awayPlacesHasHomePlace = count(array_filter(
+                    $awayPlaces,
+                    function (Place $awayPlaceIt) use ($homePlace): bool {
+                        return $awayPlaceIt === $homePlace;
+                    }
+                )) > 0;
+                $awayPlacesHasAwayPlace = count(array_filter(
+                    $awayPlaces,
+                    function (Place $awayPlaceIt) use ($awayPlace): bool {
+                        return $awayPlaceIt === $awayPlace;
+                    }
+                )) > 0;
+                return ($homePlacesHasHomePlace && $awayPlacesHasAwayPlace) || ($homePlacesHasAwayPlace && $awayPlacesHasHomePlace);
             }
         );
         $foundGame = reset($foundGames);

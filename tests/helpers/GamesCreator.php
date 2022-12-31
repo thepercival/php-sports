@@ -37,34 +37,43 @@ class GamesCreator
      * @param Structure $structure
      * @param list<Period> $blockedPeriods
      * @param SportRange|null $range
+     * @param int|null $allowedGppMargin
      */
     public function createStructureGames(
         Structure $structure,
         array $blockedPeriods = [],
-        SportRange $range = null
+        SportRange $range = null,
+        int|null $allowedGppMargin = null
     ): void {
         $this->removeGamesHelper($structure->getFirstRoundNumber());
-        $this->createGamesHelper($structure->getFirstRoundNumber(), $blockedPeriods, $range);
+        $this->createGamesHelper($structure->getFirstRoundNumber(), $blockedPeriods, $range, $allowedGppMargin);
     }
 
     /**
      * @param RoundNumber $roundNumber
      * @param list<Period> $blockedPeriods
      * @param SportRange|null $range
+     * @param int|null $allowedGppMargin
      */
-    public function createGames(RoundNumber $roundNumber, array $blockedPeriods = [], SportRange $range = null): void
+    public function createGames(
+        RoundNumber $roundNumber,
+        array $blockedPeriods = [],
+        SportRange $range = null,
+        int|null $allowedGppMargin = null): void
     {
         $this->removeGamesHelper($roundNumber);
-        $this->createGamesHelper($roundNumber, $blockedPeriods, $range);
+        $this->createGamesHelper($roundNumber, $blockedPeriods, $range, $allowedGppMargin);
     }
 
-    public function createPlanning(RoundNumber $roundNumber, SportRange $range = null): Planning
+    public function createPlanning(RoundNumber $roundNumber, SportRange $range = null, int|null $allowedGppMargin = null): Planning
     {
+
         $planningInputCreator = new PlanningInputCreator();
         $nrOfReferees = $roundNumber->getCompetition()->getReferees()->count();
         $planningInput = $planningInputCreator->create($roundNumber, $nrOfReferees);
         $planningCreator = new PlanningCreator();
-        return $planningCreator->createPlanning($planningInput, $range);
+
+        return $planningCreator->createPlanning($planningInput, $range, $allowedGppMargin);
     }
 
     /**
@@ -75,9 +84,10 @@ class GamesCreator
     private function createGamesHelper(
         RoundNumber $roundNumber,
         array $blockedPeriods,
-        SportRange|null $range
+        SportRange|null $range,
+        int|null $allowedGppMargin
     ): void {
-        $minIsMaxPlanning = $this->createPlanning($roundNumber, $range);
+        $minIsMaxPlanning = $this->createPlanning($roundNumber, $range, $allowedGppMargin);
         $firstBatch = $minIsMaxPlanning->createFirstBatch();
         if ($firstBatch instanceof SelfRefereeBatchOtherPoule ||
             $firstBatch instanceof SelfRefereeBatchSamePoule) {
@@ -89,7 +99,7 @@ class GamesCreator
         $planningAssigner->assignPlanningToRoundNumber($roundNumber, $minIsMaxPlanning);
         $nextRoundNumber = $roundNumber->getNext();
         if ($nextRoundNumber !== null) {
-            $this->createGamesHelper($nextRoundNumber, $blockedPeriods, $range);
+            $this->createGamesHelper($nextRoundNumber, $blockedPeriods, $range, $allowedGppMargin);
         }
     }
 

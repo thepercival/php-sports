@@ -17,8 +17,9 @@ use Sports\Place;
 use Sports\Poule;
 use Sports\Round\Number as RoundNumber;
 use Sports\Structure;
+use SportsHelpers\Sport\Variant\Creator as VariantCreator;
+use SportsHelpers\Sport\Variant\WithPoule\Against\GamesPerPlace as AgainstGppWithPoule;
 use SportsHelpers\SelfReferee;
-use SportsHelpers\Sport\Variant\Against\GamesPerPlace as AgainstGpp;
 
 class GamesValidator
 {
@@ -146,11 +147,13 @@ class GamesValidator
 
     protected function validateAllPlacesSameNrOfGames(RoundNumber $roundNumber): void
     {
+        $variantCreaotr = new VariantCreator();
         foreach ($roundNumber->getCompetitionSports() as $competitionSport) {
             $sportVariant = $competitionSport->createVariant();
             foreach ($roundNumber->getPoules() as $poule) {
                 $nrOfPlaces = count($poule->getPlaces());
-                if ($sportVariant instanceof AgainstGpp && !$sportVariant->allPlacesPlaySameNrOfGames($nrOfPlaces)) {
+                $variantWithPoule = $variantCreaotr->createWithPoule($nrOfPlaces, $sportVariant);
+                if ($variantWithPoule instanceof AgainstGppWithPoule && !$variantWithPoule->allPlacesSameNrOfGamesAssignable()) {
                     continue;
                 }
                 if ($this->allPlacesInPouleSameNrOfGames($poule, $competitionSport) === false) {

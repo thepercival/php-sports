@@ -16,7 +16,7 @@ use Sports\TestHelper\CompetitionCreator;
 use Sports\TestHelper\GamesCreator;
 use Sports\TestHelper\SetScores;
 use Sports\TestHelper\StructureEditorCreator;
-use Sports\Output\Game\Against as AgainstGameOutput;
+use Sports\Output\Games as OutputGames;
 
 class RoundTest extends TestCase
 {
@@ -600,7 +600,8 @@ class RoundTest extends TestCase
         $structure = $structureEditor->create($competition, [4]);
         $poule = $structure->getSingleCategory()->getRootRound()->getFirstPoule();
 
-        (new GamesCreator())->createStructureGames($structure);
+        (new GamesCreator())->createStructureGames($structure, [], null, 0);
+//        (new OutputGames())->outputRoundNumber($structure->getFirstRoundNumber());
 
         $this->setScoresHelper($poule);
 
@@ -639,7 +640,7 @@ class RoundTest extends TestCase
         $structure = $structureEditor->create($competition, [4]);
         $poule = $structure->getSingleCategory()->getRootRound()->getFirstPoule();
 
-        (new GamesCreator())->createStructureGames($structure);
+        (new GamesCreator())->createStructureGames($structure, [], null, 0);
 
         $this->setScoresHelper($poule);
 
