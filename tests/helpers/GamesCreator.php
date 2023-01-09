@@ -19,6 +19,7 @@ use SportsPlanning\Batch\SelfReferee\OtherPoule as SelfRefereeBatchOtherPoule;
 use SportsPlanning\Batch\SelfReferee\SamePoule as SelfRefereeBatchSamePoule;
 use SportsPlanning\Planning;
 use SportsPlanning\Resource\RefereePlace\Service as RefereePlaceService;
+use SportsPlanning\Schedule\Creator as ScheduleCreator;
 
 class GamesCreator
 {
@@ -65,7 +66,7 @@ class GamesCreator
         $this->createGamesHelper($roundNumber, $blockedPeriods, $range, $allowedGppMargin);
     }
 
-    public function createPlanning(RoundNumber $roundNumber, SportRange $range = null, int|null $allowedGppMargin = null): Planning
+    public function createPlanning(RoundNumber $roundNumber, SportRange $range = null, int $allowedGppMargin = ScheduleCreator::MAX_ALLOWED_GPP_MARGIN): Planning
     {
 
         $planningInputCreator = new PlanningInputCreator();
@@ -80,6 +81,7 @@ class GamesCreator
      * @param RoundNumber $roundNumber
      * @param list<Period> $blockedPeriods
      * @param SportRange|null $range
+     * @param int|null $allowedGppMargin
      */
     private function createGamesHelper(
         RoundNumber $roundNumber,
@@ -87,6 +89,8 @@ class GamesCreator
         SportRange|null $range,
         int|null $allowedGppMargin
     ): void {
+
+        $allowedGppMargin = $allowedGppMargin !== null ? $allowedGppMargin : ScheduleCreator::MAX_ALLOWED_GPP_MARGIN;
         $minIsMaxPlanning = $this->createPlanning($roundNumber, $range, $allowedGppMargin);
         $firstBatch = $minIsMaxPlanning->createFirstBatch();
         if ($firstBatch instanceof SelfRefereeBatchOtherPoule ||

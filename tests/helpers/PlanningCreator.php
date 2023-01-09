@@ -30,7 +30,7 @@ class PlanningCreator
         return $logger;
     }
 
-    public function createPlanning(Input $input, SportRange $range = null, int|null $allowedGppMargin = null): Planning
+    public function createPlanning(Input $input, SportRange $range = null, int $allowedGppMargin = ScheduleCreator::MAX_ALLOWED_GPP_MARGIN): Planning
     {
         if ($range === null) {
             $range = new SportRange(1, 1);
@@ -38,10 +38,7 @@ class PlanningCreator
         $planning = new Planning($input, $range, 0);
 
         $scheduleCreator = new ScheduleCreator($this->getLogger());
-        if( $allowedGppMargin !== null) {
-            $scheduleCreator->setAllowedGppMargin($allowedGppMargin);
-        }
-        $schedules = $scheduleCreator->createFromInput($input);
+        $schedules = $scheduleCreator->createFromInput($input, $allowedGppMargin);
         // (new ScheduleOutput($this->getLogger()))->output($schedules);
         $gameCreator = new GameCreator($this->getLogger());
         // $gameCreator->disableThrowOnTimeout();
