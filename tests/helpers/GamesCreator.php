@@ -66,15 +66,18 @@ class GamesCreator
         $this->createGamesHelper($roundNumber, $blockedPeriods, $range, $allowedGppMargin);
     }
 
-    public function createPlanning(RoundNumber $roundNumber, SportRange $range = null, int $allowedGppMargin = ScheduleCreator::MAX_ALLOWED_GPP_MARGIN): Planning
+    public function createPlanning(RoundNumber $roundNumber, SportRange $range = null, int|null $allowedGppMargin = null): Planning
     {
 
         $planningInputCreator = new PlanningInputCreator();
         $nrOfReferees = $roundNumber->getCompetition()->getReferees()->count();
-        $planningInput = $planningInputCreator->create($roundNumber, $nrOfReferees);
+        $input = $planningInputCreator->create($roundNumber, $nrOfReferees);
         $planningCreator = new PlanningCreator();
 
-        return $planningCreator->createPlanning($planningInput, $range, $allowedGppMargin);
+        if( $allowedGppMargin === null) {
+            $allowedGppMargin = (new ScheduleCreator($this->getLogger()))->getMaxGppMargin($input, $input->getPoule(1));
+        }
+        return $planningCreator->createPlanning($input, $range, $allowedGppMargin);
     }
 
     /**
@@ -89,8 +92,9 @@ class GamesCreator
         SportRange|null $range,
         int|null $allowedGppMargin
     ): void {
-
-        $allowedGppMargin = $allowedGppMargin !== null ? $allowedGppMargin : ScheduleCreator::MAX_ALLOWED_GPP_MARGIN;
+        if( $allowedGppMargin === null) {
+            $allowedGppMargin = 2; // (new ScheduleCreator($this->getLogger()))->getMaxGppMargin($input, $input->getPoule(1));
+        }
         $minIsMaxPlanning = $this->createPlanning($roundNumber, $range, $allowedGppMargin);
         $firstBatch = $minIsMaxPlanning->createFirstBatch();
         if ($firstBatch instanceof SelfRefereeBatchOtherPoule ||

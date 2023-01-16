@@ -28,7 +28,7 @@ class Repository extends GameRepository
 
         $query = $this->createQueryBuilder('g')
             ->where('g.startDateTime >= :start')
-            ->andWhere('g.startDateTime <= :end')
+            ->andWhere('g.startDateTime < :end')
             ->andWhere(
                 $exprHome->exists(
                     $this->getEntityManager()->createQueryBuilder()
@@ -263,7 +263,7 @@ class Repository extends GameRepository
         }
         if ($period !== null) {
             $query = $query
-                ->andWhere('g.startDateTime <= :end')
+                ->andWhere('g.startDateTime < :end')
                 ->andWhere('g.startDateTime >= :start')
                 ->setParameter('end', $period->getEndDate())
                 ->setParameter('start', $period->getStartDate());
