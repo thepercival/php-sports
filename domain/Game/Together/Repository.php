@@ -85,7 +85,7 @@ class Repository extends GameRepository
 //        }
         if ($period !== null) {
             $query = $query
-                ->andWhere('g.startDateTime <= :end')
+                ->andWhere('g.startDateTime < :end')
                 ->andWhere('g.startDateTime >= :start')
                 ->setParameter('end', $period->getEndDate())
                 ->setParameter('start', $period->getStartDate());
