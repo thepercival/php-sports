@@ -28,7 +28,7 @@ class Association extends Identifiable
     protected Collection $teams;
 
     public const MIN_LENGTH_NAME = 2;
-    public const MAX_LENGTH_NAME = 30;
+    public const MAX_LENGTH_NAME = 40;
     public const MAX_LENGTH_DESCRIPTION = 50;
 
     public function __construct(string $name)
@@ -48,7 +48,7 @@ class Association extends Identifiable
     {
         if (strlen($name) < self::MIN_LENGTH_NAME or strlen($name) > self::MAX_LENGTH_NAME) {
             throw new \InvalidArgumentException(
-                "de naam moet minimaal " . self::MIN_LENGTH_NAME . " karakters bevatten en mag maximaal " . self::MAX_LENGTH_NAME . " karakters bevatten",
+                'de naam("'.$name.'") moet minimaal ' . self::MIN_LENGTH_NAME . ' karakters bevatten en mag maximaal ' . self::MAX_LENGTH_NAME . ' karakters bevatten',
                 E_ERROR
             );
         }
