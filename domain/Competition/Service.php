@@ -46,21 +46,19 @@ class Service
      * @return Period|null
      * @throws Exception
      */
-    public function changeStartDateTime(Competition $competition, DateTimeImmutable $startDateTime): Period|null
+    public function changeStartDateTime(Competition $competition, DateTimeImmutable $newStartDateTime): Period|null
     {
-        if (!$competition->getSeason()->getPeriod()->contains($startDateTime)) {
+        if (!$competition->getSeason()->getPeriod()->contains($newStartDateTime)) {
             throw new Exception("de startdatum van de competitie valt buiten het seizoen", E_ERROR);
         }
 
-        $periodStart = $competition->getStartDateTime();
-        $periodEnd = $startDateTime;
-        if ($periodEnd->getTimestamp() < $periodStart->getTimestamp()) {
-            $period = new Period($periodStart, $periodEnd);
+        if ($newStartDateTime->getTimestamp() > $competition->getStartDateTime()->getTimestamp()) {
+            $period = new Period($competition->getStartDateTime(), $newStartDateTime);
         } else {
             $period = null;
         }
 
-        $competition->setStartDateTime($startDateTime);
+        $competition->setStartDateTime($newStartDateTime);
 
         return $period;
     }
