@@ -33,4 +33,9 @@ class Line extends Identifiable
     {
         return $this->nrOfPersons;
     }
+
+    public function equals(Line $formationLine): bool {
+        return $this->getNumber() === $formationLine->getNumber()
+            && $this->getNrOfPersons() === $formationLine->getNrOfPersons();
+    }
 }

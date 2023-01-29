@@ -47,4 +47,18 @@ class Formation extends Identifiable
             return $line->getNrOfPersons();
         }, $this->getLines()->toArray()));
     }
+
+    public function equals(Formation $formation): bool {
+        $lines = $this->lines->toArray();
+        foreach( $formation->getLines() as $formationLine) {
+            $thisLines = array_filter( $lines, function(Line $line) use ($formationLine) : bool {
+                return $line->getNumber() === $formationLine->getNumber();
+            } );
+            $thisLine = array_shift($thisLines);
+            if( $thisLine === null || !$formationLine->equals($thisLine) ) {
+                return false;
+            }
+        }
+        return $formation->getLines()->count() === $this->getLines()->count();
+}
 }
