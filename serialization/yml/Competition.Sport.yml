@@ -14,3 +14,18 @@ Sports\Competition\Sport:
         getter: getDefaultPointsCalculationNative
         setter: setDefaultPointsCalculationNative
       groups: [ noReference ]
+    defaultWinPoints:
+      type: float
+      groups: [ noReference ]
+    defaultDrawPoints:
+      type: float
+      groups: [ noReference ]
+    defaultWinPointsExt:
+      type: float
+      groups: [ noReference ]
+    defaultDrawPointsExt:
+      type: float
+      groups: [ noReference ]
+    defaultLosePointsExt:
+      type: float
+      groups: [ noReference ]

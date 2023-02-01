@@ -25,6 +25,11 @@ class Sport extends PersistVariant implements \Stringable
         protected SportsSport $sport,
         protected Competition $competition,
         PointsCalculation $defaultPointsCalculation,
+        protected float $defaultWinPoints,
+        protected float $defaultDrawPoints,
+        protected float $defaultWinPointsExt,
+        protected float $defaultDrawPointsExt,
+        protected float $defaultLosePointsExt,
         PersistVariant $sportVariant
     ) {
         parent::__construct(
@@ -55,6 +60,31 @@ class Sport extends PersistVariant implements \Stringable
     public function setDefaultPointsCalculationNative(int $defaultPointsCalculation): void
     {
         $this->defaultPointsCalculation = PointsCalculation::from($defaultPointsCalculation);
+    }
+
+    public function getDefaultWinPoints(): float
+    {
+        return $this->defaultWinPoints;
+    }
+
+    public function getDefaultDrawPoints(): float
+    {
+        return $this->defaultDrawPoints;
+    }
+
+    public function getDefaultWinPointsExt(): float
+    {
+        return $this->defaultWinPointsExt;
+    }
+
+    public function getDefaultDrawPointsExt(): float
+    {
+        return $this->defaultDrawPointsExt;
+    }
+
+    public function getDefaultLosePointsExt(): float
+    {
+        return $this->defaultLosePointsExt;
     }
 
     public function getSport(): SportsSport

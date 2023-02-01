@@ -63,6 +63,7 @@ class DummyCreator
                 $sport,
                 $competition,
                 PointsCalculation::AgainstGamePoints,
+                3, 1, 2, 1, 0,
                 new PersistSportVariant(
                     $sport->getDefaultGameMode(),
                     $defaultNrOfSidePlaces,

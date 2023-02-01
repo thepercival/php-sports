@@ -111,7 +111,12 @@ trait CompetitionCreator
             }
 
             $persistVariant = $sportVariantWithFields->getSportVariant()->toPersistVariant();
-            $competitionSport = new CompetitionSport($sport, $competition, PointsCalculation::AgainstGamePoints, $persistVariant);
+            $competitionSport = new CompetitionSport(
+                $sport,
+                $competition,
+                PointsCalculation::AgainstGamePoints,
+                3, 1, 2, 1, 0,
+                $persistVariant);
             for ($fieldNr = 1; $fieldNr <= $sportVariantWithFields->getNrOfFields(); $fieldNr++) {
                 $field = new Field($competitionSport);
                 $field->setName($sportAbbreviation . '' . $fieldNr);

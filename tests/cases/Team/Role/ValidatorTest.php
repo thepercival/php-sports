@@ -264,7 +264,9 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
             1
         );
         $sportVariant = new AgainstH2h(1, 1, 1);
-        $competitionSport = new CompetitionSport($sport, $competition, PointsCalculation::AgainstGamePoints, $sportVariant->toPersistVariant());
+        $competitionSport = new CompetitionSport($sport, $competition,
+            PointsCalculation::AgainstGamePoints, 3, 1, 2, 1, 0,
+            $sportVariant->toPersistVariant());
         $game = new AgainstGame(
             $poule,
             1,

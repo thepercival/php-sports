@@ -5,6 +5,16 @@
     <entity name="Sports\Competition\Sport" table="competitionSports"
             repository-class="Sports\Competition\Sport\Repository">
         <field name="defaultPointsCalculation" column="defaultPointsCalculation" type="enum_PointsCalculation" nullable="false" unique="false"/>
+        <field name="defaultWinPoints" column="defaultWinPoints" type="decimal" precision="3" scale="1" nullable="false"
+               unique="false"/>
+        <field name="defaultDrawPoints" column="defaultDrawPoints" type="decimal" precision="3" scale="1" nullable="false"
+               unique="false"/>
+        <field name="defaultWinPointsExt" column="defaultWinPointsExt" type="decimal" precision="3" scale="1" nullable="false"
+               unique="false"/>
+        <field name="defaultDrawPointsExt" column="defaultDrawPointsExt" type="decimal" precision="3" scale="1" nullable="false"
+               unique="false"/>
+        <field name="defaultLosePointsExt" column="defaultLosePointsExt" type="decimal" precision="3" scale="1" nullable="false"
+               unique="false"/>
         <many-to-one field="sport" target-entity="Sports\Sport">
             <join-columns>
                 <join-column name="sportId" referenced-column-name="id" nullable="true" on-delete="CASCADE"/>
