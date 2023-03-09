@@ -22,7 +22,7 @@ class StartLocationMap
         }
     }
 
-    public function getCompetitor(StartLocation $startLocation): ?Competitor
+    public function getCompetitor(StartLocationInterface $startLocation): ?Competitor
     {
         if (array_key_exists($startLocation->getStartId(), $this->map)) {
             return $this->map[$startLocation->getStartId()];
