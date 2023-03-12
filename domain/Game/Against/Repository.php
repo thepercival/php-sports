@@ -140,7 +140,7 @@ class Repository extends GameRepository
         return count($gamePlaces);
     }
 
-    protected function getState(Competition $competition, int $gameRoundNr): State
+    public function getGameRoundState(Competition $competition, int $gameRoundNr): State
     {
         $againstGames = $this->getCompetitionGames($competition, null, $gameRoundNr);
         if (count($againstGames) === 0) {
