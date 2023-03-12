@@ -11,9 +11,11 @@ use Sports\Competitor;
 use Sports\Game\Against as AgainstGame;
 use Sports\Game\Place\Against as AgainstGamePlace;
 use Sports\Game\Repository as GameRepository;
+use Sports\Game\State;
 use Sports\Game\State as GameState;
 use Sports\Game\Together as TogetherGame;
 use Sports\Round\Number as RoundNumber;
+use SportsHelpers\Against\Side;
 use SportsHelpers\Against\Side as AgainstSide;
 
 /**
@@ -136,6 +138,80 @@ class Repository extends GameRepository
             $period
         )->getQuery()->getResult();
         return count($gamePlaces);
+    }
+
+    protected function getState(Competition $competition, int $gameRoundNr): State
+    {
+        $againstGames = $this->getCompetitionGames($competition, null, $gameRoundNr);
+        if (count($againstGames) === 0) {
+            return State::Created;
+        }
+        $created = array_filter($againstGames, function (AgainstGame $againstGame): bool {
+            return $againstGame->getState() === State::Created;
+        });
+        $finished = array_filter($againstGames, function (AgainstGame $againstGame): bool {
+            return $againstGame->getState() === State::Finished;
+        });
+        if (count($created) > 0 && count($finished) > 0) {
+            return State::InProgress;
+        }
+        if (count($created) === 0 && count($finished) > 0) {
+            $canceled = array_filter($againstGames, function (AgainstGame $againstGame): bool {
+                return $againstGame->getState() === State::Canceled;
+            });
+            if( !$this->allCanceledInFinished(array_values($canceled),array_values($finished)) ) {
+                return State::InProgress;
+            }
+            return State::Finished;
+        }
+        return State::Created;
+    }
+
+    /**
+     * @param list<AgainstGame> $canceled
+     * @param list<AgainstGame> $finished
+     * @return bool
+     */
+    protected function allCanceledInFinished(array $canceled, array $finished): bool {
+        foreach( $canceled as $canceledGame) {
+            if( !$this->canceledGameInFinished($canceledGame, $finished) ) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * @param AgainstGame $canceledGame
+     * @param list<AgainstGame> $finished
+     * @return bool
+     */
+    protected function canceledGameInFinished(AgainstGame $canceledGame, array $finished): bool {
+        $canceledHomeGamePlaces = $canceledGame->getSidePlaces(Side::Home);
+        $canceledHomeGamePlace = array_shift($canceledHomeGamePlaces);
+        $canceledAwayGamePlaces = $canceledGame->getSidePlaces(Side::Away);
+        $canceledAwayGamePlace = array_shift($canceledAwayGamePlaces);
+        if ($canceledHomeGamePlace === null || $canceledAwayGamePlace === null) {
+            return false;
+        }
+        $canceledHomePlace = $canceledHomeGamePlace->getPlace();
+        $canceledAwayPlace = $canceledAwayGamePlace->getPlace();
+
+        foreach( $finished as $finishedGame) {
+            $finishedHomeGamePlaces = $finishedGame->getSidePlaces(Side::Home);
+            $finishedHomeGamePlace = array_shift($finishedHomeGamePlaces);
+            $finishedAwayGamePlaces = $finishedGame->getSidePlaces(Side::Away);
+            $finishedAwayGamePlace = array_shift($finishedAwayGamePlaces);
+            if ($finishedHomeGamePlace === null || $finishedAwayGamePlace === null) {
+                return false;
+            }
+            $finishedHomePlace = $finishedHomeGamePlace->getPlace();
+            $finishedAwayPlace = $finishedAwayGamePlace->getPlace();
+            if( $finishedHomePlace === $canceledHomePlace && $finishedAwayPlace === $canceledAwayPlace ) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
