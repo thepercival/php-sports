@@ -88,9 +88,12 @@ class Person extends Identifiable
         $this->lastName = $lastName;
     }
 
-    public function getName(): string
+    public function getName(bool $firstNameAbbr = false): string
     {
         $name = $this->getFirstName();
+        if( $firstNameAbbr ) {
+            $name = strtoupper(mb_substr($name,0, 1));
+        }
         $nameInsertion = $this->getNameInsertion();
         if ($nameInsertion !== null) {
             if (strlen($name) > 0) {
