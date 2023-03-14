@@ -148,8 +148,8 @@ final class Drawer
     public function addToString(string $text, string $char, Align $side): string
     {
         if ($side === Align::Right) {
-            return $text . $char;
+            return $char . $text;
         }
-        return $char . $text;
+        return $text . $char;
     }
 }
