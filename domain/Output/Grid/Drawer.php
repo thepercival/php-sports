@@ -21,7 +21,7 @@ final class Drawer
 
     public function drawToRight(Coordinate $coordinate, string $value, Color|null $color = null): Coordinate
     {
-        $valueAsArray = str_split($value);
+        $valueAsArray = mb_str_split($value);
         $char = array_shift($valueAsArray);
         while ($char !== null) {
             $this->grid->setColor($coordinate, $color);
@@ -42,7 +42,7 @@ final class Drawer
 
     public function drawToLeft(Coordinate $coordinate, string $value, Color|null $color = null): Coordinate
     {
-        $valueAsArray = str_split($value);
+        $valueAsArray = mb_str_split($value);
         $char = array_shift($valueAsArray);
         while ($char !== null) {
             $this->grid->setColor($coordinate, $color);
@@ -63,7 +63,7 @@ final class Drawer
 
     public function drawVertAwayFromOrigin(Coordinate $coordinate, string $value, Color|null $color = null): Coordinate
     {
-        $valueAsArray = str_split($value);
+        $valueAsArray = mb_str_split($value);
         $char = array_shift($valueAsArray);
         while ($char !== null) {
             $this->grid->setColor($coordinate, $color);
@@ -84,7 +84,7 @@ final class Drawer
 
     public function drawVertToOrigin(Coordinate $coordinate, string $value, Color|null $color = null): Coordinate
     {
-        $valueAsArray = str_split($value);
+        $valueAsArray = mb_str_split($value);
         $char = array_shift($valueAsArray);
         while ($char !== null) {
             $this->grid->setColor($coordinate, $color);
@@ -111,17 +111,17 @@ final class Drawer
         Color|null $color = null
     ): Coordinate {
         $char = ' ';
-        if (strlen($text) > $width) {
-            $text = substr($text, 0, $width);
+        if (mb_strlen($text) > $width) {
+            $text = mb_substr($text, 0, $width);
         }
         if ($align === Align::Center) {
             $align = Align::Left;
-            while (strlen($text) < $width) {
+            while (mb_strlen($text) < $width) {
                 $text = $this->addToString($text, $char, $align);
                 $align = $align === Align::Left ? Align::Right : Align::Left;
             }
         } else {
-            while (strlen($text) < $width) {
+            while (mb_strlen($text) < $width) {
                 $text = $this->addToString($text, $char, $align);
             }
         }
