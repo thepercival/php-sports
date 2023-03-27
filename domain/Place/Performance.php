@@ -12,10 +12,10 @@ class Performance
 {
     private int $games = 0;
     private float $points = 0.0;
-    private int $scored = 0;
-    private int $received = 0;
-    private int $subScored = 0;
-    private int $subReceived = 0;
+    private float $scored = 0;
+    private float $received = 0;
+    private float $subScored = 0;
+    private float $subReceived = 0;
 
     public function __construct(private Place $place)
     {
@@ -51,52 +51,52 @@ class Performance
         $this->points += $points;
     }
 
-    public function getScored(): int
+    public function getScored(): float
     {
         return $this->scored;
     }
 
-    public function addScored(int $scored): void
+    public function addScored(float $scored): void
     {
         $this->scored += $scored;
     }
 
-    public function getReceived(): int
+    public function getReceived(): float
     {
         return $this->received;
     }
 
-    public function addReceived(int $received): void
+    public function addReceived(float $received): void
     {
         $this->received += $received;
     }
 
-    public function getDiff(): int
+    public function getDiff(): float
     {
         return $this->getScored() - $this->getReceived();
     }
 
-    public function getSubScored(): int
+    public function getSubScored(): float
     {
         return $this->subScored;
     }
 
-    public function addSubScored(int $subScored): void
+    public function addSubScored(float $subScored): void
     {
         $this->subScored += $subScored;
     }
 
-    public function getSubReceived(): int
+    public function getSubReceived(): float
     {
         return $this->subReceived;
     }
 
-    public function addSubReceived(int $subReceived): void
+    public function addSubReceived(float $subReceived): void
     {
         $this->subReceived += $subReceived;
     }
 
-    public function getSubDiff(): int
+    public function getSubDiff(): float
     {
         return $this->getSubScored() - $this->getSubReceived();
     }

@@ -6,7 +6,7 @@ class AgainstHelper
 {
     use AgainstTrait;
 
-    public function __construct(int $home, int $away)
+    public function __construct(float $home, float $away)
     {
         $this->setHome($home);
         $this->setAway($away);

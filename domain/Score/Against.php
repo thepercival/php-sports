@@ -14,7 +14,7 @@ class Against extends Score
     public const SCORED = 1;
     public const RECEIVED = 2;
 
-    public function __construct(protected AgainstGame $game, int $home, int $away, int $phase, int $number = null)
+    public function __construct(protected AgainstGame $game, float $home, float $away, int $phase, int $number = null)
     {
         $this->setHome($home);
         $this->setAway($away);

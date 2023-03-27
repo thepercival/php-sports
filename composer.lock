@@ -3899,16 +3899,16 @@
         },
         {
             "name": "friendsofphp/php-cs-fixer",
-            "version": "v3.14.4",
+            "version": "v3.15.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/PHP-CS-Fixer/PHP-CS-Fixer.git",
-                "reference": "1b3d9dba63d93b8a202c31e824748218781eae6b"
+                "reference": "d48755372a113bddb99f749e34805d83f3acfe04"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PHP-CS-Fixer/PHP-CS-Fixer/zipball/1b3d9dba63d93b8a202c31e824748218781eae6b",
-                "reference": "1b3d9dba63d93b8a202c31e824748218781eae6b",
+                "url": "https://api.github.com/repos/PHP-CS-Fixer/PHP-CS-Fixer/zipball/d48755372a113bddb99f749e34805d83f3acfe04",
+                "reference": "d48755372a113bddb99f749e34805d83f3acfe04",
                 "shasum": ""
             },
             "require": {
@@ -3975,9 +3975,15 @@
                 }
             ],
             "description": "A tool to automatically fix PHP code style",
+            "keywords": [
+                "Static code analysis",
+                "fixer",
+                "standards",
+                "static analysis"
+            ],
             "support": {
                 "issues": "https://github.com/PHP-CS-Fixer/PHP-CS-Fixer/issues",
-                "source": "https://github.com/PHP-CS-Fixer/PHP-CS-Fixer/tree/v3.14.4"
+                "source": "https://github.com/PHP-CS-Fixer/PHP-CS-Fixer/tree/v3.15.1"
             },
             "funding": [
                 {
@@ -3985,7 +3991,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2023-02-09T21:49:13+00:00"
+            "time": "2023-03-13T23:26:30+00:00"
         },
         {
             "name": "myclabs/deep-copy",
@@ -4429,24 +4435,27 @@
         },
         {
             "name": "phpdocumentor/type-resolver",
-            "version": "1.6.2",
+            "version": "1.7.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpDocumentor/TypeResolver.git",
-                "reference": "48f445a408c131e38cab1c235aa6d2bb7a0bb20d"
+                "reference": "1534aea9bde19a5c85c5d1e1f834ab63f4c5dcf5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpDocumentor/TypeResolver/zipball/48f445a408c131e38cab1c235aa6d2bb7a0bb20d",
-                "reference": "48f445a408c131e38cab1c235aa6d2bb7a0bb20d",
+                "url": "https://api.github.com/repos/phpDocumentor/TypeResolver/zipball/1534aea9bde19a5c85c5d1e1f834ab63f4c5dcf5",
+                "reference": "1534aea9bde19a5c85c5d1e1f834ab63f4c5dcf5",
                 "shasum": ""
             },
             "require": {
+                "doctrine/deprecations": "^1.0",
                 "php": "^7.4 || ^8.0",
-                "phpdocumentor/reflection-common": "^2.0"
+                "phpdocumentor/reflection-common": "^2.0",
+                "phpstan/phpdoc-parser": "^1.13"
             },
             "require-dev": {
                 "ext-tokenizer": "*",
+                "phpbench/phpbench": "^1.2",
                 "phpstan/extension-installer": "^1.1",
                 "phpstan/phpstan": "^1.8",
                 "phpstan/phpstan-phpunit": "^1.1",
@@ -4478,9 +4487,9 @@
             "description": "A PSR-5 based resolver of Class names, Types and Structural Element Names",
             "support": {
                 "issues": "https://github.com/phpDocumentor/TypeResolver/issues",
-                "source": "https://github.com/phpDocumentor/TypeResolver/tree/1.6.2"
+                "source": "https://github.com/phpDocumentor/TypeResolver/tree/1.7.0"
             },
-            "time": "2022-10-14T12:47:21+00:00"
+            "time": "2023-03-12T10:13:29+00:00"
         },
         {
             "name": "phpstan/extension-installer",
@@ -4528,16 +4537,16 @@
         },
         {
             "name": "phpstan/phpstan",
-            "version": "1.10.6",
+            "version": "1.10.8",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpstan/phpstan.git",
-                "reference": "50d089a3e0904b0fe7e2cf2d4fd37d427d64235a"
+                "reference": "0166aef76e066f0dd2adc2799bdadfa1635711e9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/50d089a3e0904b0fe7e2cf2d4fd37d427d64235a",
-                "reference": "50d089a3e0904b0fe7e2cf2d4fd37d427d64235a",
+                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/0166aef76e066f0dd2adc2799bdadfa1635711e9",
+                "reference": "0166aef76e066f0dd2adc2799bdadfa1635711e9",
                 "shasum": ""
             },
             "require": {
@@ -4566,8 +4575,11 @@
                 "static analysis"
             ],
             "support": {
+                "docs": "https://phpstan.org/user-guide/getting-started",
+                "forum": "https://github.com/phpstan/phpstan/discussions",
                 "issues": "https://github.com/phpstan/phpstan/issues",
-                "source": "https://github.com/phpstan/phpstan/tree/1.10.6"
+                "security": "https://github.com/phpstan/phpstan/security/policy",
+                "source": "https://github.com/phpstan/phpstan-src"
             },
             "funding": [
                 {
@@ -4583,20 +4595,20 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2023-03-09T16:55:12+00:00"
+            "time": "2023-03-24T10:28:16+00:00"
         },
         {
             "name": "phpstan/phpstan-doctrine",
-            "version": "1.3.35",
+            "version": "1.3.37",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpstan/phpstan-doctrine.git",
-                "reference": "3dbb999bd56cc21d6733bab60898ebdf388245b5"
+                "reference": "62bd362b432fe29e175168689510ddd927b698f8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpstan-doctrine/zipball/3dbb999bd56cc21d6733bab60898ebdf388245b5",
-                "reference": "3dbb999bd56cc21d6733bab60898ebdf388245b5",
+                "url": "https://api.github.com/repos/phpstan/phpstan-doctrine/zipball/62bd362b432fe29e175168689510ddd927b698f8",
+                "reference": "62bd362b432fe29e175168689510ddd927b698f8",
                 "shasum": ""
             },
             "require": {
@@ -4651,22 +4663,22 @@
             "description": "Doctrine extensions for PHPStan",
             "support": {
                 "issues": "https://github.com/phpstan/phpstan-doctrine/issues",
-                "source": "https://github.com/phpstan/phpstan-doctrine/tree/1.3.35"
+                "source": "https://github.com/phpstan/phpstan-doctrine/tree/1.3.37"
             },
-            "time": "2023-03-10T14:43:05+00:00"
+            "time": "2023-03-17T14:57:03+00:00"
         },
         {
             "name": "phpstan/phpstan-phpunit",
-            "version": "1.3.10",
+            "version": "1.3.11",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpstan/phpstan-phpunit.git",
-                "reference": "4cc5c6cc38e56bce7ea47c4091814e516d172dc3"
+                "reference": "9e1b9de6d260461f6e99b6a8f2dbb0bbb98b579c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpstan-phpunit/zipball/4cc5c6cc38e56bce7ea47c4091814e516d172dc3",
-                "reference": "4cc5c6cc38e56bce7ea47c4091814e516d172dc3",
+                "url": "https://api.github.com/repos/phpstan/phpstan-phpunit/zipball/9e1b9de6d260461f6e99b6a8f2dbb0bbb98b579c",
+                "reference": "9e1b9de6d260461f6e99b6a8f2dbb0bbb98b579c",
                 "shasum": ""
             },
             "require": {
@@ -4703,9 +4715,9 @@
             "description": "PHPUnit extensions and rules for PHPStan",
             "support": {
                 "issues": "https://github.com/phpstan/phpstan-phpunit/issues",
-                "source": "https://github.com/phpstan/phpstan-phpunit/tree/1.3.10"
+                "source": "https://github.com/phpstan/phpstan-phpunit/tree/1.3.11"
             },
-            "time": "2023-03-02T10:25:13+00:00"
+            "time": "2023-03-25T19:42:13+00:00"
         },
         {
             "name": "phpstan/phpstan-strict-rules",
@@ -5076,16 +5088,16 @@
         },
         {
             "name": "phpunit/phpunit",
-            "version": "9.6.5",
+            "version": "9.6.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "86e761949019ae83f49240b2f2123fb5ab3b2fc5"
+                "reference": "b65d59a059d3004a040c16a82e07bbdf6cfdd115"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/86e761949019ae83f49240b2f2123fb5ab3b2fc5",
-                "reference": "86e761949019ae83f49240b2f2123fb5ab3b2fc5",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/b65d59a059d3004a040c16a82e07bbdf6cfdd115",
+                "reference": "b65d59a059d3004a040c16a82e07bbdf6cfdd115",
                 "shasum": ""
             },
             "require": {
@@ -5158,7 +5170,8 @@
             ],
             "support": {
                 "issues": "https://github.com/sebastianbergmann/phpunit/issues",
-                "source": "https://github.com/sebastianbergmann/phpunit/tree/9.6.5"
+                "security": "https://github.com/sebastianbergmann/phpunit/security/policy",
+                "source": "https://github.com/sebastianbergmann/phpunit/tree/9.6.6"
             },
             "funding": [
                 {
@@ -5174,7 +5187,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2023-03-09T06:34:10+00:00"
+            "time": "2023-03-27T11:43:46+00:00"
         },
         {
             "name": "psalm/plugin-phpunit",

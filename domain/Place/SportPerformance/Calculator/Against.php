@@ -104,7 +104,7 @@ class Against extends Calculator
         return $points;
     }
 
-    private function getNrOfUnits(?AgainstScoreHelper $finalScore, AgainstSide $side, int $scoredReceived): int
+    private function getNrOfUnits(?AgainstScoreHelper $finalScore, AgainstSide $side, int $scoredReceived): float
     {
         if ($finalScore === null) {
             return 0;
@@ -113,7 +113,7 @@ class Against extends Calculator
         return $this->getGameScorePart($finalScore, $scoredReceived === AgainstScore::SCORED ? $side : $opposite);
     }
 
-    private function getGameScorePart(AgainstScoreHelper $againstGameScore, AgainstSide $side): int
+    private function getGameScorePart(AgainstScoreHelper $againstGameScore, AgainstSide $side): float
     {
         return $side === AgainstSide::Home ? $againstGameScore->getHome() : $againstGameScore->getAway();
     }

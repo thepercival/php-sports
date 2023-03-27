@@ -6,7 +6,6 @@ namespace Sports\Score\Config;
 
 use Sports\Score\Config as ScoreConfig;
 use Sports\Score\AgainstHelper as AgainstScore;
-use Sports\Score\Together as TogetherScore;
 use Sports\Game\Place\Together as TogetherGamePlace;
 use Sports\Game\Against as AgainstGame;
 use Sports\Sport\Custom as CustomSport;
@@ -123,6 +122,9 @@ class Service
                 $home++;
             } elseif ($score->getHome() < $score->getAway()) {
                 $away++;
+            } else {
+                $home += 0.5;
+                $away += 0.5;
             }
         }
         return new AgainstScore($home, $away);
