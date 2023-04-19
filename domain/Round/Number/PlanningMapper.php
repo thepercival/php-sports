@@ -141,7 +141,10 @@ class PlanningMapper
             }
             $nrOfQualifyGroupsA = count($pouleA->getRound()->getQualifyGroups());
             $nrOfQualifyGroupsB = count($pouleB->getRound()->getQualifyGroups());
-            return $nrOfQualifyGroupsA - $nrOfQualifyGroupsB;
+            if( $nrOfQualifyGroupsA !== $nrOfQualifyGroupsB) {
+                return $nrOfQualifyGroupsA - $nrOfQualifyGroupsB;
+            }
+            return $pouleA->getRound()->getNrOfPlacesChildren() - $pouleB->getRound()->getNrOfPlacesChildren();
         };
 
         if ($roundNumber->isFirst()) {

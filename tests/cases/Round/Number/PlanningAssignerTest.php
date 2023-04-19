@@ -6,12 +6,14 @@ namespace Sports\Tests\Round\Number;
 
 use PHPUnit\Framework\TestCase;
 use Sports\Game\Order;
+use Sports\Output\StructureOutput;
 use Sports\Qualify\Target as QualifyTarget;
 use Sports\Round\Number\GamesValidator;
 use Sports\TestHelper\CompetitionCreator;
 use Sports\TestHelper\GamesCreator;
 use Sports\TestHelper\StructureEditorCreator;
 use SportsHelpers\SelfReferee;
+use Sports\Output\Game\Against as AgainstGameOutput;
 
 final class PlanningAssignerTest extends TestCase
 {
@@ -134,6 +136,53 @@ final class PlanningAssignerTest extends TestCase
                 self::assertEquals(QualifyTarget::Winners, $target);
             }
             //(new AgainstGameOutput())->output($game);
+        }
+    }
+
+    public function testWinPlacesWhichCanQualifyForNextRoundHard(): void
+    {
+        $competition = $this->createCompetition();
+
+        $structureEditor = $this->createStructureEditor();
+        $structure = $structureEditor->create($competition, [4, 4, 4, 4]);
+
+        $rootRound = $structure->getSingleCategory()->getRootRound();
+        $winnersRound = $structureEditor->addChildRound($rootRound, QualifyTarget::Winners, [2, 2, 2, 2]);
+        $thirdsRound = $structureEditor->addChildRound($rootRound, QualifyTarget::Losers, [2, 2]);
+        $fourthsRound = $structureEditor->addChildRound($rootRound, QualifyTarget::Losers, [2, 2]);
+
+        // second round
+        $winnersWinnersRound = $structureEditor->addChildRound($winnersRound, QualifyTarget::Winners, [2, 2]);
+        $winnersLosersRound = $structureEditor->addChildRound($winnersRound, QualifyTarget::Losers, [2, 2]);
+        $thirdsWinnersRound = $structureEditor->addChildRound($thirdsRound, QualifyTarget::Winners, [2]);
+        $thirdsLosersRound = $structureEditor->addChildRound($thirdsRound, QualifyTarget::Losers, [2]);
+        $fourthsWinnersRound = $structureEditor->addChildRound($fourthsRound, QualifyTarget::Winners, [2]);
+        $fourthsLosersRound = $structureEditor->addChildRound($fourthsRound, QualifyTarget::Losers, [2]);
+
+        // third round
+        $winnersWinnersWinnersRound = $structureEditor->addChildRound($winnersWinnersRound, QualifyTarget::Winners, [2]);
+        $winnersWinnersLosersRound = $structureEditor->addChildRound($winnersWinnersRound, QualifyTarget::Losers, [2]);
+        $winnersLosersWinnersRound = $structureEditor->addChildRound($winnersLosersRound, QualifyTarget::Winners, [2]);
+        $winnersLosersLosersRound = $structureEditor->addChildRound($winnersLosersRound, QualifyTarget::Losers, [2]);
+
+        (new StructureOutput())->output($structure);
+
+        $firstRoundNumber = $structure->getFirstRoundNumber();
+        $secondRoundNumber = $firstRoundNumber->getNext();
+        self::assertNotNull($secondRoundNumber);
+
+        (new GamesCreator())->createStructureGames($structure);
+
+        foreach ($secondRoundNumber->getGames(Order::ByBatch) as $game) {
+            $parentQualifyGroup = $game->getPoule()->getRound()->getParentQualifyGroup();
+            self::assertNotNull($parentQualifyGroup);
+            $target = $parentQualifyGroup->getTarget();
+            if ($game->getBatchNr() < 5 ) {
+                self::assertEquals(QualifyTarget::Winners, $target);
+            } else {
+                // self::assertGreaterThan(1, $parentQualifyGroup->getNumber());
+            }
+            (new AgainstGameOutput())->output($game);
         }
     }
 }
