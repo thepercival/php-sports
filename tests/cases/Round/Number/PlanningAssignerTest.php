@@ -154,18 +154,18 @@ final class PlanningAssignerTest extends TestCase
         // second round
         $winnersWinnersRound = $structureEditor->addChildRound($winnersRound, QualifyTarget::Winners, [2, 2]);
         $winnersLosersRound = $structureEditor->addChildRound($winnersRound, QualifyTarget::Losers, [2, 2]);
-        $thirdsWinnersRound = $structureEditor->addChildRound($thirdsRound, QualifyTarget::Winners, [2]);
-        $thirdsLosersRound = $structureEditor->addChildRound($thirdsRound, QualifyTarget::Losers, [2]);
-        $fourthsWinnersRound = $structureEditor->addChildRound($fourthsRound, QualifyTarget::Winners, [2]);
-        $fourthsLosersRound = $structureEditor->addChildRound($fourthsRound, QualifyTarget::Losers, [2]);
+        $structureEditor->addChildRound($thirdsRound, QualifyTarget::Winners, [2]);
+        $structureEditor->addChildRound($thirdsRound, QualifyTarget::Losers, [2]);
+        $structureEditor->addChildRound($fourthsRound, QualifyTarget::Winners, [2]);
+        $structureEditor->addChildRound($fourthsRound, QualifyTarget::Losers, [2]);
 
         // third round
-        $winnersWinnersWinnersRound = $structureEditor->addChildRound($winnersWinnersRound, QualifyTarget::Winners, [2]);
-        $winnersWinnersLosersRound = $structureEditor->addChildRound($winnersWinnersRound, QualifyTarget::Losers, [2]);
-        $winnersLosersWinnersRound = $structureEditor->addChildRound($winnersLosersRound, QualifyTarget::Winners, [2]);
-        $winnersLosersLosersRound = $structureEditor->addChildRound($winnersLosersRound, QualifyTarget::Losers, [2]);
+        $structureEditor->addChildRound($winnersWinnersRound, QualifyTarget::Winners, [2]);
+        $structureEditor->addChildRound($winnersWinnersRound, QualifyTarget::Losers, [2]);
+        $structureEditor->addChildRound($winnersLosersRound, QualifyTarget::Winners, [2]);
+        $structureEditor->addChildRound($winnersLosersRound, QualifyTarget::Losers, [2]);
 
-        (new StructureOutput())->output($structure);
+//        (new StructureOutput())->output($structure);
 
         $firstRoundNumber = $structure->getFirstRoundNumber();
         $secondRoundNumber = $firstRoundNumber->getNext();
@@ -180,9 +180,9 @@ final class PlanningAssignerTest extends TestCase
             if ($game->getBatchNr() < 5 ) {
                 self::assertEquals(QualifyTarget::Winners, $target);
             } else {
-                // self::assertGreaterThan(1, $parentQualifyGroup->getNumber());
+                self::assertGreaterThan(1, $parentQualifyGroup->getNumber());
             }
-            (new AgainstGameOutput())->output($game);
+//            (new AgainstGameOutput())->output($game);
         }
     }
 }
