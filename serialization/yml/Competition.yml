@@ -3,11 +3,7 @@ Sports\Competition:
   exclude: false
   properties:
     againstRuleSet:
-      type: int
-      access_type: public_method
-      accessor:
-        getter: getAgainstRuleSetNative
-        setter: setAgainstRuleSetNative
+      type: Sports\Ranking\AgainstRuleSet
     league:
       type: Sports\League
     season:
