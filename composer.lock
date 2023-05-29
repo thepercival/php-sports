@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "59270983dc8e209bdb25b51bcede63df",
+    "content-hash": "81671ab6ca6b17dc7cd35b278f631db5",
     "packages": [
         {
             "name": "ahamed/jsphp",
@@ -1861,16 +1861,16 @@
         },
         {
             "name": "phpstan/phpdoc-parser",
-            "version": "1.21.1",
+            "version": "1.21.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpstan/phpdoc-parser.git",
-                "reference": "e560a3eb5e76b35d6d92377e5abb6887c1c13c95"
+                "reference": "a8094fafabf0d7c7b7337a9c6496f4d8fbc718f1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpdoc-parser/zipball/e560a3eb5e76b35d6d92377e5abb6887c1c13c95",
-                "reference": "e560a3eb5e76b35d6d92377e5abb6887c1c13c95",
+                "url": "https://api.github.com/repos/phpstan/phpdoc-parser/zipball/a8094fafabf0d7c7b7337a9c6496f4d8fbc718f1",
+                "reference": "a8094fafabf0d7c7b7337a9c6496f4d8fbc718f1",
                 "shasum": ""
             },
             "require": {
@@ -1901,9 +1901,9 @@
             "description": "PHPDoc parser with support for nullable, intersection and generic types",
             "support": {
                 "issues": "https://github.com/phpstan/phpdoc-parser/issues",
-                "source": "https://github.com/phpstan/phpdoc-parser/tree/1.21.1"
+                "source": "https://github.com/phpstan/phpdoc-parser/tree/1.21.2"
             },
-            "time": "2023-05-29T11:55:57+00:00"
+            "time": "2023-05-29T15:20:08+00:00"
         },
         {
             "name": "psr/cache",
@@ -3160,16 +3160,16 @@
         },
         {
             "name": "thepercival/php-sports-helpers",
-            "version": "v1.2.14",
+            "version": "v1.2.16",
             "source": {
                 "type": "git",
                 "url": "https://github.com/thepercival/php-sports-helpers.git",
-                "reference": "b5cfa333eff954657ae1e6cae8b0db8ce5f6a3e9"
+                "reference": "a7cc2ccae1a59b577c7c482de551991e9b2aa19b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/thepercival/php-sports-helpers/zipball/b5cfa333eff954657ae1e6cae8b0db8ce5f6a3e9",
-                "reference": "b5cfa333eff954657ae1e6cae8b0db8ce5f6a3e9",
+                "url": "https://api.github.com/repos/thepercival/php-sports-helpers/zipball/a7cc2ccae1a59b577c7c482de551991e9b2aa19b",
+                "reference": "a7cc2ccae1a59b577c7c482de551991e9b2aa19b",
                 "shasum": ""
             },
             "require": {
@@ -3220,9 +3220,9 @@
             "support": {
                 "email": "coendunnink@gmail.com",
                 "issues": "https://github.com/thepercival/php-sports-helpers/issues",
-                "source": "https://github.com/thepercival/php-sports-helpers/tree/v1.2.14"
+                "source": "https://github.com/thepercival/php-sports-helpers/tree/v1.2.16"
             },
-            "time": "2023-01-16T22:04:23+00:00"
+            "time": "2023-05-29T18:11:42+00:00"
         },
         {
             "name": "thepercival/php-sports-planning",

@@ -44,6 +44,11 @@ class Against extends GamePlaceBase
         return $this->side;
     }
 
+    public function setSide(AgainstSide $side): void
+    {
+        $this->side = $side;
+    }
+
     /**
      * @param Closure|null $filter
      * @psalm-param Closure(Participation=):bool|null $filter
@@ -210,15 +215,5 @@ class Against extends GamePlaceBase
             return $participationA->getBeginMinute() < $participationB->getBeginMinute() ? -1 : 1;
         });
         return array_values($substitutes);
-    }
-
-    public function getSideNative(): int
-    {
-        return $this->side->value;
-    }
-
-    public function setSideNative(int $side): void
-    {
-        $this->side = AgainstSide::from($side);
     }
 }

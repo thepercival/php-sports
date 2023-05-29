@@ -3,8 +3,3 @@ Sports\Game\Place\Against:
   exclude: false
   properties:
     side:
-      type: int
-      access_type: public_method
-      accessor:
-        getter: getSideNative
-        setter: setSideNative

@@ -139,14 +139,4 @@ abstract class Game extends Identifiable
     {
         $this->refereeStructureLocation = $refereeStructureLocation;
     }
-
-    public function getStateNative(): int
-    {
-        return $this->state->value;
-    }
-
-    public function setStateNative(int $state): void
-    {
-        $this->state = Game\State::from($state);
-    }
 }

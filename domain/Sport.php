@@ -57,14 +57,9 @@ class Sport extends Identifiable
         return $this->defaultGameMode;
     }
 
-    public function getDefaultGameModeNative(): int
+    public function setDefaultGameModeN(GameMode $defaultGameMode): void
     {
-        return $this->defaultGameMode->value;
-    }
-
-    public function setDefaultGameModeNative(int $defaultGameMode): void
-    {
-        $this->defaultGameMode = GameMode::from($defaultGameMode);
+        $this->defaultGameMode = $defaultGameMode;
     }
 
     public function getDefaultNrOfSidePlaces(): int

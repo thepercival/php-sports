@@ -137,24 +137,4 @@ class Config extends Identifiable
     {
         return $this->roundNumber;
     }
-
-    public function getEditModeNative(): int
-    {
-        return $this->editMode->value;
-    }
-
-    public function setEditModeNative(int $editMode): void
-    {
-        $this->editMode = EditMode::from($editMode);
-    }
-
-    public function getSelfRefereeNative(): int
-    {
-        return $this->selfReferee->value;
-    }
-
-    public function setSelfRefereeNative(int $selfReferee): void
-    {
-        $this->selfReferee = SelfReferee::from($selfReferee);
-    }
 }

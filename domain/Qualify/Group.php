@@ -40,6 +40,11 @@ class Group extends Identifiable
         return $this->target;
     }
 
+    public function setTarget(Target $target): void
+    {
+        $this->target = $target;
+    }
+
     public function getNumber(): int
     {
         return $this->number;
@@ -171,15 +176,5 @@ class Group extends Identifiable
             $this->firstSingleRule->detach();
             $this->firstSingleRule = null;
         }
-    }
-
-    public function getTargetNative(): string
-    {
-        return $this->target->value;
-    }
-
-    public function setTargetNative(string $target): void
-    {
-        $this->target = Target::from($target);
     }
 }

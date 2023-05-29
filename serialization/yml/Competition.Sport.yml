@@ -8,11 +8,6 @@ Sports\Competition\Sport:
       type: ArrayCollection<Sports\Competition\Field>
       groups: [noReference]
     defaultPointsCalculation:
-      type: int
-      access_type: public_method
-      accessor:
-        getter: getDefaultPointsCalculationNative
-        setter: setDefaultPointsCalculationNative
       groups: [ noReference ]
     defaultWinPoints:
       type: float

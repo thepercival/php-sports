@@ -3,7 +3,6 @@ Sports\Competition:
   exclude: false
   properties:
     againstRuleSet:
-      type: Sports\Ranking\AgainstRuleSet
     league:
       type: Sports\League
     season:

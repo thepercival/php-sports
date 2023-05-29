@@ -2,14 +2,7 @@ Sports\Qualify\Group:
   exclusion_policy: ALL
   exclude: false
   properties:
-    id:
-      type: integer
     target:
-      type: string
-      access_type: public_method
-      accessor:
-        getter: getTargetNative
-        setter: setTargetNative
     number:
       type: integer
     childRound:

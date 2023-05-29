@@ -99,14 +99,4 @@ class AgainstConfig extends Identifiable
     {
         $this->pointsCalculation = $pointsCalculation;
     }
-
-    public function getPointsCalculationNative(): int
-    {
-        return $this->pointsCalculation->value;
-    }
-
-    public function setPointsCalculationNative(int $pointsCalculation): void
-    {
-        $this->pointsCalculation = PointsCalculation::from($pointsCalculation);
-    }
 }

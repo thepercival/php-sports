@@ -52,14 +52,9 @@ class Sport extends PersistVariant implements \Stringable
         return $this->defaultPointsCalculation;
     }
 
-    public function getDefaultPointsCalculationNative(): int
+    public function setDefaultPointsCalculation(PointsCalculation $pointsCalculation): void
     {
-        return $this->defaultPointsCalculation->value;
-    }
-
-    public function setDefaultPointsCalculationNative(int $defaultPointsCalculation): void
-    {
-        $this->defaultPointsCalculation = PointsCalculation::from($defaultPointsCalculation);
+        $this->defaultPointsCalculation = $pointsCalculation;
     }
 
     public function getDefaultWinPoints(): float

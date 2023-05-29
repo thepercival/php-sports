@@ -3,11 +3,6 @@ Sports\Planning\Config:
   exclude: false
   properties:
     editMode:
-      type: int
-      access_type: public_method
-      accessor:
-        getter: getEditModeNative
-        setter: setEditModeNative
     extension:
       type: boolean
     enableTime:
@@ -23,8 +18,3 @@ Sports\Planning\Config:
     perPoule:
       type: boolean
     selfReferee:
-      type: int
-      access_type: public_method
-      accessor:
-        getter: getSelfRefereeNative
-        setter: setSelfRefereeNative
