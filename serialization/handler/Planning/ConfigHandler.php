@@ -31,7 +31,7 @@ class ConfigHandler extends Handler implements SubscribingHandlerInterface
 
     /**
      * @param JsonDeserializationVisitor $visitor
-     * @param array{roundNumber: RoundNumber, editMode: int, extension: bool, enableTime: bool, minutesPerGame: int, minutesPerGameExt: int, minutesBetweenGames: int, minutesAfter: int, perPoule: bool, selfReferee: int} $fieldValue
+     * @param array{roundNumber: RoundNumber, editMode: int, extension: bool, enableTime: bool, minutesPerGame: int, minutesPerGameExt: int, minutesBetweenGames: int, minutesAfter: int, perPoule: bool, selfReferee: int, nrOfSimSelfRefs: int} $fieldValue
      * @param array<string, int|string> $type
      * @param Context $context
      * @return PlanningConfig
@@ -55,7 +55,8 @@ class ConfigHandler extends Handler implements SubscribingHandlerInterface
             $fieldValue["minutesBetweenGames"],
             $fieldValue["minutesAfter"],
             $fieldValue["perPoule"],
-            SelfReferee::from($fieldValue["selfReferee"])
+            SelfReferee::from($fieldValue["selfReferee"]),
+            $fieldValue["nrOfSimSelfRefs"]
         );
 
         return $planningConfig;

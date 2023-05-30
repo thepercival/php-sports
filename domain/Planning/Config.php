@@ -24,7 +24,8 @@ class Config extends Identifiable
         protected int $minutesBetweenGames,
         protected int $minutesAfter,
         protected bool $perPoule,
-        protected SelfReferee $selfReferee
+        protected SelfReferee $selfReferee,
+        protected int $nrOfSimSelfRefs,
     ) {
         $this->roundNumber->setPlanningConfig($this);
     }
@@ -131,6 +132,16 @@ class Config extends Identifiable
     public function selfRefereeEnabled(): bool
     {
         return $this->selfReferee !== SelfReferee::Disabled;
+    }
+
+    public function getNrOfSimSelfRefs(): int
+    {
+        return $this->nrOfSimSelfRefs;
+    }
+
+    public function setNrOfSimSelfRefs(int $nrOfSimSelfRefs): void
+    {
+        $this->nrOfSimSelfRefs = $nrOfSimSelfRefs;
     }
 
     protected function getRoundNumber(): RoundNumber

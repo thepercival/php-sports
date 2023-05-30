@@ -165,7 +165,7 @@ final class PlanningAssignerTest extends TestCase
         $structureEditor->addChildRound($winnersLosersRound, QualifyTarget::Winners, [2]);
         $structureEditor->addChildRound($winnersLosersRound, QualifyTarget::Losers, [2]);
 
-//        (new StructureOutput())->output($structure);
+        // (new StructureOutput())->output($structure);
 
         $firstRoundNumber = $structure->getFirstRoundNumber();
         $secondRoundNumber = $firstRoundNumber->getNext();
@@ -180,9 +180,10 @@ final class PlanningAssignerTest extends TestCase
             if ($game->getBatchNr() < 5 ) {
                 self::assertEquals(QualifyTarget::Winners, $target);
             } else {
-                self::assertGreaterThan(1, $parentQualifyGroup->getNumber());
+                self::assertEquals(QualifyTarget::Losers, $target);
+                // self::assertGreaterThan(1, $parentQualifyGroup->getNumber());
             }
-//            (new AgainstGameOutput())->output($game);
+            // (new AgainstGameOutput())->output($game);
         }
     }
 }

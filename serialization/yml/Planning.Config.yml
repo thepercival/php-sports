@@ -18,3 +18,5 @@ Sports\Planning\Config:
     perPoule:
       type: boolean
     selfReferee:
+    nrOfSimSelfRefs:
+      type: integer

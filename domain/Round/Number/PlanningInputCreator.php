@@ -9,6 +9,7 @@ use Sports\Planning\GameAmountConfig;
 use Sports\Round\Number as RoundNumber;
 use SportsHelpers\PouleStructure;
 use SportsHelpers\SelfReferee;
+use SportsHelpers\SelfRefereeInfo;
 use SportsHelpers\Sport\Variant\Against\H2h as AgainstH2h;
 use SportsHelpers\Sport\Variant\Against\GamesPerPlace as AgainstGpp;
 use SportsHelpers\Sport\Variant\AllInOneGame;
@@ -37,7 +38,12 @@ class PlanningInputCreator
             $roundNumber->createSportVariants(),
             $pouleStructure
         );
-        $refereeInfo = new RefereeInfo($selfReferee === SelfReferee::Disabled ? $nrOfReferees : $selfReferee);
+
+        if( $selfReferee === SelfReferee::Disabled ) {
+            $refereeInfo = new RefereeInfo($nrOfReferees);
+        } else {
+            $refereeInfo = new RefereeInfo(new SelfRefereeInfo($selfReferee, $config->getNrOfSimSelfRefs()));
+        }
         $efficientSportVariants = $this->reduceFields($pouleStructure, $sportVariantsWithFields, $refereeInfo);
         return new PlanningInput(
             $pouleStructure,
