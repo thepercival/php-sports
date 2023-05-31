@@ -98,23 +98,15 @@ class Copier
 
     protected function copyCategory(Category $category, Category $newCategory, RoundNumber $firstRoundNumber): void
     {
-        $this->deepCopyStructureCell($category, $newCategory, $firstRoundNumber);
+        $newRoundNumber = $firstRoundNumber;
+        $structureCells = $category->getStructureCells()->toArray();
+        while( array_shift($structureCells) !== null && $newRoundNumber !== null) {
+            new Cell($newCategory, $newRoundNumber);
+            $newRoundNumber = $newRoundNumber->getNext();
+        }
 
         $newRootRound = new Round($newCategory->getFirstStructureCell());
         $this->deepCopyRound($category->getRootRound(), $newRootRound);
-    }
-
-    protected function deepCopyStructureCell(
-        Category $category,
-        Category $newCategory,
-        RoundNumber $newRoundNumber
-    ): void {
-        new Cell($newCategory, $newRoundNumber);
-
-        $nextNewRoundNumber = $newRoundNumber->getNext();
-        if ($nextNewRoundNumber !== null) {
-            $this->deepCopyStructureCell($category, $newCategory, $nextNewRoundNumber);
-        }
     }
 
     protected function deepCopyRound(Round $round, Round $newRound): void
