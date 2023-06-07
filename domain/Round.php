@@ -24,6 +24,7 @@ use Sports\Score\Config as ScoreConfig;
 use Sports\Structure\PathNode as StructurePathNode;
 use SportsHelpers\Identifiable;
 use SportsHelpers\PouleStructure\Balanced as BalancedPouleStructure;
+use SportsHelpers\Sport\Variant\MinNrOfPlacesCalculator;
 
 class Round extends Identifiable
 {
@@ -287,15 +288,19 @@ class Round extends Identifiable
         $poule = $this->getPoule($pouleNr);
 
         $poulePlaces = $poule->getPlaces();
+        $nrOfPoulePlaces = count($poulePlaces);
         $lastPlace = $poulePlaces->last();
         $nrOfRemovedPoulePlaces = 0;
         if ($lastPlace !== false && $poulePlaces->removeElement($lastPlace)) {
             $nrOfRemovedPoulePlaces++;
         };
 
-        if ($poulePlaces->count() === 1) {
+        $sportVariants = $poule->getCompetition()->createSportVariants();
+        $minNrOfPlacesPerPoule = (new MinNrOfPlacesCalculator())->getMinNrOfPlacesPerPoule($sportVariants);
+
+        if (count($poulePlaces) < $minNrOfPlacesPerPoule) {
             $this->removePoule();
-            $nrOfRemovedPoulePlaces++;
+            return $nrOfPoulePlaces;
         }
         return $nrOfRemovedPoulePlaces;
     }
