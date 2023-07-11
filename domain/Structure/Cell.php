@@ -6,10 +6,12 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Sports\Category;
 use Sports\Game\State as GameState;
+use Sports\Poule;
 use Sports\Structure\Cell as StructureCell;
 use Sports\Round;
 use Sports\Round\Number as RoundNumber;
 use SportsHelpers\Identifiable;
+use SportsHelpers\PouleStructure;
 
 class Cell extends Identifiable
 {
@@ -94,6 +96,28 @@ class Cell extends Identifiable
     public function getRounds(): Collection
     {
         return $this->rounds;
+    }
+
+    /**
+     * @return list<Poule>
+     */
+    public function getPoules(): array
+    {
+        $poules = [];
+        foreach ($this->getRounds() as $round) {
+            $poules = array_merge($poules, $round->getPoules()->toArray());
+        }
+        return array_values($poules);
+    }
+
+
+    public function createPouleStructure(): PouleStructure
+    {
+        $placesPerPoule = [];
+        foreach ($this->getPoules() as $poule) {
+            $placesPerPoule[] = $poule->getPlaces()->count();
+        }
+        return new PouleStructure(...$placesPerPoule);
     }
 
     public function getGamesState(): GameState

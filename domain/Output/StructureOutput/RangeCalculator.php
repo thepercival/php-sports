@@ -5,12 +5,15 @@ declare(strict_types=1);
 namespace Sports\Output\StructureOutput;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Sports\Category;
 use Sports\Poule;
 use Sports\Round\Number as RoundNumber;
 use Sports\NameService;
 use Sports\Qualify\Target as QualifyTarget;
 use Sports\Structure;
+use Sports\Structure\Cell as StructureCell;
 use Sports\Round;
+use SportsHelpers\PouleStructure;
 
 final class RangeCalculator
 {
@@ -30,35 +33,46 @@ final class RangeCalculator
 
     public function getStructureHeight(Structure $structure): int
     {
-        $height = 0;
-        $roundNumber = $structure->getFirstRoundNumber();
-        while ($roundNumber !== null) {
-            $height += $this->getRoundNumberHeight($roundNumber);
-            $roundNumber = $roundNumber->getNext();
-            if ($roundNumber !== null) {
-                $height += self::QUALIFYGROUPHEIGHT;
+        $maxHeight = 0;
+        foreach( $structure->getCategories() as $category ) {
+            $height = $this->getCategoryHeight($category);
+            if( $height > $maxHeight ) {
+                $maxHeight = $height;
             }
         }
-        return $height;
+        return $maxHeight;
     }
 
-    public function getStructureWidth(Structure $structure): int
+    public function getCategoryHeight(Category $category): int
     {
-        $maxWidth = 0;
-        $roundNumber = $structure->getFirstRoundNumber();
-        while ($roundNumber !== null) {
-            $width = $this->getRoundNumberWidth($roundNumber);
-            if ($width > $maxWidth) {
-                $maxWidth = $width;
-            }
-            $roundNumber = $roundNumber->getNext();
+        $structureCell = $category->getFirstStructureCell();
+        $height = self::BORDER;
+        $height += $this->getRoundNumberHeight($structureCell->getRoundNumber());
+
+        $structureCell = $structureCell->getNext();
+        while( $structureCell !== null ) {
+            $height += $this->getQualifyGroupsHeight();
+            $height += $this->getRoundNumberHeight($structureCell->getRoundNumber());
+            $structureCell = $structureCell->getNext();
         }
-        return $maxWidth + ((count($structure->getCategories()) - 1) * RangeCalculator::PADDING);
+        return $height + self::BORDER;
     }
 
-    public function getRoundNumberHeight(RoundNumber $roundNumber): int
+//    public function getStructureCellHeight(StructureCell $structureCell): int {
+//        return $this->getPouleStructureHeight($structureCell->createPouleStructure());
+//    }
+
+    public function getRoundNumberHeight(RoundNumber $roundNumber): int {
+        return $this->getPouleStructureHeight($roundNumber->createPouleStructure());
+    }
+
+    public function getQualifyGroupsHeight(): int {
+        return 3;
+    }
+
+    public function getPouleStructureHeight(PouleStructure $pouleStructure): int
     {
-        $biggestPoule = $roundNumber->createPouleStructure()->getBiggestPoule();
+        $biggestPoule = $pouleStructure->getBiggestPoule();
 
         $pouleNameHeight = 1;
         $seperatorHeight = 1;
@@ -67,14 +81,41 @@ final class RangeCalculator
         return $height;
     }
 
-    public function getRoundNumberWidth(RoundNumber $roundNumber): int
+    public function getStructureWidth(Structure $structure): int
     {
-        $rounds = $roundNumber->getRounds();
         $width = 0;
-        foreach ($rounds as $round) {
-            $width += $this->getRoundWidth($round) + self::PADDING;
+        foreach( $structure->getCategories() as $category ) {
+            $width += $this->getCategoryWidth($category) + self::PADDING;
         }
         return $width - self::PADDING;
+    }
+
+    public function getCategoryTitle(Category $category): string {
+        return $category->getName();
+    }
+
+    public function getCategoryWidth(Category $category): int
+    {
+        $structureCell = $category->getFirstStructureCell();
+        $maxWidth = $this->getStructureCellWidth($structureCell);
+        while  ($structureCell = $structureCell->getNext()) {
+            $currentWidth = $this->getStructureCellWidth($structureCell);
+            if( $currentWidth > $maxWidth) {
+                $maxWidth = $currentWidth;
+            }
+        }
+
+        $titleWidth = mb_strlen($this->getCategoryTitle($category));
+        return $titleWidth > $maxWidth ? $titleWidth : $maxWidth;
+    }
+
+    public function getStructureCellWidth(Structure\Cell $structureCell): int
+    {
+        $width = self::PADDING;
+        foreach ($structureCell->getRounds() as $round) {
+            $width += $this->getRoundWidth($round) + self::PADDING;
+        }
+        return $width;
     }
 
     public function getRoundWidth(Round $round): int

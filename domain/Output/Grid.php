@@ -30,32 +30,43 @@ final class Grid extends OutputBase
         return $this->width;
     }
 
+    public function getCell(Coordinate $coordinate): Cell {
+        if( !array_key_exists($coordinate->getY(), $this->grid) ) {
+            throw new \Exception('no column found for coordinate ' . $coordinate);
+        }
+        $rows = $this->grid[$coordinate->getY()];
+        if( !array_key_exists($coordinate->getX(), $rows) ) {
+            throw new \Exception('no row found for coordinate ' . $coordinate);
+        }
+        return $rows[$coordinate->getX()];
+    }
+
     public function setColor(Coordinate $coordinate, Color|null $color): void
     {
-        $this->grid[$coordinate->getY()][$coordinate->getX()]->setColor($color);
+        $this->getCell($coordinate)->setColor($color);
     }
 
     public function setToRight(Coordinate $coordinate, string $char): Coordinate
     {
-        $this->grid[$coordinate->getY()][$coordinate->getX()]->setValue($char);
+        $this->getCell($coordinate)->setValue($char);
         return $coordinate->incrementX();
     }
 
     public function setToLeft(Coordinate $coordinate, string $char): Coordinate
     {
-        $this->grid[$coordinate->getY()][$coordinate->getX()]->setValue($char);
+        $this->getCell($coordinate)->setValue($char);
         return $coordinate->decrementX();
     }
 
     public function setVertAwayFromOrigin(Coordinate $coordinate, string $char): Coordinate
     {
-        $this->grid[$coordinate->getY()][$coordinate->getX()]->setValue($char);
+        $this->getCell($coordinate)->setValue($char);
         return $coordinate->incrementY();
     }
 
     public function setVertToOrigin(Coordinate $coordinate, string $char): Coordinate
     {
-        $this->grid[$coordinate->getY()][$coordinate->getX()]->setValue($char);
+        $this->getCell($coordinate)->setValue($char);
         return $coordinate->decrementY();
     }
 

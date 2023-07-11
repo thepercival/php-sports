@@ -34,44 +34,51 @@ final class DrawHelper
     {
         $this->structureNameService = new StructureNameService();
 
-        $roundNumberHeight = $this->rangeCalculator->getRoundNumberHeight($structure->getFirstRoundNumber());
-        $roundCoordinate = $this->getCategoryStartCoordinate($origin, $structure->getFirstRoundNumber(), $structure);
+        // $coordinate = $this->getCategoryStartCoordinate($origin, $structure->getFirstRoundNumber(), $structure);
+        $coordinate = $origin->addX(0);
         foreach ($structure->getCategories() as $category) {
-            $roundCoordinate = $this->drawCategory($category, $roundCoordinate, $roundNumberHeight);
+            $coordinate = $this->drawCategory($category, $coordinate);
+            $coordinate = $coordinate->addX(1);
         }
-        return $roundCoordinate;
+        $coordinate->addX(-1);
+        return $coordinate;
     }
 
-    protected function getCategoryStartCoordinate(
-        Coordinate $origin,
-        RoundNumber $roundNumber,
-        Structure $structure
-    ): Coordinate {
-        $structureWidth = $this->rangeCalculator->getStructureWidth($structure);
-        $roundNumberWidth = $this->rangeCalculator->getRoundNumberWidth($roundNumber);
-        $delta = (int)floor(($structureWidth - $roundNumberWidth) / 2);
-        return $origin->addX($delta);
-    }
+//    protected function getCategoryStartCoordinate(
+//        Coordinate $origin,
+//        RoundNumber $roundNumber,
+//        Structure $structure
+//    ): Coordinate {
+//        $structureWidth = $this->rangeCalculator->getStructureWidth($structure);
+//        $roundNumberWidth = $this->rangeCalculator->getRoundNumberWidth($roundNumber);
+//        $delta = (int)floor(($structureWidth - $roundNumberWidth) / 2);
+//        return $origin->addX($delta);
+//    }
 
-    protected function drawCategory(Category $category, Coordinate $origin, int $roundNumberHeight): Coordinate
+
+
+    protected function drawCategory(Category $category, Coordinate $coordinate): Coordinate
     {
-        $newCoord = $this->drawRound($category->getRootRound(), $origin, $roundNumberHeight, $category->getName());
-        return $newCoord->addX(RangeCalculator::PADDING);
+        $title = $this->rangeCalculator->getCategoryTitle($category);
+        $width = $this->rangeCalculator->getCategoryWidth($category);
+        $height = $this->rangeCalculator->getCategoryHeight($category);
+        $this->drawer->drawRectangle($coordinate, new Coordinate($width,$height), Color::Cyan);
+
+        $middle = (int)($width/2);
+        $titleHalfLength = (int)(mb_strlen($title)/2);
+        $startCoord = $coordinate->addX( $middle - $titleHalfLength );
+        $this->drawer->drawToRight($startCoord, $title, Color::Cyan);
+
+        $newCoord = $this->drawRound($category->getRootRound(), $coordinate->add(1, 1));
+        return new Coordinate( $newCoord->getX(), $coordinate->getY() );
     }
 
     protected function drawRound(
         Round $round,
         Coordinate $origin,
-        int $roundNumberHeight,
-        string|null $catName = null
     ): Coordinate {
+        $roundNumberHeight = $this->rangeCalculator->getRoundNumberHeight($round->getStructureCell()->getRoundNumber());
         $this->drawRoundBorder($round, $origin, $roundNumberHeight);
-        if ($catName !== null) {
-            $width = $this->rangeCalculator->getRoundWidth($round);
-            $catName = substr($catName, 0, $width - 4);
-            $startCoord = $origin->addX((int)(($width - mb_strlen($catName)) / 2));
-            $this->drawer->drawToRight($startCoord, $catName, Color::Cyan);
-        }
 
         $pouleCoordinate = $this->getPoulesStartCoordinate($origin, $round);
         foreach ($round->getPoules() as $poule) {
@@ -83,10 +90,11 @@ final class DrawHelper
             $this->drawQualifyRules($round, $qualifyRulesOrigin);
         }
 
+
         $nextRoundNumber = $round->getNumber()->getNext();
         if ($nextRoundNumber !== null) {
-            $nextRoundNumberHeight = $this->rangeCalculator->getRoundNumberHeight($nextRoundNumber);
-            $this->drawQualifyGroups($round, $origin->addY($roundNumberHeight), $nextRoundNumberHeight);
+            $roundNumberHeight = $this->rangeCalculator->getRoundNumberHeight($round->getNumber());
+            $this->drawQualifyGroups($round, $origin->addY($roundNumberHeight));
         }
         $roundWidth = $this->rangeCalculator->getRoundWidth($round);
         return $origin->addX($roundWidth + RangeCalculator::PADDING);
@@ -234,14 +242,13 @@ final class DrawHelper
     }
 
 
-    protected function drawQualifyGroups(Round $round, Coordinate $origin, int $nextRoundNumberHeight): void
+    protected function drawQualifyGroups(Round $round, Coordinate $origin): void
     {
         $qualifyGroupCoordinate = $this->getQualifyGroupsStartCoordinate($origin, $round);
         foreach ($round->getQualifyGroupsLosersReversed() as $qualifyGroup) {
             $qualifyGroupCoordinate = $this->drawQualifyGroup(
                 $qualifyGroup,
                 $qualifyGroupCoordinate,
-                $nextRoundNumberHeight
             );
         }
     }
@@ -254,7 +261,7 @@ final class DrawHelper
         return $origin->addX($delta);
     }
 
-    protected function drawQualifyGroup(QualifyGroup $qualifyGroup, Coordinate $origin, int $nextRoundNumberHeight): Coordinate
+    protected function drawQualifyGroup(QualifyGroup $qualifyGroup, Coordinate $origin): Coordinate
     {
         $roundWidth = $this->rangeCalculator->getRoundWidth($qualifyGroup->getChildRound());
 
@@ -268,7 +275,7 @@ final class DrawHelper
         $this->drawer->drawCellToRight($selfCoordinate->incrementY(), '|', $roundWidth, Align::Center);
 
         $childRoundCoordinate = $origin->addY(RangeCalculator::QUALIFYGROUPHEIGHT);
-        $this->drawRound($qualifyGroup->getChildRound(), $childRoundCoordinate, $nextRoundNumberHeight);
+        $this->drawRound($qualifyGroup->getChildRound(), $childRoundCoordinate);
 
         return $origin->addX($roundWidth + RangeCalculator::PADDING);
     }

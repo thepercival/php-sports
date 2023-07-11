@@ -10,6 +10,9 @@ use SportsHelpers\Output\Color;
 
 final class Drawer
 {
+    public const HORIZONTAL_BORDER = '-';
+    public const VERTICAL_BORDER = '|';
+
     public function __construct(protected Grid $grid)
     {
     }
@@ -34,8 +37,8 @@ final class Drawer
     public function drawLineToRight(
         Coordinate $coordinate,
         int $length,
-        string $value = '-',
-        Color|null $color = null
+        Color|null $color = null,
+        string $value = self::HORIZONTAL_BORDER
     ): Coordinate {
         return $this->drawToRight($coordinate, $this->initString($length, $value), $color);
     }
@@ -55,8 +58,8 @@ final class Drawer
     public function drawLineToLeft(
         Coordinate $coordinate,
         int $length,
-        string $value = '-',
-        Color|null $color = null
+        Color|null $color = null,
+        string $value = self::HORIZONTAL_BORDER,
     ): Coordinate {
         return $this->drawToLeft($coordinate, $this->initString($length, $value), $color);
     }
@@ -76,8 +79,8 @@ final class Drawer
     public function drawVertLineAwayFromOrigin(
         Coordinate $coordinate,
         int $length,
-        string $value = '|',
-        Color|null $color = null
+        Color|null $color = null,
+        string $value = self::VERTICAL_BORDER
     ): Coordinate {
         return $this->drawVertAwayFromOrigin($coordinate, $this->initString($length, $value), $color);
     }
@@ -97,8 +100,8 @@ final class Drawer
     public function drawVertLineToOrigin(
         Coordinate $coordinate,
         int $length,
-        string $value = '|',
-        Color|null $color = null
+        Color|null $color = null,
+        string $value = self::VERTICAL_BORDER,
     ): Coordinate {
         return $this->drawVertToOrigin($coordinate, $this->initString($length, $value), $color);
     }
@@ -106,34 +109,34 @@ final class Drawer
     public function drawCellToRight(
         Coordinate $coordinate,
         string $text,
-        int $width,
+        int $maxWidth,
         Align $align,
         Color|null $color = null
     ): Coordinate {
         $char = ' ';
-        if (mb_strlen($text) > $width) {
-            $text = mb_substr($text, 0, $width);
+        if (mb_strlen($text) > $maxWidth) {
+            $text = mb_substr($text, 0, $maxWidth);
         }
         if ($align === Align::Center) {
             $align = Align::Left;
-            while (mb_strlen($text) < $width) {
+            while (mb_strlen($text) < $maxWidth) {
                 $text = $this->addToString($text, $char, $align);
                 $align = $align === Align::Left ? Align::Right : Align::Left;
             }
         } else {
-            while (mb_strlen($text) < $width) {
+            while (mb_strlen($text) < $maxWidth) {
                 $text = $this->addToString($text, $char, $align);
             }
         }
         return $this->drawToRight($coordinate, $text, $color);
     }
 
-    public function drawRectangle(Coordinate $origin, Coordinate $size): void
+    public function drawRectangle(Coordinate $origin, Coordinate $size, Color $color = null): void
     {
-        $topRight = $this->drawLineToRight($origin, $size->getX());
-        $bottomRight = $this->drawVertLineAwayFromOrigin($topRight, $size->getY());
-        $bottomLeft = $this->drawLineToLeft($bottomRight->decrementX(), $size->getX() - 1);
-        $this->drawVertLineToOrigin($bottomLeft, $size->getY());
+        $topRight = $this->drawLineToRight($origin, $size->getX(), $color);
+        $bottomRight = $this->drawVertLineAwayFromOrigin($topRight, $size->getY(), $color);
+        $bottomLeft = $this->drawLineToLeft($bottomRight->decrementX(), $size->getX() - 1, $color);
+        $this->drawVertLineToOrigin($bottomLeft, $size->getY(), $color);
     }
 
     public function initString(int $length, string $char = ' '): string

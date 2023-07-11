@@ -5,12 +5,14 @@ declare(strict_types=1);
 namespace Sports\Availability;
 
 use Exception;
+use Sports\Category;
 use Sports\Competition;
 use Sports\Competition\Field;
 use Sports\Competition\Referee;
 use Sports\Competition\Sport as CompetitionSport;
 use Sports\Competitor;
 use Sports\Competitor\StartLocation;
+use Sports\Competitor\StartLocationMap;
 use Sports\Place\LocationInterface as PlaceLocationInterface;
 use Sports\Priority\Prioritizable;
 
@@ -137,13 +139,33 @@ class Checker
     }
 
     /**
+     * @param Category $category
+     * @param list<Competitor> $competitors
+     * @return StartLocation
+     * @throws \Sports\Exceptions\NoStructureException
+     */
+    public function getFirstAvailableStartLocation(Category $category, array $competitors): StartLocation {
+        $startLocationMap = new StartLocationMap($competitors);
+        foreach( $category->getRootRound()->getPlaces() as $place ) {
+
+            $startLocation = $place->getStartLocation();
+            if( $startLocation === null) {
+                throw new \Exception('er is geen plaats meer beschikbaar', E_ERROR);;
+            }
+            if( $startLocationMap->getCompetitor($startLocation ) === null) {
+                return $startLocation;
+            }
+        }
+        throw new \Exception('er is geen plaats meer beschikbaar', E_ERROR);;
+    }
+
+    /**
      * @param list<Competitor> $competitors
      * @param StartLocation $startLocation
      * @param Competitor|null $competitorToCheck
      * @throws Exception
      * @return void
-     */
-    public function checkCompetitorStartLocation(
+     */    public function checkCompetitorStartLocation(
         array $competitors,
         StartLocation $startLocation,
         Competitor $competitorToCheck = null

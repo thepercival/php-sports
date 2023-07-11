@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Sports\Output;
 
-final class Coordinate
+final class Coordinate implements \Stringable
 {
     public function __construct(protected int $x, protected int $y)
     {
@@ -53,5 +53,10 @@ final class Coordinate
     public function decrementY(): Coordinate
     {
         return new Coordinate($this->getX(), $this->getY() - 1);
+    }
+
+    public function __toString(): string
+    {
+        return $this->getX() . ',' . $this->getY();
     }
 }
