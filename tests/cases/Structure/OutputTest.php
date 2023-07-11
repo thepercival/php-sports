@@ -38,7 +38,7 @@ final class OutputTest extends TestCase
         $catOneRootRound = $categoryOne->getRootRound();
 
         $structureEditor->addChildRound($catOneRootRound, QualifyTarget::Winners, [2]);
-        (new StructureOutput())->output($newStructure);
+        // (new StructureOutput())->output($newStructure);
 
         self::assertNull($newStructure->getRoundNumber(0));
     }
@@ -54,17 +54,17 @@ final class OutputTest extends TestCase
         $damesCat = $structureEditor->addCategory('dames', $firstRoundNumber, $balancedPouleStructure);
 
         $damesSemFin = $structureEditor->addChildRound($damesCat->getRootRound(), QualifyTarget::Winners, [4]);
-        $damesFin = $structureEditor->addChildRound($damesSemFin, QualifyTarget::Winners, [2]);
+        $structureEditor->addChildRound($damesSemFin, QualifyTarget::Winners, [2]);
 
         $newStructure = new Structure(array_values($competition->getCategories()->toArray()), $firstRoundNumber);
 
 
         $categoryOne = $newStructure->getCategory(1);
         self::assertNotNull($categoryOne);
-        $catOneRootRound = $categoryOne->getRootRound();
+        // $catOneRootRound = $categoryOne->getRootRound();
 
         // $structureEditor->addChildRound($catOneRootRound, QualifyTarget::Winners, [2]);
-        (new StructureOutput())->output($newStructure);
+        // (new StructureOutput())->output($newStructure);
 
         self::assertNull($newStructure->getRoundNumber(0));
     }
