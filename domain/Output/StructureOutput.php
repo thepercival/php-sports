@@ -37,6 +37,7 @@ final class StructureOutput extends OutputBase
 //        $batchColor = $this->useColors() ? ($batchNr % 10) : -1;
 //        $retVal = 'batch ' . ($batchNr < 10 ? ' ' : '') . $batchNr;
 //        return $this->outputColor($batchColor, $retVal);
+        $this->logger->info('');
         $grid->output();
     }
 

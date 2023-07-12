@@ -30,18 +30,14 @@ final class DrawHelper
         $this->structureNameService = new StructureNameService();
     }
 
-    public function drawStructure(Structure $structure, Coordinate $origin): Coordinate
+    public function drawStructure(Structure $structure, Coordinate $coordinate): void
     {
         $this->structureNameService = new StructureNameService();
 
         // $coordinate = $this->getCategoryStartCoordinate($origin, $structure->getFirstRoundNumber(), $structure);
-        $coordinate = $origin->addX(0);
         foreach ($structure->getCategories() as $category) {
-            $coordinate = $this->drawCategory($category, $coordinate);
-            $coordinate = $coordinate->addX(1);
+            $coordinate = $this->drawCategory($category, $coordinate)->addX(RangeCalculator::PADDING);
         }
-        $coordinate->addX(-1);
-        return $coordinate;
     }
 
 //    protected function getCategoryStartCoordinate(
@@ -69,14 +65,14 @@ final class DrawHelper
         $startCoord = $coordinate->addX( $middle - $titleHalfLength );
         $this->drawer->drawToRight($startCoord, $title, Color::Cyan);
 
-        $newCoord = $this->drawRound($category->getRootRound(), $coordinate->add(1, 1));
-        return new Coordinate( $newCoord->getX(), $coordinate->getY() );
+        $this->drawRound($category->getRootRound(), $coordinate->add(1, 1));
+        return new Coordinate( $coordinate->addX($width)->getX(), $coordinate->getY() );
     }
 
     protected function drawRound(
         Round $round,
         Coordinate $origin,
-    ): Coordinate {
+    ): void {
         $roundNumberHeight = $this->rangeCalculator->getRoundNumberHeight($round->getStructureCell()->getRoundNumber());
         $this->drawRoundBorder($round, $origin, $roundNumberHeight);
 
@@ -93,11 +89,11 @@ final class DrawHelper
 
         $nextRoundNumber = $round->getNumber()->getNext();
         if ($nextRoundNumber !== null) {
-            $roundNumberHeight = $this->rangeCalculator->getRoundNumberHeight($round->getNumber());
+            // $nextRoundNumberHeight = $this->rangeCalculator->getRoundNumberHeight($round->getNumber());
             $this->drawQualifyGroups($round, $origin->addY($roundNumberHeight));
         }
-        $roundWidth = $this->rangeCalculator->getRoundWidth($round);
-        return $origin->addX($roundWidth + RangeCalculator::PADDING);
+//        $roundWidth = $this->rangeCalculator->getRoundWidth($round);
+//        return $origin->addX($roundWidth + RangeCalculator::PADDING);
 
 
 //        $batchColor = $this->useColors() ? ($batchNr % 10) : -1;

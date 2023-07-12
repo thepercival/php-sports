@@ -5,7 +5,11 @@ declare(strict_types=1);
 namespace Sports\Tests\Structure;
 
 use Exception;
+use Monolog\Handler\StreamHandler;
+use Monolog\Logger;
+use Monolog\Processor\UidProcessor;
 use PHPUnit\Framework\TestCase;
+use Psr\Log\LoggerInterface;
 use Sports\Output\StructureOutput;
 use Sports\Qualify\Target as QualifyTarget;
 use Sports\Structure;
@@ -32,7 +36,7 @@ final class EditorTest extends TestCase
         self::assertSame($firstRoundNumber, $structure->getLastRoundNumber());
 
         $structureEditor->addChildRound($rootRound, QualifyTarget::Winners, [2]);
-        // (new StructureOutput())->output($structure, console);
+        // (new StructureOutput($this->getLogger()))->output($structure);
 
         self::assertSame($structure->getLastRoundNumber(), $rootRound->getNumber()->getNext());
         self::assertCount(2, $structure->getRoundNumbers());
@@ -56,7 +60,7 @@ final class EditorTest extends TestCase
 
         $losersRound = $structureEditor->addChildRound($rootRound, QualifyTarget::Losers, [2, 2]);
         $structureEditor->addPlaceToRootRound($rootRound);
-        // (new StructureOutput())->output($structure, console);
+        // (new StructureOutput($this->getLogger()))->output($structure);
 
         $qualifyGroup = $losersRound->getParentQualifyGroup();
         self::assertNotNull($qualifyGroup);
@@ -82,9 +86,9 @@ final class EditorTest extends TestCase
         self::assertSame($firstRoundNumber, $structure->getLastRoundNumber());
 
         $losersRound = $structureEditor->addChildRound($rootRound, QualifyTarget::Losers, [2, 2]);
-        // (new StructureOutput())->output($structure, console);
+        // (new StructureOutput($this->getLogger()))->output($structure);
         $structureEditor->removePlaceFromRootRound($rootRound);
-        // (new StructureOutput())->output($structure, console);
+        // (new StructureOutput($this->getLogger()))->output($structure);
 
         $qualifyGroup = $losersRound->getParentQualifyGroup();
         self::assertNotNull($qualifyGroup);
@@ -109,7 +113,7 @@ final class EditorTest extends TestCase
 
         $structureEditor->addChildRound($rootRound, QualifyTarget::Winners, [4]);
         $structureEditor->addChildRound($rootRound, QualifyTarget::Losers, [4]);
-        // (new StructureOutput())->output($structure, console);
+        // (new StructureOutput($this->getLogger()))->output($structure);
         self::expectException(Exception::class);
         $structureEditor->removePlaceFromRootRound($rootRound);
     }
@@ -122,7 +126,7 @@ final class EditorTest extends TestCase
         $rootRound = $structure->getSingleCategory()->getRootRound();
 
         $structureEditor->addPouleToRootRound($rootRound);
-        // (new StructureOutput())->output($structure, console);
+        // (new StructureOutput($this->getLogger()))->output($structure);
 
         self::assertSame(3, $rootRound->getLastPoule()->getNumber());
         self::assertCount(2, $rootRound->getLastPoule()->getPlaces());
@@ -139,10 +143,10 @@ final class EditorTest extends TestCase
 
         $structureEditor->addChildRound($rootRound, QualifyTarget::Winners, [3]);
         $losersRound = $structureEditor->addChildRound($rootRound, QualifyTarget::Losers, [3]);
-        // (new StructureOutput())->output($structure, console);
+        // (new StructureOutput($this->getLogger()))->output($structure);
 
         $structureEditor->addPouleToRootRound($rootRound);
-        // (new StructureOutput())->output($structure, console);
+        // (new StructureOutput($this->getLogger()))->output($structure);
 
         $qualifyGroup = $losersRound->getParentQualifyGroup();
         self::assertNotNull($qualifyGroup);
@@ -294,7 +298,7 @@ final class EditorTest extends TestCase
         $structureEditor->addChildRound($rootRound, QualifyTarget::Losers, [3]);
 
         $structureEditor->removePouleFromRootRound($rootRound);
-        // (new StructureOutput())->output($structure, console);
+        // (new StructureOutput($this->getLogger()))->output($structure);
 
         self::assertCount(2, $rootRound->getChildren());
     }
@@ -389,10 +393,10 @@ final class EditorTest extends TestCase
 
         $winnersRound = $structureEditor->addChildRound($rootRound, QualifyTarget::Winners, [3, 3]);
         $structureEditor->addChildRound($winnersRound, QualifyTarget::Winners, [4]);
-        // (new StructureOutput())->output($structure, console);
+        // (new StructureOutput($this->getLogger()))->output($structure);
 
         $structureEditor->incrementNrOfPoules($winnersRound);
-        // (new StructureOutput())->output($structure, console);
+        // (new StructureOutput($this->getLogger()))->output($structure);
 
         self::assertSame(6, $winnersRound->getNrOfPlaces());
     }
@@ -524,11 +528,11 @@ final class EditorTest extends TestCase
         self::assertSame($firstRoundNumber, $rootRound->getNumber());
         self::assertSame($firstRoundNumber, $structure->getLastRoundNumber());
 
-        // (new StructureOutput())->output($structure, console);
+        // (new StructureOutput($this->getLogger()))->output($structure);
         $structureEditor->addChildRound($rootRound, QualifyTarget::Winners, [2]);
-        // (new StructureOutput())->output($structure, console);
+        // (new StructureOutput($this->getLogger()))->output($structure);
         $structureEditor->removeQualifier($rootRound, QualifyTarget::Winners);
-        // (new StructureOutput())->output($structure, console);
+        // (new StructureOutput($this->getLogger()))->output($structure);
 
         self::assertCount(0, $rootRound->getTargetQualifyGroups(QualifyTarget::Winners));
         self::assertCount(1, $structure->getRoundNumbers());
@@ -552,7 +556,7 @@ final class EditorTest extends TestCase
 
         $firstSingleQualifyRule = $qualifyGroup->getFirstSingleRule();
         self::assertNotNull($firstSingleQualifyRule);
-        // (new StructureOutput())->output($structure, console);
+        // (new StructureOutput($this->getLogger()))->output($structure);
 
         self::expectException(Exception::class);
         $structureEditor->splitQualifyGroupFrom($qualifyGroup, $firstSingleQualifyRule);
@@ -574,9 +578,9 @@ final class EditorTest extends TestCase
         $firstSingleQualifyRule = $qualifyGroup->getFirstSingleRule();
         self::assertNotNull($firstSingleQualifyRule);
 
-        // (new StructureOutput())->output($structure, console);
+        // (new StructureOutput($this->getLogger()))->output($structure);
         $structureEditor->splitQualifyGroupFrom($qualifyGroup, $firstSingleQualifyRule);
-        // (new StructureOutput())->output($structure, console);
+        // (new StructureOutput($this->getLogger()))->output($structure);
     }
 
     // no
@@ -608,7 +612,7 @@ final class EditorTest extends TestCase
 
         $winnersRound = $structureEditor->addChildRound($rootRound, QualifyTarget::Winners, [3]);
         $losersRound = $structureEditor->addChildRound($rootRound, QualifyTarget::Losers, [3]);
-        // (new StructureOutput())->output($structure, console);
+        // (new StructureOutput($this->getLogger()))->output($structure);
 
         $winnersQualifyGroup = $winnersRound->getParentQualifyGroup();
         $losersQualifyGroup = $losersRound->getParentQualifyGroup();
@@ -633,7 +637,7 @@ final class EditorTest extends TestCase
         $rootRound = $structure->getSingleCategory()->getRootRound();
 
         $nextRound = $structureEditor->addChildRound($rootRound, QualifyTarget::Winners, [4]);
-        // (new StructureOutput())->output($structure, console);
+        // (new StructureOutput($this->getLogger()))->output($structure);
 
         $qualifyGroup = $nextRound->getParentQualifyGroup();
         self::assertNotNull($qualifyGroup);
@@ -736,6 +740,7 @@ final class EditorTest extends TestCase
         self::assertNotNull($losersQualifyGroup);
 
         $structureEditor->mergeQualifyGroups($worstLosersQualifyGroup, $losersQualifyGroup);
+        // (new StructureOutput($this->getLogger()))->output($structure);
         self::assertSame(4, $worstLosersRound->getNrOfPlaces());
     }
 
@@ -751,9 +756,7 @@ final class EditorTest extends TestCase
 
         $category2 = $structureEditor->addCategory('j78', $firstRoundNumber, new BalancedPouleStructure(...[5]));
 
-        /*$newStructure =*/
-        new Structure(array_values($competition->getCategories()->toArray()), $firstRoundNumber);
-
+        /*$newStructure =*/ new Structure(array_values($competition->getCategories()->toArray()), $firstRoundNumber);
 
         self::assertCount(1, $firstRoundNumber->getGameAmountConfigs());
         self::assertCount(1, $category2->getRootRound()->getAgainstQualifyConfigs());
@@ -770,8 +773,19 @@ final class EditorTest extends TestCase
         $structureEditor->addChildRound($category2->getRootRound(), QualifyTarget::Losers, [2]);
 
         $lastPlaceChildRound = $structureEditor->addChildRound($lastPlaceRound, QualifyTarget::Losers, [2]);
-//        (new StructureOutput())->output($newStructure);
+        // (new StructureOutput($this->getLogger()))->output($newStructure);
 
         self::assertEquals('2.1L1L1.1', $lastPlaceChildRound->getPoule(1)->getStructureLocation());
+    }
+
+    protected function getLogger(): LoggerInterface
+    {
+        $logger = new Logger("test-logger");
+        $processor = new UidProcessor();
+        $logger->pushProcessor($processor);
+
+        $handler = new StreamHandler('php://stdout', Logger::INFO);
+        $logger->pushHandler($handler);
+        return $logger;
     }
 }
