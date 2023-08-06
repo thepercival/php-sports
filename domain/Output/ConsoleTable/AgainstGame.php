@@ -7,8 +7,6 @@ namespace Sports\Output\ConsoleTable;
 use DateTimeInterface;
 use LucidFrame\Console\ConsoleTable;
 use Sports\Competition;
-use Sports\Competitor\Map as CompetitorMap;
-use Sports\Competitor\Team as TeamCompetitor;
 use Sports\Game\Against as AgainstGameBase;
 use Sports\Game\Event\Card as CardEvent;
 use Sports\Game\Event\Goal as GoalEvent;

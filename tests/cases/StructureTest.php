@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Sports\Tests;
 
 use Sports\Category;
+use Sports\Competitor\StartLocation;
 use Sports\Qualify\Target as QualifyTarget;
 use PHPUnit\Framework\TestCase;
 use Sports\Structure;
@@ -39,5 +40,20 @@ class StructureTest extends TestCase
         self::assertSame($structure->getRoundNumber(2), $firstRoundNumber->getNext());
         self::assertSame($structure->getRoundNumber(3), null);
         self::assertSame($structure->getRoundNumber(0), null);
+    }
+
+    public function testLocationExists(): void
+    {
+        $competition = $this->createCompetition();
+        $structureEditor = $this->createStructureEditor();
+        $structure = $structureEditor->create($competition, [4,4,4,4]);
+        $category = $structure->getSingleCategory();
+        self::assertTrue( $structure->locationExists( new StartLocation(
+            $category->getNumber(), 4,4
+        ) ) );
+        self::assertFalse( $structure->locationExists( new StartLocation(
+            $category->getNumber(), 3,5
+        ) ) );
+
     }
 }

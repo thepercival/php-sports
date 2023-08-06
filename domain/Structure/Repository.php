@@ -8,6 +8,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Sports\Category;
 use Sports\Competition;
 use Sports\Exceptions\NoStructureException;
+use Sports\Exceptions\StructureNotFoundException;
 use Sports\Poule\Horizontal\Creator as HorizontalPouleCreator;
 use Sports\Qualify\Rule\Creator as QualifyRuleCreator;
 use Sports\Round;
@@ -109,7 +110,7 @@ class Repository
         $roundNumbers = $this->roundNumberRepos->findBy(array("competition" => $competition), array("number" => "asc"));
         $firstRoundNumber = reset($roundNumbers);
         if ($firstRoundNumber === false) {
-            throw new NoStructureException('mallformed structure, no roundnumbers', E_ERROR);
+            throw new StructureNotFoundException('mallformed structure, no roundnumbers', E_ERROR);
         }
 
         $structure = new StructureBase(array_values($competition->getCategories()->toArray()), $firstRoundNumber);

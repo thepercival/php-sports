@@ -7,7 +7,7 @@ namespace Sports;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Sports\Competition\Sport as CompetitionSport;
-use Sports\Exceptions\NoStructureException;
+use Sports\Exceptions\StructureNotFoundException;
 use Sports\Game\State as GameState;
 use Sports\Round\Number as RoundNumber;
 use Sports\Structure\Cell as StructureCell;
@@ -127,11 +127,11 @@ class Category extends Identifiable
         $structureCell = $this->getStructureCellByValue(1);
         $rounds = $structureCell->getRounds();
         if ($rounds->count() !== 1) {
-            throw new NoStructureException('there must be 1 rootRound, "' . count($rounds) . '" given', E_ERROR);
+            throw new StructureNotFoundException('there must be 1 rootRound, "' . count($rounds) . '" given', E_ERROR);
         }
         $rootRound = $rounds->first();
         if ($rootRound === false) {
-            throw new NoStructureException('there must be 1 rootRound, "' . count($rounds) . '" given', E_ERROR);
+            throw new StructureNotFoundException('there must be 1 rootRound, "' . count($rounds) . '" given', E_ERROR);
         }
         return $rootRound;
     }

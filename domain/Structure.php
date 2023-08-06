@@ -5,7 +5,10 @@ declare(strict_types=1);
 namespace Sports;
 
 use Closure;
+use Sports\Competitor\StartLocation;
+use Sports\Exceptions\CellNotFoundException;
 use Sports\Exceptions\NoStructureException;
+use Sports\Exceptions\StructureNotFoundException;
 use Sports\Round\Number as RoundNumber;
 
 class Structure
@@ -22,7 +25,7 @@ class Structure
     public function __construct(array $categories, protected RoundNumber $firstRoundNumber)
     {
         if (count($categories) < 1) {
-            throw new NoStructureException('a structure should have at least 1 category', E_ERROR);
+            throw new StructureNotFoundException('a structure should have at least 1 category', E_ERROR);
         }
         $this->categories = $categories;
     }
@@ -120,5 +123,26 @@ class Structure
             $roundNumber = $roundNumber->getNext();
         }
         return $roundNumber;
+    }
+
+    public function locationExists( StartLocation $startLocation ): bool {
+
+        $category = $this->getCategory($startLocation->getCategoryNr());
+        if( $category === null ) {
+            return false;
+        }
+        foreach( $this->getRoundNumbers() as $roundNumber ) {
+            try {
+                $cell = $roundNumber->getStructureCell($category);
+                foreach( $cell->getPoules() as $poule ) {
+                    if( $poule->getNumber() !== $startLocation->getPouleNr() ) {
+                        continue;
+                    }
+                    return $startLocation->getPlaceNr() <= count($poule->getPlaces());
+                }
+            }  catch(CellNotFoundException $e ){
+            }
+        }
+        return false;
     }
 }

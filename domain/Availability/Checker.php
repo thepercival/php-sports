@@ -142,7 +142,7 @@ class Checker
      * @param Category $category
      * @param list<Competitor> $competitors
      * @return StartLocation
-     * @throws \Sports\Exceptions\NoStructureException
+     * @throws \Sports\Exceptions\StructureNotFoundException
      */
     public function getFirstAvailableStartLocation(Category $category, array $competitors): StartLocation {
         $startLocationMap = new StartLocationMap($competitors);

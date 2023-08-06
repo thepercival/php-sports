@@ -8,7 +8,6 @@ use LucidFrame\Console\ConsoleTable;
 use Sports\Competition;
 use Sports\Competitor\StartLocationMap;
 use Sports\Structure\NameService as StructureNameService;
-use Sports\Competitor\Map as CompetitorMap;
 use Sports\Structure as StructureBase;
 use Sports\Competitor\Team as TeamCompetitor;
 

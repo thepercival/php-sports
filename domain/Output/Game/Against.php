@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Sports\Output\Game;
 
 use Psr\Log\LoggerInterface;
-use Sports\Competitor\Map as CompetitorMap;
 use Sports\Competitor\StartLocationMap;
 use Sports\Game\Against as AgainstGame;
 use Sports\Game\Phase as GamePhase;

@@ -11,6 +11,7 @@ use Exception;
 use Sports\Category;
 use Sports\Competition;
 use Sports\Competition\Sport as CompetitionSport;
+use Sports\Exceptions\CellNotFoundException;
 use Sports\Game\Against as AgainstGame;
 use Sports\Game\Order as GameOrder;
 use Sports\Game\State as GameState;
@@ -152,10 +153,11 @@ class Number extends Identifiable
         );
         $structureCell = $structureCells->first();
         if ($structureCell === false) {
-            throw new Exception('de structuurcel kan niet gevonden worden', E_ERROR);
+            throw new CellNotFoundException('de structuurcel kan niet gevonden worden', E_ERROR);
         }
         return $structureCell;
     }
+
 
     /**
      * @return list<Round>
