@@ -444,8 +444,16 @@ class Round extends Identifiable
 
     public function getGamesState(): GameState
     {
+        if( count($this->getGames()) === 0 ) {
+            return GameState::Created;
+        }
+
         $allPlayed = true;
         foreach ($this->getPoules() as $poule) {
+            $games = $poule->getGames();
+            if( count($games) === 0 && $this->getNumberAsValue() === 1) { // BYE
+                continue;
+            }
             if ($poule->getGamesState() !== GameState::Finished) {
                 $allPlayed = false;
                 break;
