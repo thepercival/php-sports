@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Sports\Structure;
 
 use Sports\Category;
+use Sports\Game\Participation;
 use Sports\Qualify\Target as QualifyTarget;
 use Exception;
 use Sports\Structure\NameService as StructureNameService;
@@ -204,6 +205,11 @@ class Validator
     public function checkPlacesNumberGap(array $places): void
     {
         $startNumber = 1;
+
+        uasort($places, function (Place $placeA, Place $placeB): int {
+            return $placeA->getPlaceNr() < $placeB->getPlaceNr() ? -1 : 1;
+        });
+
         foreach ($places as $place) {
             if ($place->getPlaceNr() !== $startNumber++) {
                 throw new Exception("het nummer van de plek in de poule is onjuist", E_ERROR);
