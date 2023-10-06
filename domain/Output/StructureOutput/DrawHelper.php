@@ -9,6 +9,7 @@ use Sports\Structure\NameService as StructureNameService;
 use Sports\Output\Coordinate;
 use Sports\Output\Grid\Align;
 use Sports\Output\Grid\Drawer;
+use Sports\Output\Direction\Horizontal as HorizontalDirection;
 use Sports\Poule;
 use Sports\Poule\Horizontal as HorizontalPoule;
 use Sports\Qualify\Group as QualifyGroup;
@@ -24,6 +25,7 @@ final class DrawHelper
 {
     protected StructureNameService $structureNameService;
     protected RangeCalculator $rangeCalculator;
+    public const HorizontalPouleWidth = 2;
 
     public function __construct(protected Drawer $drawer)
     {
@@ -145,24 +147,24 @@ final class DrawHelper
             return null;
         }
 
-        $this->drawer->drawVertLineAwayFromOrigin($borderOrigin, 2 + $round->getHorizontalPoules(QualifyTarget::Winners)->count());
-        $origin = $borderOrigin->addX(2);
+        $this->drawer->drawVertLineAwayFromOrigin($borderOrigin, self::HorizontalPouleWidth + $round->getHorizontalPoules(QualifyTarget::Winners)->count());
+        $origin = $borderOrigin->addX(self::HorizontalPouleWidth);
         $this->drawer->drawToRight($origin, QualifyTarget::Winners->value . ' ' . QualifyTarget::Losers->value);
         $seperator = $origin->incrementY();
         $this->drawer->drawToRight($seperator, '- -');
 
         // winners
         $horWinnersPoules = $this->getHorPoulesAsArray($round, QualifyTarget::Winners);
-        $horPoulesOrigin = $seperator->incrementY();
-        $this->drawer->drawVertAwayFromOrigin($horPoulesOrigin, $horWinnersPoules);
+        $horPoulesOrigin = $seperator->incrementY()->addX( self::HorizontalPouleWidth - 1 );
+        $this->drawer->drawVertArrayAwayFromOrigin($horPoulesOrigin, $horWinnersPoules, null, HorizontalDirection::Right);
 
         // losers
         $horLosersPoules = $this->getHorPoulesAsArray($round, QualifyTarget::Losers);
         $losersHorPoulesOrigin = $horPoulesOrigin->add(
             RangeCalculator::PADDING + 1,
             $round->getHorizontalPoules(QualifyTarget::Losers)->count() - 1
-        );
-        $this->drawer->drawVertToOrigin($losersHorPoulesOrigin, $horLosersPoules);
+        )->addX( self::HorizontalPouleWidth - 1 );;
+        $this->drawer->drawVertArrayToOrigin($losersHorPoulesOrigin, $horLosersPoules, null, HorizontalDirection::Right);
         return $origin->incrementX();
     }
 
@@ -181,14 +183,14 @@ final class DrawHelper
     protected function drawQualifyRules(Round $round, Coordinate $origin): void
     {
         $seperator = $origin->incrementY();
-        $currentCoordinate = $this->drawer->drawVertAwayFromOrigin($seperator, '-')->incrementY();
+        $currentCoordinate = $this->drawer->drawVertStringAwayFromOrigin($seperator, '-')->incrementY();
         $winnersMultipleRuleCoordinate = null;
         // winners
         foreach ($round->getTargetQualifyGroups(QualifyTarget::Winners) as $qualifyGroup) {
             $winnersColor = $this->getQualifyGroupColor($qualifyGroup);
             $singleRule = $qualifyGroup->getFirstSingleRule();
             while ($singleRule !== null) {
-                $currentCoordinate = $this->drawer->drawVertAwayFromOrigin(
+                $currentCoordinate = $this->drawer->drawVertStringAwayFromOrigin(
                     $currentCoordinate,
                     $this->getQualifyRuleString($singleRule),
                     $winnersColor
@@ -198,7 +200,7 @@ final class DrawHelper
             $multipleRule = $qualifyGroup->getMultipleRule();
             if ($multipleRule !== null) {
                 $winnersMultipleRuleCoordinate = $currentCoordinate;
-                $this->drawer->drawVertAwayFromOrigin(
+                $this->drawer->drawVertStringAwayFromOrigin(
                     $currentCoordinate,
                     $this->getQualifyRuleString($multipleRule),
                     $winnersColor
@@ -212,7 +214,7 @@ final class DrawHelper
             $losersColor = $this->getQualifyGroupColor($qualifyGroup);
             $singleRule = $qualifyGroup->getFirstSingleRule();
             while ($singleRule !== null) {
-                $this->drawer->drawVertToOrigin(
+                $this->drawer->drawVertStringToOrigin(
                     $currentCoordinate,
                     $this->getQualifyRuleString($singleRule),
                     $losersColor
@@ -227,7 +229,7 @@ final class DrawHelper
                     && $winnersMultipleRuleCoordinate->getX() === $currentCoordinate->getX()) {
                     $color = Color::Blue;
                 }
-                $this->drawer->drawVertAwayFromOrigin(
+                $this->drawer->drawVertStringAwayFromOrigin(
                     $currentCoordinate,
                     $this->getQualifyRuleString($multipleRule),
                     $color

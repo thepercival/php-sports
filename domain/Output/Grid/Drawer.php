@@ -6,6 +6,7 @@ namespace Sports\Output\Grid;
 
 use Sports\Output\Coordinate;
 use Sports\Output\Grid;
+use Sports\Output\Direction\Horizontal as HorizontalDirection;
 use SportsHelpers\Output\Color;
 
 final class Drawer
@@ -66,19 +67,33 @@ final class Drawer
 
     /**
      * @param Coordinate $coordinate
-     * @param string|list<string> $value
+     * @param list<string> $value
+     * @param Color|null $color
+     * @param HorizontalDirection $horizontalDirection
+     * @return Coordinate
+     */
+    public function drawVertArrayAwayFromOrigin(Coordinate $coordinate, array $value, Color|null $color = null, HorizontalDirection $horizontalDirection): Coordinate
+    {
+        foreach ($value as $horizontalValue) {
+            if( $horizontalDirection === HorizontalDirection::Left ) {
+                $this->drawToLeft($coordinate, $horizontalValue, $color);
+            } else {
+                $this->drawToRight($coordinate, $horizontalValue, $color);
+            }
+
+            $coordinate = $coordinate->incrementY();
+        }
+        return $coordinate;
+    }
+
+    /**
+     * @param Coordinate $coordinate
+     * @param string $value
      * @param Color|null $color
      * @return Coordinate
      */
-    public function drawVertAwayFromOrigin(Coordinate $coordinate, string|array $value, Color|null $color = null): Coordinate
+    public function drawVertStringAwayFromOrigin(Coordinate $coordinate, string $value, Color|null $color = null): Coordinate
     {
-        if( is_array($value) ) {
-            foreach ($value as $horizontalValue) {
-                $this->drawToRight($coordinate, $horizontalValue, $color);
-                $coordinate = $coordinate->incrementY();
-            }
-            return $coordinate;
-        }
         $valueAsArray = mb_str_split($value);
         $char = array_shift($valueAsArray);
         while ($char !== null) {
@@ -95,24 +110,17 @@ final class Drawer
         Color|null $color = null,
         string $value = self::VERTICAL_BORDER
     ): Coordinate {
-        return $this->drawVertAwayFromOrigin($coordinate, $this->initString($length, $value), $color);
+        return $this->drawVertStringAwayFromOrigin($coordinate, $this->initString($length, $value), $color);
     }
 
     /**
      * @param Coordinate $coordinate
-     * @param string|list<string> $value
+     * @param string $value
      * @param Color|null $color
      * @return Coordinate
      */
-    public function drawVertToOrigin(Coordinate $coordinate, string|array $value, Color|null $color = null): Coordinate
+    public function drawVertStringToOrigin(Coordinate $coordinate, string $value, Color|null $color = null): Coordinate
     {
-        if( is_array($value) ) {
-            foreach ($value as $horizontalValue) {
-                $this->drawToRight($coordinate, $horizontalValue, $color);
-                $coordinate = $coordinate->decrementY();
-            }
-            return $coordinate;
-        }
         $valueAsArray = mb_str_split($value);
         $char = array_shift($valueAsArray);
         while ($char !== null) {
@@ -123,13 +131,34 @@ final class Drawer
         return $coordinate->decrementY();
     }
 
+    /**
+     * @param Coordinate $coordinate
+     * @param list<string> $value
+     * @param Color|null $color
+     * @param HorizontalDirection $horizontalDirection
+     * @return Coordinate
+     */
+    public function drawVertArrayToOrigin(Coordinate $coordinate, array $value, Color|null $color = null, HorizontalDirection $horizontalDirection): Coordinate
+    {
+        foreach ($value as $horizontalValue) {
+            if( $horizontalDirection === HorizontalDirection::Left ) {
+                $this->drawToLeft($coordinate, $horizontalValue, $color);
+            } else {
+                $this->drawToRight($coordinate, $horizontalValue, $color);
+            }
+
+            $coordinate = $coordinate->decrementY();
+        }
+        return $coordinate;
+    }
+
     public function drawVertLineToOrigin(
         Coordinate $coordinate,
         int $length,
         Color|null $color = null,
         string $value = self::VERTICAL_BORDER,
     ): Coordinate {
-        return $this->drawVertToOrigin($coordinate, $this->initString($length, $value), $color);
+        return $this->drawVertStringToOrigin($coordinate, $this->initString($length, $value), $color);
     }
 
     public function drawCellToRight(
