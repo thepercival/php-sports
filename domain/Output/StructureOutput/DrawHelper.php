@@ -155,7 +155,7 @@ final class DrawHelper
 
         // winners
         $horWinnersPoules = $this->getHorPoulesAsArray($round, QualifyTarget::Winners, true);
-        $horPoulesOrigin = $seperator->incrementY()->addX( self::HorizontalPouleWidth - 1 );
+        $horPoulesOrigin = $seperator->incrementY(); // ->addX( self::HorizontalPouleWidth - 1 );
         $this->drawer->drawVertArrayAwayFromOrigin($horPoulesOrigin, $horWinnersPoules, null, HorizontalDirection::Right);
 
         // losers
@@ -163,7 +163,7 @@ final class DrawHelper
         $losersHorPoulesOrigin = $horPoulesOrigin->add(
             RangeCalculator::PADDING + 1,
             $round->getHorizontalPoules(QualifyTarget::Losers)->count() - 1
-        )->addX( self::HorizontalPouleWidth - 1 );;
+        )->addX( self::HorizontalPouleWidth - 1 );
         $this->drawer->drawVertArrayToOrigin($losersHorPoulesOrigin, $horLosersPoules, null, HorizontalDirection::Right);
         return $origin->incrementX();
     }
@@ -177,7 +177,7 @@ final class DrawHelper
     protected function getHorPoulesAsArray(Round $round, QualifyTarget $qualifyTarget, bool $reversed = false): array
     {
         return array_values( array_map( function(HorizontalPoule $horizontalPoule) use ($reversed): string {
-            return $reversed ? '' .$horizontalPoule->getNumber() : strrev('' . $horizontalPoule->getNumber());
+            return $reversed ? strrev('' . $horizontalPoule->getNumber()) : '' .$horizontalPoule->getNumber();
         }, $round->getHorizontalPoules($qualifyTarget)->toArray() ) );
     }
 
