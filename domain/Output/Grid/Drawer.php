@@ -64,8 +64,21 @@ final class Drawer
         return $this->drawToLeft($coordinate, $this->initString($length, $value), $color);
     }
 
-    public function drawVertAwayFromOrigin(Coordinate $coordinate, string $value, Color|null $color = null): Coordinate
+    /**
+     * @param Coordinate $coordinate
+     * @param string|list<string> $value
+     * @param Color|null $color
+     * @return Coordinate
+     */
+    public function drawVertAwayFromOrigin(Coordinate $coordinate, string|array $value, Color|null $color = null): Coordinate
     {
+        if( is_array($value) ) {
+            foreach ($value as $horizontalValue) {
+                $this->drawToRight($coordinate, $horizontalValue, $color);
+                $coordinate = $coordinate->incrementY();
+            }
+            return $coordinate;
+        }
         $valueAsArray = mb_str_split($value);
         $char = array_shift($valueAsArray);
         while ($char !== null) {
@@ -85,8 +98,21 @@ final class Drawer
         return $this->drawVertAwayFromOrigin($coordinate, $this->initString($length, $value), $color);
     }
 
-    public function drawVertToOrigin(Coordinate $coordinate, string $value, Color|null $color = null): Coordinate
+    /**
+     * @param Coordinate $coordinate
+     * @param string|list<string> $value
+     * @param Color|null $color
+     * @return Coordinate
+     */
+    public function drawVertToOrigin(Coordinate $coordinate, string|array $value, Color|null $color = null): Coordinate
     {
+        if( is_array($value) ) {
+            foreach ($value as $horizontalValue) {
+                $this->drawToRight($coordinate, $horizontalValue, $color);
+                $coordinate = $coordinate->decrementY();
+            }
+            return $coordinate;
+        }
         $valueAsArray = mb_str_split($value);
         $char = array_shift($valueAsArray);
         while ($char !== null) {

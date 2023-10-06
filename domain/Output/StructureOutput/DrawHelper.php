@@ -10,6 +10,7 @@ use Sports\Output\Coordinate;
 use Sports\Output\Grid\Align;
 use Sports\Output\Grid\Drawer;
 use Sports\Poule;
+use Sports\Poule\Horizontal as HorizontalPoule;
 use Sports\Qualify\Group as QualifyGroup;
 use Sports\Qualify\Rule\Multiple as MultipleQualifyRule;
 use Sports\Qualify\Rule\Single as SingleQualifyRule;
@@ -151,12 +152,12 @@ final class DrawHelper
         $this->drawer->drawToRight($seperator, '- -');
 
         // winners
-        $horWinnersPoules = $this->getHorPoulesAsString($round, QualifyTarget::Winners);
+        $horWinnersPoules = $this->getHorPoulesAsArray($round, QualifyTarget::Winners);
         $horPoulesOrigin = $seperator->incrementY();
         $this->drawer->drawVertAwayFromOrigin($horPoulesOrigin, $horWinnersPoules);
 
         // losers
-        $horLosersPoules = $this->getHorPoulesAsString($round, QualifyTarget::Losers);
+        $horLosersPoules = $this->getHorPoulesAsArray($round, QualifyTarget::Losers);
         $losersHorPoulesOrigin = $horPoulesOrigin->add(
             RangeCalculator::PADDING + 1,
             $round->getHorizontalPoules(QualifyTarget::Losers)->count() - 1
@@ -165,13 +166,16 @@ final class DrawHelper
         return $origin->incrementX();
     }
 
-    protected function getHorPoulesAsString(Round $round, QualifyTarget $qualifyTarget): string
+    /**
+     * @param Round $round
+     * @param QualifyTarget $qualifyTarget
+     * @return list<string>
+     */
+    protected function getHorPoulesAsArray(Round $round, QualifyTarget $qualifyTarget): array
     {
-        $value = '';
-        foreach ($round->getHorizontalPoules($qualifyTarget) as $horPoule) {
-            $value .= $horPoule->getNumber();
-        }
-        return $value;
+        return array_values( array_map( function(HorizontalPoule $horizontalPoule): string {
+            return '' . $horizontalPoule->getNumber();
+        }, $round->getHorizontalPoules($qualifyTarget)->toArray() ) );
     }
 
     protected function drawQualifyRules(Round $round, Coordinate $origin): void
