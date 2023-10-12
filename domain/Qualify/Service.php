@@ -119,56 +119,34 @@ class Service
         foreach ($this->round->getQualifyGroups() as $qualifyGroup) {
             $reservationService = new QualifyReservationService($qualifyGroup->getChildRound());
 
-//            if( $qualifyGroup->getDistribution() === Distribution::HorizontalSnake) {
-                $singleRule = $qualifyGroup->getFirstSingleRule();
-                while ($singleRule !== null) {
-                    /** @var array<int|string, Place> $changedPlaces */
-                    if( $singleRule instanceof HorizontalSingleQualifyRule ) {
-                        $setQualifiersForSingleRule($singleRule, $reservationService);
-                    } else {
-                        $changedPlaces = array_merge(
-                            $changedPlaces,
-                            $this->setQualifiersForRankedRuleAndReserve(
-                                $singleRule,
-                                $reservationService
-                            )
-                        );
-                    }
-
-                    $singleRule = $singleRule->getNext();
-                }
-                $multipleRule = $qualifyGroup->getMultipleRule();
+            $singleRule = $qualifyGroup->getFirstSingleRule();
+            while ($singleRule !== null) {
                 /** @var array<int|string, Place> $changedPlaces */
-                if ($multipleRule !== null) {
+                if( $singleRule instanceof HorizontalSingleQualifyRule ) {
+                    $setQualifiersForSingleRule($singleRule, $reservationService);
+                } else {
                     $changedPlaces = array_merge(
                         $changedPlaces,
                         $this->setQualifiersForRankedRuleAndReserve(
-                            $multipleRule,
+                            $singleRule,
                             $reservationService
                         )
                     );
                 }
-//            }
-//            else { // QualifyDistribution::Vertical
-//                $verticalRule = $qualifyGroup->getFirstVerticalRule();
-//                while ($verticalRule !== null) {
-//                    /** @var array<int|string, Place> $changedPlaces */
-//                    if( $verticalRule instanceof VerticalSingleQualifyRule) {
-//                        $setQualifiersForSingleRule($verticalRule, $reservationService);
-//                    } else {
-//                        $changedPlaces = array_merge(
-//                            $changedPlaces,
-//                            $this->setQualifiersForMultipleRuleAndReserve(
-//                                $verticalRule,
-//                                $reservationService
-//                            )
-//                        );
-//                    }
-//                    $verticalRule = $verticalRule->getNext();
-//                }
-//            }
 
-
+                $singleRule = $singleRule->getNext();
+            }
+            $multipleRule = $qualifyGroup->getMultipleRule();
+            /** @var array<int|string, Place> $changedPlaces */
+            if ($multipleRule !== null) {
+                $changedPlaces = array_merge(
+                    $changedPlaces,
+                    $this->setQualifiersForRankedRuleAndReserve(
+                        $multipleRule,
+                        $reservationService
+                    )
+                );
+            }
         }
         /** @var array<int|string, Place> $changedPlaces */
         return array_values($changedPlaces);
