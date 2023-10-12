@@ -5,19 +5,21 @@ namespace Sports\Structure;
 use Exception;
 use Sports\Category;
 use Sports\Competition;
-use Sports\Competition\Sport\Service as CompetitionSportService;
+use Sports\Competition\Sport\Editor as CompetitionSportEditor;
 use Sports\Place;
 use Sports\Planning\Config\Service as PlanningConfigService;
 use Sports\Poule;
 use Sports\Poule\Horizontal\Creator as HorizontalPouleCreator;
 use Sports\Qualify\Group as QualifyGroup;
 use Sports\Qualify\Rule\Creator as QualifyRuleCreator;
-use Sports\Qualify\Rule\Single as QualifyRuleSingle;
+use Sports\Qualify\Rule\Horizontal\Single as HorizontalSingleQualifyRule;
+use Sports\Qualify\Rule\Vertical\Single as VerticalSingleQualifyRule;
 use Sports\Qualify\Target as QualifyTarget;
 use Sports\Round;
 use Sports\Round\Number as RoundNumber;
 use Sports\Structure;
 use Sports\Structure as StructureBase;
+use Sports\Qualify\Distribution as QualifyDistribution;
 use SportsHelpers\PlaceRanges;
 use SportsHelpers\PouleStructure;
 use SportsHelpers\PouleStructure\Balanced as BalancedPouleStructure;
@@ -32,7 +34,7 @@ class Editor
     private PlaceRanges|null $placeRanges = null;
 
     public function __construct(
-        private CompetitionSportService $competitionSportService,
+        private CompetitionSportEditor $competitionSportEditor,
         private PlanningConfigService $planningConfigService
     ) {
         $this->horPouleCreator = new HorizontalPouleCreator();
@@ -71,7 +73,7 @@ class Editor
 
         $structure = new Structure([$category], $firstRoundNumber);
         foreach ($competition->getSports() as $competitionSport) {
-            $this->competitionSportService->addToStructure($competitionSport, $structure);
+            $this->competitionSportEditor->addToStructure($competitionSport, $structure);
         }
 
         $rootRound = $category->getRootRound();
@@ -96,7 +98,7 @@ class Editor
     ): Category {
         $category = $this->addCategoryHelper($name, $firstRoundNumber, $pouleStructure);
         foreach ($firstRoundNumber->getCompetitionSports() as $competitionSport) {
-            $this->competitionSportService->addToCategory($competitionSport, $category);
+            $this->competitionSportEditor->addToCategory($competitionSport, $category);
         }
         // end editing
 
@@ -106,13 +108,6 @@ class Editor
         return $category;
     }
 
-    /**
-     * @param string $name
-     * @param Competition $competition
-     * @param BalancedPouleStructure $pouleStructure
-     * @return Category
-     * @throws Exception
-     */
     protected function addCategoryHelper(
         string $name,
         RoundNumber $firstRoundNumber,
@@ -130,10 +125,15 @@ class Editor
      * @param Round $parentRound
      * @param QualifyTarget $qualifyTarget
      * @param list<int> $pouleStructure
+     * @param QualifyDistribution $distribution
      * @return Round
      * @throws Exception
      */
-    public function addChildRound(Round $parentRound, QualifyTarget $qualifyTarget, array $pouleStructure): Round
+    public function addChildRound(
+        Round $parentRound,
+        QualifyTarget $qualifyTarget,
+        array $pouleStructure,
+        QualifyDistribution $distribution = QualifyDistribution::HorizontalSnake): Round
     {
         $balancedPouleStructure = new BalancedPouleStructure(...$pouleStructure);
         $this->placeRanges?->validateStructure($balancedPouleStructure);
@@ -143,7 +143,8 @@ class Editor
         $qualifyGroup = $this->addChildRoundHelper(
             $parentRound,
             $qualifyTarget,
-            $balancedPouleStructure
+            $balancedPouleStructure,
+            $distribution
         );
         // end editing
         $this->horPouleCreator->create($qualifyGroup->getChildRound());
@@ -154,7 +155,8 @@ class Editor
     private function addChildRoundHelper(
         Round $parentRound,
         QualifyTarget $qualifyTarget,
-        BalancedPouleStructure $pouleStructure
+        BalancedPouleStructure $pouleStructure,
+        QualifyDistribution $distribution
     ): QualifyGroup
     {
         $nextStructureCell = $parentRound->getStructureCell()->getNext();
@@ -162,6 +164,7 @@ class Editor
             $nextStructureCell = $parentRound->getStructureCell()->createNext();
         }
         $qualifyGroup = new QualifyGroup($parentRound, $qualifyTarget, $nextStructureCell);
+        $qualifyGroup->setDistribution($distribution);
         $this->fillRound($qualifyGroup->getChildRound(), $pouleStructure);
         return $qualifyGroup;
     }
@@ -354,6 +357,7 @@ class Editor
         Round $parentRound,
         QualifyTarget $qualifyTarget,
         int $nrOfToPlacesToAdd,
+        QualifyDistribution $distribution,
         int|null $maxNrOfPoulePlaces = null
     ): void {
         $nrOfPlaces = $parentRound->getNrOfPlaces();
@@ -375,7 +379,7 @@ class Editor
             $this->horPouleCreator->remove($parentRound);
             $this->rulesCreator->remove($parentRound);
             // begin editing
-            $qualifyGroup = $this->addChildRoundHelper($parentRound, $qualifyTarget, $newStructure);
+            $qualifyGroup = $this->addChildRoundHelper($parentRound, $qualifyTarget, $newStructure, $distribution);
             $nrOfToPlacesToAdd -= $minNrOfPlacesPerPoule;
             $childRound = $qualifyGroup->getChildRound();
             while ($nrOfToPlacesToAdd-- > 0) {
@@ -458,12 +462,12 @@ class Editor
         }
     }
 
-    protected function getNrOfQualifiersPrevious(QualifyRuleSingle $singleRule): int
+    protected function getNrOfQualifiersPrevious(HorizontalSingleQualifyRule|VerticalSingleQualifyRule $singleRule): int
     {
         return $singleRule->getNrOfToPlaces() + $singleRule->getNrOfToPlacesTargetSide(QualifyTarget::Winners);
     }
 
-    protected function getNrOfQualifiersNext(QualifyRuleSingle $singleRule): int
+    protected function getNrOfQualifiersNext(HorizontalSingleQualifyRule|VerticalSingleQualifyRule $singleRule): int
     {
         return $singleRule->getNrOfToPlaces() + $singleRule->getNrOfToPlacesTargetSide(QualifyTarget::Losers);
     }
@@ -480,7 +484,7 @@ class Editor
         return $pouleStructureCreator->createBalanced($nrOfPlaces, $nrOfPoules);
     }
 
-    public function isQualifyGroupSplittableAt(QualifyRuleSingle $singleRule): bool
+    public function isQualifyGroupSplittableAt(HorizontalSingleQualifyRule|VerticalSingleQualifyRule $singleRule): bool
     {
         $next = $singleRule->getNext();
         if ($next === null) {
@@ -491,7 +495,7 @@ class Editor
     }
 
     // horizontalPoule is split-points, from which qualifyGroup
-    public function splitQualifyGroupFrom(QualifyGroup $qualifyGroup, QualifyRuleSingle $singleRule): void
+    public function splitQualifyGroupFrom(QualifyGroup $qualifyGroup, HorizontalSingleQualifyRule|VerticalSingleQualifyRule $singleRule): void
     {
         $parentRound = $qualifyGroup->getParentRound();
         $nrOfToPlaces = $singleRule->getNrOfToPlaces() + $singleRule->getNrOfToPlacesTargetSide(QualifyTarget::Winners);
@@ -531,6 +535,7 @@ class Editor
             $childRound->getStructureCell(),
             $qualifyGroup->getNumber() + 1
         );
+        $newQualifyGroup->setDistribution($qualifyGroup->getDistribution());
         $this->renumber($parentRound, $qualifyGroup->getTarget());
         return $newQualifyGroup;
     }

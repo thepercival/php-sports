@@ -8,8 +8,10 @@ use Doctrine\Common\Collections\Collection;
 use Exception;
 use Sports\Place;
 use Sports\Poule\Horizontal as HorizontalPoule;
-use Sports\Qualify\Rule\Multiple as MultipleQualifyRule;
-use Sports\Qualify\Rule\Single as SingleQualifyRule;
+use Sports\Qualify\Rule\Horizontal\Multiple as HorizontalMultipleQualifyRule;
+use Sports\Qualify\Rule\Horizontal\Single as HorizontalSingleQualifyRule;
+use Sports\Qualify\Rule\Vertical\Multiple as VerticalMultipleQualifyRule;
+use Sports\Qualify\Rule\Vertical\Single as VerticalSingleQualifyRule;
 use Sports\Qualify\Target as QualifyTarget;
 use Sports\Round;
 
@@ -27,7 +29,8 @@ use Sports\Round;
 class Horizontal
 {
     protected int $number;
-    protected MultipleQualifyRule | SingleQualifyRule | null $qualifyRule = null;
+    protected HorizontalMultipleQualifyRule | HorizontalSingleQualifyRule |
+                VerticalMultipleQualifyRule | VerticalSingleQualifyRule | null $qualifyRuleNew = null;
 
     /**
      * @param Round $round
@@ -69,15 +72,15 @@ class Horizontal
         return $nrOfPlaceNubers - ($this->number - 1);
     }
 
-    public function setQualifyRule(MultipleQualifyRule | SingleQualifyRule | null $qualifyRule): void
+    public function setQualifyRuleNew(HorizontalMultipleQualifyRule|HorizontalSingleQualifyRule|VerticalMultipleQualifyRule|VerticalSingleQualifyRule|null $qualifyRule): void
     {
-        $this->qualifyRule = $qualifyRule;
+        $this->qualifyRuleNew = $qualifyRule;
     }
 
 
-    public function getQualifyRule(): SingleQualifyRule | MultipleQualifyRule | null
+    public function getQualifyRuleNew(): HorizontalMultipleQualifyRule|HorizontalSingleQualifyRule|VerticalMultipleQualifyRule|VerticalSingleQualifyRule|null
     {
-        return $this->qualifyRule;
+        return $this->qualifyRuleNew;
     }
 
     /**

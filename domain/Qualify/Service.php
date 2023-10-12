@@ -9,8 +9,10 @@ use Sports\Place;
 use Sports\Poule;
 use Sports\Qualify\PlaceMapping as QualifyPlaceMapping;
 use Sports\Qualify\ReservationService as QualifyReservationService;
-use Sports\Qualify\Rule\Multiple as MultipleQualifyRule;
-use Sports\Qualify\Rule\Single as SingleQualifyRule;
+use Sports\Qualify\Rule\Horizontal\Multiple as HorizontalMultipleQualifyRule;
+use Sports\Qualify\Rule\Horizontal\Single as HorizontalSingleQualifyRule;
+use Sports\Qualify\Rule\Vertical\Multiple as VerticalMultipleQualifyRule;
+use Sports\Qualify\Rule\Vertical\Single as VerticalSingleQualifyRule;
 use Sports\Qualify\Target as QualifyTarget;
 use Sports\Ranking\Calculator\Round as RoundRankingCalculator;
 use Sports\Round;
@@ -37,7 +39,7 @@ class Service
     {
         /** @var list<Place> $changedPlaces */
         $changedPlaces = [];
-        $resetQualifiersForSingleRule = function (SingleQualifyRule $singleQualifyRule) use ($filterPoule, &$changedPlaces): void {
+        $resetQualifiersForSingleRule = function (HorizontalSingleQualifyRule | VerticalSingleQualifyRule $singleQualifyRule) use ($filterPoule, &$changedPlaces): void {
             foreach ($singleQualifyRule->getMappings() as $qualifyPlaceMapping) {
                 $fromPlace = $qualifyPlaceMapping->getFromPlace();
                 if ($filterPoule !== null && $fromPlace->getPoule() !== $filterPoule) {
@@ -50,20 +52,43 @@ class Service
             }
         };
         foreach ($this->round->getQualifyGroups() as $qualifyGroup) {
-            $singleRule = $qualifyGroup->getFirstSingleRule();
-            while ($singleRule !== null) {
-                $resetQualifiersForSingleRule($singleRule);
-                $singleRule = $singleRule->getNext();
-            }
-            $multipleRule = $qualifyGroup->getMultipleRule();
-            /** @var array<int|string, Place> $changedPlaces */
-            if ($multipleRule !== null) {
-                foreach ($multipleRule->getToPlaces() as $toPlace) {
-                    $toPlace->setQualifiedPlace(null);
-                    $toPlace->setExtraPoints(0);
-                    array_push($changedPlaces, $toPlace);
+
+//            if( $qualifyGroup->getDistribution() === Distribution::HorizontalSnake) {
+                $singleRule = $qualifyGroup->getFirstSingleRule();
+                while ($singleRule !== null) {
+                    $resetQualifiersForSingleRule($singleRule);
+                    $singleRule = $singleRule->getNext();
                 }
-            }
+                $multipleRule = $qualifyGroup->getMultipleRule();
+                /** @var array<int|string, Place> $changedPlaces */
+                if ($multipleRule !== null) {
+                    $toPlaces = $multipleRule->getToPlaces();
+                    foreach ($toPlaces as $toPlace) {
+                        $toPlace->setQualifiedPlace(null);
+                        $toPlace->setExtraPoints(0);
+                        $changedPlaces[] = $toPlace;
+                    }
+                }
+//            } else { // QualifyDistribution::Vertical
+//                $verticalRule = $qualifyGroup->getFirstVerticalRule();
+//                while ($verticalRule !== null) {
+//                    if( $verticalRule instanceof VerticalSingleQualifyRule) {
+//                        $resetQualifiersForSingleRule($verticalRule);
+//                    } else {
+//                        /** @var array<int|string, Place> $changedPlaces */
+//                        $toPlaces = $verticalRule->getToPlaces();
+//                        foreach ($toPlaces as $toPlace) {
+//                            $toPlace->setQualifiedPlace(null);
+//                            $toPlace->setExtraPoints(0);
+//                            $changedPlaces[] = $toPlace;
+//                        }
+//                    }
+//                    $verticalRule = $verticalRule->getNext();
+//                }
+//            }
+
+
+
         }
         /** @var list<Place> $changedPlaces */
         return $changedPlaces;
@@ -78,7 +103,7 @@ class Service
         /** @var array<int|string, Place> $changedPlaces */
         $changedPlaces = [];
         $setQualifiersForSingleRule = function (
-            SingleQualifyRule $singleQualifyRule,
+            HorizontalSingleQualifyRule $singleQualifyRule,
             QualifyReservationService $reservationService
         ) use ($filterPoule, &$changedPlaces): void {
             foreach ($singleQualifyRule->getMappings() as $qualifyPlaceMapping) {
@@ -93,22 +118,57 @@ class Service
         };
         foreach ($this->round->getQualifyGroups() as $qualifyGroup) {
             $reservationService = new QualifyReservationService($qualifyGroup->getChildRound());
-            $singleRule = $qualifyGroup->getFirstSingleRule();
-            while ($singleRule !== null) {
-                $setQualifiersForSingleRule($singleRule, $reservationService);
-                $singleRule = $singleRule->getNext();
-            }
-            $multipleRule = $qualifyGroup->getMultipleRule();
-            /** @var array<int|string, Place> $changedPlaces */
-            if ($multipleRule !== null) {
-                $changedPlaces = array_merge(
-                    $changedPlaces,
-                    $this->setQualifiersForMultipleRuleAndReserve(
-                        $multipleRule,
-                        $reservationService
-                    )
-                );
-            }
+
+//            if( $qualifyGroup->getDistribution() === Distribution::HorizontalSnake) {
+                $singleRule = $qualifyGroup->getFirstSingleRule();
+                while ($singleRule !== null) {
+                    /** @var array<int|string, Place> $changedPlaces */
+                    if( $singleRule instanceof HorizontalSingleQualifyRule ) {
+                        $setQualifiersForSingleRule($singleRule, $reservationService);
+                    } else {
+                        $changedPlaces = array_merge(
+                            $changedPlaces,
+                            $this->setQualifiersForRankedRuleAndReserve(
+                                $singleRule,
+                                $reservationService
+                            )
+                        );
+                    }
+
+                    $singleRule = $singleRule->getNext();
+                }
+                $multipleRule = $qualifyGroup->getMultipleRule();
+                /** @var array<int|string, Place> $changedPlaces */
+                if ($multipleRule !== null) {
+                    $changedPlaces = array_merge(
+                        $changedPlaces,
+                        $this->setQualifiersForRankedRuleAndReserve(
+                            $multipleRule,
+                            $reservationService
+                        )
+                    );
+                }
+//            }
+//            else { // QualifyDistribution::Vertical
+//                $verticalRule = $qualifyGroup->getFirstVerticalRule();
+//                while ($verticalRule !== null) {
+//                    /** @var array<int|string, Place> $changedPlaces */
+//                    if( $verticalRule instanceof VerticalSingleQualifyRule) {
+//                        $setQualifiersForSingleRule($verticalRule, $reservationService);
+//                    } else {
+//                        $changedPlaces = array_merge(
+//                            $changedPlaces,
+//                            $this->setQualifiersForMultipleRuleAndReserve(
+//                                $verticalRule,
+//                                $reservationService
+//                            )
+//                        );
+//                    }
+//                    $verticalRule = $verticalRule->getNext();
+//                }
+//            }
+
+
         }
         /** @var array<int|string, Place> $changedPlaces */
         return array_values($changedPlaces);
@@ -126,16 +186,16 @@ class Service
     }
 
     /**
-     * @param MultipleQualifyRule $multipleRule
+     * @param HorizontalMultipleQualifyRule | VerticalMultipleQualifyRule | VerticalSingleQualifyRule $rankedRule
      * @param QualifyReservationService $reservationService
      * @return list<Place>
      */
-    protected function setQualifiersForMultipleRuleAndReserve(
-        MultipleQualifyRule $multipleRule,
+    protected function setQualifiersForRankedRuleAndReserve(
+        HorizontalMultipleQualifyRule | VerticalMultipleQualifyRule  | VerticalSingleQualifyRule $rankedRule,
         QualifyReservationService $reservationService
     ): array {
         $changedPlaces = [];
-        $toPlaces = $multipleRule->getToPlaces();
+        $toPlaces = $rankedRule->getToPlaces();
         if (!$this->isRoundFinished()) {
             foreach ($toPlaces as $toPlace) {
                 $toPlace->setQualifiedPlace(null);
@@ -143,11 +203,11 @@ class Service
             }
             return $changedPlaces;
         }
-        $round = $multipleRule->getFromRound();
-        $rankedPlaceLocations = $this->rankingCalculator->getPlaceLocationsForMultipleRule($multipleRule);
+        $round = $rankedRule->getFromRound();
+        $rankedPlaceLocations = $this->rankingCalculator->getPlaceLocationsForRankedRule($rankedRule);
 
         while (count($rankedPlaceLocations) > count($toPlaces)) {
-            $multipleRule->getQualifyTarget() === QualifyTarget::Winners ? array_pop($rankedPlaceLocations) : array_shift($rankedPlaceLocations);
+            $rankedRule->getQualifyTarget() === QualifyTarget::Winners ? array_pop($rankedPlaceLocations) : array_shift($rankedPlaceLocations);
         }
         foreach ($toPlaces as $toPlace) {
             $toPouleNumber = $toPlace->getPoule()->getNumber();
@@ -159,6 +219,7 @@ class Service
                 array_splice($rankedPlaceLocations, $index, 1);
             }
         }
+        /** @var list<Place> $changedPlaces */
         return $changedPlaces;
     }
 

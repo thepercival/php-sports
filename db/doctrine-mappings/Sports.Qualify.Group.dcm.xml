@@ -5,6 +5,7 @@
     <entity name="Sports\Qualify\Group" table="qualifyGroups" repository-class="Sports\Qualify\Group\Repository">
         <field name="target" column="target" type="enum_QualifyTarget" length="2" nullable="false" unique="false"/>
         <field name="number" column="number" type="smallint" nullable="false" unique="false"/>
+        <field name="distribution" column="distribution" type="enum_Distribution" nullable="false" unique="false"/>
         <one-to-one field="childRound" target-entity="Sports\Round" mapped-by="parentQualifyGroup">
             <cascade>
                 <cascade-persist/>

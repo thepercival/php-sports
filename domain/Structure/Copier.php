@@ -126,6 +126,7 @@ class Copier
         foreach ($round->getQualifyGroups() as $qualifyGroup) {
             $newQualifyGroup = new QualifyGroup($newRound, $qualifyGroup->getTarget(), $newNextCell);
             $newQualifyGroup->setNumber($qualifyGroup->getNumber());
+            $newQualifyGroup->setDistribution($qualifyGroup->getDistribution());
             // $qualifyGroup->setNrOfHorizontalPoules( $qualifyGroupSerialized->getNrOfHorizontalPoules() );
             $this->deepCopyRound($qualifyGroup->getChildRound(), $newQualifyGroup->getChildRound());
         }

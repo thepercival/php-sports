@@ -7,6 +7,7 @@ namespace Sports\SerializationHandler\Qualify;
 use JMS\Serializer\Context;
 use JMS\Serializer\Handler\SubscribingHandlerInterface;
 use JMS\Serializer\JsonDeserializationVisitor;
+use Sports\Qualify\Distribution;
 use Sports\Qualify\Group as QualifyGroup;
 use Sports\Qualify\Target;
 use Sports\Round;
@@ -30,7 +31,7 @@ class GroupHandler extends Handler implements SubscribingHandlerInterface
 
     /**
      * @param JsonDeserializationVisitor $visitor
-     * @param array{parentRound: Round, target: string, nextStructureCell: Cell, number: int, childRound: _Round} $fieldValue
+     * @param array{parentRound: Round, target: string, nextStructureCell: Cell, number: int, childRound: _Round, distribution: Distribution} $fieldValue
      * @param array<string, array<string, Round|RoundNumber>> $type
      * @param Context $context
      * @return QualifyGroup
@@ -41,24 +42,21 @@ class GroupHandler extends Handler implements SubscribingHandlerInterface
         array $type,
         Context $context
     ): QualifyGroup {
-        if (!isset($fieldValue["parentRound"]) || !isset($fieldValue["nextStructureCell"])) {
+        if (!isset($fieldValue['parentRound']) || !isset($fieldValue['nextStructureCell'])) {
             throw new \Exception('malformd json => qualifygroup', E_ERROR);
         }
         $qualifyGroup = new QualifyGroup(
-            $fieldValue["parentRound"],
-            Target::from($fieldValue["target"]),
-            $fieldValue["nextStructureCell"],
-            $fieldValue["number"]
+            $fieldValue['parentRound'],
+            Target::from($fieldValue['target']),
+            $fieldValue['nextStructureCell'],
+            $fieldValue['number']
         );
+        $qualifyGroup->setDistribution($fieldValue['distribution']);
+
         //$fieldValue["childRound"] = $qualifyGroup->getChildRound();
-        $fieldValue["childRound"]["parentQualifyGroup"] = $qualifyGroup;
-        $fieldValue["childRound"]["category"] = $qualifyGroup->getParentRound()->getCategory();
-        $this->getProperty(
-            $visitor,
-            $fieldValue,
-            "childRound",
-            Round::class
-        );
+        $fieldValue['childRound']['parentQualifyGroup'] = $qualifyGroup;
+        $fieldValue['childRound']['category'] = $qualifyGroup->getParentRound()->getCategory();
+        $this->getProperty($visitor, $fieldValue, 'childRound', Round::class);
 
         return $qualifyGroup;
     }

@@ -5,6 +5,11 @@ declare(strict_types=1);
 namespace Sports\Output\StructureOutput;
 
 use Sports\Category;
+use Sports\Game\State;
+use Sports\Game\State as GameState;
+use Sports\Place;
+use Sports\Qualify\Target as QualifyTarget;
+use Sports\Ranking\Calculator\Cumulative;
 use Sports\Structure\NameService as StructureNameService;
 use Sports\Output\Coordinate;
 use Sports\Output\Grid\Align;
@@ -13,11 +18,14 @@ use Sports\Output\Direction\Horizontal as HorizontalDirection;
 use Sports\Poule;
 use Sports\Poule\Horizontal as HorizontalPoule;
 use Sports\Qualify\Group as QualifyGroup;
-use Sports\Qualify\Rule\Multiple as MultipleQualifyRule;
-use Sports\Qualify\Rule\Single as SingleQualifyRule;
-use Sports\Qualify\Target as QualifyTarget;
+use Sports\Qualify\Rule\Horizontal\Multiple as HorizontalMultipleQualifyRule;
+use Sports\Qualify\Rule\Horizontal\Single as HorizontalSingleQualifyRule;
+use Sports\Qualify\Rule\Vertical\Multiple as VerticalMultipleQualifyRule;
+use Sports\Qualify\Rule\Vertical\Single as VerticalSingleQualifyRule;
+use Sports\Ranking\Calculator\Round as RoundRankingCalculator;
 use Sports\Round;
 use Sports\Round\Number as RoundNumber;
+use Sports\Qualify\Distribution as QualifyDistribution;
 use Sports\Structure;
 use SportsHelpers\Output\Color;
 
@@ -89,7 +97,6 @@ final class DrawHelper
             $this->drawQualifyRules($round, $qualifyRulesOrigin);
         }
 
-
         $nextRoundNumber = $round->getNumber()->getNext();
         if ($nextRoundNumber !== null) {
             // $nextRoundNumberHeight = $this->rangeCalculator->getRoundNumberHeight($round->getNumber());
@@ -132,12 +139,62 @@ final class DrawHelper
 
         $placeCoordinate = $origin->addY(2);
         foreach ($poule->getPlaces() as $place) {
+            $color = $this->calculateColor($place);
             $placeName = $this->structureNameService->getPlaceFromName($place, false);
-            $this->drawer->drawCellToRight($placeCoordinate, $placeName, $pouleWidth, Align::Center);
+            $this->drawer->drawCellToRight($placeCoordinate, $placeName, $pouleWidth, Align::Center, $color);
             $placeCoordinate = $placeCoordinate->incrementY();
         }
 
         return $nextPouleCoordrinate->addX(RangeCalculator::PADDING + 1);
+    }
+
+    protected function calculateColor(Place $place): Color {
+        foreach( [QualifyTarget::Winners, QualifyTarget::Losers] as $qualifyTarget ) {
+            $horizontalPoule = $place->getHorizontalPoule($qualifyTarget);
+
+            $multipleQualifyRule = $horizontalPoule->getQualifyRuleNew();
+            if( ( $multipleQualifyRule instanceof HorizontalMultipleQualifyRule
+                    || $multipleQualifyRule instanceof VerticalMultipleQualifyRule)
+                && $this->placeQualifiesForMultipleRule($multipleQualifyRule, $place) ) {
+                return QualifyTarget::Winners === $qualifyTarget ? Color::Green : Color::Red;
+            }
+        }
+        return Color::White;
+    }
+
+    protected function placeQualifiesForMultipleRule(
+        VerticalMultipleQualifyRule|HorizontalMultipleQualifyRule $multipleQualifyRule,
+        Place $place
+    ): bool
+    {
+        if ($place->getRound()->getGamesState() !== State::Finished) {
+            return false;
+        }
+//        $rankingCalculator = new RoundRankingCalculator(null, Cumulative::ByPerformance);
+//        $horizontalPoule = $place->getHorizontalPoule($multipleQualifyRule->getQualifyTarget());
+//        $horizontalPouleRankedItems = $rankingCalculator->getItemsForHorizontalPoule($horizontalPoule);
+
+        // $rankingCalculatorEnd = new RoundRankingCalculator(null, Cumulative::ByPerformance );
+//        $rankingCalculatorEnd->
+//if( $place->getPlaceNr() === 2 and $place->getPouleNr() === 1 ) {
+//    $eer = 12;
+//}
+        foreach( $multipleQualifyRule->getToPlaces() as $toPlace ) {
+            if( $toPlace->getQualifiedPlace() === $place ) {
+                return true;
+            }
+        }
+        return false;
+
+//        $nrOfToPlaces = $multipleQualifyRule->getNrOfToPlaces();
+//        $horizontalPouleRankedItem = array_shift($horizontalPouleRankedItems);
+//        while ( $nrOfToPlaces-- > 0 && $horizontalPouleRankedItem !== null ) {
+//            if( $horizontalPouleRankedItem->getPlace() === $place ) {
+//                return true;
+//            }
+//            $horizontalPouleRankedItem = array_shift($horizontalPouleRankedItems);
+//        }
+//        return false;
     }
 
     protected function drawHorPoules(Round $round, Coordinate $borderOrigin): Coordinate | null
@@ -189,59 +246,81 @@ final class DrawHelper
         // winners
         foreach ($round->getTargetQualifyGroups(QualifyTarget::Winners) as $qualifyGroup) {
             $winnersColor = $this->getQualifyGroupColor($qualifyGroup);
-            $singleRule = $qualifyGroup->getFirstSingleRule();
-            while ($singleRule !== null) {
-                $currentCoordinate = $this->drawer->drawVertStringAwayFromOrigin(
-                    $currentCoordinate,
-                    $this->getQualifyRuleString($singleRule),
-                    $winnersColor
-                )->incrementY();
-                $singleRule = $singleRule->getNext();
-            }
-            $multipleRule = $qualifyGroup->getMultipleRule();
-            if ($multipleRule !== null) {
-                $winnersMultipleRuleCoordinate = $currentCoordinate;
-                $this->drawer->drawVertStringAwayFromOrigin(
-                    $currentCoordinate,
-                    $this->getQualifyRuleString($multipleRule),
-                    $winnersColor
-                );
-            }
+                $singleRule = $qualifyGroup->getFirstSingleRule();
+                while ($singleRule !== null) {
+                    $currentCoordinate = $this->drawer->drawVertStringAwayFromOrigin(
+                        $currentCoordinate,
+                        $this->getQualifyRuleString($singleRule),
+                        $winnersColor
+                    )->incrementY();
+                    $singleRule = $singleRule->getNext();
+                }
+                $multipleRule = $qualifyGroup->getMultipleRule();
+                if ($multipleRule !== null) {
+                    $winnersMultipleRuleCoordinate = $currentCoordinate;
+                    $this->drawer->drawVertStringAwayFromOrigin(
+                        $currentCoordinate,
+                        $this->getQualifyRuleString($multipleRule),
+                        $winnersColor
+                    );
+                }
         }
         $currentCoordinate = $seperator->addY($round->getFirstPoule()->getPlaces()->count());
 
         // losers
         foreach ($round->getTargetQualifyGroups(QualifyTarget::Losers) as $qualifyGroup) {
             $losersColor = $this->getQualifyGroupColor($qualifyGroup);
-            $singleRule = $qualifyGroup->getFirstSingleRule();
-            while ($singleRule !== null) {
-                $this->drawer->drawVertStringToOrigin(
-                    $currentCoordinate,
-                    $this->getQualifyRuleString($singleRule),
-                    $losersColor
-                );
-                $currentCoordinate = $currentCoordinate->decrementY();
-                $singleRule = $singleRule->getNext();
-            }
-            $multipleRule = $qualifyGroup->getMultipleRule();
-            if ($multipleRule !== null) {
-                $color = $losersColor;
-                if ($winnersMultipleRuleCoordinate !== null
-                    && $winnersMultipleRuleCoordinate->getX() === $currentCoordinate->getX()) {
-                    $color = Color::Blue;
+//            if( $qualifyGroup->getDistribution() === QualifyDistribution::HorizontalSnake) {
+                $singleRule = $qualifyGroup->getFirstSingleRule();
+                while ($singleRule !== null) {
+                    $this->drawer->drawVertStringToOrigin(
+                        $currentCoordinate,
+                        $this->getQualifyRuleString($singleRule),
+                        $losersColor
+                    );
+                    $currentCoordinate = $currentCoordinate->decrementY();
+                    $singleRule = $singleRule->getNext();
                 }
-                $this->drawer->drawVertStringAwayFromOrigin(
-                    $currentCoordinate,
-                    $this->getQualifyRuleString($multipleRule),
-                    $color
-                );
-            }
+                $multipleRule = $qualifyGroup->getMultipleRule();
+                if ($multipleRule !== null) {
+                    $color = $losersColor;
+                    if ($winnersMultipleRuleCoordinate !== null
+                        && $winnersMultipleRuleCoordinate->getX() === $currentCoordinate->getX()
+                        && $winnersMultipleRuleCoordinate->getY() === $currentCoordinate->getY()) {
+                        $color = Color::Blue;
+                    }
+                    $this->drawer->drawVertStringAwayFromOrigin(
+                        $currentCoordinate,
+                        $this->getQualifyRuleString($multipleRule),
+                        $color
+                    );
+                }
+//            } else { // QualifyDistribution::Vertical
+//                $verticalRule = $qualifyGroup->getFirstVerticalRule();
+//                while ($verticalRule !== null) {
+//                    $this->drawer->drawVertStringToOrigin(
+//                            $currentCoordinate, $this->getQualifyRuleString($verticalRule), $losersColor
+//                        );
+//                    $currentCoordinate = $currentCoordinate->decrementY();
+//                    $verticalRule = $verticalRule->getNext();
+//                }
+//            }
+
         }
     }
 
-    protected function getQualifyRuleString(MultipleQualifyRule | SingleQualifyRule $qualifyRule): string
+    protected function getQualifyRuleString(HorizontalMultipleQualifyRule | HorizontalSingleQualifyRule | VerticalMultipleQualifyRule | VerticalSingleQualifyRule $qualifyRule): string
     {
-        return ($qualifyRule instanceof MultipleQualifyRule) ? 'M' : 'S';
+        if( $qualifyRule instanceof HorizontalMultipleQualifyRule ) {
+            return 'M';
+        } else if ( $qualifyRule instanceof VerticalMultipleQualifyRule ) {
+            return 'M';
+        }
+        return 'S';
+    }
+
+    protected function getDistribution(QualifyDistribution $distribution): string {
+        return $distribution == QualifyDistribution::HorizontalSnake ? ' (HS)' : ' (V)';
     }
 
 
@@ -271,9 +350,10 @@ final class DrawHelper
         $selfCoordinate = $origin;
         $this->drawer->drawCellToRight($selfCoordinate, '|', $roundWidth, Align::Center);
         $selfCoordinate = $selfCoordinate->incrementY();
-        $qualifyGroupName = $qualifyGroup->getTarget()->value;
+
+        $distributionDescr = $this->getDistribution($qualifyGroup->getDistribution());
+        $qualifyGroupName = $qualifyGroup->getTarget()->value . $qualifyGroup->getNumber() . $distributionDescr;
         $color = $this->getQualifyGroupColor($qualifyGroup);
-        $qualifyGroupName .= $qualifyGroup->getNumber();
         $this->drawer->drawCellToRight($selfCoordinate, $qualifyGroupName, $roundWidth, Align::Center, $color);
         $this->drawer->drawCellToRight($selfCoordinate->incrementY(), '|', $roundWidth, Align::Center);
 

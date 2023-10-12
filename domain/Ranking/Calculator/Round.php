@@ -9,7 +9,9 @@ use Sports\Game\State as GameState;
 use Sports\Place;
 use Sports\Poule;
 use Sports\Poule\Horizontal as HorizontalPoule;
-use Sports\Qualify\Rule\Multiple as MultipleQualifyRule;
+use Sports\Qualify\Rule\Horizontal\Multiple as HorizontalMultipleQualifyRule;
+use Sports\Qualify\Rule\Vertical\Multiple as VerticalMultipleQualifyRule;
+use Sports\Qualify\Rule\Vertical\Single as VerticalSingleQualifyRule;
 use Sports\Ranking\Calculator\Round\Sport as SportRoundRankingCalculator;
 use Sports\Ranking\Calculator\Round\Sport\Against as AgainstSportRoundRankingCalculator;
 use Sports\Ranking\Calculator\Round\Sport\Together as TogetherSportRoundRankingCalculator;
@@ -77,12 +79,12 @@ class Round
     }
 
     /**
-     * @param MultipleQualifyRule $multipleRule
+     * @param HorizontalMultipleQualifyRule | VerticalMultipleQualifyRule | VerticalSingleQualifyRule $rankedRule
      * @return list<Place>
      */
-    public function getPlaceLocationsForMultipleRule(MultipleQualifyRule $multipleRule): array
+    public function getPlaceLocationsForRankedRule(HorizontalMultipleQualifyRule | VerticalMultipleQualifyRule | VerticalSingleQualifyRule $rankedRule): array
     {
-        return $this->getPlacesForHorizontalPoule($multipleRule->getFromHorizontalPoule());
+        return $this->getPlacesForHorizontalPoule($rankedRule->getFromHorizontalPoule());
     }
 
     /**

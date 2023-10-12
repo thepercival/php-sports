@@ -4,10 +4,11 @@ declare(strict_types=1);
 
 namespace Sports\Qualify\Rule;
 
-use Exception;
-use Sports\Qualify\PossibleFromMap;
-use Sports\Round;
+use Sports\Qualify\Distribution as QualifyDistribution;
+use Sports\Qualify\Rule\Creator\Horizontal as HorizontalQualifyRuleCreator;
+use Sports\Qualify\Rule\Creator\Vertical as VerticalQualifyRuleCreator;
 use Sports\Qualify\Target as QualifyTarget;
+use Sports\Round;
 
 class Creator
 {
@@ -37,21 +38,30 @@ class Creator
     public function createForParentRound(Round $parentRound): void
     {
         foreach ([QualifyTarget::Winners, QualifyTarget::Losers] as $target) {
-            $fromRoundHorPoules = $parentRound->getHorizontalPoules($target)->slice(0);
+            $fromRoundHorPoules = array_slice( $parentRound->getHorizontalPoules($target)->toArray(), 0 );
             foreach ($parentRound->getTargetQualifyGroups($target) as $qualifyGroup) {
-                $childRound = $qualifyGroup->getChildRound();
-                $defaultRuleCreator = new DefaultCreator($childRound);
-                $nrOfChildRoundPlaces = $childRound->getNrOfPlaces();
-                $fromHorPoules = [];
-                while ($nrOfChildRoundPlaces > 0) {
-                    $fromRoundHorPoule = array_shift($fromRoundHorPoules);
-                    if ($fromRoundHorPoule === null) {
-                        throw new Exception('fromRoundHorPoule should not be null', E_ERROR);
-                    }
-                    array_push($fromHorPoules, $fromRoundHorPoule);
-                    $nrOfChildRoundPlaces -= $fromRoundHorPoule->getPlaces()->count();
+                if( $qualifyGroup->getDistribution() === QualifyDistribution::HorizontalSnake ) {
+                    $childRound = $qualifyGroup->getChildRound();
+                    $creator = new HorizontalQualifyRuleCreator($childRound);
+                } else {
+                    $creator = new VerticalQualifyRuleCreator();
+
                 }
-                $defaultRuleCreator->createRules($fromHorPoules, $qualifyGroup);
+                $creator->createRules(array_values( $fromRoundHorPoules), $qualifyGroup);
+
+//                $childRound = $qualifyGroup->getChildRound();
+//                $defaultRuleCreator = new Creator($childRound);
+//                $nrOfChildRoundPlaces = $childRound->getNrOfPlaces();
+//                $fromHorPoules = [];
+//                while ($nrOfChildRoundPlaces > 0) {
+//                    $fromRoundHorPoule = array_shift($fromRoundHorPoules);
+//                    if ($fromRoundHorPoule === null) {
+//                        throw new Exception('fromRoundHorPoule should not be null', E_ERROR);
+//                    }
+//                    array_push($fromHorPoules, $fromRoundHorPoule);
+//                    $nrOfChildRoundPlaces -= $fromRoundHorPoule->getPlaces()->count();
+//                }
+//                $defaultRuleCreator->createRules($fromHorPoules, $qualifyGroup);
             }
         }
     }

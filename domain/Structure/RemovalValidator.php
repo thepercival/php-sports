@@ -7,7 +7,7 @@ namespace Sports\Structure;
 use Sports\Place;
 use Sports\Qualify\Target as QualifyTarget;
 use Exception;
-use Sports\NameService;
+use Sports\Qualify\Distribution as QualifyDistribution;
 use Sports\Place\Location as PlaceLocation;
 use Sports\Qualify\Group as QualifyGroup;
 use SportsHelpers\PouleStructure\Balanced as BalancedPouleStructure;
@@ -142,13 +142,19 @@ class RemovalValidator
         foreach ($placesToRemove as $placeIt) {
             $horPoule = $placeIt->getHorizontalPoule($childQualifyGroup->getTarget());
 
-            $singleQualifyRule = $childQualifyGroup->getFirstSingleRule();
-            while ($singleQualifyRule) {
-                if ($singleQualifyRule->getFromHorizontalPoule() === $horPoule) {
-                    $nrOfPlaces++;
+            // if( $childQualifyGroup->getDistribution() === QualifyDistribution::HorizontalSnake) {
+                $singleQualifyRule = $childQualifyGroup->getFirstSingleRule();
+                while ($singleQualifyRule) {
+                    if ($singleQualifyRule->getFromHorizontalPoule() === $horPoule) {
+                        $nrOfPlaces++;
+                    }
+                    $singleQualifyRule = $singleQualifyRule->getNext();
                 }
-                $singleQualifyRule = $singleQualifyRule->getNext();
-            }
+//            } else {
+//                throw new \Exception('getQualifyGroupNrOfPlacesToRemove', E_ERROR); // @TODO CDK
+//            }
+
+
 //            $multipleQualifyRule = $childQualifyGroup->getMultipleRule();
 //            if ($multipleQualifyRule && $multipleQualifyRule->getFromHorizontalPoule() === $horPoule) {
 //                $nrOfPlaces++;

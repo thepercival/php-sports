@@ -3,6 +3,7 @@ Sports\Qualify\Group:
   exclude: false
   properties:
     target:
+    distribution:
     number:
       type: integer
     childRound:

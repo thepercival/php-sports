@@ -9,7 +9,7 @@ use Sports\Association;
 use Sports\Category;
 use Sports\Competition;
 use Sports\Competition\Sport as CompetitionSport;
-use Sports\Competition\Sport\Service as CompetitionSportService;
+use Sports\Competition\Sport\Editor as CompetitionSportEditor;
 use Sports\Game\Against as AgainstGame;
 use Sports\Game\Participation as GameParticipation;
 use Sports\Game\Place\Against as AgainstGamePlace;
@@ -252,7 +252,7 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
     protected function createGame(Competition $competition, TeamPlayer $player, \DateTimeImmutable $startDateTime): void
     {
         $structureEditor = new Editor(
-            new CompetitionSportService(),
+            new CompetitionSportEditor(),
             new PlanningConfigService()
         );
         $structure = $structureEditor->create($competition, [1]);

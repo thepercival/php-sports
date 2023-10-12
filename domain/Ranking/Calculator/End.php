@@ -9,7 +9,8 @@ use Sports\Category;
 use Sports\Game\State as GameState;
 use Sports\Place;
 use Sports\Poule\Horizontal as HorizontalPoule;
-use Sports\Qualify\Rule\Single as SingleQualifyRule;
+use Sports\Qualify\Rule\Horizontal\Single as HorizontalSingleQualifyRule;
+use Sports\Qualify\Rule\Vertical\Single as VerticalSingleQualifyRule;
 use Sports\Qualify\Target as QualifyTarget;
 use Sports\Ranking\Calculator\Round as RoundRankingCalculator;
 use Sports\Ranking\Item\End as EndRankingItem;
@@ -79,19 +80,6 @@ class End
                         array_push($dropouts, $horPouleDropout);
                         $horPouleDropout = array_pop($horPouleDropouts);
                     }
-                    /*$qualifyGroup = $horizontalPoule->getQualifyGroup();
-                    if ($qualifyGroup!== null && $qualifyGroup->getNrOfToPlacesTooMuch() === 0) {
-                        if ($nrOfDropouts > 0) {
-                            continue;
-                        }
-                        break;
-                    }
-                    $dropoutsHorizontalPoule = $this->getDropoutsHorizontalPoule($horizontalPoule);
-                    while (($nrOfDropouts - count($dropoutsHorizontalPoule)) < 0) {
-                        array_pop($dropoutsHorizontalPoule);
-                    }
-                    $dropouts = array_merge($dropouts, $dropoutsHorizontalPoule);
-                    $nrOfDropouts -= count($dropoutsHorizontalPoule);*/
                     if (count($dropouts) === $nrOfDropouts) {
                         break;
                     }
@@ -112,21 +100,21 @@ class End
     {
         $roundRankingCalculator = new RoundRankingCalculator();
         $rankedPlaces = $roundRankingCalculator->getPlacesForHorizontalPoule($horizontalPoule);
-        array_splice($rankedPlaces, 0, $this->getNrOfDropouts($horizontalPoule));
+        array_splice($rankedPlaces, 0, $this->getHorizontalPouleNrOfQualifiers($horizontalPoule));
         return array_map(function (Place $rankedPlace): EndRankingItem {
             return new EndRankingItem($this->currentRank, $this->currentRank++, $rankedPlace->getStartLocation());
         }, $rankedPlaces);
     }
 
-    public function getNrOfDropouts(HorizontalPoule $horizontalPoule): int
+    public function getHorizontalPouleNrOfQualifiers(HorizontalPoule $horizontalPoule): int
     {
-        $qualifyRule = $horizontalPoule->getQualifyRule();
+        $qualifyRule = $horizontalPoule->getQualifyRuleNew();
         if ($qualifyRule === null) {
             return 0;
         }
-        if ($qualifyRule instanceof SingleQualifyRule) {
+        if ($qualifyRule instanceof HorizontalSingleQualifyRule || $qualifyRule instanceof VerticalSingleQualifyRule) {
             return $qualifyRule->getMappings()->count();
         }
-        return $qualifyRule->getFromHorizontalPoule()->getPlaces()->count();
+        return $qualifyRule->getNrOfToPlaces();
     }
 }

@@ -180,12 +180,12 @@ class Place extends PlaceLocation
         );
     }
 
-    public function getQualifiedPlace(): ?Place
+    public function getQualifiedPlace(): Place|null
     {
         return $this->qualifiedPlace;
     }
 
-    public function setQualifiedPlace(Place $place = null): void
+    public function setQualifiedPlace(Place|null $place): void
     {
         $this->qualifiedPlace = $place;
     }

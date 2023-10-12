@@ -11,10 +11,13 @@ use Monolog\Processor\UidProcessor;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 use Sports\Output\StructureOutput;
+use Sports\Qualify\Distribution;
 use Sports\Qualify\Target as QualifyTarget;
 use Sports\Structure;
 use Sports\TestHelper\CompetitionCreator;
 use Sports\TestHelper\StructureEditorCreator;
+use Sports\Qualify\Rule\Vertical\Single as VerticalSingleQualifyRule;
+use Sports\Qualify\Rule\Vertical\Multiple as VerticalMultipleQualifyRule;
 use SportsHelpers\PlaceRanges;
 use SportsHelpers\PouleStructure\Balanced as BalancedPouleStructure;
 use SportsHelpers\Sport\Variant\MinNrOfPlacesCalculator;
@@ -231,8 +234,8 @@ final class EditorTest extends TestCase
         $lastQualifyGroup = $winnersRound->getQualifyGroups()->last();
         self::assertNotFalse($firstQualifyGroup);
         self::assertNotFalse($lastQualifyGroup);
-        self::assertEquals(3, $firstQualifyGroup->getNrOfToPlaces());
-        self::assertEquals(3, $lastQualifyGroup->getNrOfToPlaces());
+        self::assertEquals(3, $firstQualifyGroup->getRulesNrOfToPlaces());
+        self::assertEquals(3, $lastQualifyGroup->getRulesNrOfToPlaces());
     }
 
     public function testAddQualifierWithThirdRoundsNoCrossFinals(): void
@@ -249,7 +252,7 @@ final class EditorTest extends TestCase
 
 //        (new StructureOutput())->output($structure);
 
-        $structureEditor->addQualifiers($rootRound, QualifyTarget::Winners, 1, 3);
+        $structureEditor->addQualifiers($rootRound, QualifyTarget::Winners, 1, Distribution::HorizontalSnake, 3);
 
 //        (new StructureOutput())->output($structure);
 
@@ -257,8 +260,35 @@ final class EditorTest extends TestCase
         $lastQualifyGroup = $winnersRound->getQualifyGroups()->last();
         self::assertNotFalse($firstQualifyGroup);
         self::assertNotFalse($lastQualifyGroup);
-        self::assertEquals(5, $firstQualifyGroup->getNrOfToPlaces());
-        self::assertEquals(5, $lastQualifyGroup->getNrOfToPlaces());
+        self::assertEquals(5, $firstQualifyGroup->getRulesNrOfToPlaces());
+        self::assertEquals(5, $lastQualifyGroup->getRulesNrOfToPlaces());
+    }
+
+    public function testVerticalDistribution(): void
+    {
+        $competition = $this->createCompetition();
+        $structureEditor = $this->createStructureEditor();
+        $structure = $structureEditor->create($competition, [4, 4, 4]);
+        $rootRound = $structure->getSingleCategory()->getRootRound();
+
+        $winnersRound = $structureEditor->addChildRound($rootRound, QualifyTarget::Winners, [4, 4, 4], Distribution::Vertical);
+        //(new StructureOutput()).toConsole(structure, console);
+
+        $ruleOne = $winnersRound->getParentQualifyGroup()?->getFirstSingleRule();
+        self::assertInstanceOf(VerticalSingleQualifyRule::class, $ruleOne);
+        self::assertSame(3, $ruleOne->getNrOfToPlaces());
+
+        $ruleTwo = $ruleOne->getNext();
+        self::assertInstanceOf(VerticalSingleQualifyRule::class, $ruleTwo);
+        self::assertSame(3, $ruleTwo->getNrOfToPlaces());
+
+        $ruleThree = $ruleTwo->getNext();
+        self::assertInstanceOf(VerticalSingleQualifyRule::class, $ruleThree);
+        self::assertSame(3, $ruleThree->getNrOfToPlaces());
+
+        $ruleFour = $ruleThree->getNext();
+        self::assertInstanceOf(VerticalSingleQualifyRule::class, $ruleFour);
+        self::assertSame(3, $ruleFour->getNrOfToPlaces());
     }
 
     public function testRemovePouleFromRootRound1(): void
@@ -439,7 +469,7 @@ final class EditorTest extends TestCase
         $rootRound = $structure->getSingleCategory()->getRootRound();
 
         self::expectException(Exception::class);
-        $structureEditor->addQualifiers($rootRound, QualifyTarget::Winners, 1);
+        $structureEditor->addQualifiers($rootRound, QualifyTarget::Winners, 1, Distribution::HorizontalSnake);
     }
 
     // out of range
@@ -465,7 +495,7 @@ final class EditorTest extends TestCase
         $structureEditor->addChildRound($rootRound, QualifyTarget::Winners, [4]);
 
         self::expectException(Exception::class);
-        $structureEditor->addQualifiers($rootRound, QualifyTarget::Winners, 1);
+        $structureEditor->addQualifiers($rootRound, QualifyTarget::Winners, 1, Distribution::HorizontalSnake);
     }
 
     // new Round
@@ -476,7 +506,7 @@ final class EditorTest extends TestCase
         $structure = $structureEditor->create($competition, [4]);
         $rootRound = $structure->getSingleCategory()->getRootRound();
 
-        $structureEditor->addQualifiers($rootRound, QualifyTarget::Winners, 2);
+        $structureEditor->addQualifiers($rootRound, QualifyTarget::Winners, 2, Distribution::HorizontalSnake);
 
         $winnersRound = $rootRound->getChild(QualifyTarget::Winners, 1);
         self::assertNotNull($winnersRound);

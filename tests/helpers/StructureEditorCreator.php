@@ -6,14 +6,14 @@ namespace Sports\TestHelper;
 
 use Sports\Planning\Config\Service as PlanningConfigService;
 use Sports\Structure\Editor as StructureEditor;
-use Sports\Competition\Sport\Service as CompetitionSportService;
+use Sports\Competition\Sport\Editor as CompetitionSportEditor;
 use SportsHelpers\PlaceRanges;
 
 trait StructureEditorCreator
 {
     protected function createStructureEditor(PlaceRanges|null $placeRanges = null): StructureEditor
     {
-        $editor = new StructureEditor(new CompetitionSportService(), new PlanningConfigService());
+        $editor = new StructureEditor(new CompetitionSportEditor(), new PlanningConfigService());
         if ($placeRanges !== null) {
             $editor->setPlaceRanges($placeRanges);
         }

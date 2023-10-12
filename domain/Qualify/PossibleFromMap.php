@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Sports\Qualify;
 
 use Doctrine\Common\Collections\Collection;
+use Sports\Place;
 use Sports\Poule;
 use Sports\Qualify\PlaceMapping as QualifyPlaceMapping;
 use Sports\Qualify\Group as QualifyGroup;
@@ -49,12 +50,13 @@ class PossibleFromMap
             $singleRule = $singleRule->getNext();
         }
         $multipRule = $group->getMultipleRule();
-        if ($multipRule !== null) {
-            $this->empty = false;
-            $parentPoules = array_values($group->getParentRound()->getPoules()->toArray());
-            foreach ($group->getChildRound()->getPoules() as $childPoule) {
-                $this->map[$childPoule->getNumber()] = $parentPoules;
-            }
+        if ($multipRule === null) {
+            return;
+        }
+        $this->empty = false;
+        $parentPoules = array_values($group->getParentRound()->getPoules()->toArray());
+        foreach ($group->getChildRound()->getPoules() as $childPoule) {
+            $this->map[$childPoule->getNumber()] = $parentPoules;
         }
     }
 

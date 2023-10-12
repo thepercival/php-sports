@@ -72,7 +72,7 @@ final class Drawer
      * @param HorizontalDirection $horizontalDirection
      * @return Coordinate
      */
-    public function drawVertArrayAwayFromOrigin(Coordinate $coordinate, array $value, Color|null $color = null, HorizontalDirection $horizontalDirection): Coordinate
+    public function drawVertArrayAwayFromOrigin(Coordinate $coordinate, array $value, Color|null $color, HorizontalDirection $horizontalDirection): Coordinate
     {
         foreach ($value as $horizontalValue) {
             if( $horizontalDirection === HorizontalDirection::Left ) {
@@ -86,12 +86,6 @@ final class Drawer
         return $coordinate;
     }
 
-    /**
-     * @param Coordinate $coordinate
-     * @param string $value
-     * @param Color|null $color
-     * @return Coordinate
-     */
     public function drawVertStringAwayFromOrigin(Coordinate $coordinate, string $value, Color|null $color = null): Coordinate
     {
         $valueAsArray = mb_str_split($value);
@@ -138,7 +132,7 @@ final class Drawer
      * @param HorizontalDirection $horizontalDirection
      * @return Coordinate
      */
-    public function drawVertArrayToOrigin(Coordinate $coordinate, array $value, Color|null $color = null, HorizontalDirection $horizontalDirection): Coordinate
+    public function drawVertArrayToOrigin(Coordinate $coordinate, array $value, Color|null $color, HorizontalDirection $horizontalDirection): Coordinate
     {
         foreach ($value as $horizontalValue) {
             if( $horizontalDirection === HorizontalDirection::Left ) {

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Sports\Qualify\Rule;
+namespace Sports\Qualify\Rule\Creator;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -14,11 +14,11 @@ use Sports\Qualify\FromPoulePicker;
 use Sports\Qualify\Group as QualifyGroup;
 use Sports\Qualify\PlaceMapping as QualifyPlaceMapping;
 use Sports\Qualify\PossibleFromMap;
-use Sports\Qualify\Rule\Multiple as MultipleQualifyRule;
-use Sports\Qualify\Rule\Single as SingleQualifyRule;
+use Sports\Qualify\Rule\Horizontal\Multiple as HorizontalMultipleQualifyRule;
+use Sports\Qualify\Rule\Horizontal\Single as HorizontalSingleQualifyRule;
 use Sports\Round;
 
-class DefaultCreator
+class Horizontal
 {
     private PossibleFromMap $possibleFromMap;
 
@@ -28,24 +28,58 @@ class DefaultCreator
     }
 
     /**
+     * @param list<HorizontalPoule> $fromRoundHorPoules
+     * @param QualifyGroup $qualifyGroup
+     */
+    public function createRules(array $fromRoundHorPoules, QualifyGroup $qualifyGroup): void
+    {
+//        $childRoundPlaces = $this->getChildRoundPlacesLikeSnake($qualifyGroup);
+//        $fromHorPoule = array_shift($fromHorPoules);
+//        $previousRule = null;
+//        while ($fromHorPoule !== null && count($childRoundPlaces) >= $fromHorPoule->getPlaces()->count()) {
+//            $nrOfFromPlaces = $fromHorPoule->getPlaces()->count();
+//            /** @var Place $toPlaces */
+//            $toPlaces = array_splice($childRoundPlaces, 0, $nrOfFromPlaces);
+//            $placeMappings = $this->createQualifyPlaceMappings($fromHorPoule, $toPlaces);
+//            $previousRule = new SingleQualifyRule($fromHorPoule, $qualifyGroup, $placeMappings, $previousRule);
+//            $fromHorPoule = array_shift($fromHorPoules);
+//        }
+//        if ($fromHorPoule !== null && count($childRoundPlaces) > 0) {
+//            new MultipleQualifyRule($fromHorPoule, $qualifyGroup, $childRoundPlaces);
+//        }
+        $childRound = $qualifyGroup->getChildRound();
+        $nrOfChildRoundPlaces = $childRound->getNrOfPlaces();
+        $fromHorPoules = [];
+        while ($nrOfChildRoundPlaces > 0) {
+
+            $fromRoundHorPoule = array_shift($fromRoundHorPoules);
+            if ($fromRoundHorPoule === null) {
+                throw new Exception('fromRoundHorPoule should not be null', E_ERROR);
+            }
+            $fromHorPoules[] = $fromRoundHorPoule;
+            $nrOfChildRoundPlaces -= count($fromRoundHorPoule->getPlaces());
+
+        }
+        $this->createRulesFromHorPoules($fromHorPoules, $qualifyGroup);
+    }
+
+    /**
      * @param list<HorizontalPoule> $fromHorPoules
      * @param QualifyGroup $qualifyGroup
      */
-    public function createRules(array $fromHorPoules, QualifyGroup $qualifyGroup): void
-    {
+    protected function createRulesFromHorPoules(array $fromHorPoules, QualifyGroup $qualifyGroup): void {
         $childRoundPlaces = $this->getChildRoundPlacesLikeSnake($qualifyGroup);
         $fromHorPoule = array_shift($fromHorPoules);
         $previousRule = null;
-        while ($fromHorPoule !== null && count($childRoundPlaces) >= $fromHorPoule->getPlaces()->count()) {
-            $nrOfFromPlaces = $fromHorPoule->getPlaces()->count();
+        while ( $fromHorPoule !== null && count($childRoundPlaces) >= count($fromHorPoule->getPlaces()) ) {
             /** @var list<Place> $toPlaces */
-            $toPlaces = array_splice($childRoundPlaces, 0, $nrOfFromPlaces);
-            $placeMappings = $this->createQualifyPlaceMappings($fromHorPoule, $toPlaces);
-            $previousRule = new SingleQualifyRule($fromHorPoule, $qualifyGroup, $placeMappings, $previousRule);
+            $toPlaces = array_splice( $childRoundPlaces, 0, count($fromHorPoule->getPlaces()));
+            $placeMappings = $this->createPlaceMappings($fromHorPoule, $toPlaces );
+            $previousRule = new HorizontalSingleQualifyRule($fromHorPoule, $qualifyGroup, $placeMappings, $previousRule);
             $fromHorPoule = array_shift($fromHorPoules);
         }
         if ($fromHorPoule !== null && count($childRoundPlaces) > 0) {
-            new MultipleQualifyRule($fromHorPoule, $qualifyGroup, $childRoundPlaces);
+            new HorizontalMultipleQualifyRule($fromHorPoule, $qualifyGroup, $childRoundPlaces);
         }
     }
 
@@ -75,7 +109,7 @@ class DefaultCreator
      * @param list<Place> $childRoundPlaces
      * @return Collection<int, QualifyPlaceMapping>
      */
-    public function createQualifyPlaceMappings(
+    public function createPlaceMappings(
         HorizontalPoule $fromHorPoule,
         array $childRoundPlaces
     ): Collection {
@@ -100,6 +134,7 @@ class DefaultCreator
     /**
      * @param list<Place> $fromHorPoulePlaces
      * @param Poule $bestFromPoule
+     * @return Place
      * @throws Exception
      */
     protected function removeBestHorizontalPlace(array &$fromHorPoulePlaces, Poule $bestFromPoule): Place

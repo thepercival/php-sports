@@ -6,9 +6,13 @@ namespace Sports\Qualify;
 
 use Exception;
 use Sports\Place;
-use Sports\Qualify\Rule\Multiple as MultipleQualifyRule;
-use Sports\Qualify\Rule\Single as SingleQualifyRule;
+use Sports\Qualify\Rule\Horizontal\Multiple as HorizontalMultipleQualifyRule;
+use Sports\Qualify\Rule\Horizontal\Single as HorizontalSingleQualifyRule;
+use Sports\Qualify\Rule\Vertical\Multiple as VerticalMultipleQualifyRule;
+use Sports\Qualify\Rule\Vertical\Single as VerticalSingleQualifyRule;
 use Sports\Round;
+use Sports\Qualify\Target as QualifyTarget;
+use Sports\Qualify\Group as QualifyGroup;
 use Sports\Structure\Cell as StructureCell;
 use SportsHelpers\Identifiable;
 
@@ -16,8 +20,9 @@ class Group extends Identifiable
 {
     protected int $number;
     protected Round $childRound;
-    protected SingleQualifyRule|null $firstSingleRule = null;
-    protected MultipleQualifyRule|null $multipleRule = null;
+    protected Distribution $distribution = Distribution::HorizontalSnake;
+    protected HorizontalSingleQualifyRule|VerticalSingleQualifyRule|null $firstSingleRule = null;
+    protected HorizontalMultipleQualifyRule|VerticalMultipleQualifyRule|null $multipleRule = null;
 
     public function __construct(
         protected Round $parentRound,
@@ -55,6 +60,14 @@ class Group extends Identifiable
         $this->number = $number;
     }
 
+    public function getDistribution(): Distribution {
+        return $this->distribution;
+    }
+
+    public function setDistribution(Distribution $distribution): void {
+        $this->distribution = $distribution;
+    }
+
     public function getParentRound(): Round
     {
         return $this->parentRound;
@@ -82,25 +95,26 @@ class Group extends Identifiable
         return $this->childRound;
     }
 
-    public function getFirstSingleRule(): SingleQualifyRule | null
+    public function getFirstSingleRule(): HorizontalSingleQualifyRule|VerticalSingleQualifyRule|null
     {
         return $this->firstSingleRule;
     }
 
-    public function setFirstSingleRule(SingleQualifyRule | null $singleRule): void
+    public function setFirstSingleRule(HorizontalSingleQualifyRule|VerticalSingleQualifyRule|null $singleRule): void
     {
         $this->firstSingleRule = $singleRule;
     }
 
-    public function getMultipleRule(): MultipleQualifyRule | null
+    public function getMultipleRule(): HorizontalMultipleQualifyRule|VerticalMultipleQualifyRule|null
     {
         return $this->multipleRule;
     }
 
-    public function setMultipleRule(MultipleQualifyRule | null $multipleRule): void
+    public function setMultipleRule(HorizontalMultipleQualifyRule|VerticalMultipleQualifyRule|null $multipleRule): void
     {
         $this->multipleRule = $multipleRule;
     }
+
 
     public function getNrOfSingleRules(): int
     {
@@ -110,43 +124,58 @@ class Group extends Identifiable
         return $this->firstSingleRule->getLast()->getNumber();
     }
 
-    public function getNrOfToPlaces(): int
-    {
+
+    public function getRulesNrOfToPlaces(): int {
         $nrOfToPlaces = 0;
-        $firstSingleRule = $this->getFirstSingleRule();
-        if ($firstSingleRule !== null) {
-            $nrOfToPlaces = $firstSingleRule->getNrOfToPlaces()
-                + $firstSingleRule->getNrOfToPlacesTargetSide(Target::Losers);
-        }
-        $multipleRule = $this->getMultipleRule();
-        if ($multipleRule !== null) {
-            $nrOfToPlaces += $multipleRule->getNrOfToPlaces();
-        }
+//        if( $this->distribution === Distribution::HorizontalSnake) {
+            $singleRule = $this->getFirstSingleRule();
+            while ($singleRule !== null) {
+                $nrOfToPlaces = $singleRule->getNrOfToPlaces();
+                $singleRule = $singleRule->getNext();
+            }
+            $multipleRule = $this->getMultipleRule();
+            if ($multipleRule !== null) {
+                $nrOfToPlaces += $multipleRule->getNrOfToPlaces();
+            }
+//        }
         return $nrOfToPlaces;
     }
 
-    public function getRule(Place $toPlace): SingleQualifyRule | MultipleQualifyRule
-    {
+    public function getNext(): QualifyGroup | null {
+        return $this->getParentRound()->getQualifyGroup($this->getTarget(), $this->getNumber() + 1);
+    }
+
+    public function getRuleByToPlace(Place $toPlace): HorizontalSingleQualifyRule | HorizontalMultipleQualifyRule | VerticalSingleQualifyRule | VerticalMultipleQualifyRule {
+//        if( $this->distribution === Distribution::Vertical) {
+//            $verticalRule = $this->firstVertRule;
+//            while ($verticalRule !== null) {
+//                if($verticalRule->hasToPlace($toPlace)) {
+//                    return $verticalRule;
+//                }
+//                $verticalRule = $verticalRule->getNext();
+//            }
+//            throw new \Exception('de verticale kwalificatieregel kan niet gevonden worden', E_ERROR);
+//        }
         $singleRule = $this->firstSingleRule;
         while ($singleRule !== null) {
-            try {
-                $singleRule->getFromPlace($toPlace);
+            if ($singleRule->hasToPlace($toPlace)) {
                 return $singleRule;
-            } catch (Exception $e) {
-                $singleRule = $singleRule->getNext();
             }
+            $singleRule = $singleRule->getNext();
         }
         $multipleRule = $this->getMultipleRule();
         if ($multipleRule === null || !$multipleRule->hasToPlace($toPlace)) {
-            throw new Exception('de kwalificatieregel kan niet gevonden worden', E_ERROR);
+            throw new \Exception('de horizontale multiple kwalificatieregel kan niet gevonden worden', E_ERROR);
         }
         return $multipleRule;
     }
 
     public function getFromPlace(Place $toPlace): Place | null
     {
-        $singleRule = $this->getRule($toPlace);
-        if ($singleRule instanceof SingleQualifyRule) {
+        $singleRule = $this->getRuleByToPlace($toPlace);
+        if ($singleRule instanceof HorizontalSingleQualifyRule) {
+            return $singleRule->getFromPlace($toPlace);
+        } else if ($singleRule instanceof VerticalSingleQualifyRule) {
             return $singleRule->getFromPlace($toPlace);
         }
         return null;

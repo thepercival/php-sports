@@ -10,10 +10,11 @@ use PHPUnit\Framework\TestCase;
 use Sports\TestHelper\CompetitionCreator;
 use Sports\TestHelper\GamesCreator;
 use Sports\TestHelper\SetScores;
-use Sports\Structure\Editor as StructureService;
+use Sports\Qualify\Distribution as QualifyDistribution;
 use Sports\Qualify\Service as QualifyService;
-use Sports\Qualify\Rule\Single as SingleQualifyRule;
-use Sports\Qualify\Rule\Multiple as MultipleQualifyRule;
+use Sports\Competitor\StartLocationMap;
+use Sports\Qualify\Rule\Horizontal\Single as HorizontalSingleQualifyRule;
+use Sports\Qualify\Rule\Horizontal\Multiple as HorizontalMultipleQualifyRule;
 use Sports\Qualify\Group as QualifyGroup;
 use Sports\TestHelper\StructureEditorCreator;
 use SportsHelpers\PouleStructure;
@@ -122,9 +123,11 @@ class ServiceTest extends TestCase
         $structure = $structureEditor->create($competition, [3, 3, 3]);
         $rootRound = $structure->getSingleCategory()->getRootRound();
 
+        // $competitorMap = new StartLocationMap(array_values( $competition->getTeamCompetitors()->toArray()));
+
         $winnersRound = $structureEditor->addChildRound($rootRound, QualifyTarget::Winners, [4]);
         $losersRound = $structureEditor->addChildRound($rootRound, QualifyTarget::Losers, [4]);
-        // (new StructureOutput())->output($structure);
+
         // W[4], L[4]
 
         (new GamesCreator())->createStructureGames($structure);
@@ -150,22 +153,31 @@ class ServiceTest extends TestCase
         $changedPlaces = $qualifyService->setQualifiers();
         self::assertSame(count($changedPlaces), 8);
 
+        // (new StructureOutput())->output($structure);
+
         // winners
         $winnersPoule = $winnersRound->getPoule(1);
         $winnersQualifyGroup = $winnersRound->getParentQualifyGroup();
         self::assertNotNull($winnersQualifyGroup);
+
         $winnersPlace1 = $winnersPoule->getPlace(1);
-        $qualifyRuleW1 = $winnersQualifyGroup->getRule($winnersPlace1);
-        self::assertInstanceOf(SingleQualifyRule::class, $qualifyRuleW1);
+        $qualifyRule = $winnersQualifyGroup->getRuleByToPlace($winnersPlace1);
+        self::assertInstanceOf(HorizontalSingleQualifyRule::class, $qualifyRule);
+        $winnersLocation1 = $winnersPlace1->getStartLocation();
+        self::assertNotNull($winnersLocation1);
+        // self::assertNotNull($competitorMap->getCompetitor($winnersLocation1));
+
         $winnersPlace2 = $winnersPoule->getPlace(2);
-        $qualifyRuleW2 = $winnersQualifyGroup->getRule($winnersPlace2);
-        self::assertInstanceOf(SingleQualifyRule::class, $qualifyRuleW2);
+        $qualifyRule = $winnersQualifyGroup->getRuleByToPlace($winnersPlace2);
+        self::assertInstanceOf(HorizontalSingleQualifyRule::class, $qualifyRule);
+
         $winnersPlace3 = $winnersPoule->getPlace(3);
-        $qualifyRuleW3 = $winnersQualifyGroup->getRule($winnersPlace3);
-        self::assertInstanceOf(SingleQualifyRule::class, $qualifyRuleW3);
+        $qualifyRule = $winnersQualifyGroup->getRuleByToPlace($winnersPlace3);
+        self::assertInstanceOf(HorizontalSingleQualifyRule::class, $qualifyRule);
+
         $winnersPlace4 = $winnersPoule->getPlace(4);
-        $qualifyRuleW4 = $winnersQualifyGroup->getRule($winnersPlace4);
-        self::assertInstanceOf(MultipleQualifyRule::class, $qualifyRuleW4);
+        $qualifyRule = $winnersQualifyGroup->getRuleByToPlace($winnersPlace4);
+        self::assertInstanceOf(HorizontalMultipleQualifyRule::class, $qualifyRule);
 
         self::assertNotNull($winnersPlace1->getQualifiedPlace());
         self::assertNotNull($winnersPlace2->getQualifiedPlace());
@@ -179,17 +191,20 @@ class ServiceTest extends TestCase
         $losersPoule = $losersRound->getPoule(1);
 
         $losersPlace1 = $losersPoule->getPlace(1);
-        $qualifyRuleL1 = $losersQualifyGroup->getRule($losersPlace1);
-        self::assertInstanceOf(MultipleQualifyRule::class, $qualifyRuleL1);
+        $qualifyRule = $losersQualifyGroup->getRuleByToPlace($losersPlace1);
+        self::assertInstanceOf(HorizontalMultipleQualifyRule::class, $qualifyRule);
+
         $losersPlace2 = $losersPoule->getPlace(2);
-        $qualifyRuleL2 = $losersQualifyGroup->getRule($losersPlace2);
-        self::assertInstanceOf(SingleQualifyRule::class, $qualifyRuleL2);
+        $qualifyRule = $losersQualifyGroup->getRuleByToPlace($losersPlace2);
+        self::assertInstanceOf(HorizontalSingleQualifyRule::class, $qualifyRule);
+
         $losersPlace3 = $losersPoule->getPlace(3);
-        $qualifyRuleL3 = $losersQualifyGroup->getRule($losersPlace3);
-        self::assertInstanceOf(SingleQualifyRule::class, $qualifyRuleL3);
+        $qualifyRule = $losersQualifyGroup->getRuleByToPlace($losersPlace3);
+        self::assertInstanceOf(HorizontalSingleQualifyRule::class, $qualifyRule);
+
         $losersPlace4 = $losersPoule->getPlace(4);
-        $qualifyRuleL4 = $losersQualifyGroup->getRule($losersPlace4);
-        self::assertInstanceOf(SingleQualifyRule::class, $qualifyRuleL4);
+        $qualifyRule = $losersQualifyGroup->getRuleByToPlace($losersPlace4);
+        self::assertInstanceOf(HorizontalSingleQualifyRule::class, $qualifyRule);
 
         self::assertNotNull($losersPlace1->getQualifiedPlace());
         self::assertNotNull($losersPlace2->getQualifiedPlace());
@@ -300,5 +315,128 @@ class ServiceTest extends TestCase
 
         $qualifyService->resetQualifiers();
         self::assertSame(0, $bestFinalist->getExtraPoints());
+    }
+
+    /**
+     * When second place is multiple and both second places are ranked completely equal
+     */
+    public function testSameWinnerslosers2ndPlaceMultipleRule(): void {
+        $competition = $this->createCompetition();
+
+        $structureEditor = $this->createStructureEditor();
+        $structure = $structureEditor->create($competition, [3, 3]);
+        $rootRound = $structure->getSingleCategory()->getRootRound();
+
+        // $competitorMap = new StartLocationMap(array_values( $competition->getTeamCompetitors()->toArray()));
+
+        $winnersRound = $structureEditor->addChildRound($rootRound, QualifyTarget::Winners, [3]);
+        $losersRound = $structureEditor->addChildRound($rootRound, QualifyTarget::Losers, [3]);
+
+        (new GamesCreator())->createStructureGames($structure);
+
+        $pouleOne = $rootRound->getPoule(1);
+
+        $this->setAgainstScore($pouleOne, 1, 2, 1, 0);
+        $this->setAgainstScore($pouleOne, 3, 1, 0, 1);
+        $this->setAgainstScore($pouleOne, 2, 3, 1, 0);
+        $this->setAgainstScore($pouleOne, 1, 2, 1, 0);
+        $this->setAgainstScore($pouleOne, 3, 1, 0, 1);
+        $this->setAgainstScore($pouleOne, 2, 3, 1, 0);
+
+        $pouleTwo = $rootRound->getPoule(2);
+
+        $this->setAgainstScore($pouleTwo, 1, 2, 1, 0);
+        $this->setAgainstScore($pouleTwo, 3, 1, 0, 1);
+        $this->setAgainstScore($pouleTwo, 2, 3, 1, 0);
+        $this->setAgainstScore($pouleTwo, 1, 2, 1, 0);
+        $this->setAgainstScore($pouleTwo, 3, 1, 0, 1);
+        $this->setAgainstScore($pouleTwo, 2, 3, 1, 0);
+
+        $qualifyService = new QualifyService($rootRound);
+        $qualifyService->setQualifiers();
+
+//        (new StructureOutput())->output($structure);
+
+        $winnersPoule = $winnersRound->getPoule(1);
+        $winnersPlace3 = $winnersPoule->getPlace(3);
+        $winnersLocation3 = $winnersPlace3->getStartLocation();
+        if ($winnersLocation3 !== null) {
+            self::assertEquals(1, $winnersLocation3->getPouleNr());
+            self::assertEquals(2, $winnersLocation3->getPlaceNr());
+        }
+
+        $losersPoule = $losersRound->getPoule(1);
+        $losersPlace1 = $losersPoule->getPlace(1);
+        $losersLocation1 = $losersPlace1->getStartLocation();
+        if ($losersLocation1 !== null ) {
+            self::assertEquals(2, $losersLocation1->getPouleNr());
+            self::assertEquals(2, $losersLocation1->getPlaceNr());
+        }
+    }
+
+
+    /**
+     * When second place is multiple and both second places are ranked completely equal
+     */
+    public function testQualifyWithVerticalDistribution(): void
+    {
+        $competition = $this->createCompetition();
+
+        $structureEditor = $this->createStructureEditor();
+        $structure = $structureEditor->create($competition, [4, 4, 4]);
+        $rootRound = $structure->getSingleCategory()->getRootRound();
+
+        $winnersRound = $structureEditor->addChildRound($rootRound, QualifyTarget::Winners, [4,4,4], QualifyDistribution::Vertical);
+
+        (new GamesCreator())->createStructureGames($structure);
+
+        $pouleOne = $rootRound->getPoule(1);
+        $pouleTwo = $rootRound->getPoule(2);
+        $pouleThree = $rootRound->getPoule(3);
+        //        (new StructureOutput())->output($structure);
+
+        $this->setAgainstScore($pouleOne, 1, 2, 1, 0);
+        $this->setAgainstScore($pouleOne, 3, 4, 1, 0);
+        $this->setAgainstScore($pouleOne, 3, 1, 0, 1);
+        $this->setAgainstScore($pouleOne, 2, 4, 1, 0);
+        $this->setAgainstScore($pouleOne, 2, 3, 1, 0);
+        $this->setAgainstScore($pouleOne, 4, 1, 0, 1);
+
+        $this->setAgainstScore($pouleTwo, 1, 2, 2, 0);
+        $this->setAgainstScore($pouleTwo, 3, 4, 2, 0);
+        $this->setAgainstScore($pouleTwo, 3, 1, 0, 2);
+        $this->setAgainstScore($pouleTwo, 2, 4, 2, 0);
+        $this->setAgainstScore($pouleTwo, 2, 3, 2, 0);
+        $this->setAgainstScore($pouleTwo, 4, 1, 0, 2);
+
+        $this->setAgainstScore($pouleThree, 1, 2, 3, 0);
+        $this->setAgainstScore($pouleThree, 3, 4, 3, 0);
+        $this->setAgainstScore($pouleThree, 3, 1, 0, 3);
+        $this->setAgainstScore($pouleThree, 2, 4, 3, 0);
+        $this->setAgainstScore($pouleThree, 2, 3, 3, 0);
+        $this->setAgainstScore($pouleThree, 4, 1, 0, 3);
+
+        $qualifyService = new QualifyService($rootRound);
+        $qualifyService->setQualifiers();
+
+//        (new StructureOutput())->output($structure);
+
+        // nr 4 van nrs-1-poule is nr 2 van de poule A van de vorige ronde
+        $winnersPoule1 = $winnersRound->getPoule(1);
+        $winnersPlace4 = $winnersPoule1->getPlace(4);
+        $winnersLocation4 = $winnersPlace4->getStartLocation();
+        if ($winnersLocation4 !== null) {
+            self::assertEquals(3, $winnersLocation4->getPouleNr());
+            self::assertEquals(2, $winnersLocation4->getPlaceNr());
+        }
+
+        // nr 41van poule-3 is nr 3 van de 3e nr 3
+        $winnersPoule3 = $winnersRound->getPoule(3);
+        $winnersPlace1 = $winnersPoule3->getPlace(1);
+        $winnersLocation1 = $winnersPlace1->getStartLocation();
+        if ($winnersLocation1 !== null) {
+            self::assertEquals(3, $winnersLocation1->getPouleNr());
+            self::assertEquals(3, $winnersLocation1->getPlaceNr());
+        }
     }
 }

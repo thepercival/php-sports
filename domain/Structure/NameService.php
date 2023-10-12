@@ -10,10 +10,10 @@ use Sports\Competitor\StartLocationMap;
 use Sports\Game\Place as GamePlace;
 use Sports\Place;
 use Sports\Poule;
-use Sports\Poule\Horizontal as HorizontalPoule;
-use Sports\Qualify\Rule\Multiple as MultipleQualifyRule;
-use Sports\Qualify\Rule\Single as SingleQualifyRule;
-use Sports\Qualify\Target;
+use Sports\Qualify\Rule\Horizontal\Multiple as HorizontalMultipleQualifyRule;
+use Sports\Qualify\Rule\Horizontal\Single as HorizontalSingleQualifyRule;
+use Sports\Qualify\Rule\Vertical\Multiple as VerticalMultipleQualifyRule;
+use Sports\Qualify\Rule\Vertical\Single as VerticalSingleQualifyRule;
 use Sports\Qualify\Target as QualifyTarget;
 use Sports\Qualify\RoundRank\Service as RoundRankService;
 use Sports\Round;
@@ -151,7 +151,8 @@ class NameService
         return '1/' . $number;
     }
 
-    public function getQualifyRuleName(SingleQualifyRule|MultipleQualifyRule $rule): string
+    public function getQualifyRuleName(HorizontalSingleQualifyRule|HorizontalMultipleQualifyRule|
+                                       VerticalSingleQualifyRule|VerticalMultipleQualifyRule $rule): string
     {
         $balanced = $rule->getFromRound()->createPouleStructure()->isBalanced();
         $absolute = $rule->getQualifyTarget() === QualifyTarget::Winners || $balanced;
@@ -213,27 +214,29 @@ class NameService
         $parentQualifyGroup = $place->getRound()->getParentQualifyGroup();
         if ($parentQualifyGroup !== null) {
             try {
-                $fromQualifyRule = $parentQualifyGroup->getRule($place);
-            } catch (Exception $exception) {
-            }
+                $fromQualifyRule = $parentQualifyGroup->getRuleByToPlace($place);
+            } catch (Exception $exception) {}
         }
         if ($fromQualifyRule === null) {
             return $this->getPlaceName($place, false, $longName);
+        } else if ($fromQualifyRule instanceof HorizontalSingleQualifyRule) {
+            return $this->getPlaceNameFrom($fromQualifyRule->getFromPlace($place), $longName);
         }
+        // VerticalSingleQualifyRule || VerticalMultipleQualifyRule || HorizontalMultipleQualifyRule
+
         $balanced = $place->getRound()->createPouleStructure()->isBalanced();
         $absolute = !$longName || $fromQualifyRule->getQualifyTarget() === QualifyTarget::Winners || $balanced;
-        if ($fromQualifyRule instanceof MultipleQualifyRule) {
-            return $this->getMultipleQualifyRuleName($fromQualifyRule, $place, $longName, $absolute);
-        }
-        // SingleQualifyRule
-        $fromPlace = $fromQualifyRule->getFromPlace($place);
+        return $this->getRankedQualifyRuleName($fromQualifyRule, $place, $longName, $absolute);
+    }
+
+    public function getPlaceNameFrom(Place $fromPlace, bool $longName): string {
         $rank = $fromPlace->getPlaceNr();
 
         $poule = $fromPlace->getPoule();
         $pouleName = $this->getPouleName($poule, $longName);
         $ordinal = $this->getOrdinal($rank) . (!$poule->needsRanking() ? ' pl.' : '');
         return $longName ? $ordinal . ' ' . $pouleName : $pouleName . $rank;
-    }
+}
 
     public function getPlaceName(Place $place, bool $competitorName = false, ?bool $longName = false): string
     {
@@ -277,8 +280,8 @@ class NameService
         return $this->pouleStructureNumberMap;
     }
 
-    public function getMultipleQualifyRuleName(
-        MultipleQualifyRule $rule,
+    public function getRankedQualifyRuleName(
+        HorizontalMultipleQualifyRule | VerticalSingleQualifyRule | VerticalMultipleQualifyRule $rule,
         Place $place,
         bool $longName,
         bool $absolute
@@ -286,11 +289,22 @@ class NameService
         $fromHorPoule = $rule->getFromHorizontalPoule();
         $fromNumber = $absolute ? $fromHorPoule->getPlaceNumber() : $fromHorPoule->getNumber();
 
-        $nrOfToPlaces = $rule->getNrOfToPlaces();
+        if( $rule instanceof VerticalSingleQualifyRule) {
+            $nrOfToPlaces = $rule->getNrOfToPlaces();
+        } else {
+            $nrOfToPlaces = $rule->getNrOfToPlaces();
+        }
+
+        if( $rule instanceof VerticalSingleQualifyRule) {
+            $toPlaceNumber = $rule->getToPlaceNumber($place);
+        } else {
+            $toPlaceNumber = $rule->getToPlaceNumber($place);
+        }
+
         if ($rule->getQualifyTarget() === QualifyTarget::Winners) {
             $toPlaceNumber = $rule->getToPlaceNumber($place);
         } else {
-            $toPlaceNumber = count($fromHorPoule->getPlaces()) - ($nrOfToPlaces - $rule->getToPlaceNumber($place));
+            $toPlaceNumber = count($fromHorPoule->getPlaces()) - ($nrOfToPlaces - $toPlaceNumber);
         }
 
         $ordinal = $this->getOrdinal($toPlaceNumber);
