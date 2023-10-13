@@ -9,6 +9,7 @@ use Doctrine\Common\Collections\Collection;
 use Exception;
 use Sports\Place;
 use Sports\Poule;
+use Sports\Qualify\Target;
 use Sports\Qualify\Target as QualifyTarget;
 use Sports\Poule\Horizontal as HorizontalPoule;
 use Sports\Qualify\FromPoulePicker;
@@ -32,11 +33,15 @@ class Vertical
     public function createRules(array $fromHorPoules, QualifyGroup $qualifyGroup): void
     {
         $childRound = $qualifyGroup->getChildRound();
-        $childPlaces = $this->getRoundPlaces($childRound, $qualifyGroup->getTarget());
+        $childPlaces = $this->getRoundPlaces($childRound);
+        if( $qualifyGroup->getTarget() === QualifyTarget::Losers) {
+            $childPlaces = array_reverse($childPlaces);
+        }
 
         $previous = null; // : VerticalSingleQualifyRule |  undefined;
         foreach( $fromHorPoules as $fromHorPoule ) { // fromRoundHorPoules.every((fromHorPoule: HorizontalPoule): boolean => {
             $fromHorPoulePlaces = array_values( array_slice($fromHorPoule->getPlaces()->toArray(), 0 ) );
+
             while ( count($fromHorPoulePlaces) > 0 && count($childPlaces) > 0) {
 
                 // SingleRule
@@ -67,18 +72,13 @@ class Vertical
 
     /**
      * @param Round $round
-     * @param QualifyTarget $target
      * @return list<Place>
      */
-    protected function getRoundPlaces(Round $round, QualifyTarget $target): array {
-        $roundPlacesByPoule = $this->getRoundPlacesByPoule($round, $target);
+    protected function getRoundPlaces(Round $round): array {
+        $roundPlacesByPoule = $this->getRoundPlacesByPoule($round, QualifyTarget::Winners);
         $roundPlaces = [];
         foreach( $roundPlacesByPoule as $pouleRoundPlaces ) {
-            if ( $target === QualifyTarget::Losers) {
-                $roundPlaces = array_merge($roundPlaces, $pouleRoundPlaces);
-            } else {
-                $roundPlaces = array_merge($roundPlaces, $pouleRoundPlaces);
-            }
+           $roundPlaces = array_merge($roundPlaces, $pouleRoundPlaces);
         }
         return $roundPlaces;
     }
@@ -92,7 +92,7 @@ class Vertical
         if ( $target === QualifyTarget::Losers) {
             $poules = array_reverse( $round->getPoules()->toArray() );
             return array_values( array_map( function (Poule $poule): array {
-                return array_values( $poule->getPlaces()->toArray() );
+                return array_values( array_reverse( $poule->getPlaces()->toArray() ) );
             }, $poules ) );
         }
         return array_values( array_map( function(Poule $poule): array {

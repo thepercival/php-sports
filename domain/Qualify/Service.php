@@ -183,9 +183,12 @@ class Service
         }
         $round = $rankedRule->getFromRound();
         $rankedPlaceLocations = $this->rankingCalculator->getPlaceLocationsForRankedRule($rankedRule);
+        if( $rankedRule->getQualifyTarget() === QualifyTarget::Losers ) {
+            $rankedPlaceLocations = array_reverse($rankedPlaceLocations);
+        }
 
         while (count($rankedPlaceLocations) > count($toPlaces)) {
-            $rankedRule->getQualifyTarget() === QualifyTarget::Winners ? array_pop($rankedPlaceLocations) : array_shift($rankedPlaceLocations);
+            array_pop($rankedPlaceLocations);
         }
         foreach ($toPlaces as $toPlace) {
             $toPouleNumber = $toPlace->getPoule()->getNumber();

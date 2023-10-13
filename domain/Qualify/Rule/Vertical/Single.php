@@ -83,11 +83,11 @@ class Single extends VerticalQualifyRule implements SingleQualifyRule
         return $mapping->getFromPlace();
     }
 
-    public function getToPlaceNumber(Place $place): int
+    public function getToPlaceIndex(Place $toPlace): int
     {
         $rank = 1;
         foreach( $this->getMappings() as $mapping ) {
-             if( $mapping->getToPlace() === $place ) {
+             if( $mapping->getToPlace() === $toPlace ) {
                  return $rank;
              } else {
                  $rank++;
@@ -108,6 +108,10 @@ class Single extends VerticalQualifyRule implements SingleQualifyRule
     public function getNrOfToPlaces(): int
     {
         return $this->placeMappings->count();
+    }
+
+    public function getNrOfDropouts(): int {
+        return $this->fromHorizontalPoule->getPlaces()->count() - $this->getNrOfToPlaces();
     }
 
 //    public function setNext(Single | null $next): void

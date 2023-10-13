@@ -200,58 +200,105 @@ class EndTest extends TestCase
         $qualifyService = new QualifyService($rootRound);
         $qualifyService->setQualifiers();
 
-        //+(new StructureOutput())->output($structure);
+//        (new StructureOutput())->output($structure);
 
         $calculator = new EndRankingCalculator($defaultCategory);
         $items = $calculator->getItems();
 
-        for ($rank = 1; $rank <= count($items); $rank++) {
-            $endRankingItem = array_shift($items);
-            // self::assertNotNull($endRankingItem);
-            $startLocation = $endRankingItem->getStartLocation();
-            self::assertInstanceOf(StartLocation::class, $startLocation);
+        $rank1 = array_shift($items);
+        self::assertNotNull($rank1);
+        self::assertSame(1, $rank1->getUniqueRank());
+        $startLocation = $rank1->getStartLocation();
+        self::assertInstanceOf(StartLocation::class, $startLocation);
+        self::assertSame(3, $startLocation->getPouleNr());
+        self::assertSame(1, $startLocation->getPlaceNr());
 
-            if ($rank === 1) {
-                self::assertSame(3, $startLocation->getPouleNr());
-                self::assertSame(1, $startLocation->getPlaceNr());
-            } else if ($rank === 2) {
-                self::assertSame(2, $startLocation->getPouleNr());
-                self::assertSame(1, $startLocation->getPlaceNr());
-            } else if ($rank === 3) {
-                self::assertSame(1, $startLocation->getPouleNr());
-                self::assertSame(1, $startLocation->getPlaceNr());
-            } else if ($rank === 4) {
-                self::assertSame(3, $startLocation->getPouleNr());
-                self::assertSame(2, $startLocation->getPlaceNr());
-            } else if ($rank === 5) {
-                self::assertSame(2, $startLocation->getPouleNr());
-                self::assertSame(2, $startLocation->getPlaceNr());
-            }
+        $rank2 = array_shift($items);
+        self::assertNotNull($rank2);
+        self::assertSame(2, $rank2->getUniqueRank());
+        $startLocation = $rank2->getStartLocation();
+        self::assertInstanceOf(StartLocation::class, $startLocation);
+        self::assertSame(2, $startLocation->getPouleNr());
+        self::assertSame(1, $startLocation->getPlaceNr());
 
-            else if ($rank === 6) {
-                self::assertSame(1, $startLocation->getPouleNr());
-                self::assertSame(2, $startLocation->getPlaceNr());
-            } else if ($rank === 7) {
-                self::assertSame(1, $startLocation->getPouleNr()); // 3
-                self::assertSame(3, $startLocation->getPlaceNr()); // 3
-            }
+        $rank3 = array_shift($items);
+        self::assertNotNull($rank3);
+        self::assertSame(3, $rank3->getUniqueRank());
+        $startLocation = $rank3->getStartLocation();
+        self::assertInstanceOf(StartLocation::class, $startLocation);
+        self::assertSame(1, $startLocation->getPouleNr());
+        self::assertSame(1, $startLocation->getPlaceNr());
 
-            else if ($rank === 8) {
-                self::assertSame(3, $startLocation->getPouleNr());
-                self::assertSame(3, $startLocation->getPlaceNr());
-            } else if ($rank === 9) {
-                self::assertSame(2, $startLocation->getPouleNr());
-                self::assertSame(3, $startLocation->getPlaceNr());
-            } else if ($rank === 10) {
-                self::assertSame(1, $startLocation->getPouleNr());
-                self::assertSame(4, $startLocation->getPlaceNr());
-            } else if ($rank === 11) {
-                self::assertSame(2, $startLocation->getPouleNr());
-                self::assertSame(4, $startLocation->getPlaceNr());
-            } else if ($rank === 12) {
-                self::assertSame(3, $startLocation->getPouleNr());
-                self::assertSame(4, $startLocation->getPlaceNr());
-            }
-        }
+        $rank4 = array_shift($items);
+        self::assertNotNull($rank4);
+        self::assertSame(4, $rank4->getUniqueRank());
+        $startLocation = $rank4->getStartLocation();
+        self::assertInstanceOf(StartLocation::class, $startLocation);
+        self::assertSame(3, $startLocation->getPouleNr());
+        self::assertSame(2, $startLocation->getPlaceNr());
+
+        $rank5 = array_shift($items);
+        self::assertNotNull($rank5);
+        self::assertSame(5, $rank5->getUniqueRank());
+        $startLocation = $rank5->getStartLocation();
+        self::assertInstanceOf(StartLocation::class, $startLocation);
+        self::assertSame(2, $startLocation->getPouleNr());
+        self::assertSame(2, $startLocation->getPlaceNr());
+
+        $rank6 = array_shift($items);
+        self::assertNotNull($rank6);
+        self::assertSame(6, $rank6->getUniqueRank());
+        $startLocation = $rank6->getStartLocation();
+        self::assertInstanceOf(StartLocation::class, $startLocation);
+        self::assertSame(1, $startLocation->getPouleNr());
+        self::assertSame(2, $startLocation->getPlaceNr());
+
+        $rank7 = array_shift($items);
+        self::assertNotNull($rank7);
+        self::assertSame(7, $rank7->getUniqueRank());
+        $startLocation = $rank7->getStartLocation();
+        self::assertInstanceOf(StartLocation::class, $startLocation);
+        self::assertSame(1, $startLocation->getPouleNr());
+        self::assertSame(3, $startLocation->getPlaceNr());
+
+        $rank8 = array_shift($items);
+        self::assertNotNull($rank8);
+        self::assertSame(8, $rank8->getUniqueRank());
+        $startLocation = $rank8->getStartLocation();
+        self::assertInstanceOf(StartLocation::class, $startLocation);
+        self::assertSame(2, $startLocation->getPouleNr());
+        self::assertSame(3, $startLocation->getPlaceNr());
+
+        $rank9 = array_shift($items);
+        self::assertNotNull($rank9);
+        self::assertSame(9, $rank9->getUniqueRank());
+        $startLocation = $rank9->getStartLocation();
+        self::assertInstanceOf(StartLocation::class, $startLocation);
+        self::assertSame(3, $startLocation->getPouleNr());
+        self::assertSame(3, $startLocation->getPlaceNr());
+
+        $rank10 = array_shift($items);
+        self::assertNotNull($rank10);
+        self::assertSame(10, $rank10->getUniqueRank());
+        $startLocation = $rank10->getStartLocation();
+        self::assertInstanceOf(StartLocation::class, $startLocation);
+        self::assertSame(1, $startLocation->getPouleNr());
+        self::assertSame(4, $startLocation->getPlaceNr());
+
+        $rank11 = array_shift($items);
+        self::assertNotNull($rank11);
+        $startLocation = $rank11->getStartLocation();
+        self::assertSame(11, $rank11->getUniqueRank());
+        self::assertInstanceOf(StartLocation::class, $startLocation);
+        self::assertSame(2, $startLocation->getPouleNr());
+        self::assertSame(4, $startLocation->getPlaceNr());
+
+        $rank12 = array_shift($items);
+        self::assertNotNull($rank12);
+        self::assertSame(12, $rank12->getUniqueRank());
+        $startLocation = $rank12->getStartLocation();
+        self::assertInstanceOf(StartLocation::class, $startLocation);
+        self::assertSame(3, $startLocation->getPouleNr());
+        self::assertSame(4, $startLocation->getPlaceNr());
     }
 }

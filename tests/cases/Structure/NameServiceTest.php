@@ -325,21 +325,21 @@ final class NameServiceTest extends TestCase
 
             $losersFirstPlaceFirstPoule = $losersRound->getPoule(1)->getPlace(1); // 3e3
             self::assertSame(
-                '3e3',
+                '2e3',
                 $nameService->getPlaceFromName($losersFirstPlaceFirstPoule, false, false)
             );
             self::assertSame(
-                '3e van 2e pl. van onderen',
+                '2e van 2e pl. van onderen',
                 $nameService->getPlaceFromName($losersFirstPlaceFirstPoule, false, true)
             );
 
             $losersSecondPlaceFirstPoule = $losersRound->getPoule(1)->getPlace(2); // 2e2
             self::assertSame(
-                '2e3',
+                '3e3',
                 $nameService->getPlaceFromName($losersSecondPlaceFirstPoule, false, false)
             );
             self::assertSame(
-                '2e van 2e pl. van onderen',
+                '3e van 2e pl. van onderen',
                 $nameService->getPlaceFromName($losersSecondPlaceFirstPoule, false, true)
             );
         }

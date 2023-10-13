@@ -86,6 +86,10 @@ class Single extends HorizontalQualifyRule implements SingleQualifyRule
         return $this->placeMappings->count();
     }
 
+    public function getNrOfDropouts(): int {
+        return $this->fromHorizontalPoule->getPlaces()->count() - $this->getNrOfToPlaces();
+    }
+
     public function getPrevious(): Single | null
     {
         return $this->previous;

@@ -31,9 +31,9 @@ class Multiple extends HorizontalQualifyRule implements MultipleQualifyRule
         return array_search($place, $this->toPlaces, true) !== false;
     }
 
-    public function getToPlaceNumber(Place $place): int
+    public function getToPlaceIndex(Place $toPlace): int
     {
-        $index = array_search($place, $this->toPlaces, true);
+        $index = array_search($toPlace, $this->toPlaces, true);
         return $index === false ? 0 : $index + 1;
     }
 
@@ -48,6 +48,10 @@ class Multiple extends HorizontalQualifyRule implements MultipleQualifyRule
     public function getNrOfToPlaces(): int
     {
         return count($this->toPlaces);
+    }
+
+    public function getNrOfDropouts(): int {
+        return $this->fromHorizontalPoule->getPlaces()->count() - $this->getNrOfToPlaces();
     }
 
     public function detach(): void

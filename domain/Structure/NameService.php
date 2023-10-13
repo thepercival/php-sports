@@ -14,6 +14,7 @@ use Sports\Qualify\Rule\Horizontal\Multiple as HorizontalMultipleQualifyRule;
 use Sports\Qualify\Rule\Horizontal\Single as HorizontalSingleQualifyRule;
 use Sports\Qualify\Rule\Vertical\Multiple as VerticalMultipleQualifyRule;
 use Sports\Qualify\Rule\Vertical\Single as VerticalSingleQualifyRule;
+use Sports\Qualify\Target;
 use Sports\Qualify\Target as QualifyTarget;
 use Sports\Qualify\RoundRank\Service as RoundRankService;
 use Sports\Round;
@@ -287,29 +288,18 @@ class NameService
         bool $absolute
     ): string {
         $fromHorPoule = $rule->getFromHorizontalPoule();
-        $fromNumber = $absolute ? $fromHorPoule->getPlaceNumber() : $fromHorPoule->getNumber();
+        $fromRank = $absolute ? $fromHorPoule->getPlaceNumber() : $fromHorPoule->getNumber();
 
-        if( $rule instanceof VerticalSingleQualifyRule) {
-            $nrOfToPlaces = $rule->getNrOfToPlaces();
-        } else {
-            $nrOfToPlaces = $rule->getNrOfToPlaces();
+        $fromPlaceNr = $rule->getToPlaceIndex($place);
+
+        if ($rule->getQualifyTarget() === QualifyTarget::Losers) {
+            $total = $rule->getNrOfToPlaces() + $rule->getNrOfDropouts();
+            $fromPlaceNr = ($total + 1) - $fromPlaceNr;
         }
 
-        if( $rule instanceof VerticalSingleQualifyRule) {
-            $toPlaceNumber = $rule->getToPlaceNumber($place);
-        } else {
-            $toPlaceNumber = $rule->getToPlaceNumber($place);
-        }
-
-        if ($rule->getQualifyTarget() === QualifyTarget::Winners) {
-            $toPlaceNumber = $rule->getToPlaceNumber($place);
-        } else {
-            $toPlaceNumber = count($fromHorPoule->getPlaces()) - ($nrOfToPlaces - $toPlaceNumber);
-        }
-
-        $ordinal = $this->getOrdinal($toPlaceNumber);
+        $ordinal = $this->getOrdinal($fromPlaceNr);
         if (!$longName) {
-            return $ordinal . $fromNumber;
+            return $ordinal . $fromRank;
         }
 
         $firstpart = $ordinal . ' van';
@@ -318,7 +308,7 @@ class NameService
 //            $rank = ($rule->getQualifyTarget() === QualifyTarget::Winners) ? 1 : $nrOfHorPlaces;
 //            $firstpart = $this->getOrdinal($rank) . ' van';
 //        }
-        $name = $firstpart . ' ' . $this->getOrdinal($fromNumber);
+        $name = $firstpart . ' ' . $this->getOrdinal($fromRank);
         if ($rule->getQualifyTarget() === QualifyTarget::Losers && !$absolute) {
             $name .= ' pl. van onderen';
         } else {

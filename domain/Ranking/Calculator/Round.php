@@ -69,7 +69,8 @@ class Round
         $rankingItems = [];
         foreach ($horPoule->getPlaces() as $place) {
             $pouleRannkingItems = $this->getItemsForPoule($place->getPoule());
-            $pouleRankingItem = $this->getItemByRank($pouleRannkingItems, $place->getPlaceNr());
+            $rank = $place->getPlaceNr();
+            $pouleRankingItem = $this->getItemByRank($pouleRannkingItems, $rank);
             if ($pouleRankingItem === null) {
                 continue;
             }

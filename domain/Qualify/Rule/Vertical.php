@@ -7,7 +7,6 @@ use Sports\Qualify\Rule as QualifyRule;
 
 abstract class Vertical extends QualifyRule
 {
-
     public function __construct(
         HorizontalPoule $fromHorizontalPoule) {
         parent::__construct($fromHorizontalPoule);
