@@ -31,7 +31,7 @@ class GroupHandler extends Handler implements SubscribingHandlerInterface
 
     /**
      * @param JsonDeserializationVisitor $visitor
-     * @param array{parentRound: Round, target: string, nextStructureCell: Cell, number: int, childRound: _Round, distribution: Distribution} $fieldValue
+     * @param array{parentRound: Round, target: string, nextStructureCell: Cell, number: int, childRound: _Round, distribution: int} $fieldValue
      * @param array<string, array<string, Round|RoundNumber>> $type
      * @param Context $context
      * @return QualifyGroup
@@ -51,7 +51,7 @@ class GroupHandler extends Handler implements SubscribingHandlerInterface
             $fieldValue['nextStructureCell'],
             $fieldValue['number']
         );
-        $qualifyGroup->setDistribution($fieldValue['distribution']);
+        $qualifyGroup->setDistribution(Distribution::from($fieldValue['distribution']));
 
         //$fieldValue["childRound"] = $qualifyGroup->getChildRound();
         $fieldValue['childRound']['parentQualifyGroup'] = $qualifyGroup;

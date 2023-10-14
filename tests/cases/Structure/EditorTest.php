@@ -12,6 +12,8 @@ use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 use Sports\Output\StructureOutput;
 use Sports\Qualify\Distribution;
+use Sports\Qualify\Group as QualifyGroup;
+use Sports\Qualify\Rule\Creator\Vertical;
 use Sports\Qualify\Target as QualifyTarget;
 use Sports\Structure;
 use Sports\TestHelper\CompetitionCreator;
@@ -66,7 +68,7 @@ final class EditorTest extends TestCase
         // (new StructureOutput($this->getLogger()))->output($structure);
 
         $qualifyGroup = $losersRound->getParentQualifyGroup();
-        self::assertNotNull($qualifyGroup);
+        self::assertInstanceOf(QualifyGroup::class, $qualifyGroup);
 
         $fromPlace = $qualifyGroup->getFromPlace($losersRound->getPoule(1)->getPlace(1));
         self::assertNotNull($fromPlace);
@@ -457,6 +459,29 @@ final class EditorTest extends TestCase
         self::assertCount(2, $rootRound->getPoules());
         self::assertCount(4, $rootRound->getFirstPoule()->getPlaces());
         self::assertCount(4, $rootRound->getLastPoule()->getPlaces());
+    }
+
+    public function testUpdateDistribution(): void
+    {
+        $competition = $this->createCompetition();
+        $structureEditor = $this->createStructureEditor();
+        $structure = $structureEditor->create($competition, [4, 4, 4]);
+        $rootRound = $structure->getSingleCategory()->getRootRound();
+
+        $winnersRound = $structureEditor->addChildRound($rootRound, QualifyTarget::Winners, [4, 4, 4]);
+
+//        (new StructureOutput($this->getLogger()))->output($structure);
+
+        $parentQualifyGroup = $winnersRound->getParentQualifyGroup();
+        self::assertInstanceOf(QualifyGroup::class, $parentQualifyGroup);
+        $structureEditor->updateDistribution($parentQualifyGroup, Distribution::Vertical);
+
+//        (new StructureOutput($this->getLogger()))->output($structure);
+
+        self::assertSame(Distribution::Vertical, $parentQualifyGroup->getDistribution());
+
+        self::assertInstanceOf(VerticalSingleQualifyRule::class, $parentQualifyGroup->getFirstSingleRule());
+        // $structureEditor->addQualifiers($rootRound, QualifyTarget::Winners, 1, Distribution::HorizontalSnake);
     }
 
     // new Round too little qualifiers

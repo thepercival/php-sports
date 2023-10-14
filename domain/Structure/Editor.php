@@ -353,6 +353,20 @@ class Editor
         $this->rulesCreator->create($round, $round->getParent());
     }
 
+    public function updateDistribution(QualifyGroup $qualifyGroup, QualifyDistribution $distribution): void {
+
+        $parentRound = $qualifyGroup->getParentRound();
+        $this->horPouleCreator->remove($parentRound);
+        $this->rulesCreator->remove($parentRound);
+
+        // begin editing
+        $qualifyGroup->setDistribution($distribution);
+
+        // end editing
+        $this->horPouleCreator->create($parentRound);
+        $this->rulesCreator->create($parentRound, $qualifyGroup->getChildRound());
+    }
+
     public function addQualifiers(
         Round $parentRound,
         QualifyTarget $qualifyTarget,
