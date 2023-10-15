@@ -12,7 +12,7 @@ use Sports\Poule;
 use Sports\Poule\Horizontal as HorizontalPoule;
 use Sports\Qualify\FromPoulePicker;
 use Sports\Qualify\Group as QualifyGroup;
-use Sports\Qualify\PlaceMapping as QualifyPlaceMapping;
+use Sports\Qualify\Mapping\ByPlace as QualifyByPlaceMapping;
 use Sports\Qualify\PossibleFromMap;
 use Sports\Qualify\Rule\Horizontal\Multiple as HorizontalMultipleQualifyRule;
 use Sports\Qualify\Rule\Horizontal\Single as HorizontalSingleQualifyRule;
@@ -74,7 +74,7 @@ class Horizontal
         while ( $fromHorPoule !== null && count($childRoundPlaces) >= count($fromHorPoule->getPlaces()) ) {
             /** @var list<Place> $toPlaces */
             $toPlaces = array_splice( $childRoundPlaces, 0, count($fromHorPoule->getPlaces()));
-            $placeMappings = $this->createPlaceMappings($fromHorPoule, $toPlaces );
+            $placeMappings = $this->createByPlaceMappings($fromHorPoule, $toPlaces );
             $previousRule = new HorizontalSingleQualifyRule($fromHorPoule, $qualifyGroup, $placeMappings, $previousRule);
             $fromHorPoule = array_shift($fromHorPoules);
         }
@@ -107,14 +107,14 @@ class Horizontal
     /**
      * @param HorizontalPoule $fromHorPoule
      * @param list<Place> $childRoundPlaces
-     * @return Collection<int, QualifyPlaceMapping>
+     * @return Collection<int, QualifyByPlaceMapping>
      */
-    public function createPlaceMappings(
+    public function createByPlaceMappings(
         HorizontalPoule $fromHorPoule,
         array $childRoundPlaces
     ): Collection {
         $fromPoulePicker = new FromPoulePicker($this->possibleFromMap);
-        /** @var Collection<int, QualifyPlaceMapping> $mappings */
+        /** @var Collection<int, QualifyByPlaceMapping> $mappings */
         $mappings = new ArrayCollection();
         $fromHorPoulePlaces = array_values($fromHorPoule->getPlaces()->slice(0));
         while ($childRoundPlace = array_shift($childRoundPlaces)) {
@@ -124,9 +124,9 @@ class Horizontal
                 array_map(fn (Place $place) => $place->getPoule(), $childRoundPlaces)
             );
             $bestFromPlace = $this->removeBestHorizontalPlace($fromHorPoulePlaces, $bestFromPoule);
-            $placeMapping = new QualifyPlaceMapping($bestFromPlace, $childRoundPlace);
+            $placeMapping = new QualifyByPlaceMapping($bestFromPlace, $childRoundPlace);
             $mappings->add($placeMapping);
-            $this->possibleFromMap->addPlaceMapping($placeMapping);
+            $this->possibleFromMap->addMapping($placeMapping);
         }
         return $mappings;
     }

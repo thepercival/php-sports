@@ -278,19 +278,19 @@ final class EditorTest extends TestCase
 
         $ruleOne = $winnersRound->getParentQualifyGroup()?->getFirstSingleRule();
         self::assertInstanceOf(VerticalSingleQualifyRule::class, $ruleOne);
-        self::assertSame(3, $ruleOne->getNrOfToPlaces());
+        self::assertSame(3, $ruleOne->getNrOfMappings());
 
         $ruleTwo = $ruleOne->getNext();
         self::assertInstanceOf(VerticalSingleQualifyRule::class, $ruleTwo);
-        self::assertSame(3, $ruleTwo->getNrOfToPlaces());
+        self::assertSame(3, $ruleTwo->getNrOfMappings());
 
         $ruleThree = $ruleTwo->getNext();
         self::assertInstanceOf(VerticalSingleQualifyRule::class, $ruleThree);
-        self::assertSame(3, $ruleThree->getNrOfToPlaces());
+        self::assertSame(3, $ruleThree->getNrOfMappings());
 
         $ruleFour = $ruleThree->getNext();
         self::assertInstanceOf(VerticalSingleQualifyRule::class, $ruleFour);
-        self::assertSame(3, $ruleFour->getNrOfToPlaces());
+        self::assertSame(3, $ruleFour->getNrOfMappings());
     }
 
     public function testRemovePouleFromRootRound1(): void

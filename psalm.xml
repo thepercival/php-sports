@@ -8,9 +8,9 @@
 >
     <projectFiles>
         <directory name="domain"/>
-        <directory name="tests/cases"/>
-        <directory name="tests/helpers"/>
         <directory name="serialization/handler"/>
+        <directory name="tests/helpers"/>
+        <directory name="tests/cases"/>
         <ignoreFiles>
             <directory name="vendor"/>
         </ignoreFiles>

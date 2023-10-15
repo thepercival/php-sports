@@ -28,7 +28,7 @@ class Multiple extends VerticalQualifyRule implements MultipleQualifyRule
         $group->setMultipleRule($this);
     }
 
-    public function getToPlaceIndex(Place $toPlace): int
+    public function getRankByToPlace(Place $toPlace): int
     {
         $index = array_search($toPlace, $this->toPlaces, true);
         return $index === false ? 0 : $index + 1;

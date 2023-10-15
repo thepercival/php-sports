@@ -217,7 +217,7 @@ final class NameServiceTest extends TestCase
             $winnersRound = $structureEditor->addChildRound($rootRound, QualifyTarget::Winners, [2, 2]);
             $winnersWinnersRound = $structureEditor->addChildRound($winnersRound, QualifyTarget::Winners, [2]);
             $winnersLosersRound = $structureEditor->addChildRound($winnersRound, QualifyTarget::Losers, [2]);
-            // (new StructureOutput())->output($structure);return;
+            // (new StructureOutput())->output($structure);
             self::assertSame('A1', $nameService->getPlaceFromName($firstPlace, false, false));
             self::assertSame('competitor 1', $nameService->getPlaceFromName($firstPlace, true, false));
             self::assertSame('nr. 1 poule A', $nameService->getPlaceFromName($firstPlace, false, true),);
@@ -225,31 +225,31 @@ final class NameServiceTest extends TestCase
 
             $lastPlace = $rootRound->getFirstPlace(QualifyTarget::Losers);
 
-            self::assertSame('C3', $nameService->getPlaceFromName($lastPlace, false, false));
-            self::assertSame('C3', $nameService->getPlaceFromName($lastPlace, true, false));
+            self::assertSame('C3', $nameService->getPlaceFromName($lastPlace, false));
+            self::assertSame('C3', $nameService->getPlaceFromName($lastPlace, true));
             self::assertSame('nr. 3 poule C', $nameService->getPlaceFromName($lastPlace, false, true));
             self::assertSame('nr. 3 poule C', $nameService->getPlaceFromName($lastPlace, true, true));
 
 
             $winnersLastPlace = $winnersRound->getFirstPoule()->getPlace(2);
 
-            self::assertSame('1e2', $nameService->getPlaceFromName($winnersLastPlace, false, false));
+            self::assertSame('1e2', $nameService->getPlaceFromName($winnersLastPlace, false));
             self::assertSame('1e van 2e plekken', $nameService->getPlaceFromName($winnersLastPlace, false, true));
 
             $winnersFirstPlace = $winnersRound->getPoule(1)->getPlace(1);
 
-            self::assertSame('A1', $nameService->getPlaceFromName($winnersFirstPlace, false, false));
+            self::assertSame('1eA', $nameService->getPlaceFromName($winnersFirstPlace, false));
             self::assertSame('1e poule A', $nameService->getPlaceFromName($winnersFirstPlace, false, true));
 
             $doubleWinnersFirstPlace = $winnersWinnersRound->getPoule(1)->getPlace(1);
 
-            self::assertSame('D1', $nameService->getPlaceFromName($doubleWinnersFirstPlace, false, false));
+            self::assertSame('1eD', $nameService->getPlaceFromName($doubleWinnersFirstPlace, false));
             self::assertSame('1e pl. wed. D', $nameService->getPlaceFromName($doubleWinnersFirstPlace, false, true));
 
 
             $winnersLosersFirstPlace = $winnersLosersRound->getPoule(1)->getPlace(1);
 
-            self::assertSame('D2', $nameService->getPlaceFromName($winnersLosersFirstPlace, false));
+            self::assertSame('2eD', $nameService->getPlaceFromName($winnersLosersFirstPlace, false));
             self::assertSame('2e pl. wed. D', $nameService->getPlaceFromName($winnersLosersFirstPlace, false, true));
         }
     }
@@ -311,7 +311,7 @@ final class NameServiceTest extends TestCase
 
             $winnersRound = $structureEditor->addChildRound($rootRound, QualifyTarget::Winners, [2, 2]);
             $losersRound = $structureEditor->addChildRound($rootRound, QualifyTarget::Losers, [3, 2]);
-            // (new StructureOutput())->output($structure);
+//            (new StructureOutput())->output($structure);
 
             $winnersSecondPlaceFirstPoule = $winnersRound->getPoule(1)->getPlace(2); // 1e2
             self::assertSame(

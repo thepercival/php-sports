@@ -2,15 +2,17 @@
 
 declare(strict_types=1);
 
-namespace Sports\Qualify;
+namespace Sports\Qualify\Mapping;
 
 use Sports\Place;
 use Sports\Poule;
+use Sports\Qualify\Mapping;
 
-class PlaceMapping
+class ByPlace extends Mapping
 {
-    public function __construct(private Place $fromPlace, private Place $toPlace)
+    public function __construct(private Place $fromPlace, Place $toPlace)
     {
+        parent::__construct($toPlace);
     }
 
     public function getFromPlace(): Place
@@ -21,10 +23,5 @@ class PlaceMapping
     public function getFromPoule(): Poule
     {
         return $this->fromPlace->getPoule();
-    }
-
-    public function getToPlace(): Place
-    {
-        return $this->toPlace;
     }
 }

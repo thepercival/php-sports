@@ -9,9 +9,11 @@ use Exception;
 use Sports\Place;
 use Sports\Poule\Horizontal as HorizontalPoule;
 use Sports\Qualify\Group as QualifyGroup;
-use Sports\Qualify\PlaceMapping as QualifyPlaceMapping;
+use Sports\Qualify\Mapping as QualifyPlaceMapping;
+use Sports\Qualify\Mapping\ByPlace as ByPlaceMapping;
 use Sports\Qualify\Rule\Vertical as VerticalQualifyRule;
 use Sports\Qualify\Target as QualifyTarget;
+use Sports\Qualify\Mapping\ByRank as ByRankMapping;
 use Sports\Qualify\Rule\Single as SingleQualifyRule;
 use Sports\Qualify\Rule\Vertical\Single as VerticalSingleQualifyRule;
 use Sports\Qualify\Rule\Vertical\Multiple as VerticalMultipleQualifyRule;
@@ -23,13 +25,13 @@ class Single extends VerticalQualifyRule implements SingleQualifyRule
     /**
      * @param HorizontalPoule $fromHorizontalPoule
      * @param QualifyGroup $group
-     * @param Collection<int, QualifyPlaceMapping> $placeMappings
+     * @param Collection<int, ByRankMapping> $byRankMappings
      * @param VerticalSingleQualifyRule|null $previous
      */
     public function __construct(
         HorizontalPoule $fromHorizontalPoule,
         QualifyGroup $group,
-        private Collection $placeMappings,
+        private Collection $byRankMappings,
         private VerticalSingleQualifyRule|null $previous
     ) {
         parent::__construct($fromHorizontalPoule);
@@ -42,24 +44,24 @@ class Single extends VerticalQualifyRule implements SingleQualifyRule
     }
 
     /**
-     * @return Collection<int, QualifyPlaceMapping>
+     * @return Collection<int, ByRankMapping>
      */
     public function getMappings(): Collection
     {
-        return $this->placeMappings;
+        return $this->byRankMappings;
     }
 
-    public function getToPlace(Place $fromPlace): Place
-    {
-        $mappings = $this->getMappings()->filter(function (QualifyPlaceMapping $placeMapping) use ($fromPlace): bool {
-            return $placeMapping->getFromPlace() === $fromPlace;
-        });
-        $mapping = $mappings->first();
-        if ($mapping === false) {
-            throw new \Exception('could not find toPlace', E_ERROR);
-        }
-        return $mapping->getToPlace();
-    }
+//    public function getToPlace(Place $fromPlace): Place
+//    {
+//        $mappings = $this->getMappings()->filter(function (QualifyPlaceMapping $placeMapping) use ($fromPlace): bool {
+//            return $placeMapping->getFromPlace() === $fromPlace;
+//        });
+//        $mapping = $mappings->first();
+//        if ($mapping === false) {
+//            throw new \Exception('could not find toPlace', E_ERROR);
+//        }
+//        return $mapping->getToPlace();
+//    }
 
     /**
      * @return list<Place>
@@ -71,48 +73,66 @@ class Single extends VerticalQualifyRule implements SingleQualifyRule
         })->toArray() );
     }
 
-    public function getFromPlace(Place $toPlace): Place
+//    public function getFromRank(Place $toPlace): Place
+//    {
+//        $mappings = $this->getMappings()->filter(function (QualifyPlaceMapping $placeMapping) use ($toPlace): bool {
+//            return $placeMapping->getToPlace() === $toPlace;
+//        });
+//        $mapping = $mappings->first();
+//        if ($mapping === false) {
+//            throw new \Exception('could not find fromPlace', E_ERROR);
+//        }
+//        return $mapping->getFromPlace();
+//    }
+//
+//    public function getMappingByRank(Place $toPlace): int
+//    {
+//        $rank = 1;
+//        foreach( $this->getMappings() as $mapping ) {
+//             if( $mapping->getToPlace() === $toPlace ) {
+//                 return $rank;
+//             } else {
+//                 $rank++;
+//             }
+//        }
+//        return 0;
+//    }
+
+//    public function hasToPlace(Place $toPlace): bool {
+//        try {
+//            $this->getFromPlace($toPlace);
+//            return true;
+//        } catch ( \Exception $e ) {
+//            return false;
+//        }
+//    }
+
+    public function getNrOfMappings(): int
     {
-        $mappings = $this->getMappings()->filter(function (QualifyPlaceMapping $placeMapping) use ($toPlace): bool {
+        return $this->byRankMappings->count();
+    }
+
+//    public function getNrOfDropouts(): int {
+//        return $this->fromHorizontalPoule->getPlaces()->count() - $this->getNrOfToPlaces();
+//    }
+
+    public function getMappingByToPlace(Place $toPlace): ByRankMapping|null
+    {
+        $mappings = $this->getMappings()->filter(function (ByRankMapping $placeMapping) use ($toPlace): bool {
             return $placeMapping->getToPlace() === $toPlace;
         });
         $mapping = $mappings->first();
-        if ($mapping === false) {
-            throw new \Exception('could not find fromPlace', E_ERROR);
-        }
-        return $mapping->getFromPlace();
+        return $mapping !== false ? $mapping : null;
     }
 
-    public function getToPlaceIndex(Place $toPlace): int
-    {
-        $rank = 1;
-        foreach( $this->getMappings() as $mapping ) {
-             if( $mapping->getToPlace() === $toPlace ) {
-                 return $rank;
-             } else {
-                 $rank++;
-             }
-        }
-        return 0;
-    }
-
-    public function hasToPlace(Place $toPlace): bool {
-        try {
-            $this->getFromPlace($toPlace);
-            return true;
-        } catch ( \Exception $e ) {
-            return false;
-        }
-    }
-
-    public function getNrOfToPlaces(): int
-    {
-        return $this->placeMappings->count();
-    }
-
-    public function getNrOfDropouts(): int {
-        return $this->fromHorizontalPoule->getPlaces()->count() - $this->getNrOfToPlaces();
-    }
+//    public function getMappingByFromPlace(Place $fromPlace): ByRankMapping|null
+//    {
+//        $mappings = $this->getByRankMappings()->filter(function (ByRankMapping $placeMapping) use ($fromPlace): bool {
+//            return $placeMapping->getToPlace() === $fromPlace;
+//        });
+//        $mapping = $mappings->first();
+//        return $mapping !== false ? $mapping : null;
+//    }
 
 //    public function setNext(Single | null $next): void
 //    {
@@ -163,7 +183,7 @@ class Single extends VerticalQualifyRule implements SingleQualifyRule
         if ($neighBour === null) {
             return $nrOfToPlacesTargetSide;
         }
-        return $neighBour->getNrOfToPlaces() + $neighBour->getNrOfToPlacesTargetSide($targetSide);
+        return $neighBour->getNrOfMappings() + $neighBour->getNrOfToPlacesTargetSide($targetSide);
     }
 
     public function getPrevious(): VerticalSingleQualifyRule|null {

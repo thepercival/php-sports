@@ -9,7 +9,7 @@ use Exception;
 use Sports\Place;
 use Sports\Poule\Horizontal as HorizontalPoule;
 use Sports\Qualify\Group as QualifyGroup;
-use Sports\Qualify\PlaceMapping as QualifyPlaceMapping;
+use Sports\Qualify\Mapping\ByPlace as ByPlaceMapping;
 use Sports\Qualify\Rule\Horizontal as HorizontalQualifyRule;
 use Sports\Qualify\Rule\Horizontal\Single as HorizontalSingleQualifyRule;
 use Sports\Qualify\Rule\Single as SingleQualifyRule;
@@ -22,13 +22,13 @@ class Single extends HorizontalQualifyRule implements SingleQualifyRule
     /**
      * @param HorizontalPoule $fromHorizontalPoule
      * @param QualifyGroup $group
-     * @param Collection<int, QualifyPlaceMapping> $placeMappings
+     * @param Collection<int, ByPlaceMapping> $byPlaceMappings
      * @param HorizontalSingleQualifyRule|null $previous
      */
     public function __construct(
         HorizontalPoule $fromHorizontalPoule,
         QualifyGroup $group,
-        private Collection $placeMappings,
+        private Collection $byPlaceMappings,
         private HorizontalSingleQualifyRule|null $previous
     ) {
         parent::__construct($fromHorizontalPoule);
@@ -41,53 +41,77 @@ class Single extends HorizontalQualifyRule implements SingleQualifyRule
     }
 
     /**
-     * @return Collection<int, QualifyPlaceMapping>
+     * @return Collection<int, ByPlaceMapping>
      */
     public function getMappings(): Collection
     {
-        return $this->placeMappings;
+        return $this->byPlaceMappings;
     }
 
-    public function getToPlace(Place $fromPlace): Place
-    {
-        $mappings = $this->getMappings()->filter(function (QualifyPlaceMapping $placeMapping) use ($fromPlace): bool {
-            return $placeMapping->getFromPlace() === $fromPlace;
-        });
-        $mapping = $mappings->first();
-        if ($mapping === false) {
-            throw new \Exception('could not find toPlace', E_ERROR);
-        }
-        return $mapping->getToPlace();
-    }
+//    public function getToPlace(Place $fromPlace): Place
+//    {
+//        $mappings = $this->getMappings()->filter(function (ByPlaceMapping $placeMapping) use ($fromPlace): bool {
+//            return $placeMapping->getFromPlace() === $fromPlace;
+//        });
+//        $mapping = $mappings->first();
+//        if ($mapping === false) {
+//            throw new \Exception('could not find toPlace', E_ERROR);
+//        }
+//        return $mapping->getToPlace();
+//    }
+//
+//    public function getFromPlace(Place $toPlace): Place
+//    {
+//        $mappings = $this->getMappings()->filter(function (QualifyPlaceMapping $placeMapping) use ($toPlace): bool {
+//            return $placeMapping->getToPlace() === $toPlace;
+//        });
+//        $mapping = $mappings->first();
+//        if ($mapping === false) {
+//            throw new \Exception('could not find fromPlace', E_ERROR);
+//        }
+//        return $mapping->getFromPlace();
+//    }
+//
+//    public function getByPlaceMapping(Place $toPlace): QualifyPlaceMapping {
+//
+//    }
 
-    public function getFromPlace(Place $toPlace): Place
+    public function getMappingByToPlace(Place $toPlace): ByPlaceMapping|null
     {
-        $mappings = $this->getMappings()->filter(function (QualifyPlaceMapping $placeMapping) use ($toPlace): bool {
+        $mappings = $this->getMappings()->filter(function (ByPlaceMapping $placeMapping) use ($toPlace): bool {
             return $placeMapping->getToPlace() === $toPlace;
         });
         $mapping = $mappings->first();
-        if ($mapping === false) {
-            throw new \Exception('could not find fromPlace', E_ERROR);
-        }
-        return $mapping->getFromPlace();
+        return $mapping !== false ? $mapping : null;
     }
 
-    public function hasToPlace(Place $toPlace): bool {
-        try {
-            $this->getFromPlace($toPlace);
-            return true;
-        } catch ( \Exception $e ) {
-            return false;
-        }
-    }
-
-    public function getNrOfToPlaces(): int
+    public function getMappingByFromPlace(Place $fromPlace): ByPlaceMapping|null
     {
-        return $this->placeMappings->count();
+        $mappings = $this->getMappings()->filter(function (ByPlaceMapping $placeMapping) use ($fromPlace): bool {
+            return $placeMapping->getToPlace() === $fromPlace;
+        });
+        $mapping = $mappings->first();
+        return $mapping !== false ? $mapping : null;
     }
 
-    public function getNrOfDropouts(): int {
-        return $this->fromHorizontalPoule->getPlaces()->count() - $this->getNrOfToPlaces();
+    // if ($mapping === false) {
+//            throw new \Exception('could not find toPlace', E_ERROR);
+        // }
+//        return $mapping;
+
+//        try {
+//            $this->getFromPlace($toPlace);
+//            return true;
+//        } catch ( \Exception $e ) {
+//            return false;
+//        }
+//    }
+
+
+
+    public function getNrOfMappings(): int
+    {
+        return $this->byPlaceMappings->count();
     }
 
     public function getPrevious(): Single | null
@@ -140,7 +164,7 @@ class Single extends HorizontalQualifyRule implements SingleQualifyRule
         if ($neighBour === null) {
             return $nrOfToPlacesTargetSide;
         }
-        return $neighBour->getNrOfToPlaces() + $neighBour->getNrOfToPlacesTargetSide($targetSide);
+        return $neighBour->getNrOfMappings() + $neighBour->getNrOfToPlacesTargetSide($targetSide);
     }
 
     public function detach(): void

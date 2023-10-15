@@ -127,17 +127,17 @@ class Group extends Identifiable
 
     public function getRulesNrOfToPlaces(): int {
         $nrOfToPlaces = 0;
-//        if( $this->distribution === Distribution::HorizontalSnake) {
-            $singleRule = $this->getFirstSingleRule();
-            while ($singleRule !== null) {
-                $nrOfToPlaces = $singleRule->getNrOfToPlaces();
-                $singleRule = $singleRule->getNext();
-            }
-            $multipleRule = $this->getMultipleRule();
-            if ($multipleRule !== null) {
-                $nrOfToPlaces += $multipleRule->getNrOfToPlaces();
-            }
-//        }
+
+        $singleRule = $this->getFirstSingleRule();
+        while ($singleRule !== null) {
+            $nrOfToPlaces += $singleRule->getNrOfMappings();
+            $singleRule = $singleRule->getNext();
+        }
+        $multipleRule = $this->getMultipleRule();
+        if ($multipleRule !== null) {
+            $nrOfToPlaces += $multipleRule->getNrOfToPlaces();
+        }
+
         return $nrOfToPlaces;
     }
 
@@ -158,7 +158,7 @@ class Group extends Identifiable
 //        }
         $singleRule = $this->firstSingleRule;
         while ($singleRule !== null) {
-            if ($singleRule->hasToPlace($toPlace)) {
+            if ($singleRule->getMappingByToPlace($toPlace) !== null ) {
                 return $singleRule;
             }
             $singleRule = $singleRule->getNext();
@@ -174,9 +174,8 @@ class Group extends Identifiable
     {
         $singleRule = $this->getRuleByToPlace($toPlace);
         if ($singleRule instanceof HorizontalSingleQualifyRule) {
-            return $singleRule->getFromPlace($toPlace);
-        } else if ($singleRule instanceof VerticalSingleQualifyRule) {
-            return $singleRule->getFromPlace($toPlace);
+            $mapping = $singleRule->getMappingByToPlace($toPlace);
+            return $mapping?->getFromPlace();
         }
         return null;
     }

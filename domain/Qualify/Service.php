@@ -7,7 +7,8 @@ namespace Sports\Qualify;
 use Sports\Game\State as GameState;
 use Sports\Place;
 use Sports\Poule;
-use Sports\Qualify\PlaceMapping as QualifyPlaceMapping;
+use Sports\Qualify\Mapping\ByRank as ByRankMapping;
+use Sports\Qualify\Mapping\ByPlace as ByPlaceMapping;
 use Sports\Qualify\ReservationService as QualifyReservationService;
 use Sports\Qualify\Rule\Horizontal\Multiple as HorizontalMultipleQualifyRule;
 use Sports\Qualify\Rule\Horizontal\Single as HorizontalSingleQualifyRule;
@@ -40,15 +41,14 @@ class Service
         /** @var list<Place> $changedPlaces */
         $changedPlaces = [];
         $resetQualifiersForSingleRule = function (HorizontalSingleQualifyRule | VerticalSingleQualifyRule $singleQualifyRule) use ($filterPoule, &$changedPlaces): void {
-            foreach ($singleQualifyRule->getMappings() as $qualifyPlaceMapping) {
-                $fromPlace = $qualifyPlaceMapping->getFromPlace();
-                if ($filterPoule !== null && $fromPlace->getPoule() !== $filterPoule) {
+            foreach ($singleQualifyRule->getMappings() as $qualifyMapping) {
+                if ($filterPoule !== null && $qualifyMapping->getFromPoule() !== $filterPoule) {
                     continue;
                 }
-                $qualifyPlaceMapping->getToPlace()->setQualifiedPlace(null);
-                $qualifyPlaceMapping->getToPlace()->setExtraPoints(0);
+                $qualifyMapping->getToPlace()->setQualifiedPlace(null);
+                $qualifyMapping->getToPlace()->setExtraPoints(0);
                 /** @var list<Place> $changedPlaces */
-                array_push($changedPlaces, $qualifyPlaceMapping->getToPlace());
+                array_push($changedPlaces, $qualifyMapping->getToPlace());
             }
         };
         foreach ($this->round->getQualifyGroups() as $qualifyGroup) {
@@ -153,14 +153,19 @@ class Service
     }
 
     protected function setQualifierForPlaceMappingAndReserve(
-        QualifyPlaceMapping $qualifyPlaceMapping,
+        ByRankMapping|ByPlaceMapping $qualifyMapping,
         QualifyReservationService $reservationService
     ): void {
-        $poule = $qualifyPlaceMapping->getFromPlace()->getPoule();
-        $rank = $qualifyPlaceMapping->getFromPlace()->getPlaceNr();
+        $poule = $qualifyMapping->getFromPoule();
+        if( $qualifyMapping instanceof ByPlaceMapping ) {
+            $rank = $qualifyMapping->getFromPlace()->getPlaceNr();
+        } else {
+            $rank = $qualifyMapping->getFromRank();
+        }
+
         $qualifiedPlace = $this->getQualifiedPlace($poule, $rank);
-        $qualifyPlaceMapping->getToPlace()->setQualifiedPlace($qualifiedPlace);
-        $reservationService->reserve($qualifyPlaceMapping->getToPlace()->getPoule()->getNumber(), $poule);
+        $qualifyMapping->getToPlace()->setQualifiedPlace($qualifiedPlace);
+        $reservationService->reserve($qualifyMapping->getToPlace()->getPoule()->getNumber(), $poule);
     }
 
     /**

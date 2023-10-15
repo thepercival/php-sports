@@ -478,12 +478,12 @@ class Editor
 
     protected function getNrOfQualifiersPrevious(HorizontalSingleQualifyRule|VerticalSingleQualifyRule $singleRule): int
     {
-        return $singleRule->getNrOfToPlaces() + $singleRule->getNrOfToPlacesTargetSide(QualifyTarget::Winners);
+        return $singleRule->getNrOfMappings() + $singleRule->getNrOfToPlacesTargetSide(QualifyTarget::Winners);
     }
 
     protected function getNrOfQualifiersNext(HorizontalSingleQualifyRule|VerticalSingleQualifyRule $singleRule): int
     {
-        return $singleRule->getNrOfToPlaces() + $singleRule->getNrOfToPlacesTargetSide(QualifyTarget::Losers);
+        return $singleRule->getNrOfMappings() + $singleRule->getNrOfToPlacesTargetSide(QualifyTarget::Losers);
     }
 
     protected function getRoot(Round $round): Round
@@ -512,7 +512,7 @@ class Editor
     public function splitQualifyGroupFrom(QualifyGroup $qualifyGroup, HorizontalSingleQualifyRule|VerticalSingleQualifyRule $singleRule): void
     {
         $parentRound = $qualifyGroup->getParentRound();
-        $nrOfToPlaces = $singleRule->getNrOfToPlaces() + $singleRule->getNrOfToPlacesTargetSide(QualifyTarget::Winners);
+        $nrOfToPlaces = $singleRule->getNrOfMappings() + $singleRule->getNrOfToPlacesTargetSide(QualifyTarget::Winners);
         $borderSideNrOfToPlaces = $singleRule->getNrOfToPlacesTargetSide(QualifyTarget::Losers);
         if ($nrOfToPlaces < 2 || $borderSideNrOfToPlaces < 2) {
             throw new Exception('de kwalificatiegroep is niet splitsbaar', E_ERROR);

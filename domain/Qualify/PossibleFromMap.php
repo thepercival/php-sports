@@ -7,7 +7,8 @@ namespace Sports\Qualify;
 use Doctrine\Common\Collections\Collection;
 use Sports\Place;
 use Sports\Poule;
-use Sports\Qualify\PlaceMapping as QualifyPlaceMapping;
+use Sports\Qualify\Mapping\ByPlace as QualifyByPlaceMapping;
+use Sports\Qualify\Mapping\ByRank as QualifyByRankMapping;
 use Sports\Qualify\Group as QualifyGroup;
 use Sports\Qualify\Rule\Multiple as MultipleRule;
 use Sports\Round;
@@ -45,7 +46,7 @@ class PossibleFromMap
         $singleRule = $group->getFirstSingleRule();
         while ($singleRule !== null) {
             foreach ($singleRule->getMappings() as $mapping) {
-                $this->addPlaceMapping($mapping);
+                $this->addMapping($mapping);
             }
             $singleRule = $singleRule->getNext();
         }
@@ -91,11 +92,11 @@ class PossibleFromMap
 //        }
 //    }
 
-    public function addPlaceMapping(QualifyPlaceMapping $placeMapping): void
+    public function addMapping(QualifyByPlaceMapping|QualifyByRankMapping $placeMapping): void
     {
         $this->empty = false;
         $childPouleNumber = $placeMapping->getToPlace()->getPoule()->getNumber();
-        $this->map[$childPouleNumber][] = $placeMapping->getFromPlace()->getPoule();
+        $this->map[$childPouleNumber][] = $placeMapping->getFromPoule();
     }
 
     /**

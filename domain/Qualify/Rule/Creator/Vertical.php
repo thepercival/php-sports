@@ -14,7 +14,7 @@ use Sports\Qualify\Target as QualifyTarget;
 use Sports\Poule\Horizontal as HorizontalPoule;
 use Sports\Qualify\FromPoulePicker;
 use Sports\Qualify\Group as QualifyGroup;
-use Sports\Qualify\PlaceMapping as QualifyPlaceMapping;
+use Sports\Qualify\Mapping\ByRank as ByRankMapping;
 use Sports\Qualify\PossibleFromMap;
 use Sports\Qualify\Rule\Vertical\Multiple as VerticalMultipleQualifyRule;
 use Sports\Qualify\Rule\Vertical\Single as VerticalSingleQualifyRule;
@@ -46,8 +46,8 @@ class Vertical
 
                 // SingleRule
                 if (count($fromHorPoulePlaces) <= count($childPlaces)) {
-                    $placeMappings = new ArrayCollection( $this->fromPlacesToMappings($fromHorPoulePlaces, $childPlaces) );
-                    $previous = new VerticalSingleQualifyRule($fromHorPoule, $qualifyGroup, $placeMappings, $previous);
+                    $byRankMappings = new ArrayCollection( $this->fromPlacesToByRankMappings($fromHorPoulePlaces, $childPlaces) );
+                    $previous = new VerticalSingleQualifyRule($fromHorPoule, $qualifyGroup, $byRankMappings, $previous);
                 } else {
                     $toPlaces = [];
 
@@ -103,9 +103,9 @@ class Vertical
     /**
      * @param list<Place> $fromHorPoulePlaces
      * @param list<Place> $childPlaces
-     * @return list<QualifyPlaceMapping>
+     * @return list<ByRankMapping>
      */
-    protected function fromPlacesToMappings(array &$fromHorPoulePlaces, array &$childPlaces): array {
+    protected function fromPlacesToByRankMappings(array &$fromHorPoulePlaces, array &$childPlaces): array {
         $mapping = [];
         $fromHorPoulePlace = array_shift($fromHorPoulePlaces);
         while ($fromHorPoulePlace !== null) {
@@ -114,7 +114,7 @@ class Vertical
             if( $childPoulePlace === null ) {
                 throw new Exception('childPoulePlace should not be null', E_ERROR);
             }
-            $mapping[] =  new QualifyPlaceMapping($fromHorPoulePlace, $childPoulePlace );
+            $mapping[] =  new ByRankMapping($fromHorPoulePlace->getPoule(), $fromHorPoulePlace->getPlaceNr(), $childPoulePlace );
             $fromHorPoulePlace = array_shift($fromHorPoulePlaces);
         }
         return $mapping;
