@@ -43,21 +43,24 @@ class PossibleFromMap
 
     protected function addGroup(QualifyGroup $group): void
     {
-        $singleRule = $group->getFirstSingleRule();
-        while ($singleRule !== null) {
-            foreach ($singleRule->getMappings() as $mapping) {
-                $this->addMapping($mapping);
+        if( $group->getDistribution() === Distribution::Vertical ) {
+            if( $group->getFirstSingleRule() !== null || $group->getMultipleRule() !== null ) {
+                $this->addGroupToMap($group);
             }
-            $singleRule = $singleRule->getNext();
-        }
-        $multipRule = $group->getMultipleRule();
-        if ($multipRule === null) {
-            return;
-        }
-        $this->empty = false;
-        $parentPoules = array_values($group->getParentRound()->getPoules()->toArray());
-        foreach ($group->getChildRound()->getPoules() as $childPoule) {
-            $this->map[$childPoule->getNumber()] = $parentPoules;
+        } else {
+            $singleRule = $group->getFirstSingleRule();
+            while ($singleRule !== null) {
+                foreach ($singleRule->getMappings() as $mapping) {
+                    if( $mapping instanceof QualifyByPlaceMapping) {
+                        $this->addMappingToMap($mapping);
+                    }
+                }
+                $singleRule = $singleRule->getNext();
+            }
+            $multipRule = $group->getMultipleRule();
+            if ($multipRule !== null) {
+                $this->addGroupToMap($group);
+            }
         }
     }
 
@@ -73,8 +76,6 @@ class PossibleFromMap
         }
         return new PossibleFromMap($parentQualifyGroup->getParentRound(), true);
     }
-
-
 
 //    public function addSingleRule(SingleRule $rule): void
 //    {
@@ -92,11 +93,20 @@ class PossibleFromMap
 //        }
 //    }
 
-    public function addMapping(QualifyByPlaceMapping|QualifyByRankMapping $placeMapping): void
+    public function addMappingToMap(QualifyByPlaceMapping $placeMapping): void
     {
         $this->empty = false;
         $childPouleNumber = $placeMapping->getToPlace()->getPoule()->getNumber();
         $this->map[$childPouleNumber][] = $placeMapping->getFromPoule();
+    }
+
+    public function addGroupToMap(QualifyGroup $group): void
+    {
+        $this->empty = false;
+        $parentPoules = array_values($group->getParentRound()->getPoules()->toArray());
+        foreach ($group->getChildRound()->getPoules() as $childPoule) {
+            $this->map[$childPoule->getNumber()] = $parentPoules;
+        }
     }
 
     /**

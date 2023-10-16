@@ -63,7 +63,7 @@ class Horizontal
         return $this->number;
     }
 
-    public function getPlaceNumber(): int
+    public function getAbsoluteNumber(): int
     {
         if ($this->getQualifyTarget() !== QualifyTarget::Losers) {
             return $this->number;

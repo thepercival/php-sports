@@ -32,9 +32,4 @@ abstract class Rule
     {
         return $this->fromHorizontalPoule->getRound();
     }
-
-    public function getFromPlaceNumber(): int
-    {
-        return $this->getFromHorizontalPoule()->getPlaceNumber();
-    }
 }

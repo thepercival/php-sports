@@ -159,7 +159,7 @@ class NameService
         $absolute = $rule->getQualifyTarget() === QualifyTarget::Winners || $balanced;
 
         $fromHorPoule = $rule->getFromHorizontalPoule();
-        $fromNumber = $absolute ? $fromHorPoule->getPlaceNumber() : $fromHorPoule->getNumber();
+        $fromNumber = $absolute ? $fromHorPoule->getAbsoluteNumber() : $fromHorPoule->getNumber();
 
         $name = $this->getOrdinal($fromNumber);
         if ($rule->getQualifyTarget() === QualifyTarget::Losers && !$absolute) {
@@ -297,8 +297,6 @@ class NameService
         bool $absolute
     ): string {
         $fromHorPoule = $rule->getFromHorizontalPoule();
-        // CONVERSION FROM HorPoule TO RANK
-        $fromRankContainer = $absolute ? $fromHorPoule->getPlaceNumber() : $fromHorPoule->getNumber();
 
         if( $rule instanceof VerticalSingleQualifyRule ) {
             $byRankMapping = $rule->getMappingByToPlace($toPlace);
@@ -307,17 +305,11 @@ class NameService
             }
             $fromRank = $byRankMapping->getFromRank();
         } else {
-            $fromRank = $rule->getRankByToPlace($toPlace);
+            $fromRank = $rule->getAbsoluteRankByToPlace($toPlace);
         }
 
-        if ($rule->getQualifyTarget() === QualifyTarget::Losers) { // convert for losers
-            if( $rule instanceof VerticalSingleQualifyRule ) {
-                $total = $rule->getNrOfMappings();
-            } else {
-                $total = $rule->getNrOfToPlaces() + $rule->getNrOfDropouts();
-            }
-            $fromRank = ($total + 1) - $fromRank;
-        }
+        // CONVERSION FROM HorPoule TO RANK
+        $fromRankContainer = $absolute ? $fromHorPoule->getAbsoluteNumber() : $fromHorPoule->getNumber();
 
         $fromRankOrdinal = $this->getOrdinal($fromRank);
         if (!$longName) {

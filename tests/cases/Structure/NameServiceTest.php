@@ -6,17 +6,15 @@ namespace Sports\Tests\Structure;
 
 use Sports\Competitor\StartLocation;
 use Sports\Competitor\StartLocationMap;
+use Sports\Qualify\Distribution;
+use Sports\Qualify\Target;
 use Sports\Qualify\Target as QualifyTarget;
 use PHPUnit\Framework\TestCase;
-use Sports\Competition\Field;
-use Sports\Competitor\Map as CompetitorMap;
 use Sports\Output\StructureOutput;
 use Sports\Team;
-use Sports\Game\Against as AgainstGame;
 use Sports\TestHelper\CompetitionCreator;
 use Sports\Structure\NameService;
 use Sports\Competitor\Team as TeamCompetitor;
-use Sports\Competition\Referee;
 use Sports\TestHelper\GamesCreator;
 use Sports\TestHelper\StructureEditorCreator;
 
@@ -344,6 +342,80 @@ final class NameServiceTest extends TestCase
             );
         }
     }
+
+    public function testPlaceFromNameVertical(): void
+    {
+        $competition = $this->createCompetition();
+
+        // basics
+        {
+            $structureEditor = $this->createStructureEditor();
+            $structure = $structureEditor->create($competition, [5, 5, 5, 5]);
+            $rootRound = $structure->getSingleCategory()->getRootRound();
+
+            $nameService = new NameService();
+
+            $winnersRound = $structureEditor->addChildRound($rootRound, QualifyTarget::Winners, [3, 3, 3], Distribution::Vertical);
+            $losersRound = $structureEditor->addChildRound($rootRound, QualifyTarget::Losers, [3, 3, 3], Distribution::Vertical);
+            (new StructureOutput())->output($structure);
+
+            $winnersThirdPlaceThirdPoule = $winnersRound->getPoule(3)->getPlace(3); // 1e3
+            self::assertSame(
+                '1e3',
+                $nameService->getPlaceFromName($winnersThirdPlaceThirdPoule, false)
+            );
+            self::assertSame(
+                '1e van 3e plekken',
+                $nameService->getPlaceFromName($winnersThirdPlaceThirdPoule, false, true)
+            );
+
+            $losersFirstPlaceFirstPoule = $losersRound->getPoule(1)->getPlace(1); // 4e3
+            self::assertSame(
+                '4e3',
+                $nameService->getPlaceFromName($losersFirstPlaceFirstPoule, false)
+            );
+            self::assertSame(
+                '4e van 3e plekken',
+                $nameService->getPlaceFromName($losersFirstPlaceFirstPoule, false, true)
+            );
+        }
+    }
+
+    public function testPlaceFromNameVerticalLosers(): void
+    {
+        $competition = $this->createCompetition();
+
+        // basics
+        {
+            $structureEditor = $this->createStructureEditor();
+            $structure = $structureEditor->create($competition, [3, 3, 3, 2]);
+            $rootRound = $structure->getSingleCategory()->getRootRound();
+
+            $nameService = new NameService();
+
+            $losersRound = $structureEditor->addChildRound($rootRound, QualifyTarget::Losers, [3, 3], Distribution::Vertical);
+            // (new StructureOutput())->output($structure);
+
+            $losersSecondPlaceFirstPoule = $losersRound->getPoule(1)->getPlace(2);
+            self::assertSame(
+                '4e2',
+                $nameService->getPlaceFromName($losersSecondPlaceFirstPoule, false)
+            );
+
+            $losersThirdPlaceFirstPoule = $losersRound->getPoule(1)->getPlace(3);
+            self::assertSame(
+                '1e3',
+                $nameService->getPlaceFromName($losersThirdPlaceFirstPoule, false)
+            );
+
+            $losersThirdPlaceSecondPoule = $losersRound->getPoule(2)->getPlace(3);
+            self::assertSame(
+                '4e3',
+                $nameService->getPlaceFromName($losersThirdPlaceSecondPoule, false)
+            );
+        }
+    }
+
 
 //    public function testHourizontalPouleName(): void
 //    {

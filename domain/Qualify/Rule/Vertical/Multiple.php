@@ -10,6 +10,7 @@ use Sports\Qualify\Rule\Multiple as MultipleQualifyRule;
 use Sports\Qualify\Rule\Vertical as VerticalQualifyRule;
 use Sports\Qualify\Rule\Vertical\Multiple as VerticalMultipleQualifyRule;
 use Sports\Qualify\Rule\Vertical\Single as VerticalSingleQualifyRule;
+use Sports\Qualify\Target;
 
 class Multiple extends VerticalQualifyRule implements MultipleQualifyRule
 {
@@ -28,9 +29,13 @@ class Multiple extends VerticalQualifyRule implements MultipleQualifyRule
         $group->setMultipleRule($this);
     }
 
-    public function getRankByToPlace(Place $toPlace): int
+    public function getAbsoluteRankByToPlace(Place $toPlace): int
     {
         $index = array_search($toPlace, $this->toPlaces, true);
+        if( $this->getQualifyTarget() === Target::Losers ) {
+            $nrOfHorPlaces = $this->getFromHorizontalPoule()->getPlaces()->count();
+            return $index === false ? 0 : $nrOfHorPlaces - $index;
+        }
         return $index === false ? 0 : $index + 1;
     }
 

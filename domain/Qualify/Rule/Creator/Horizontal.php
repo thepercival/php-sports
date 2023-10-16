@@ -126,7 +126,7 @@ class Horizontal
             $bestFromPlace = $this->removeBestHorizontalPlace($fromHorPoulePlaces, $bestFromPoule);
             $placeMapping = new QualifyByPlaceMapping($bestFromPlace, $childRoundPlace);
             $mappings->add($placeMapping);
-            $this->possibleFromMap->addMapping($placeMapping);
+            $this->possibleFromMap->addMappingToMap($placeMapping);
         }
         return $mappings;
     }
