@@ -49,6 +49,7 @@ class Copier
         $newCategories = [];
         foreach ($structure->getCategories() as $category) {
             $newCategory = new Category($newCompetition, $category->getName(), $category->getNumber());
+            $newCategory->setAbbreviation($category->getAbbreviation());
             $newCategories[] = $newCategory;
             $this->copyCategory($category, $newCategory, $newFirstRoundNumber);
         }

@@ -17,9 +17,12 @@ use InvalidArgumentException;
 class Category extends Identifiable
 {
     public const MAX_LENGTH_NAME = 15;
+    public const MAX_LENGTH_ABBREVIATION = 2;
     public const DEFAULTNAME = 'standaard';
-    protected int $number;
     protected string $name;
+    protected int $number;
+    protected string|null $abbreviation = null;
+
     /**
      * @var Collection<int|string, StructureCell>
      */
@@ -65,6 +68,22 @@ class Category extends Identifiable
             );
         }
         $this->name = $name;
+    }
+
+    public function getAbbreviation(): string|null
+    {
+        return $this->abbreviation;
+    }
+
+    public function setAbbreviation(string|null $abbreviation): void
+    {
+        if ($abbreviation !== null && strlen($abbreviation) > self::MAX_LENGTH_ABBREVIATION) {
+            throw new InvalidArgumentException(
+                'de afkortinh mag maximaal ' . self::MAX_LENGTH_ABBREVIATION . ' karakters bevatten',
+                E_ERROR
+            );
+        }
+        $this->abbreviation = $abbreviation;
     }
 
     /**

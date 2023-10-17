@@ -65,8 +65,9 @@ class Editor
         $firstRoundNumber = new RoundNumber($competition);
         $this->planningConfigService->createDefault($firstRoundNumber);
 
+        $catergoryName = $categoryName ?? Category::DEFAULTNAME;
         $category = $this->addCategoryHelper(
-            $categoryName ?? Category::DEFAULTNAME,
+            $catergoryName, substr($catergoryName, 0, 1),
             $firstRoundNumber,
             $balancedPouleStructure
         );
@@ -93,10 +94,11 @@ class Editor
      */
     public function addCategory(
         string $name,
+        string|null $abbreviation,
         RoundNumber $firstRoundNumber,
         BalancedPouleStructure $pouleStructure
     ): Category {
-        $category = $this->addCategoryHelper($name, $firstRoundNumber, $pouleStructure);
+        $category = $this->addCategoryHelper($name, $abbreviation, $firstRoundNumber, $pouleStructure);
         foreach ($firstRoundNumber->getCompetitionSports() as $competitionSport) {
             $this->competitionSportEditor->addToCategory($competitionSport, $category);
         }
@@ -110,11 +112,13 @@ class Editor
 
     protected function addCategoryHelper(
         string $name,
+        string|null $abbreviation,
         RoundNumber $firstRoundNumber,
         BalancedPouleStructure $pouleStructure
     ): Category {
         $competition = $firstRoundNumber->getCompetition();
         $category = new Category($competition, $name);
+        $category->setAbbreviation($abbreviation);
         $structureCell = new Cell($category, $firstRoundNumber);
         $rootRound = new Round($structureCell, null);
         $this->fillRound($rootRound, $pouleStructure);

@@ -8,6 +8,8 @@ Sports\Category:
       type: string
     number:
       type: integer
+    abbreviation:
+      type: string
   virtual_properties:
     getFirstStructureCell:
       type: Sports\Structure\Cell

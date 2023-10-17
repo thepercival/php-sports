@@ -809,7 +809,7 @@ final class EditorTest extends TestCase
 
         self::assertCount(1, $firstRoundNumber->getGameAmountConfigs());
 
-        $category2 = $structureEditor->addCategory('j78', $firstRoundNumber, new BalancedPouleStructure(...[5]));
+        $category2 = $structureEditor->addCategory('j78', null, $firstRoundNumber, new BalancedPouleStructure(...[5]));
 
         /*$newStructure =*/ new Structure(array_values($competition->getCategories()->toArray()), $firstRoundNumber);
 

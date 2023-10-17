@@ -5,6 +5,7 @@
     <entity name="Sports\Category" table="categories" repository-class="Sports\Category\Repository">
         <field name="number" column="number" type="smallint" nullable="false" unique="false"/>
         <field name="name" column="name" type="string" length="20" nullable="false" unique="false"/>
+        <field name="abbreviation" column="abbreviation" type="string" length="2" nullable="true" unique="false"/>
         <many-to-one field="competition" target-entity="Sports\Competition" inversed-by="categories">
             <join-columns>
                 <join-column name="competitionId" referenced-column-name="id" nullable="false" on-delete="CASCADE"/>

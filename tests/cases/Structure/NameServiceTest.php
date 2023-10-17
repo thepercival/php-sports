@@ -416,6 +416,30 @@ final class NameServiceTest extends TestCase
         }
     }
 
+    public function testPlaceFromNameVertical333to22(): void
+    {
+        $competition = $this->createCompetition();
+
+        // basics
+        {
+            $structureEditor = $this->createStructureEditor();
+            $structure = $structureEditor->create($competition, [3, 3, 3]);
+            $rootRound = $structure->getSingleCategory()->getRootRound();
+
+            $nameService = new NameService();
+
+            $winnersRound = $structureEditor->addChildRound($rootRound, QualifyTarget::Winners, [2, 2], Distribution::Vertical);
+            (new StructureOutput())->output($structure);
+
+            $losersFirstPlaceFirstPoule = $winnersRound->getPoule(1)->getPlace(1);
+            self::assertSame(
+                '1e1',
+                $nameService->getPlaceFromName($losersFirstPlaceFirstPoule, false)
+            );
+
+        }
+    }
+
 
 //    public function testHourizontalPouleName(): void
 //    {

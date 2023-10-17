@@ -28,7 +28,7 @@ final class OutputTest extends TestCase
 
         $firstRoundNumber = $structure->getFirstRoundNumber();
         $balancedPouleStructure = new BalancedPouleStructure(...[5]);
-        $structureEditor->addCategory('dames', $firstRoundNumber, $balancedPouleStructure);
+        $structureEditor->addCategory('dames', null, $firstRoundNumber, $balancedPouleStructure);
 
         $newStructure = new Structure(array_values($competition->getCategories()->toArray()), $firstRoundNumber);
 
@@ -51,7 +51,7 @@ final class OutputTest extends TestCase
 
         $firstRoundNumber = $structure->getFirstRoundNumber();
         $balancedPouleStructure = new BalancedPouleStructure(...[4,4,4,4]);
-        $damesCat = $structureEditor->addCategory('dames', $firstRoundNumber, $balancedPouleStructure);
+        $damesCat = $structureEditor->addCategory('dames', null, $firstRoundNumber, $balancedPouleStructure);
 
         $damesSemFin = $structureEditor->addChildRound($damesCat->getRootRound(), QualifyTarget::Winners, [4]);
         $structureEditor->addChildRound($damesSemFin, QualifyTarget::Winners, [2]);

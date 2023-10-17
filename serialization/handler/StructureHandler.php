@@ -56,11 +56,13 @@ class StructureHandler extends Handler implements SubscribingHandlerInterface
 //            Round::class
 //        );
         $categories = [];
-        /** @var array{id: string|int, name: string, number: int, firstStructureCell: array} $arrCategory */
+        /** @var array{id: string|int, name: string, abbreviation: string|null, number: int, firstStructureCell: array} $arrCategory */
         foreach ($fieldValue["categories"] as $arrCategory) {
             // Start RootRound
             $category = new Category($firstRoundNumber->getCompetition(), $arrCategory['name'], $arrCategory['number']);
             $category->setId($arrCategory['id']);
+            $category->setAbbreviation($arrCategory['abbreviation']);
+
 
 
             $this->createStructureCells($arrCategory['firstStructureCell'], $category, $firstRoundNumber);
