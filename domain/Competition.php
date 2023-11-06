@@ -14,6 +14,7 @@ use Sports\Competition\Sport as CompetitionSport;
 use Sports\Competitor\Team as TeamCompetitor;
 use Sports\Ranking\AgainstRuleSet;
 use SportsHelpers\Identifiable;
+use SportsHelpers\Sport\VariantWithFields as SportVariantWithFields;
 use SportsHelpers\Sport\Variant\Against\GamesPerPlace as AgainstGpp;
 use SportsHelpers\Sport\Variant\Against\H2h as AgainstH2h;
 use SportsHelpers\Sport\Variant\AllInOneGame;
@@ -172,11 +173,13 @@ class Competition extends Identifiable
     }
 
     /**
-     * @return Collection<int|string, Team>
+     * @return array<int|string, Team>
      */
-    public function getTeams(): Collection
+    public function getTeams(): array
     {
-        return $this->getTeamCompetitors()->map(fn(TeamCompetitor $teamCompetitor) => $teamCompetitor->getTeam());
+        return array_map(function(TeamCompetitor $teamCompetitor): Team {
+            return $teamCompetitor->getTeam();
+        }, $this->getTeamCompetitors()->toArray() );
     }
 
     /**
@@ -188,16 +191,31 @@ class Competition extends Identifiable
     }
 
     /**
+     * @return list<SportVariantWithFields>
+     */
+    public function createSportVariantsWithFields(): array
+    {
+        return array_values(
+            array_map(
+                function (CompetitionSport $competitionSport): SportVariantWithFields {
+                    return $competitionSport->createVariantWithFields();
+                }, $this->getSports()->toArray()
+            )
+        );
+    }
+
+
+    /**
      * @return list<AllInOneGame|Single|AgainstH2h|AgainstGpp>
      */
     public function createSportVariants(): array
     {
         return array_values(
-            $this->getSports()->map(
+            array_map(
                 function (CompetitionSport $competitionSport): AllInOneGame|Single|AgainstH2h|AgainstGpp {
                     return $competitionSport->createVariant();
-                }
-            )->toArray()
+                }, $this->getSports()->toArray()
+            )
         );
     }
 
@@ -225,13 +243,13 @@ class Competition extends Identifiable
     }
 
     /**
-     * @return Collection<int|string, Sport>
+     * @return array<int|string, Sport>
      */
-    public function getBaseSports(): Collection
+    public function getBaseSports(): array
     {
-        return $this->sports->map(function (CompetitionSport $competitionSport): Sport {
+        return array_map(function (CompetitionSport $competitionSport): Sport {
             return $competitionSport->getSport();
-        });
+        }, $this->sports->toArray());
     }
 
     /**

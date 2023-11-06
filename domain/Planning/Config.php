@@ -7,6 +7,8 @@ namespace Sports\Planning;
 use Sports\Round\Number as RoundNumber;
 use SportsHelpers\Identifiable;
 use SportsHelpers\SelfReferee;
+use SportsHelpers\SelfRefereeInfo;
+use SportsPlanning\Referee\Info as RefereeInfo;
 
 class Config extends Identifiable
 {
@@ -142,6 +144,10 @@ class Config extends Identifiable
     public function setNrOfSimSelfRefs(int $nrOfSimSelfRefs): void
     {
         $this->nrOfSimSelfRefs = $nrOfSimSelfRefs;
+    }
+
+    public function getSelfRefereeInfo(): SelfRefereeInfo {
+        return new SelfRefereeInfo($this->selfReferee, $this->getNrOfSimSelfRefs() );
     }
 
     protected function getRoundNumber(): RoundNumber

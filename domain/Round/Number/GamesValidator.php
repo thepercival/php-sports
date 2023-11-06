@@ -17,6 +17,8 @@ use Sports\Place;
 use Sports\Poule;
 use Sports\Round\Number as RoundNumber;
 use Sports\Structure;
+use SportsPlanning\PouleStructure as PlanningPouleStructure;
+use SportsPlanning\Referee\Info as RefereeInfo;
 use SportsHelpers\Sport\Variant\Creator as VariantCreator;
 use SportsHelpers\Sport\Variant\WithPoule\Against\GamesPerPlace as AgainstGppWithPoule;
 use SportsHelpers\SelfReferee;
@@ -62,7 +64,9 @@ class GamesValidator
         $this->validateEnoughTotalNrOfGames($roundNumber);
         $this->validateFields($roundNumber);
         $this->validateReferee($roundNumber, $nrOfReferees);
-        $this->validateSelfReferee($roundNumber);
+        if( $roundNumber->getValidPlanningConfig()->selfRefereeEnabled() ) {
+            $this->validateSelfReferee($roundNumber);
+        }
         if (count($blockedPeriods) > 0) {
             $this->validateGameNotInBlockedPeriod($roundNumber, $blockedPeriods);
         }
@@ -111,12 +115,12 @@ class GamesValidator
 
     protected function validateSelfReferee(RoundNumber $roundNumber): void
     {
-        $pouleStructure = $roundNumber->createPouleStructure();
-        $selfReferee = $roundNumber->getValidPlanningConfig()->getSelfReferee();
-        $sportVariants = $roundNumber->getCompetition()->createSportVariants();
-        if (!$pouleStructure->isSelfRefereeBeAvailable($selfReferee, $sportVariants)) {
-            return;
-        }
+        // MAYBE EXCEPTION OCCURS
+        new PlanningPouleStructure(
+            $roundNumber->createPouleStructure(),
+            $roundNumber->getCompetition()->createSportVariantsWithFields(),
+            $roundNumber->getRefereeInfo()
+        );
         foreach ($roundNumber->getGames(Order::ByPoule) as $game) {
             if ($game->getRefereePlace() === null) {
                 throw new Exception("the game should have a refereeplace", E_ERROR);
@@ -190,13 +194,13 @@ class GamesValidator
      * @param TogetherGame|AgainstGame $game
      * @return list<Place>
      */
-    protected function getPlaces($game): array
+    protected function getPlaces(TogetherGame|AgainstGame $game): array
     {
-        return array_values($game->getPlaces()->map(
-            function (AgainstGamePlace|TogetherGamePlace $gamePlace): Place {
+        return array_values(
+            array_map(function (AgainstGamePlace|TogetherGamePlace $gamePlace): Place {
                 return $gamePlace->getPlace();
-            }
-        )->toArray());
+                }, $game->getPlaces()->toArray()
+        ));
     }
 
     protected function validateResourcesPerBatch(RoundNumber $roundNumber): void

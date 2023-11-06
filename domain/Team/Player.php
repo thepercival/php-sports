@@ -60,13 +60,16 @@ class Player extends Role
     }
 
     /**
-     * @return Collection<int|string, AgainstGame>
+     * @return array<int|string, AgainstGame>
      */
-    public function getAgainstGames(Period|null $period = null): Collection
+    public function getAgainstGames(Period|null $period = null): array
     {
-        return
-            $this->gameParticipations
-                ->map(fn(GameParticipation $gp) => $gp->getAgainstGamePlace()->getGame())
-                ->filter(fn(AgainstGame $g) => $period === null || $period->contains($g->getStartDateTime()));
+        return array_filter(
+            array_map(function(GameParticipation $gameParticipation): AgainstGame{
+                return $gameParticipation->getAgainstGamePlace()->getGame();
+            }, $this->gameParticipations->toArray())
+        , function(AgainstGame $g) use ($period): bool {
+                return $period === null || $period->contains($g->getStartDateTime());
+        });
     }
 }

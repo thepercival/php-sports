@@ -560,11 +560,11 @@ class Round extends Identifiable
     public function getValidScoreConfigs(): array
     {
         return array_values(
-            $this->getCategory()->getCompetitionSports()->map(
+            array_map(
                 function (CompetitionSport $competitionSport): ScoreConfig {
                     return $this->getValidScoreConfig($competitionSport);
-                }
-            )->toArray()
+                }, $this->getCategory()->getCompetitionSports()->toArray()
+            )
         );
     }
 
@@ -622,11 +622,11 @@ class Round extends Identifiable
     public function getValidAgainstQualifyConfigs(): array
     {
         return array_values(
-            $this->getStructureCell()->getRoundNumber()->getCompetitionSports()->map(
+            array_map(
                 function (CompetitionSport $competitionSport): AgainstQualifyConfig {
                     return $this->getValidAgainstQualifyConfig($competitionSport);
-                },
-            )->toArray()
+                }, $this->getStructureCell()->getRoundNumber()->getCompetitionSports()->toArray()
+            )
         );
     }
 
@@ -652,9 +652,9 @@ class Round extends Identifiable
      */
     public function createPouleStructure(): BalancedPouleStructure
     {
-        $nrOfPlaces = $this->getPoules()->map(function (Poule $poule): int {
+        $nrOfPlaces = array_map(function (Poule $poule): int {
             return $poule->getPlaces()->count();
-        })->toArray();
+        }, $this->getPoules()->toArray() );
         return new BalancedPouleStructure(...$nrOfPlaces);
     }
 

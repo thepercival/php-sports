@@ -18,8 +18,8 @@ use SportsHelpers\SportRange;
 use SportsPlanning\Batch\SelfReferee\OtherPoule as SelfRefereeBatchOtherPoule;
 use SportsPlanning\Batch\SelfReferee\SamePoule as SelfRefereeBatchSamePoule;
 use SportsPlanning\Planning;
-use SportsPlanning\Resource\RefereePlace\Service as RefereePlaceService;
-use SportsPlanning\Schedule\Creator as ScheduleCreator;
+use SportsScheduler\Resource\RefereePlace\Service as RefereePlaceService;
+use SportsScheduler\Schedule\Creator as ScheduleCreator;
 
 class GamesCreator
 {

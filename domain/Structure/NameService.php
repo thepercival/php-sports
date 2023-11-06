@@ -80,7 +80,7 @@ class NameService
 
         $nrOfRoundsToGo = $this->getMaxDepth($round);
         if ($nrOfRoundsToGo >= 1) {
-            return $this->getFractalNumber((int)pow(2, $nrOfRoundsToGo)) . ' finale';
+            return $this->getFractalNumber(pow(2, $nrOfRoundsToGo)) . ' finale';
         }
         // if (round.getNrOfPlaces() > 1) {
         if ($round->getNrOfPlaces() === 2 && $sameName === false) {

@@ -357,7 +357,7 @@ final class NameServiceTest extends TestCase
 
             $winnersRound = $structureEditor->addChildRound($rootRound, QualifyTarget::Winners, [3, 3, 3], Distribution::Vertical);
             $losersRound = $structureEditor->addChildRound($rootRound, QualifyTarget::Losers, [3, 3, 3], Distribution::Vertical);
-            (new StructureOutput())->output($structure);
+            // (new StructureOutput())->output($structure);
 
             $winnersThirdPlaceThirdPoule = $winnersRound->getPoule(3)->getPlace(3); // 1e3
             self::assertSame(
@@ -429,7 +429,7 @@ final class NameServiceTest extends TestCase
             $nameService = new NameService();
 
             $winnersRound = $structureEditor->addChildRound($rootRound, QualifyTarget::Winners, [2, 2], Distribution::Vertical);
-            (new StructureOutput())->output($structure);
+            // (new StructureOutput())->output($structure);
 
             $losersFirstPlaceFirstPoule = $winnersRound->getPoule(1)->getPlace(1);
             self::assertSame(

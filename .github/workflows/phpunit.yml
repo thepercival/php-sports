@@ -7,22 +7,20 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: Setup PHP 8.2
         uses: shivammathur/setup-php@v2
         with:
           php-version: '8.2'
-          extensions: xdebug intl
 
-      - name: Validate composer.json and composer.lock
-        run: composer validate --strict
-
-      - name: Install dependencies
-        run: composer install --prefer-dist --no-progress --no-suggest
+      - uses: php-actions/composer@v6
 
       - name: PHPUnit Tests
         uses: php-actions/phpunit@v3
         with:
+          php_version: 8.2
+          php_extensions: xdebug
           configuration: tests/phpunit.xml
-          php_extensions: xdebug intl
+        env:
+          XDEBUG_MODE: coverage

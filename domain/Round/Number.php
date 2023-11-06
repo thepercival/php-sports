@@ -25,10 +25,12 @@ use Sports\Round;
 use Sports\Round\Number as RoundNumber;
 use SportsHelpers\Identifiable;
 use SportsHelpers\PouleStructure;
+use SportsHelpers\SelfRefereeInfo;
 use SportsHelpers\Sport\Variant\Against\H2h as AgainstH2h;
 use SportsHelpers\Sport\Variant\Against\GamesPerPlace as AgainstGpp;
 use SportsHelpers\Sport\Variant\AllInOneGame;
 use SportsHelpers\Sport\Variant\Single;
+use SportsPlanning\Referee\Info as RefereeInfo;
 
 class Number extends Identifiable
 {
@@ -401,11 +403,11 @@ class Number extends Identifiable
      */
     public function getValidGameAmountConfigs(): array
     {
-        return array_values($this->getCompetitionSports()->map(
+        return array_values(array_map(
             function (CompetitionSport $competitionSport): GameAmountConfig {
                 return $this->getValidGameAmountConfig($competitionSport);
-            }
-        )->toArray());
+            }, $this->getCompetitionSports()->toArray()
+        ));
     }
 
     /**
@@ -421,6 +423,14 @@ class Number extends Identifiable
         );
     }
 
+    public function getRefereeInfo(): RefereeInfo
+    {
+        $planningConfig = $this->getValidPlanningConfig();
+        if ($planningConfig->selfRefereeEnabled()) {
+            return new RefereeInfo($planningConfig->getSelfRefereeInfo());
+        }
+        return new RefereeInfo($this->getCompetition()->getReferees()->count());
+    }
 
     public function createPouleStructure(): PouleStructure
     {

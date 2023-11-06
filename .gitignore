@@ -4,6 +4,7 @@
 .env
 *.log
 /tests/.phpunit.result.cache
+/tests/.phpunit.cache
 /tests/codecoverage/
 /.php_cs.cache
 /.php-cs-fixer.cache

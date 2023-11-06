@@ -14,6 +14,7 @@ use Sports\Output\StructureOutput;
 use Sports\Qualify\Distribution;
 use Sports\Qualify\Group as QualifyGroup;
 use Sports\Qualify\Rule\Creator\Vertical;
+use Sports\Qualify\Rule\Horizontal\Single as HorizontalSingleQualifyRule;
 use Sports\Qualify\Target as QualifyTarget;
 use Sports\Structure;
 use Sports\TestHelper\CompetitionCreator;
@@ -650,6 +651,7 @@ final class EditorTest extends TestCase
         $qualifyGroup = $nextRound->getParentQualifyGroup();
         self::assertNotNull($qualifyGroup);
 
+        /** @var HorizontalSingleQualifyRule|VerticalSingleQualifyRule|null $singleRule */
         $singleRule = $qualifyGroup->getFirstSingleRule();
         while ($singleRule !== null) {
             self::assertFalse($structureEditor->isQualifyGroupSplittableAt($singleRule));

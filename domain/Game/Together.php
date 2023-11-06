@@ -43,9 +43,11 @@ class Together extends GameBase
 
     public function isParticipating(Place $place): bool
     {
-        $places = $this->getPlaces()->map(function (TogetherGamePlace $gamePlace): Place {
-            return $gamePlace->getPlace();
-        });
-        return $places->contains($place);
+        foreach( $this->getPlaces() as $gamePlace) {
+            if( $gamePlace->getPlace() === $place) {
+                return true;
+            }
+        }
+        return false;
     }
 }

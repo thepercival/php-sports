@@ -9,13 +9,13 @@ use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 use Psr\Log\LoggerInterface;
 use SportsHelpers\SportRange;
-use SportsPlanning\Game\Assigner as GameAssigner;
-use SportsPlanning\Game\Creator as GameCreator;
+use SportsScheduler\Game\Assigner as GameAssigner;
+use SportsScheduler\Game\Creator as GameCreator;
 use SportsPlanning\Input;
 use SportsPlanning\Planning;
 use SportsPlanning\Planning\State as PlanningState;
-use SportsPlanning\Schedule\Creator as ScheduleCreator;
-use SportsPlanning\Schedule\Output as ScheduleOutput;
+use SportsScheduler\Schedule\Creator as ScheduleCreator;
+use SportsPlanning\Output\Schedule as ScheduleOutput;
 
 class PlanningCreator
 {

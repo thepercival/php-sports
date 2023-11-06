@@ -51,9 +51,9 @@ class Round
      */
     public function getItemsForPoule(Poule $poule): array
     {
-        $sportRoundRankingItems = $poule->getCompetition()->getSports()->map(function (CompetitionSport $competitionSport) use ($poule): array {
+        $sportRoundRankingItems = array_map(function (CompetitionSport $competitionSport) use ($poule): array {
             return $this->getSportRoundRankingCalculator($competitionSport)->getItemsForPoule($poule);
-        })->toArray();
+        }, $poule->getCompetition()->getSports()->toArray());
         return $this->convertSportRoundRankingsToRoundItems(
             array_values($poule->getPlaces()->toArray()),
             array_values($sportRoundRankingItems)

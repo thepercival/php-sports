@@ -113,7 +113,7 @@ class End
             return 0;
         }
         if ($qualifyRule instanceof HorizontalSingleQualifyRule || $qualifyRule instanceof VerticalSingleQualifyRule) {
-            return $qualifyRule->getMappings()->count();
+            return count($qualifyRule->getMappings());
         }
         return $qualifyRule->getNrOfToPlaces();
     }

@@ -53,8 +53,8 @@ class Together extends OutputGame
         if ($game->getState() !== GameState::Finished) {
             return '';
         }
-        return join(",", $game->getPlaces()->map(function (TogetherGamePlace $gamePlace): string {
+        return join(",", array_map(function (TogetherGamePlace $gamePlace): string {
             return (string)$this->scoreConfigService->getFinalTogetherScore($gamePlace);
-        })->toArray());
+        }, $game->getPlaces()->toArray()));
     }
 }

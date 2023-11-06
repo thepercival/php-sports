@@ -25,13 +25,13 @@ class Single extends VerticalQualifyRule implements SingleQualifyRule
     /**
      * @param HorizontalPoule $fromHorizontalPoule
      * @param QualifyGroup $group
-     * @param Collection<int, ByRankMapping> $byRankMappings
+     * @param array<int, ByRankMapping> $byRankMappings
      * @param VerticalSingleQualifyRule|null $previous
      */
     public function __construct(
         HorizontalPoule $fromHorizontalPoule,
         QualifyGroup $group,
-        private Collection $byRankMappings,
+        private array $byRankMappings,
         private VerticalSingleQualifyRule|null $previous
     ) {
         parent::__construct($fromHorizontalPoule);
@@ -44,9 +44,9 @@ class Single extends VerticalQualifyRule implements SingleQualifyRule
     }
 
     /**
-     * @return Collection<int, ByRankMapping>
+     * @return array<int, ByRankMapping>
      */
-    public function getMappings(): Collection
+    public function getMappings(): array
     {
         return $this->byRankMappings;
     }
@@ -68,9 +68,10 @@ class Single extends VerticalQualifyRule implements SingleQualifyRule
      */
     public function getToPlaces(): array
     {
-        return array_values( $this->getMappings()->map(function (QualifyPlaceMapping $placeMapping): Place {
+        return array_values(
+            array_map(function (QualifyPlaceMapping $placeMapping): Place {
             return $placeMapping->getToPlace();
-        })->toArray() );
+        }, $this->getMappings()) );
     }
 
 //    public function getFromRank(Place $toPlace): Place
@@ -109,7 +110,7 @@ class Single extends VerticalQualifyRule implements SingleQualifyRule
 
     public function getNrOfMappings(): int
     {
-        return $this->byRankMappings->count();
+        return count($this->byRankMappings);
     }
 
 //    public function getNrOfDropouts(): int {
@@ -118,10 +119,11 @@ class Single extends VerticalQualifyRule implements SingleQualifyRule
 
     public function getMappingByToPlace(Place $toPlace): ByRankMapping|null
     {
-        $mappings = $this->getMappings()->filter(function (ByRankMapping $placeMapping) use ($toPlace): bool {
+        $mappings = array_filter(
+            $this->getMappings(), function (ByRankMapping $placeMapping) use ($toPlace): bool {
             return $placeMapping->getToPlace() === $toPlace;
         });
-        $mapping = $mappings->first();
+        $mapping = reset($mappings);
         return $mapping !== false ? $mapping : null;
     }
 

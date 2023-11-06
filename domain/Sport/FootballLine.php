@@ -19,10 +19,10 @@ enum FootballLine: int
             return "V";
         } elseif ($line === FootballLine::Midfield) {
             return "M";
-        } elseif ($line === FootballLine::Forward) {
+        } // elseif ($line === FootballLine::Forward) {
             return "A";
-        }
-        return "?";
+        // }
+        // return "?";
     }
 
 }

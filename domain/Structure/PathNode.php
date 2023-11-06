@@ -22,7 +22,7 @@ class PathNode implements \Stringable
         return $path;
     }
 
-    public function __toString()
+    public function __toString(): string
     {
         if ($this->previous === null) {
             return (string)$this->qualifyGroupNumber;

@@ -48,7 +48,7 @@ class Vertical
 
                 // SingleRule
                 if (count($fromHorPoulePlaces) <= count($childPlaces)) {
-                    $byRankMappings = new ArrayCollection( $this->fromPlacesToByRankMappings($qualifyTarget, $fromHorPoulePlaces, $childPlaces) );
+                    $byRankMappings = $this->fromPlacesToByRankMappings($qualifyTarget, $fromHorPoulePlaces, $childPlaces);
                     $previous = new VerticalSingleQualifyRule($fromHorPoule, $qualifyGroup, $byRankMappings, $previous);
                 } else {
                     $toPlaces = [];

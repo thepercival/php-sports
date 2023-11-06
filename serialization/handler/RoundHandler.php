@@ -23,8 +23,10 @@ use Sports\Structure\Cell;
  * @psalm-type _CompetitionSport = array{id: int|string, sport: _Sport}
  * @psalm-type _AgainstQualifyConfig = array{pointsCalculation: int, winPoints: float, drawPoints: float, winPointsExt: float, drawPointsExt: float, losePointsExt: float, competitionSport: _CompetitionSport}
  * @psalm-type _ScoreConfig = array{direction: int, maximum: int, enabled: bool, competitionSport: _CompetitionSport}
+ * @psalm-type _ScoreConfigFieldValue = array{direction: int, maximum: int, enabled: bool, competitionSport: _CompetitionSport, next: _ScoreConfig|null}
  * @psalm-type _Poule = array{round: Round}
  * @psalm-type _QualifyGroup = array{parentRound: Round, nextStructureCell: Cell}
+ * @psalm-type _FieldValue = array{parentQualifyGroup: QualifyGroup|null, structureCell: Cell, poules: list<_Poule>, qualifyGroups: list<_QualifyGroup>, againstQualifyConfigs: list<_AgainstQualifyConfig>, scoreConfigs: list<_ScoreConfigFieldValue>}
  */
 class RoundHandler extends Handler implements SubscribingHandlerInterface
 {
@@ -42,7 +44,7 @@ class RoundHandler extends Handler implements SubscribingHandlerInterface
 
     /**
      * @param JsonDeserializationVisitor $visitor
-     * @param array{parentQualifyGroup: QualifyGroup|null, structureCell: Cell, poules: list<_Poule>, qualifyGroups: list<_QualifyGroup>, againstQualifyConfigs: list<_AgainstQualifyConfig>, scoreConfigs: list<_ScoreConfig>} $fieldValue
+     * @param _FieldValue $fieldValue
      * @param array<string, array<string, RoundNumber>> $type
      * @param Context $context
      * @return Round
@@ -114,7 +116,7 @@ class RoundHandler extends Handler implements SubscribingHandlerInterface
     }
 
     /**
-     * @param _ScoreConfig $arrScoreConfig
+     * @param _ScoreConfigFieldValue $arrScoreConfig
      * @param CompetitionSport $competitionSport
      * @param Round $round
      * @param ScoreConfig|null $previous
@@ -135,7 +137,7 @@ class RoundHandler extends Handler implements SubscribingHandlerInterface
             $previous
         );
         if (isset($arrScoreConfig["next"])) {
-            /** @psalm-suppress MixedArgument */
+            /** @psalm-suppress InvalidArgument */
             $this->createScoreConfig($arrScoreConfig["next"], $competitionSport, $round, $config);
         }
         return $config;

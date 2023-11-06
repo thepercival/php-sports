@@ -8,6 +8,7 @@ use Sports\Planning\Config as PlanningConfig;
 use Sports\Planning\GameAmountConfig;
 use Sports\Round\Number as RoundNumber;
 use SportsHelpers\PouleStructure;
+use SportsPlanning\PouleStructure as PlanningPouleStructure;
 use SportsHelpers\SelfReferee;
 use SportsHelpers\SelfRefereeInfo;
 use SportsHelpers\Sport\Variant\Against\H2h as AgainstH2h;
@@ -16,7 +17,6 @@ use SportsHelpers\Sport\Variant\AllInOneGame;
 use SportsHelpers\Sport\Variant\Single;
 use SportsHelpers\Sport\VariantWithFields as SportVariantWithFields;
 use SportsPlanning\Input as PlanningInput;
-use SportsPlanning\Input\Calculator as InputCalculator;
 use SportsPlanning\Input\Service as PlanningInputService;
 use SportsPlanning\Referee\Info as RefereeInfo;
 
@@ -111,12 +111,12 @@ class PlanningInputCreator
         array $sportVariantsWithFields,
         RefereeInfo $refereeInfo
     ): array {
-        $inputCalculator = new InputCalculator();
-        $maxNrOfGamesPerBatch = $inputCalculator->getMaxNrOfGamesPerBatch(
+        $planningPouleStructure = new PlanningPouleStructure(
             $pouleStructure,
             $sportVariantsWithFields,
             $refereeInfo
         );
+        $maxNrOfGamesPerBatch = $planningPouleStructure->getMaxNrOfGamesPerBatch();
         $reducedSportVariants = [];
         foreach ($sportVariantsWithFields as $sportVariantWithField) {
             $reducedNrOfFields = $sportVariantWithField->getNrOfFields();

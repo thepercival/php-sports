@@ -28,6 +28,8 @@ use Sports\Structure\Cell;
  * @psalm-type _CompetitionSport = array{id: int|string, sport: _Sport}
  * @psalm-type _PlanningConfig = array{roundNumber: RoundNumber}
  * @psalm-type _GameAmountConfig = array{amount: int, competitionSport: _CompetitionSport}
+ * @psalm-type _RoundNumber = array{previous: RoundNumber|null, planningConfig: _PlanningConfig|null, gameAmountConfigs: list<_GameAmountConfig>}
+ * @psalm-type _FieldValue = array{previous: RoundNumber|null, planningConfig: _PlanningConfig|null, gameAmountConfigs: list<_GameAmountConfig>, next: _RoundNumber|null}
  *
  **/
 class NumberHandler extends Handler implements SubscribingHandlerInterface
@@ -46,7 +48,7 @@ class NumberHandler extends Handler implements SubscribingHandlerInterface
 
     /**
      * @param JsonDeserializationVisitor $visitor
-     * @param array{previous: RoundNumber|null, planningConfig: _PlanningConfig|null, gameAmountConfigs: list<_GameAmountConfig>} $fieldValue
+     * @param _FieldValue $fieldValue
      * @param array<string, array<string, RoundNumber>> $type
      * @param Context $context
      * @return RoundNumber
@@ -89,7 +91,6 @@ class NumberHandler extends Handler implements SubscribingHandlerInterface
         }
 
         if (isset($fieldValue["next"])) {
-            /** @psalm-suppress MixedArrayAssignment */
             $fieldValue["next"]["previous"] = $roundNumber;
             $this->getProperty(
                 $visitor,
