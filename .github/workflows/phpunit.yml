@@ -13,7 +13,7 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: '8.2'
-          extensions: xdebug, intl
+          extensions: intl, xdebug
           tools: phpunit
           coverage: xdebug
 
@@ -23,7 +23,7 @@ jobs:
         uses: php-actions/phpunit@v3
         with:
           php_version: 8.2
-          php_extensions: xdebug intl
+          php_extensions: intl xdebug
           configuration: tests/phpunit.xml
         env:
           XDEBUG_MODE: coverage
