@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Sports\Round\Number;
 
+use Exception;
 use League\Period\Period;
 use Psr\Log\LoggerInterface;
 use SportsScheduler\Queue\PlanningInput\CreatePlanningsInterface;
@@ -70,7 +71,7 @@ class PlanningCreator
      * @param RoundNumber $roundNumber
      * @param list<Period> $blockedPeriods
      * @param int|null $eventPriority
-     * @throws \Exception
+     * @throws Exception
      */
     protected function createFrom(
         CreatePlanningsInterface $createPlannings,
