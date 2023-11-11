@@ -6,7 +6,7 @@ namespace Sports\Round\Number;
 
 use League\Period\Period;
 use Psr\Log\LoggerInterface;
-use Sports\Queue\PlanningInput\CreatePlanningsEvent;
+use SportsScheduler\Queue\PlanningInput\CreatePlanningsInterface;
 use Sports\Round\Number as RoundNumber;
 use Sports\Round\Number\PlanningInputCreator as PlanningInputService;
 use Sports\Round\Number\Repository as RoundNumberRepository;
@@ -36,13 +36,13 @@ class PlanningCreator
     }
 
     /**
-     * @param CreatePlanningsEvent $createPlanningEvent
+     * @param CreatePlanningsInterface $createPlanningEvent
      * @param RoundNumber $roundNumber
      * @param list<Period> $blockedPeriods
      * @param int|null $eventPriority
      */
     public function addFrom(
-        CreatePlanningsEvent $createPlanningEvent,
+        CreatePlanningsInterface $createPlanningEvent,
         RoundNumber $roundNumber,
         array $blockedPeriods,
         int|null $eventPriority
@@ -66,14 +66,14 @@ class PlanningCreator
     }
 
     /**
-     * @param CreatePlanningsEvent $createPlanningEvent
+     * @param CreatePlanningsInterface $createPlannings
      * @param RoundNumber $roundNumber
      * @param list<Period> $blockedPeriods
      * @param int|null $eventPriority
      * @throws \Exception
      */
     protected function createFrom(
-        CreatePlanningsEvent $createPlanningEvent,
+        CreatePlanningsInterface $createPlannings,
         RoundNumber $roundNumber,
         array $blockedPeriods,
         int|null $eventPriority
@@ -92,9 +92,9 @@ class PlanningCreator
 //                if ($this->logger !== null) {
 //                    $this->logger->info("DEBUG: send message for roundnumber " . $roundNumber->getNumber());
 //                }
-                $createPlanningEvent->sendCreatePlannings(
+                $createPlannings->sendCreatePlannings(
                     $defaultPlanningInput,
-                    $roundNumber->getCompetition(),
+                    $roundNumber->getCompetition()->getId(),
                     $roundNumber->getNumber(),
                     $eventPriority
                 );
@@ -111,7 +111,7 @@ class PlanningCreator
         $nextRoundNumber = $roundNumber->getNext();
         if ($nextRoundNumber !== null) {
             $nextEventPriority = $eventPriority === null ? $eventPriority : $eventPriority - 1;
-            $this->createFrom($createPlanningEvent, $nextRoundNumber, $blockedPeriods, $nextEventPriority);
+            $this->createFrom($createPlannings, $nextRoundNumber, $blockedPeriods, $nextEventPriority);
         }
     }
 }
