@@ -95,6 +95,7 @@ class PlanningCreator
                 $createPlannings->sendCreatePlannings(
                     $defaultPlanningInput,
                     $roundNumber->getCompetition()->getId(),
+                    $roundNumber->getCompetition()->getLeague()->getName(),
                     $roundNumber->getNumber(),
                     $eventPriority
                 );
