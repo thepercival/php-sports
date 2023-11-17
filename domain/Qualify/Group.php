@@ -116,13 +116,17 @@ class Group extends Identifiable
     }
 
 
-    public function getNrOfSingleRules(): int
-    {
-        if ($this->firstSingleRule === null) {
-            return 0;
-        }
-        return $this->firstSingleRule->getLast()->getNumber();
-    }
+//    public function getNrOfSingleRules(): int
+//    {
+//        $nrOfSingleRules = 0;
+//
+//        $singleRule = $this->firstSingleRule;
+//        while  ($singleRule === null) {
+//            $nrOfSingleRules++;
+//            $singleRule = $singleRule->getNext();
+//        }
+//        return $nrOfSingleRules;
+//    }
 
 
     public function getRulesNrOfToPlaces(): int {

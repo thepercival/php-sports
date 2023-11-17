@@ -23,7 +23,7 @@ abstract class Rule
         return $this->fromHorizontalPoule;
     }
 
-    public function getNumber(): int
+    public function getRank(): int
     {
         return $this->getFromHorizontalPoule()->getNumber();
     }

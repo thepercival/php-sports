@@ -109,13 +109,14 @@ class Service
             HorizontalSingleQualifyRule $singleQualifyRule,
             QualifyReservationService $reservationService
         ) use ($filterPoule, &$changedPlaces): void {
+
             foreach ($singleQualifyRule->getMappings() as $qualifyPlaceMapping) {
                 $fromPlace = $qualifyPlaceMapping->getFromPlace();
                 if ($filterPoule !== null && $fromPlace->getPoule() !== $filterPoule) {
                     continue;
                 }
                 /** @var array<int|string, Place> $changedPlaces */
-                $this->setQualifierForPlaceMappingAndReserve($qualifyPlaceMapping, $reservationService);
+                $this->setQualifierForPlaceMappingAndReserve($singleQualifyRule->getRank(), $qualifyPlaceMapping, $reservationService);
                 array_push($changedPlaces, $qualifyPlaceMapping->getToPlace());
             }
         };
@@ -156,12 +157,12 @@ class Service
     }
 
     protected function setQualifierForPlaceMappingAndReserve(
+        int $rank,
         ByPlaceMapping $qualifyMapping,
         QualifyReservationService $reservationService
     ): void {
         $poule = $qualifyMapping->getFromPoule();
 
-        $rank = $qualifyMapping->getFromPlace()->getPlaceNr();
         $qualifiedPlace = $this->getQualifiedPlace($poule, $rank);
 
         $qualifyMapping->getToPlace()->setQualifiedPlace($qualifiedPlace);

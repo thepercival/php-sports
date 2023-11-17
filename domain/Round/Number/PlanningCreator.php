@@ -7,9 +7,10 @@ namespace Sports\Round\Number;
 use Exception;
 use League\Period\Period;
 use Psr\Log\LoggerInterface;
+use SportsPlanning\Referee\Info as RefereeInfo;
+use SportsPlanning\Input;
 use SportsScheduler\Queue\PlanningInput\CreatePlanningsInterface;
 use Sports\Round\Number as RoundNumber;
-use Sports\Round\Number\PlanningInputCreator as PlanningInputService;
 use Sports\Round\Number\Repository as RoundNumberRepository;
 use SportsPlanning\Input\Repository as PlanningInputRepository;
 use SportsPlanning\Planning\Repository as PlanningRepository;
@@ -79,13 +80,18 @@ class PlanningCreator
         array $blockedPeriods,
         int|null $eventPriority
     ): void {
+        $competition = $roundNumber->getCompetition();
         $scheduler = new PlanningScheduler($blockedPeriods);
         if ($roundNumber->allPoulesHaveGames()) {
             $scheduler->rescheduleGames($roundNumber);
         } else {
-            $inputService = new PlanningInputService();
-            $nrOfReferees = $roundNumber->getCompetition()->getReferees()->count();
-            $defaultPlanningInput = $inputService->create($roundNumber, $nrOfReferees);
+
+            $defaultPlanningInput = new Input(
+                $roundNumber->createPouleStructure(),
+                $competition->createSportVariantsWithFields(),
+                new RefereeInfo($competition->getReferees()->count()),
+                $roundNumber->getValidPlanningConfig()->getPerPoule()
+            );
             $planningInput = $this->inputRepos->getFromInput($defaultPlanningInput);
             if ($planningInput === null) {
                 $this->inputRepos->save($defaultPlanningInput);

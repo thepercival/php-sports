@@ -8,7 +8,10 @@ use Exception;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 use Psr\Log\LoggerInterface;
+use SportsHelpers\PouleStructure;
+use SportsHelpers\Sport\VariantWithFields as SportVariantWithFields;
 use SportsHelpers\SportRange;
+use SportsPlanning\Referee\Info as RefereeInfo;
 use SportsScheduler\Game\Assigner as GameAssigner;
 use SportsScheduler\Game\Creator as GameCreator;
 use SportsPlanning\Input;
@@ -28,6 +31,34 @@ class PlanningCreator
         $handler = new StreamHandler('php://stdout', Logger::INFO);
         $logger->pushHandler($handler);
         return $logger;
+    }
+
+    /**
+     * @param PouleStructure $pouleStructure
+     * @param list<SportVariantWithFields> $sportVariantsWithFields
+     * @param RefereeInfo $refereeInfo
+     * @return Input
+     */
+    public function createInput(
+        PouleStructure $pouleStructure,
+        array $sportVariantsWithFields,
+        RefereeInfo $refereeInfo,
+        bool $perPoule = false
+    ) {
+//        if ($sportVariantsWithFields === null) {
+//            $sportVariantsWithFields = [$this->getAgainstH2hSportVariantWithFields(2)];
+//        }
+//        if ($refereeInfo === null) {
+//            $refereeInfo = new RefereeInfo($this->getDefaultNrOfReferees());
+//        }
+        $input = new Input(
+            $pouleStructure,
+            $sportVariantsWithFields,
+            $refereeInfo,
+            $perPoule
+        );
+
+        return $input;
     }
 
     public function createPlanning(Input $input, SportRange $range = null, int|null $allowedGppMargin = null): Planning

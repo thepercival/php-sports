@@ -11,9 +11,9 @@ use Monolog\Processor\UidProcessor;
 use Psr\Log\LoggerInterface;
 use Sports\Round\Number as RoundNumber;
 use Sports\Round\Number\PlanningAssigner;
-use Sports\Round\Number\PlanningInputCreator;
 use Sports\Round\Number\PlanningScheduler;
 use Sports\Structure;
+use SportsPlanning\Referee\Info as RefereeInfo;
 use SportsHelpers\SportRange;
 use SportsPlanning\Batch\SelfReferee\OtherPoule as SelfRefereeBatchOtherPoule;
 use SportsPlanning\Batch\SelfReferee\SamePoule as SelfRefereeBatchSamePoule;
@@ -69,9 +69,13 @@ class GamesCreator
     public function createPlanning(RoundNumber $roundNumber, SportRange $range = null, int|null $allowedGppMargin = null): Planning
     {
 
-        $planningInputCreator = new PlanningInputCreator();
+        $planningCreator = new PlanningCreator();
         $nrOfReferees = $roundNumber->getCompetition()->getReferees()->count();
-        $input = $planningInputCreator->create($roundNumber, $nrOfReferees);
+        $input = $planningCreator->createInput(
+            $roundNumber->createPouleStructure(),
+            $roundNumber->getCompetition()->createSportVariantsWithFields(),
+            new RefereeInfo($nrOfReferees)
+        );
         $planningCreator = new PlanningCreator();
 
         if( $allowedGppMargin === null) {

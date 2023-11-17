@@ -370,11 +370,11 @@ final class DrawHelper
                 case 1:
                     return Color::Green; // '#298F00';
                 case 2:
-                    return Color::Green; // '#84CF96';
+                    return Color::Cyan; // '#84CF96';
                 case 3:
-                    return Color::Green; // '#0588BC';
+                    return Color::Cyan; // '#0588BC';
                 case 4:
-                    return Color::Green; // '#00578A';
+                    return Color::Cyan; // '#00578A';
             }
         } else {
             if ($qualifyGroup->getTarget() === QualifyTarget::Losers) {
@@ -382,11 +382,11 @@ final class DrawHelper
                     case 1:
                         return Color::Red; // '#FFFF66';
                     case 2:
-                        return Color::Red; // '#FFCC00';
+                        return Color::Magenta; // '#FFCC00';
                     case 3:
-                        return Color::Red; // '#FF9900';
+                        return Color::Magenta; // '#FF9900';
                     case 4:
-                        return Color::Red; // '#FF0000';
+                        return Color::Magenta; // '#FF0000';
                 }
             }
         }

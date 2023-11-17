@@ -20,30 +20,30 @@ use SportsPlanning\Input as PlanningInput;
 use SportsPlanning\Input\Service as PlanningInputService;
 use SportsPlanning\Referee\Info as RefereeInfo;
 
-class PlanningInputCreator
+class PlanningInputCreatorOld
 {
     public function __construct()
     {
     }
 
-    public function create(RoundNumber $roundNumber, int $nrOfReferees): PlanningInput
+    public function create(RoundNumber $roundNumber, RefereeInfo $refereeInfo): PlanningInput
     {
         $config = $roundNumber->getValidPlanningConfig();
 
         $pouleStructure = $this->createPouleStructure($roundNumber);
         $sportVariantsWithFields = $this->createSportVariantsWithFields($roundNumber);
 
-        $selfReferee = $this->getSelfReferee(
+       /* $selfReferee = $this->getSelfReferee(
             $config,
             $roundNumber->createSportVariants(),
             $pouleStructure
-        );
-
+        );*/
+        /*$refereeInfo
         if( $selfReferee === SelfReferee::Disabled ) {
             $refereeInfo = new RefereeInfo($nrOfReferees);
         } else {
             $refereeInfo = new RefereeInfo(new SelfRefereeInfo($selfReferee, $config->getNrOfSimSelfRefs()));
-        }
+        }*/
         $efficientSportVariants = $this->reduceFields($pouleStructure, $sportVariantsWithFields, $refereeInfo);
         return new PlanningInput(
             $pouleStructure,
