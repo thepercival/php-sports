@@ -27,10 +27,11 @@ class Vertical
     }
 
     /**
-     * @param list<HorizontalPoule> $fromHorPoules
+     * @param list<HorizontalPoule> $fromRoundHorPoules
      * @param QualifyGroup $qualifyGroup
+     * @return list<HorizontalPoule>
      */
-    public function createRules(array $fromHorPoules, QualifyGroup $qualifyGroup): void
+    public function createRules(array $fromRoundHorPoules, QualifyGroup $qualifyGroup): array
     {
         $childRound = $qualifyGroup->getChildRound();
         $childPlaces = $this->getRoundPlaces($childRound);
@@ -41,7 +42,7 @@ class Vertical
 
         $previous = null; // : VerticalSingleQualifyRule |  undefined;
 
-        foreach( $fromHorPoules as $fromHorPoule ) { // fromRoundHorPoules.every((fromHorPoule: HorizontalPoule): boolean => {
+        foreach( $fromRoundHorPoules as $fromHorPoule ) { // fromRoundHorPoules.every((fromHorPoule: HorizontalPoule): boolean => {
             $fromHorPoulePlaces = array_values( array_slice($fromHorPoule->getPlaces()->toArray(), 0 ) );
 
             while ( count($fromHorPoulePlaces) > 0 && count($childPlaces) > 0) {
@@ -60,6 +61,7 @@ class Vertical
                 }
             }
         }
+        return [];
         // console.log(qualifyGroup.getFirstVerticalRule());
     }
 

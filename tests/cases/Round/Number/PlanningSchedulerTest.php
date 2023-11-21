@@ -41,7 +41,7 @@ final class PlanningSchedulerTest extends TestCase
         $competitionStartDateTime = $competition->getStartDateTime();
 
         $planningScheduler = new PlanningScheduler([]);
-        $planningScheduler->rescheduleGames($firstRoundNumber);
+        $planningScheduler->rescheduleGames($firstRoundNumber, $competitionStartDateTime);
 
         $firstRoundNumberGames = $firstRoundNumber->getGames(GameOrder::ByBatch);
         $firstRoundNumberGame = array_shift($firstRoundNumberGames);
@@ -87,7 +87,7 @@ final class PlanningSchedulerTest extends TestCase
             $competitionStartDateTime->add(new \DateInterval('PT' . (40 - 1) . 'M'))
         );
         $planningScheduler = new PlanningScheduler([$blockedPeriod]);
-        $planningScheduler->rescheduleGames($firstRoundNumber);
+        $planningScheduler->rescheduleGames($firstRoundNumber, $competitionStartDateTime);
 
 //        foreach( $firstRoundNumber->getGames( Game::ORDER_BY_BATCH ) as $game ) {
 //            (new AgainstGameOutput())->output($game);
@@ -131,7 +131,7 @@ final class PlanningSchedulerTest extends TestCase
             $secondBatchGame->getStartDateTime()->add(new \DateInterval('PT40M'))
         );
         $planningScheduler = new PlanningScheduler([$blockedPeriod]);
-        $planningScheduler->rescheduleGames($firstRoundNumber);
+        $planningScheduler->rescheduleGames($firstRoundNumber, $competitionStartDateTime);
 
         $secondRoundNumberStartDateTime = $this->getStartSecond($competitionStartDateTime, 40);
         self::assertEquals(
@@ -168,7 +168,7 @@ final class PlanningSchedulerTest extends TestCase
             $secondBatchGame->getStartDateTime()->add(new \DateInterval('PT40M'))
         );
         $planningScheduler = new PlanningScheduler([$blockedPeriod]);
-        $planningScheduler->rescheduleGames($firstRoundNumber);
+        $planningScheduler->rescheduleGames($firstRoundNumber, $competitionStartDateTime);
 
         $secondRoundNumberStartDateTime = $this->getStartSecond($competitionStartDateTime, 40);
         self::assertEquals($secondRoundNumberStartDateTime, $secondRoundNumber->getGames(GameOrder::ByPoule)[0]->getStartDateTime());
@@ -202,7 +202,7 @@ final class PlanningSchedulerTest extends TestCase
             $secondBatchGame->getStartDateTime()->add(new \DateInterval('PT40M'))
         );
         $planningScheduler = new PlanningScheduler([$blockedPeriod]);
-        $planningScheduler->rescheduleGames($firstRoundNumber);
+        $planningScheduler->rescheduleGames($firstRoundNumber, $competitionStartDateTime);
 
         $secondRoundNumberStartDateTime = $this->getStartSecond($competitionStartDateTime, 40);
         self::assertEquals($secondRoundNumberStartDateTime, $secondRoundNumber->getGames(GameOrder::ByPoule)[0]->getStartDateTime());
@@ -239,7 +239,7 @@ final class PlanningSchedulerTest extends TestCase
             $secondRoundNumberStartDateTimeTmp->add(new \DateInterval('PT40M'))
         );
         $planningScheduler = new PlanningScheduler([$blockedPeriod]);
-        $planningScheduler->rescheduleGames($firstRoundNumber);
+        $planningScheduler->rescheduleGames($firstRoundNumber, $competitionStartDateTime);
 
         $secondRoundNumberStartDateTime = $this->getStartSecond($competitionStartDateTime, 40);
         self::assertEquals(
@@ -273,7 +273,7 @@ final class PlanningSchedulerTest extends TestCase
             $blockedPeriod->getEndDate()->add(new \DateInterval('PT30M'))
         );
         $planningScheduler = new PlanningScheduler([$blockedPeriod, $blockedPeriod2]);
-        $planningScheduler->rescheduleGames($firstRoundNumber);
+        $planningScheduler->rescheduleGames($firstRoundNumber, $competitionStartDateTime);
 
         self::assertEquals($firstRoundNumber->getFirstGameStartDateTime(), $blockedPeriod2->getEndDate());
     }
@@ -284,6 +284,8 @@ final class PlanningSchedulerTest extends TestCase
 
         $structureEditor = $this->createStructureEditor();
         $structure = $structureEditor->create($competition, [3, 3]);
+
+        $competitionStartDateTime = $competition->getStartDateTime();
 
         $rootRound = $structure->getSingleCategory()->getRootRound();
         $structureEditor->addChildRound($rootRound, QualifyTarget::Winners, [2]);
@@ -300,7 +302,7 @@ final class PlanningSchedulerTest extends TestCase
 
         $planningScheduler = new PlanningScheduler([]);
         self::expectException(Exception::class);
-        $planningScheduler->rescheduleGames($firstRoundNumber);
+        $planningScheduler->rescheduleGames($firstRoundNumber, $competitionStartDateTime);
     }
 
     protected function getStartSecond(DateTimeImmutable $startFirst, int $delta = 0): DateTimeImmutable

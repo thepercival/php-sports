@@ -25,7 +25,7 @@ abstract class Rule
 
     public function getRank(): int
     {
-        return $this->getFromHorizontalPoule()->getNumber();
+        return $this->getFromHorizontalPoule()->getAbsoluteNumber();
     }
 
     public function getFromRound(): Round

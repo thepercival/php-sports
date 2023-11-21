@@ -5,7 +5,11 @@ declare(strict_types=1);
 namespace Sports\Structure;
 
 use Sports\Category;
-use Sports\Game\Participation;
+use Sports\Poule\Horizontal as HorizontalPoule;
+use Sports\Qualify\Rule\Horizontal\Single as HorizontalSingle;
+use Sports\Qualify\Rule\Horizontal\Multiple as HorizontalMultiple;
+use Sports\Qualify\Rule\Vertical\Single as VerticalSingle;
+use Sports\Qualify\Rule\Vertical\Multiple as VerticalMultiple;
 use Sports\Qualify\Target as QualifyTarget;
 use Exception;
 use Sports\Structure\NameService as StructureNameService;
@@ -127,10 +131,12 @@ class Validator
             $placeRanges->validateStructure($round->createPouleStructure());
         }
 
-        $winners = array_values($round->getTargetQualifyGroups(QualifyTarget::Winners)->toArray());
-        $this->checkQualifyGroupsNumberGap($winners);
-        $losers = array_values($round->getTargetQualifyGroups(QualifyTarget::Losers)->toArray());
-        $this->checkQualifyGroupsNumberGap($losers);
+        foreach ([QualifyTarget::Winners, QualifyTarget::Losers] as $target) {
+            $qualifyGroups = array_values($round->getTargetQualifyGroups($target)->toArray());
+            $this->checkQualifyGroupsNumberGap($qualifyGroups);
+        }
+        $this->checkHorizontalPouleOneTimeUse($round);
+
         foreach ($round->getQualifyGroups() as $qualifyGroup) {
             $this->checkRoundValidity($qualifyGroup->getChildRound(), $placeRanges);
         }
@@ -162,6 +168,63 @@ class Validator
                 throw new Exception("het nummer van de kwalificatiegroep is onjuist", E_ERROR);
             }
         }
+    }
+
+    public function checkHorizontalPouleOneTimeUse(Round $round): void {
+        $horizontalPoules = $this->getQualifyingHorizontalPoules($round);
+        foreach( $horizontalPoules as $horizontalPoule ) {
+            if( count( array_filter( $horizontalPoules, function( HorizontalPoule $horizontalPoule2) use($horizontalPoule) : bool {
+                    return $horizontalPoule === $horizontalPoule2;
+                }) ) > 1 ) {
+                throw new Exception("er is een horizontale poule die meerdere malen wordt gebruikt", E_ERROR);
+            }
+        }
+    }
+
+    /**
+     * @param Round $round
+     * @return list<HorizontalPoule>
+     * @throws Exception
+     */
+    private function getQualifyingHorizontalPoules(Round $round): array
+    {
+        return array_map( function(HorizontalSingle|HorizontalMultiple|VerticalSingle|VerticalMultiple $qualifyRule): HorizontalPoule {
+            return $qualifyRule->getFromHorizontalPoule();
+        }, $this->getQualifyRules($round) );
+    }
+
+    /**
+     * @param Round $round
+     * @return list<HorizontalSingle|HorizontalMultiple|VerticalSingle|VerticalMultiple>
+     * @throws Exception
+     */
+    private function getQualifyRules(Round $round): array
+    {
+        $qualifyRules = [];
+        foreach( $round->getQualifyGroups() as $qualifyGroup) {
+            $qualifyRules = array_merge($qualifyRules, $this->convertToQualifyRulesList($qualifyGroup));
+        }
+        return $qualifyRules;
+    }
+
+    /**
+     * @param QualifyGroup $qualifyGroup
+     * @return list<HorizontalSingle|HorizontalMultiple|VerticalSingle|VerticalMultiple>
+     * @throws Exception
+     */
+    private function convertToQualifyRulesList(QualifyGroup $qualifyGroup): array
+    {
+        $qualifyRules = [];
+        $singleRule = $qualifyGroup->getFirstSingleRule();
+        while ($singleRule !== null) {
+            $qualifyRules[] = $singleRule;
+            $singleRule = $singleRule->getNext();
+        }
+        $multipleRule = $qualifyGroup->getMultipleRule();
+        if( $multipleRule !== null ) {
+            $qualifyRules[] = $multipleRule;
+        }
+        return $qualifyRules;
     }
 
     protected function checkRoundNrOfPlaces(Round $round): void

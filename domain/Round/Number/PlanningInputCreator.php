@@ -20,7 +20,7 @@ use SportsPlanning\Input as PlanningInput;
 use SportsPlanning\Input\Service as PlanningInputService;
 use SportsPlanning\Referee\Info as RefereeInfo;
 
-class PlanningInputCreatorOld
+class PlanningInputCreator
 {
     public function __construct()
     {

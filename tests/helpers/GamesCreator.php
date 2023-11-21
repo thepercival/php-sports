@@ -13,6 +13,7 @@ use Sports\Round\Number as RoundNumber;
 use Sports\Round\Number\PlanningAssigner;
 use Sports\Round\Number\PlanningScheduler;
 use Sports\Structure;
+use SportsHelpers\SelfReferee;
 use SportsPlanning\Referee\Info as RefereeInfo;
 use SportsHelpers\SportRange;
 use SportsPlanning\Batch\SelfReferee\OtherPoule as SelfRefereeBatchOtherPoule;
@@ -37,17 +38,17 @@ class GamesCreator
     /**
      * @param Structure $structure
      * @param list<Period> $blockedPeriods
-     * @param SportRange|null $range
+     * @param SportRange|null $batchGamesRange
      * @param int|null $allowedGppMargin
      */
     public function createStructureGames(
         Structure $structure,
         array $blockedPeriods = [],
-        SportRange $range = null,
+        SportRange $batchGamesRange = null,
         int|null $allowedGppMargin = null
     ): void {
         $this->removeGamesHelper($structure->getFirstRoundNumber());
-        $this->createGamesHelper($structure->getFirstRoundNumber(), $blockedPeriods, $range, $allowedGppMargin);
+        $this->createGamesHelper($structure->getFirstRoundNumber(), $blockedPeriods, $batchGamesRange, $allowedGppMargin);
     }
 
     /**
@@ -59,29 +60,34 @@ class GamesCreator
     public function createGames(
         RoundNumber $roundNumber,
         array $blockedPeriods = [],
-        SportRange $range = null,
+        SportRange $batchGamesRange = null,
         int|null $allowedGppMargin = null): void
     {
         $this->removeGamesHelper($roundNumber);
-        $this->createGamesHelper($roundNumber, $blockedPeriods, $range, $allowedGppMargin);
+        $this->createGamesHelper($roundNumber, $blockedPeriods, $batchGamesRange, $allowedGppMargin);
     }
 
-    public function createPlanning(RoundNumber $roundNumber, SportRange $range = null, int|null $allowedGppMargin = null): Planning
+    public function createPlanning(
+        RoundNumber $roundNumber,
+        RefereeInfo|null $refereeInfo = null,
+        SportRange $batchGamesRange = null,
+        int|null $allowedGppMargin = null): Planning
     {
-
         $planningCreator = new PlanningCreator();
-        $nrOfReferees = $roundNumber->getCompetition()->getReferees()->count();
+        if( $refereeInfo === null ) {
+            $refereeInfo = new RefereeInfo($roundNumber->getCompetition()->getReferees()->count());
+        }
         $input = $planningCreator->createInput(
             $roundNumber->createPouleStructure(),
             $roundNumber->getCompetition()->createSportVariantsWithFields(),
-            new RefereeInfo($nrOfReferees)
+            $refereeInfo
         );
         $planningCreator = new PlanningCreator();
 
         if( $allowedGppMargin === null) {
             $allowedGppMargin = (new ScheduleCreator($this->getLogger()))->getMaxGppMargin($input, $input->getPoule(1));
         }
-        return $planningCreator->createPlanning($input, $range, $allowedGppMargin);
+        return $planningCreator->createPlanning($input, $batchGamesRange, $allowedGppMargin);
     }
 
     /**
@@ -93,13 +99,21 @@ class GamesCreator
     private function createGamesHelper(
         RoundNumber $roundNumber,
         array $blockedPeriods,
-        SportRange|null $range,
+        SportRange|null $batchGamesRange,
         int|null $allowedGppMargin
     ): void {
         if( $allowedGppMargin === null) {
             $allowedGppMargin = 2; // (new ScheduleCreator($this->getLogger()))->getMaxGppMargin($input, $input->getPoule(1));
         }
-        $minIsMaxPlanning = $this->createPlanning($roundNumber, $range, $allowedGppMargin);
+
+        $selfRefereeInfo = $roundNumber->getValidPlanningConfig()->getSelfRefereeInfo();
+        if( $selfRefereeInfo->selfReferee === SelfReferee::Disabled ) {
+            $refereeInfo = new RefereeInfo(count($roundNumber->getCompetition()->getReferees()));
+        } else {
+            $refereeInfo = new RefereeInfo($selfRefereeInfo);
+        }
+
+        $minIsMaxPlanning = $this->createPlanning($roundNumber, $refereeInfo, $batchGamesRange, $allowedGppMargin);
         $firstBatch = $minIsMaxPlanning->createFirstBatch();
         if ($firstBatch instanceof SelfRefereeBatchOtherPoule ||
             $firstBatch instanceof SelfRefereeBatchSamePoule) {
@@ -111,7 +125,7 @@ class GamesCreator
         $planningAssigner->assignPlanningToRoundNumber($roundNumber, $minIsMaxPlanning);
         $nextRoundNumber = $roundNumber->getNext();
         if ($nextRoundNumber !== null) {
-            $this->createGamesHelper($nextRoundNumber, $blockedPeriods, $range, $allowedGppMargin);
+            $this->createGamesHelper($nextRoundNumber, $blockedPeriods, $batchGamesRange, $allowedGppMargin);
         }
     }
 

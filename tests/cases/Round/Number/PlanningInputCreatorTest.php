@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Sports\Tests\Round\Number;
 
 use PHPUnit\Framework\TestCase;
+use Sports\Round\Number\PlanningInputCreator;
 use Sports\TestHelper\CompetitionCreator;
 use Sports\TestHelper\StructureEditorCreator;
 use SportsPlanning\Referee\Info as RefereeInfo;
@@ -30,11 +31,9 @@ final class PlanningInputCreatorTest extends TestCase
         $structure = $structureEditor->create($competition, [10]);
 
         $firstRoundNumber = $structure->getFirstRoundNumber();
-        $input = new Input(
-            $firstRoundNumber->createPouleStructure(),
-            $competition->createSportVariantsWithFields(),
-            new RefereeInfo(count($competition->getReferees())),
-            false );
+        $input = (new PlanningInputCreator())->create(
+            $firstRoundNumber, new RefereeInfo(count($competition->getReferees()))
+        );
 
         $sportWithReducedFields = $input->getSport(1);
         self::assertEquals(1, $sportWithReducedFields->getNrOfFields());

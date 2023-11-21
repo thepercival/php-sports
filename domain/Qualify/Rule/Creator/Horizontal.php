@@ -30,8 +30,9 @@ class Horizontal
     /**
      * @param list<HorizontalPoule> $fromRoundHorPoules
      * @param QualifyGroup $qualifyGroup
+     * @return list<HorizontalPoule>
      */
-    public function createRules(array $fromRoundHorPoules, QualifyGroup $qualifyGroup): void
+    public function createRules(array $fromRoundHorPoules, QualifyGroup $qualifyGroup): array
     {
 //        $childRoundPlaces = $this->getChildRoundPlacesLikeSnake($qualifyGroup);
 //        $fromHorPoule = array_shift($fromHorPoules);
@@ -61,6 +62,7 @@ class Horizontal
 
         }
         $this->createRulesFromHorPoules($fromHorPoules, $qualifyGroup);
+        return $fromRoundHorPoules;
     }
 
     /**

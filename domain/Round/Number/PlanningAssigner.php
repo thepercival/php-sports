@@ -31,7 +31,8 @@ class PlanningAssigner
     {
         $firstBatch = $planning->createFirstBatch();
         $mapper = new PlanningMapper($roundNumber, $planning);
-        $gameStartDateTime = $this->scheduler->getRoundNumberStartDateTime($roundNumber);
+        $defaultStartDateTime = $roundNumber->getCompetition()->getStartDateTime();
+        $gameStartDateTime = $this->scheduler->calculateStartDateTimeFromPrevious($roundNumber, $defaultStartDateTime);
         $planningConfig = $roundNumber->getValidPlanningConfig();
         $this->assignPlanningBatch($firstBatch, $planningConfig, $gameStartDateTime, $mapper);
     }

@@ -23,12 +23,13 @@ class PlanningScheduler
 
     /**
      * @param RoundNumber $roundNumber
+     * @param DateTimeImmutable $competitionStartDateTime
      * @return list<DateTimeImmutable>
      */
-    public function rescheduleGames(RoundNumber $roundNumber): array
+    public function rescheduleGames(RoundNumber $roundNumber, DateTimeImmutable $competitionStartDateTime): array
     {
         $gameDates = [];
-        $gameStartDateTime = $this->getRoundNumberStartDateTime($roundNumber);
+        $gameStartDateTime = $this->calculateStartDateTimeFromPrevious($roundNumber, $competitionStartDateTime);
         $previousBatchNr = 1;
         $gameDates[] = $gameStartDateTime;
 
@@ -50,17 +51,17 @@ class PlanningScheduler
         }
         $nextRoundNumber = $roundNumber->getNext();
         if ($nextRoundNumber !== null) {
-            return array_merge($gameDates, $this->rescheduleGames($nextRoundNumber));
+            return array_merge($gameDates, $this->rescheduleGames($nextRoundNumber, $competitionStartDateTime));
         }
         return $gameDates;
     }
 
-    public function getRoundNumberStartDateTime(RoundNumber $roundNumber): DateTimeImmutable
+    public function calculateStartDateTimeFromPrevious(RoundNumber $roundNumber, DateTimeImmutable $defaultStartDateTime): DateTimeImmutable
     {
         $previousRoundNumber = $roundNumber->getPrevious();
         $planningConfig = $roundNumber->getValidPlanningConfig();
         if ($previousRoundNumber === null) {
-            $startDateTime = $roundNumber->getCompetition()->getStartDateTime();
+            $startDateTime = $defaultStartDateTime;
             $endDateTime = $startDateTime->add(
                 new \DateInterval('PT' . $planningConfig->getMaxNrOfMinutesPerGame() . 'M')
             );

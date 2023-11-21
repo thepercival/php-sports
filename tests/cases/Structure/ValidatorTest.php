@@ -7,6 +7,7 @@ namespace Sports\Tests\Structure;
 use Exception;
 use PHPUnit\Framework\TestCase;
 use Sports\Category;
+use Sports\Output\StructureOutput;
 use Sports\Place;
 use Sports\Qualify\Group as QualifyGroup;
 use Sports\Qualify\Target as QualifyTarget;
@@ -250,5 +251,26 @@ final class ValidatorTest extends TestCase
         $structureValidator = new StructureValidator();
         self::expectNotToPerformAssertions();
         $structureValidator->checkValidity($competition, $structure, null);
+    }
+
+    public function testQualifyRuleOneTimeUsage(): void
+    {
+        $competition = $this->createCompetition();
+
+        $structureEditor = $this->createStructureEditor();
+
+        $structure = $structureEditor->create($competition, [5,5,5,5,5,5,5,5]);
+        $rootRound = $structure->getSingleCategory()->getRootRound();
+
+        $structureEditor->addChildRound($rootRound, QualifyTarget::Winners, [2, 2, 2, 2, 2, 2, 2, 2]);
+        $structureEditor->addChildRound($rootRound, QualifyTarget::Winners, [2, 2, 2, 2, 2, 2, 2, 2]);
+
+        (new GamesCreator())->createStructureGames($structure);
+
+        // (new StructureOutput())->output($structure);
+
+        $structureValidator = new StructureValidator();
+        self::expectNotToPerformAssertions();
+        $structureValidator->checkHorizontalPouleOneTimeUse($rootRound);
     }
 }

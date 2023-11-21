@@ -4,9 +4,12 @@ declare(strict_types=1);
 
 namespace Sports\Tests\Qualify;
 
+use Sports\Competitor\StartLocation;
+use Sports\Competitor\Team as TeamCompetitor;
 use Sports\Qualify\Target as QualifyTarget;
 use Sports\Output\StructureOutput;
 use PHPUnit\Framework\TestCase;
+use Sports\Team;
 use Sports\TestHelper\CompetitionCreator;
 use Sports\TestHelper\GamesCreator;
 use Sports\TestHelper\SetScores;
@@ -25,7 +28,7 @@ class ServiceTest extends TestCase
     use SetScores;
     use StructureEditorCreator;
 
-    public function test2RoundNumbers5(): void
+    public function test2RoundNumbers5Places(): void
     {
         $competition = $this->createCompetition();
 
@@ -54,12 +57,38 @@ class ServiceTest extends TestCase
         $qualifyService = new QualifyService($rootRound);
         $qualifyService->setQualifiers();
 
+        $competitors = [
+            new TeamCompetitor(
+                        $competition, new StartLocation(1, 1, 1),
+                        new Team($competition->getLeague()->getAssociation(), 'tc 1.1') ),
+            new TeamCompetitor(
+                $competition, new StartLocation(1, 1, 2),
+                new Team($competition->getLeague()->getAssociation(), 'tc 1.2') )
+        ];
+
+        $competitorMap = new StartLocationMap($competitors);
+
         $winnersPoule = $winnersRound->getPoule(1);
 
+        // 1
         self::assertNotNull($winnersPoule->getPlace(1)->getQualifiedPlace());
         self::assertSame($pouleOne->getPlace(1), $winnersPoule->getPlace(1)->getQualifiedPlace());
+
+
+        $startLocation = $pouleOne->getPlace(1)->getStartLocation();
+        self::assertNotNull($startLocation);
+        $competitor = $competitorMap->getCompetitor($startLocation);
+        self::assertNotNull($competitor);
+        self::assertSame($competitor->getName(), 'tc 1.1');
+
+        // 2
         self::assertNotNull($winnersPoule->getPlace(2)->getQualifiedPlace());
         self::assertSame($pouleOne->getPlace(2), $winnersPoule->getPlace(2)->getQualifiedPlace());
+        $startLocation = $pouleOne->getPlace(2)->getStartLocation();
+        self::assertNotNull($startLocation);
+        $competitor = $competitorMap->getCompetitor($startLocation);
+        self::assertNotNull($competitor);
+        self::assertSame($competitor->getName(), 'tc 1.2');
 
         $loserssPoule = $losersRound->getPoule(1);
 

@@ -38,7 +38,7 @@ class Creator
     public function createForParentRound(Round $parentRound): void
     {
         foreach ([QualifyTarget::Winners, QualifyTarget::Losers] as $target) {
-            $fromRoundHorPoules = array_slice( $parentRound->getHorizontalPoules($target)->toArray(), 0 );
+            $fromRoundHorPoules = array_slice( array_values(  $parentRound->getHorizontalPoules($target)->toArray() ), 0 );
             foreach ($parentRound->getTargetQualifyGroups($target) as $qualifyGroup) {
                 if( $qualifyGroup->getDistribution() === QualifyDistribution::HorizontalSnake ) {
                     $childRound = $qualifyGroup->getChildRound();
@@ -47,7 +47,7 @@ class Creator
                     $creator = new VerticalQualifyRuleCreator();
 
                 }
-                $creator->createRules(array_values( $fromRoundHorPoules), $qualifyGroup);
+                $fromRoundHorPoules = $creator->createRules($fromRoundHorPoules, $qualifyGroup);
 
 //                $childRound = $qualifyGroup->getChildRound();
 //                $defaultRuleCreator = new Creator($childRound);

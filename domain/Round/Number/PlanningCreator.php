@@ -83,14 +83,11 @@ class PlanningCreator
         $competition = $roundNumber->getCompetition();
         $scheduler = new PlanningScheduler($blockedPeriods);
         if ($roundNumber->allPoulesHaveGames()) {
-            $scheduler->rescheduleGames($roundNumber);
+            $scheduler->rescheduleGames($roundNumber, $competition->getStartDateTime());
         } else {
-
-            $defaultPlanningInput = new Input(
-                $roundNumber->createPouleStructure(),
-                $competition->createSportVariantsWithFields(),
-                new RefereeInfo($competition->getReferees()->count()),
-                $roundNumber->getValidPlanningConfig()->getPerPoule()
+            $defaultPlanningInput = (new PlanningInputCreator())->create(
+                $roundNumber,
+                new RefereeInfo($competition->getReferees()->count())
             );
             $planningInput = $this->inputRepos->getFromInput($defaultPlanningInput);
             if ($planningInput === null) {

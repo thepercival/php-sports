@@ -61,12 +61,12 @@ class PlanningCreator
         return $input;
     }
 
-    public function createPlanning(Input $input, SportRange $range = null, int|null $allowedGppMargin = null): Planning
+    public function createPlanning(Input $input, SportRange $batchGamesRange = null, int|null $allowedGppMargin = null): Planning
     {
-        if ($range === null) {
-            $range = new SportRange(1, 1);
+        if ($batchGamesRange === null) {
+            $batchGamesRange = new SportRange(1, 1);
         }
-        $planning = new Planning($input, $range, 0);
+        $planning = new Planning($input, $batchGamesRange, 0);
 
         $scheduleCreator = new ScheduleCreator($this->getLogger());
         if( $allowedGppMargin === null) {

@@ -121,7 +121,7 @@ class Group extends Identifiable
 //        $nrOfSingleRules = 0;
 //
 //        $singleRule = $this->firstSingleRule;
-//        while  ($singleRule === null) {
+//        while  ($singleRule !== null) {
 //            $nrOfSingleRules++;
 //            $singleRule = $singleRule->getNext();
 //        }

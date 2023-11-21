@@ -15,7 +15,6 @@ use Sports\Game\Place\Against as AgainstGamePlace;
 use Sports\Output\Game\Against as AgainstGameOutput;
 use Sports\Place;
 use Sports\Round\Number\GamesValidator;
-use Sports\Round\Number\PlanningInputCreator;
 use Sports\TestHelper\CompetitionCreator;
 use Sports\TestHelper\GamesCreator;
 use Sports\TestHelper\StructureEditorCreator;
@@ -231,9 +230,11 @@ class GamesValidatorTest extends TestCase
         (new GamesCreator())->createStructureGames($structure);
 
 //        $outputGame = new AgainstGameOutput();
-//        $games = $firstRoundNumber->getGames(AgainstGame::ORDER_BY_BATCH);
+//        $games = $firstRoundNumber->getGames(GameOrder::ByBatch);
 //        foreach( $games as $gameIt ) {
-//            $outputGame->output( $gameIt );
+//            if( $gameIt instanceof AgainstGame ) {
+//                $outputGame->output( $gameIt );
+//            }
 //        }
 
         $firstPoule = $structure->getSingleCategory()->getRootRound()->getFirstPoule();
@@ -250,9 +251,11 @@ class GamesValidatorTest extends TestCase
         $game->setRefereePlace($lastAvailablePlace);
 
 //        $outputGame = new AgainstGameOutput();
-//        $games = $firstRoundNumber->getGames(AgainstGame::ORDER_BY_BATCH);
+//        $games = $firstRoundNumber->getGames(GameOrder::ByBatch);
 //        foreach ($games as $gameIt) {
-//            $outputGame->output($gameIt);
+//            if( $gameIt instanceof AgainstGame ) {
+//                $outputGame->output($gameIt);
+//            }
 //        }
 
         $gamesValidator = new GamesValidator();
@@ -276,7 +279,9 @@ class GamesValidatorTest extends TestCase
 //        $outputGame = new \Sports\Output\Game\Against();
 //        $games = $firstRoundNumber->getGames(GameOrder::ByBatch);
 //        foreach( $games as $gameIt ) {
-//            $outputGame->output( $gameIt );
+//            if( $gameIt instanceof AgainstGame) {
+//                $outputGame->output( $gameIt );
+//            }
 //        }
 
         $gamesValidator = new GamesValidator();
@@ -306,7 +311,7 @@ class GamesValidatorTest extends TestCase
         self::assertInstanceOf(AgainstGame::class, $game);
         $game->setStartDateTime($start->add(new \DateInterval('PT10M')));
 //        $outputGame = new \Sports\Output\Game();
-//        $games = $firstRoundNumber->getGames(Game::ORDER_BY_BATCH);
+//        $games = $firstRoundNumber->getGames(GameOrder::ByBatch);
 //        foreach( $games as $gameIt ) {
 //            $outputGame->output( $gameIt );
 //        }
@@ -314,6 +319,7 @@ class GamesValidatorTest extends TestCase
         $gamesValidator = new GamesValidator();
         self::expectException(Exception::class);
         $nrOfReferees = $competition->getReferees()->count();
+        $firstRoundNumber->getValidPlanningConfig()->setSelfReferee(SelfReferee::Disabled);
         $gamesValidator->validate($firstRoundNumber, $nrOfReferees, true, [$blockedPeriod]);
     }
 

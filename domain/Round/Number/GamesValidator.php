@@ -115,7 +115,10 @@ class GamesValidator
 
     protected function validateSelfReferee(RoundNumber $roundNumber): void
     {
-        // MAYBE EXCEPTION OCCURS
+        if ($roundNumber->getRefereeInfo()->selfRefereeInfo->selfReferee === SelfReferee::Disabled ) {
+            return;
+        }
+
         new PlanningPouleStructure(
             $roundNumber->createPouleStructure(),
             $roundNumber->getCompetition()->createSportVariantsWithFields(),

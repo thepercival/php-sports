@@ -37,9 +37,9 @@ final class PlanningMapperTest extends TestCase
 
         $gamesCreator = new GamesCreator();
         $planningAssigner = new PlanningAssigner(new PlanningScheduler([]));
-        $firstPlanning = $gamesCreator->createPlanning($firstRoundNumber, new SportRange(2, 2));
+        $firstPlanning = $gamesCreator->createPlanning($firstRoundNumber, null, new SportRange(2, 2));
         $planningAssigner->assignPlanningToRoundNumber($firstRoundNumber, $firstPlanning);
-        $secondPlanning = $gamesCreator->createPlanning($secondRoundNumber, new SportRange(2, 2));
+        $secondPlanning = $gamesCreator->createPlanning($secondRoundNumber, null, new SportRange(2, 2));
         $planningAssigner->assignPlanningToRoundNumber($secondRoundNumber, $secondPlanning);
 
 //        (new PlanningOutput())->outputWithGames($secondPlanning, true);
@@ -75,9 +75,9 @@ final class PlanningMapperTest extends TestCase
 
         $gamesCreator = new GamesCreator();
         $planningAssigner = new PlanningAssigner(new PlanningScheduler([]));
-        $firstPlanning = $gamesCreator->createPlanning($firstRoundNumber, new SportRange(2, 2));
+        $firstPlanning = $gamesCreator->createPlanning($firstRoundNumber, null, new SportRange(2, 2));
         $planningAssigner->assignPlanningToRoundNumber($firstRoundNumber, $firstPlanning);
-        $secondPlanning = $gamesCreator->createPlanning($secondRoundNumber, new SportRange(2, 2));
+        $secondPlanning = $gamesCreator->createPlanning($secondRoundNumber, null, new SportRange(2, 2));
         $planningAssigner->assignPlanningToRoundNumber($secondRoundNumber, $secondPlanning);
 
 //        (new PlanningOutput())->outputWithGames($secondPlanning, true, );
