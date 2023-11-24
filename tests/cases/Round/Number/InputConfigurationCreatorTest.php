@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Sports\Tests\Round\Number;
 
 use PHPUnit\Framework\TestCase;
-use Sports\Round\Number\PlanningInputCreator;
+use Sports\Round\Number\InputConfigurationCreator;
 use Sports\TestHelper\CompetitionCreator;
 use Sports\TestHelper\StructureEditorCreator;
 use SportsPlanning\Referee\Info as RefereeInfo;
@@ -13,7 +13,7 @@ use SportsHelpers\Sport\Variant\Against\GamesPerPlace as AgainstGpp;
 use SportsHelpers\Sport\VariantWithFields as SportVariantWithFields;
 use SportsPlanning\Input;
 
-final class PlanningInputCreatorTest extends TestCase
+final class InputConfigurationCreatorTest extends TestCase
 {
     use CompetitionCreator;
     use StructureEditorCreator;
@@ -31,11 +31,12 @@ final class PlanningInputCreatorTest extends TestCase
         $structure = $structureEditor->create($competition, [10]);
 
         $firstRoundNumber = $structure->getFirstRoundNumber();
-        $input = (new PlanningInputCreator())->create(
+        $inputConfiguration = (new InputConfigurationCreator())->create(
             $firstRoundNumber, new RefereeInfo(count($competition->getReferees()))
         );
 
-        $sportWithReducedFields = $input->getSport(1);
+        $sportWithReducedFields = reset($inputConfiguration->sportVariantsWithFields);
+        self::assertNotFalse($sportWithReducedFields);
         self::assertEquals(1, $sportWithReducedFields->getNrOfFields());
     }
 }

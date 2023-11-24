@@ -22,6 +22,8 @@ use SportsPlanning\Output\Schedule as ScheduleOutput;
 
 class PlanningCreator
 {
+    use GppMarginCalculator;
+
     protected function getLogger(): LoggerInterface
     {
         $logger = new Logger("test-logger");
@@ -51,11 +53,11 @@ class PlanningCreator
 //        if ($refereeInfo === null) {
 //            $refereeInfo = new RefereeInfo($this->getDefaultNrOfReferees());
 //        }
-        $input = new Input(
+        $input = new Input( new Input\Configuration(
             $pouleStructure,
             $sportVariantsWithFields,
             $refereeInfo,
-            $perPoule
+            $perPoule )
         );
 
         return $input;
@@ -70,7 +72,7 @@ class PlanningCreator
 
         $scheduleCreator = new ScheduleCreator($this->getLogger());
         if( $allowedGppMargin === null) {
-            $allowedGppMargin = $scheduleCreator->getMaxGppMargin($input, $input->getPoule(1));
+            $allowedGppMargin = $this->getMaxGppMargin($input->getPoule(1), $this->getLogger());
         }
         $schedules = $scheduleCreator->createFromInput($input, $allowedGppMargin);
         // (new ScheduleOutput($this->getLogger()))->output($schedules);

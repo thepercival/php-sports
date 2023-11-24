@@ -24,6 +24,8 @@ use SportsScheduler\Schedule\Creator as ScheduleCreator;
 
 class GamesCreator
 {
+    use GppMarginCalculator;
+
     protected function getLogger(): LoggerInterface
     {
         $logger = new Logger("test-logger");
@@ -85,7 +87,7 @@ class GamesCreator
         $planningCreator = new PlanningCreator();
 
         if( $allowedGppMargin === null) {
-            $allowedGppMargin = (new ScheduleCreator($this->getLogger()))->getMaxGppMargin($input, $input->getPoule(1));
+            $allowedGppMargin = $this->getMaxGppMargin($input->getPoule(1), $this->getLogger());
         }
         return $planningCreator->createPlanning($input, $batchGamesRange, $allowedGppMargin);
     }

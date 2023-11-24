@@ -4,52 +4,40 @@ declare(strict_types=1);
 
 namespace Sports\Round\Number;
 
-use Sports\Planning\Config as PlanningConfig;
 use Sports\Planning\GameAmountConfig;
 use Sports\Round\Number as RoundNumber;
 use SportsHelpers\PouleStructure;
+use SportsPlanning\Input\ConfigurationValidator;
 use SportsPlanning\PouleStructure as PlanningPouleStructure;
-use SportsHelpers\SelfReferee;
-use SportsHelpers\SelfRefereeInfo;
 use SportsHelpers\Sport\Variant\Against\H2h as AgainstH2h;
 use SportsHelpers\Sport\Variant\Against\GamesPerPlace as AgainstGpp;
 use SportsHelpers\Sport\Variant\AllInOneGame;
 use SportsHelpers\Sport\Variant\Single;
 use SportsHelpers\Sport\VariantWithFields as SportVariantWithFields;
-use SportsPlanning\Input as PlanningInput;
-use SportsPlanning\Input\Service as PlanningInputService;
+use SportsPlanning\Input\Configuration as InputConfiguration;
 use SportsPlanning\Referee\Info as RefereeInfo;
 
-class PlanningInputCreator
+class InputConfigurationCreator
 {
     public function __construct()
     {
     }
 
-    public function create(RoundNumber $roundNumber, RefereeInfo $refereeInfo): PlanningInput
+    public function create(RoundNumber $roundNumber, RefereeInfo $refereeInfo): InputConfiguration
     {
         $config = $roundNumber->getValidPlanningConfig();
 
         $pouleStructure = $this->createPouleStructure($roundNumber);
         $sportVariantsWithFields = $this->createSportVariantsWithFields($roundNumber);
 
-       /* $selfReferee = $this->getSelfReferee(
-            $config,
-            $roundNumber->createSportVariants(),
-            $pouleStructure
-        );*/
-        /*$refereeInfo
-        if( $selfReferee === SelfReferee::Disabled ) {
-            $refereeInfo = new RefereeInfo($nrOfReferees);
-        } else {
-            $refereeInfo = new RefereeInfo(new SelfRefereeInfo($selfReferee, $config->getNrOfSimSelfRefs()));
-        }*/
-        $efficientSportVariants = $this->reduceFields($pouleStructure, $sportVariantsWithFields, $refereeInfo);
-        return new PlanningInput(
-            $pouleStructure,
-            $efficientSportVariants,
-            $refereeInfo,
-            $config->getPerPoule()
+        $configurationValidator = new ConfigurationValidator();
+        return $configurationValidator->reduce(
+            new InputConfiguration(
+                $pouleStructure,
+                $sportVariantsWithFields,
+                $refereeInfo,
+                $config->getPerPoule()
+            )
         );
     }
 
@@ -67,29 +55,6 @@ class PlanningInputCreator
         }, $gameAmountConfigs);
     }
 
-    /**
-     * @param PlanningConfig $planningConfig
-     * @param list<AgainstH2h|AgainstGpp|Single|AllInOneGame> $sportVariants
-     * @param PouleStructure $pouleStructure
-     * @return SelfReferee
-     */
-    protected function getSelfReferee(PlanningConfig $planningConfig, array $sportVariants, PouleStructure $pouleStructure): SelfReferee
-    {
-        $planningInputService = new PlanningInputService();
-
-        $otherPoulesAvailable = $planningInputService->canSelfRefereeOtherPoulesBeAvailable($pouleStructure);
-        $samePouleAvailable = $planningInputService->canSelfRefereeSamePouleBeAvailable($pouleStructure, $sportVariants);
-        if (!$otherPoulesAvailable && !$samePouleAvailable) {
-            return SelfReferee::Disabled;
-        }
-        if ($planningConfig->getSelfReferee() === SelfReferee::OtherPoules && !$otherPoulesAvailable) {
-            return SelfReferee::SamePoule;
-        }
-        if ($planningConfig->getSelfReferee() === SelfReferee::SamePoule && !$samePouleAvailable) {
-            return SelfReferee::OtherPoules;
-        }
-        return $planningConfig->getSelfReferee();
-    }
 
     protected function createPouleStructure(RoundNumber $roundNumber): PouleStructure
     {
