@@ -6,7 +6,6 @@ namespace Sports\Place;
 
 use Sports\Place;
 use Sports\Competition\Sport as CompetitionSport;
-use Sports\Place\Location as PlaceLocation;
 
 class SportPerformance extends Performance
 {

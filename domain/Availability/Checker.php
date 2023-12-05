@@ -13,7 +13,7 @@ use Sports\Competition\Sport as CompetitionSport;
 use Sports\Competitor;
 use Sports\Competitor\StartLocation;
 use Sports\Competitor\StartLocationMap;
-use Sports\Place\LocationInterface as PlaceLocationInterface;
+use SportsHelpers\PlaceLocationInterface;
 use Sports\Priority\Prioritizable;
 
 class Checker

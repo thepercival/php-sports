@@ -7,7 +7,7 @@ namespace Sports\Qualify;
 use Sports\Qualify\ReservationService\PouleNumberReservations;
 use Sports\Round;
 use Sports\Poule;
-use Sports\Place\Location as PlaceLocation;
+use SportsHelpers\PlaceLocation;
 
 class ReservationService
 {

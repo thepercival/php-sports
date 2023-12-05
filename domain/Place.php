@@ -13,7 +13,7 @@ use Sports\Game\Place\Together as TogetherGamePlace;
 use Sports\Game\State;
 use Sports\Game\State as GameState;
 use Sports\Game\Together as TogetherGame;
-use Sports\Place\Location as PlaceLocation;
+use SportsHelpers\PlaceLocation;
 use Sports\Poule\Horizontal as HorizontalPoule;
 use Sports\Qualify\Target as QualifyTarget;
 

@@ -13,7 +13,7 @@ use Sports\Competitor\StartLocation;
 use Sports\Game\Against as AgainstGame;
 use Sports\Game\State as GameState;
 use Sports\Game\Together as TogetherGame;
-use Sports\Place\Location as PlaceLocation;
+
 use Sports\Poule\Horizontal as HorizontalPoule;
 use Sports\Qualify\AgainstConfig as AgainstQualifyConfig;
 use Sports\Qualify\Group as QualifyGroup;
@@ -23,6 +23,7 @@ use Sports\Structure\Cell as StructureCell;
 use Sports\Score\Config as ScoreConfig;
 use Sports\Structure\PathNode as StructurePathNode;
 use SportsHelpers\Identifiable;
+use SportsHelpers\PlaceLocation;
 use SportsHelpers\PouleStructure\Balanced as BalancedPouleStructure;
 use SportsHelpers\Sport\Variant\MinNrOfPlacesCalculator;
 

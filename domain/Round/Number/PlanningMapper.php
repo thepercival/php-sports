@@ -366,6 +366,6 @@ class PlanningMapper
     public function getPlace(PlanningPlace $planningPlace): Place
     {
         $poule = $this->getPoule($planningPlace->getPoule());
-        return $poule->getPlace($planningPlace->getNumber());
+        return $poule->getPlace($planningPlace->getPlaceNr());
     }
 }

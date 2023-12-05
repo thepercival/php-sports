@@ -178,10 +178,10 @@ class GamesValidator
             $places = $this->getPlaces($game);
             /** @var Place $place */
             foreach ($places as $place) {
-                if (array_key_exists($place->getRoundLocationId(), $nrOfGames) === false) {
-                    $nrOfGames[$place->getRoundLocationId()] = 0;
+                if (array_key_exists((string)$place, $nrOfGames) === false) {
+                    $nrOfGames[(string)$place] = 0;
                 }
-                $nrOfGames[$place->getRoundLocationId()]++;
+                $nrOfGames[(string)$place]++;
             }
         }
         $value = reset($nrOfGames);
@@ -301,10 +301,10 @@ class GamesValidator
                 if (array_key_exists($pouleNr, $refereePlaces) === false) {
                     $refereePlaces[$pouleNr] = [];
                 }
-                if (array_key_exists($refereePlace->getRoundLocationId(), $refereePlaces[$pouleNr]) === false) {
-                    $refereePlaces[$pouleNr][$refereePlace->getRoundLocationId()] = 0;
+                if (array_key_exists((string)$refereePlace, $refereePlaces[$pouleNr]) === false) {
+                    $refereePlaces[$pouleNr][(string)$refereePlace] = 0;
                 }
-                $refereePlaces[$pouleNr][$refereePlace->getRoundLocationId()]++;
+                $refereePlaces[$pouleNr][(string)$refereePlace]++;
             }
 
             $referee = $game->getReferee();

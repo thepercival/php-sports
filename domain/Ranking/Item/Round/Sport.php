@@ -3,8 +3,8 @@
 namespace Sports\Ranking\Item\Round;
 
 use Sports\Competition\Sport as CompetitionSport;
-use Sports\Place\Location as PlaceLocation;
 use Sports\Place\SportPerformance;
+use SportsHelpers\PlaceLocation;
 
 class Sport
 {

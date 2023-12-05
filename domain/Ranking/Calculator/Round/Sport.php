@@ -14,7 +14,6 @@ use SportsHelpers\Sport\Variant\Against as AgainstSportVariant;
 use Sports\Poule;
 use Sports\Poule\Horizontal as HorizontalPoule;
 use Sports\Place;
-use Sports\Place\Location as PlaceLocation;
 use Sports\Ranking\Item\Round\Sport as SportRoundRankingItem;
 use Sports\Ranking\Rule\Getter as RankingRuleGetter;
 use Sports\Place\SportPerformance;

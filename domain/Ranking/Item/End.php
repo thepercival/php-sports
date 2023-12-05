@@ -3,7 +3,6 @@
 namespace Sports\Ranking\Item;
 
 use Sports\Competitor\StartLocationInterface;
-use Sports\Place\Location as PlaceLocation;
 
 class End
 {

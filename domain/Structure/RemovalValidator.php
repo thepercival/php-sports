@@ -7,15 +7,8 @@ namespace Sports\Structure;
 use Sports\Place;
 use Sports\Qualify\Target as QualifyTarget;
 use Exception;
-use Sports\Qualify\Distribution as QualifyDistribution;
-use Sports\Place\Location as PlaceLocation;
 use Sports\Qualify\Group as QualifyGroup;
-use SportsHelpers\PouleStructure\Balanced as BalancedPouleStructure;
 use Sports\Round;
-use Sports\Round\Number as RoundNumber;
-use Sports\Competition;
-use Sports\Structure;
-use SportsHelpers\PlaceRanges;
 use SportsHelpers\PouleStructure;
 
 class RemovalValidator

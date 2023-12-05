@@ -47,7 +47,7 @@ abstract class Calculator
     {
         $map = [];
         foreach ($performances as $performance) {
-            $map[$performance->getPlaceLocation()->getRoundLocationId()] = $performance;
+            $map[(string)$performance->getPlaceLocation()] = $performance;
         }
         return $map;
     }
