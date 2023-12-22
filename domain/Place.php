@@ -13,13 +13,14 @@ use Sports\Game\Place\Together as TogetherGamePlace;
 use Sports\Game\State;
 use Sports\Game\State as GameState;
 use Sports\Game\Together as TogetherGame;
-use SportsHelpers\PlaceLocation;
+use SportsHelpers\Identifiable;
+use SportsHelpers\PlaceLocationInterface;
 use Sports\Poule\Horizontal as HorizontalPoule;
 use Sports\Qualify\Target as QualifyTarget;
 
-class Place extends PlaceLocation
+class Place extends Identifiable implements PlaceLocationInterface
 {
-    protected int|string|null $id = null;
+    private int $placeNr;
 
     protected string|null $name = null;
     protected int $extraPoints;
@@ -32,7 +33,7 @@ class Place extends PlaceLocation
         if ($number === null) {
             $number = $poule->getPlaces()->count() + 1;
         }
-        parent::__construct($poule->getNumber(), $number);
+        $this->placeNr = $number;
 
         if (!$poule->getPlaces()->contains($this)) {
             $poule->getPlaces()->add($this) ;
@@ -40,19 +41,19 @@ class Place extends PlaceLocation
         $this->setExtraPoints(0);
     }
 
-    public function getId(): int|string|null
-    {
-        return $this->id;
-    }
-
-    public function setId(int|string|null $id): void
-    {
-        $this->id = $id;
-    }
-
     public function getPoule(): Poule
     {
         return $this->poule;
+    }
+
+    public function getPouleNr(): int
+    {
+        return $this->poule->getNumber();
+    }
+
+    public function getPlaceNr(): int
+    {
+        return $this->placeNr;
     }
 
     public function getRound(): Round
@@ -60,26 +61,12 @@ class Place extends PlaceLocation
         return $this->getPoule()->getRound();
     }
 
-    public function getPouleNr(): int
-    {
-//        if ($this->pouleNr !== null) {
-//            return $this->pouleNr;
-//        }
-        return $this->getPoule()->getNumber();
-    }
-
-    // json serialize
-    public function setPouleNr(int $pouleNr): void
-    {
-        $this->pouleNr = $pouleNr;
-    }
-
     public function getExtraPoints(): int
     {
         return $this->extraPoints;
     }
 
-    public function setExtraPoints(int $extraPoints): void
+    public final function setExtraPoints(int $extraPoints): void
     {
         $this->extraPoints = $extraPoints;
     }
@@ -229,5 +216,10 @@ class Place extends PlaceLocation
             }
         }
         return GameState::Created;
+    }
+
+    public function getUniqueIndex(): string
+    {
+        return $this->getPouleNr() . '.' . $this->getPlaceNr();
     }
 }

@@ -32,7 +32,7 @@ class Together extends Calculator
         foreach ($this->getFilteredGames($games) as $game) {
             foreach ($game->getPlaces() as $gamePlace) {
                 $finalScore = $this->scoreConfigService->getFinalTogetherScore($gamePlace);
-                $performance = $performanceMap[(string)$gamePlace->getPlace()];
+                $performance = $performanceMap[$gamePlace->getPlace()->getUniqueIndex()];
                 $performance->addGame();
                 $performance->addPoints($finalScore);
                 $performance->addScored($finalScore);

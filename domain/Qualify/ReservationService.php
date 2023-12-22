@@ -7,7 +7,7 @@ namespace Sports\Qualify;
 use Sports\Qualify\ReservationService\PouleNumberReservations;
 use Sports\Round;
 use Sports\Poule;
-use SportsHelpers\PlaceLocation;
+use SportsHelpers\PlaceLocationInterface;
 
 class ReservationService
 {
@@ -49,10 +49,10 @@ class ReservationService
     /**
      * @param int $toPouleNumber
      * @param Round $fromRound
-     * @param list<PlaceLocation> $fromPlaceLocations
-     * @return PlaceLocation
+     * @param list<PlaceLocationInterface> $fromPlaceLocations
+     * @return PlaceLocationInterface
      */
-    public function getFreeAndLeastAvailabe(int $toPouleNumber, Round $fromRound, array $fromPlaceLocations): PlaceLocation
+    public function getFreeAndLeastAvailabe(int $toPouleNumber, Round $fromRound, array $fromPlaceLocations): PlaceLocationInterface
     {
         $retPlaceLocation = null;
         $leastNrOfPoulesAvailable = null;

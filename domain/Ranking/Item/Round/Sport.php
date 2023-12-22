@@ -4,7 +4,7 @@ namespace Sports\Ranking\Item\Round;
 
 use Sports\Competition\Sport as CompetitionSport;
 use Sports\Place\SportPerformance;
-use SportsHelpers\PlaceLocation;
+use SportsHelpers\PlaceLocationInterface;
 
 class Sport
 {
@@ -30,7 +30,7 @@ class Sport
         return $this->getPerformance()->getCompetitionSport();
     }
 
-    public function getPlaceLocation(): PlaceLocation
+    public function getPlaceLocation(): PlaceLocationInterface
     {
         return $this->performance->getPlaceLocation();
     }

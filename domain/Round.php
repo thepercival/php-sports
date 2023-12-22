@@ -23,7 +23,7 @@ use Sports\Structure\Cell as StructureCell;
 use Sports\Score\Config as ScoreConfig;
 use Sports\Structure\PathNode as StructurePathNode;
 use SportsHelpers\Identifiable;
-use SportsHelpers\PlaceLocation;
+use SportsHelpers\PlaceLocationInterface;
 use SportsHelpers\PouleStructure\Balanced as BalancedPouleStructure;
 use SportsHelpers\Sport\Variant\MinNrOfPlacesCalculator;
 
@@ -403,7 +403,7 @@ class Round extends Identifiable
         return $places;
     }
 
-    public function getPlace(PlaceLocation $placeLocation): Place
+    public function getPlace(PlaceLocationInterface $placeLocation): Place
     {
         return $this->getPoule($placeLocation->getPouleNr())->getPlace($placeLocation->getPlaceNr());
     }

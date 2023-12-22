@@ -51,7 +51,7 @@ class Against extends Calculator
                 }
 
                 foreach ($game->getSidePlaces($side) as $gamePlace) {
-                    $roundLocationId = (string)$gamePlace->getPlace();
+                    $roundLocationId = $gamePlace->getPlace()->getUniqueIndex();
                     if (!isset($performanceMap[$roundLocationId])) {
                         continue;
                     }

@@ -121,7 +121,7 @@ class Round
     {
         $map = $this->getRoundRankingItemMap($places, $sportRoundRankings);
         $roundRankingItems = array_map(function (Place $place) use ($map): RoundRankingItem {
-            return $map[(string)$place];
+            return $map[$place->getUniqueIndex()];
         }, $places);
         return $this->rankItems($roundRankingItems);
     }
@@ -135,11 +135,11 @@ class Round
     {
         $map = [];
         foreach ($places as $place) {
-            $map[(string)$place] = new RoundRankingItem($place);
+            $map[$place->getUniqueIndex()] = new RoundRankingItem($place);
         }
         foreach ($sportRoundRankings as $sportRoundRanking) {
             foreach ($sportRoundRanking as $sportRoundItem) {
-                $map[(string)$sportRoundItem->getPlaceLocation()]->addSportRoundItem($sportRoundItem);
+                $map[$sportRoundItem->getPlaceLocation()->getUniqueIndex()]->addSportRoundItem($sportRoundItem);
             }
         }
         return $map;

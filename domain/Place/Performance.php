@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Sports\Place;
 
 use Sports\Place;
-use SportsHelpers\PlaceLocation;
+use SportsHelpers\PlaceLocationInterface;
 
 class Performance
 {
@@ -25,7 +25,7 @@ class Performance
         return $this->place;
     }
 
-    public function getPlaceLocation(): PlaceLocation
+    public function getPlaceLocation(): PlaceLocationInterface
     {
         return $this->place;
     }

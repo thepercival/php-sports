@@ -35,7 +35,7 @@ class Round
 
     public function getRoundLocationId(): string
     {
-        return (string)$this->place;
+        return $this->place->getUniqueIndex();
     }
 
     public function getCumulativeRank(): int
