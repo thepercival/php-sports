@@ -31,6 +31,6 @@ class PointsCalculationType extends EnumDbType
 
     public function getSQLDeclaration(array $column, AbstractPlatform $platform)
     {
-        return 'int';
+        return 'varchar(17)';
     }
 }

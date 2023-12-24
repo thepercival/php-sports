@@ -31,7 +31,7 @@ class GroupHandler extends Handler implements SubscribingHandlerInterface
 
     /**
      * @param JsonDeserializationVisitor $visitor
-     * @param array{parentRound: Round, target: string, nextStructureCell: Cell, number: int, childRound: _Round, distribution: int} $fieldValue
+     * @param array{parentRound: Round, target: string, nextStructureCell: Cell, number: int, childRound: _Round, distribution: string} $fieldValue
      * @param array<string, array<string, Round|RoundNumber>> $type
      * @param Context $context
      * @return QualifyGroup

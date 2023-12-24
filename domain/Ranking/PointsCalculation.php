@@ -8,11 +8,11 @@ use SportsHelpers\Sport\Variant\Against;
 use SportsHelpers\Sport\Variant\AllInOneGame;
 use SportsHelpers\Sport\Variant\Single;
 
-enum PointsCalculation: int
+enum PointsCalculation: string
 {
-    case AgainstGamePoints = 0;
-    case Scores = 1;
-    case Both = 2;
+    case AgainstGamePoints = 'againstGamePoints';
+    case Scores = 'scores';
+    case Both = 'both';
 
     public static function getDefault(Single|Against|AllInOneGame $sportVariant): self {
         if( $sportVariant instanceof Against) {

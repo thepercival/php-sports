@@ -18,7 +18,7 @@ use Sports\Poule;
 use Sports\Round\Number as RoundNumber;
 use Sports\Structure;
 use SportsPlanning\PouleStructure as PlanningPouleStructure;
-use SportsPlanning\Referee\Info as RefereeInfo;
+use SportsPlanning\Referee\Info as PlanningRefereeInfo;
 use SportsHelpers\Sport\Variant\Creator as VariantCreator;
 use SportsHelpers\Sport\Variant\WithPoule\Against\GamesPerPlace as AgainstGppWithPoule;
 use SportsHelpers\SelfReferee;
@@ -122,7 +122,7 @@ class GamesValidator
         new PlanningPouleStructure(
             $roundNumber->createPouleStructure(),
             $roundNumber->getCompetition()->createSportVariantsWithFields(),
-            $roundNumber->getRefereeInfo()
+            new PlanningRefereeInfo($roundNumber->getRefereeInfo())
         );
         foreach ($roundNumber->getGames(Order::ByPoule) as $game) {
             if ($game->getRefereePlace() === null) {
@@ -130,6 +130,8 @@ class GamesValidator
             }
         }
     }
+
+
 
     /**
      * @param RoundNumber $roundNumber

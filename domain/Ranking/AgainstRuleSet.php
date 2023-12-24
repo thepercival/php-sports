@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Sports\Ranking;
 
-enum AgainstRuleSet: int
+enum AgainstRuleSet: string
 {
-    case DiffFirst = 1;
-    case AmongFirst = 2;
+    case DiffFirst = 'diffFirst';
+    case AmongFirst = 'amongFirst';
 }

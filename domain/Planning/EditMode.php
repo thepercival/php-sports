@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Sports\Planning;
 
-enum EditMode: int
+enum EditMode: string
 {
-    case Auto = 1;
-    case Manual = 2;
+    case Auto = 'auto';
+    case Manual = 'manual';
 }

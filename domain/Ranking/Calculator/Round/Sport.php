@@ -24,7 +24,7 @@ use Sports\Ranking\Rule as RankingRule;
 abstract class Sport
 {
     /**
-     * @var array<int, bool>
+     * @var array<string, bool>
      */
     protected array $gameStateMap = [];
     /**

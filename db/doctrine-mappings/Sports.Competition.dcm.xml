@@ -3,7 +3,7 @@
                   xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
                   xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
     <entity name="Sports\Competition" table="competitions" repository-class="Sports\Competition\Repository">
-        <field name="againstRuleSet" column="againstRuleSet" type="enum_AgainstRuleSet" nullable="false"
+        <field name="againstRuleSet" column="againstRuleSet" type="enum_AgainstRuleSet" length="10" nullable="false"
                unique="false"/>
         <field name="startDateTime" column="startDateTime" type="datetime_immutable" nullable="false" unique="false"/>
         <many-to-one field="league" target-entity="Sports\League" inversed-by="competitions">

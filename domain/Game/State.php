@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Sports\Game;
 
-enum State: int
+enum State: string
 {
-    case Created = 1;
-    case InProgress = 2;
-    case Finished = 4;
-    case Canceled = 8;
+    case Created = 'created';
+    case InProgress = 'inProgress';
+    case Finished = 'finished';
+    case Canceled = 'canceled';
 }

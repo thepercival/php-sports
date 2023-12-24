@@ -21,7 +21,7 @@ use Sports\Structure\Cell;
 /**
  * @psalm-type _Sport = array{id: int|string}
  * @psalm-type _CompetitionSport = array{id: int|string, sport: _Sport}
- * @psalm-type _AgainstQualifyConfig = array{pointsCalculation: int, winPoints: float, drawPoints: float, winPointsExt: float, drawPointsExt: float, losePointsExt: float, competitionSport: _CompetitionSport}
+ * @psalm-type _AgainstQualifyConfig = array{pointsCalculation: string, winPoints: float, drawPoints: float, winPointsExt: float, drawPointsExt: float, losePointsExt: float, competitionSport: _CompetitionSport}
  * @psalm-type _ScoreConfig = array{direction: int, maximum: int, enabled: bool, competitionSport: _CompetitionSport}
  * @psalm-type _ScoreConfigFieldValue = array{direction: int, maximum: int, enabled: bool, competitionSport: _CompetitionSport, next: _ScoreConfig|null}
  * @psalm-type _Poule = array{round: Round}

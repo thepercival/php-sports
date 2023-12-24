@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Sports\Qualify;
 
-enum Distribution: int
+enum Distribution: string
 {
-    case HorizontalSnake = 0;
-    case Vertical = 1;
+    case HorizontalSnake = 'horizontalSnake';
+    case Vertical = 'vertical';
 }

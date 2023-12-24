@@ -8,7 +8,6 @@ use Sports\Round\Number as RoundNumber;
 use SportsHelpers\Identifiable;
 use SportsHelpers\SelfReferee;
 use SportsHelpers\SelfRefereeInfo;
-use SportsPlanning\Referee\Info as RefereeInfo;
 
 class Config extends Identifiable
 {
