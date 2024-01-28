@@ -11,3 +11,5 @@ Sports\Place:
     qualifiedPlace:
       type: Sports\Place
       groups: [structure]
+    placeNr:
+      type: integer
