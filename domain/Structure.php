@@ -102,12 +102,14 @@ class Structure
     /**
      * @return list<RoundNumber>
      */
-    public function getRoundNumbers(): array
+    public function getRoundNumbers(int|null $startRoundNumber = null): array
     {
         $roundNumbers = [];
         $roundNumber = $this->getFirstRoundNumber();
         while ($roundNumber !== null) {
-            array_push($roundNumbers, $roundNumber);
+            if( $startRoundNumber === null || $roundNumber->getNumber() >= $startRoundNumber) {
+                array_push($roundNumbers, $roundNumber);
+            }
             $roundNumber = $roundNumber->getNext();
         }
         return $roundNumbers;
