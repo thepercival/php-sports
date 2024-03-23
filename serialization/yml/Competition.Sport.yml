@@ -6,21 +6,14 @@ Sports\Competition\Sport:
       type: Sports\Sport
     fields:
       type: ArrayCollection<Sports\Competition\Field>
-      groups: [noReference]
     defaultPointsCalculation:
-      groups: [ noReference ]
     defaultWinPoints:
       type: float
-      groups: [ noReference ]
     defaultDrawPoints:
       type: float
-      groups: [ noReference ]
     defaultWinPointsExt:
       type: float
-      groups: [ noReference ]
     defaultDrawPointsExt:
       type: float
-      groups: [ noReference ]
     defaultLosePointsExt:
       type: float
-      groups: [ noReference ]

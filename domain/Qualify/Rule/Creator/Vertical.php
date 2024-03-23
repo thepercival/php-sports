@@ -42,32 +42,31 @@ class Vertical
 
         $previous = null; // : VerticalSingleQualifyRule |  undefined;
 
-        foreach( $fromRoundHorPoules as $fromHorPoule ) { // fromRoundHorPoules.every((fromHorPoule: HorizontalPoule): boolean => {
-            $fromHorPoulePlaces = array_values( array_slice($fromHorPoule->getPlaces()->toArray(), 0 ) );
-
-            while ( count($fromHorPoulePlaces) > 0 && count($childPlaces) > 0) {
-
-                // SingleRule
-                if (count($fromHorPoulePlaces) <= count($childPlaces)) {
-                    $byRankMappings = $this->fromPlacesToByRankMappings($qualifyTarget, $fromHorPoulePlaces, $childPlaces);
-                    $previous = new VerticalSingleQualifyRule($fromHorPoule, $qualifyGroup, $byRankMappings, $previous);
-                } else {
-                    $toPlaces = [];
-                    $nrOfHorPoulePlaces = count($fromHorPoulePlaces);
-                    while ($nrOfHorPoulePlaces-- > 0 && count($childPlaces) > 0) {
-                        $toPlaces[] = array_shift($childPlaces);
-                    }
-                    new VerticalMultipleQualifyRule($fromHorPoule, $qualifyGroup, $toPlaces);
+        $fromHorPoulePlaces = [];
+        $fromHorPoule = null;
+        while ( count($childPlaces) > 0 && count($fromRoundHorPoules) > 0 ) {
+            if( count($fromHorPoulePlaces) === 0 ) {
+                $fromHorPoule = array_shift($fromRoundHorPoules);
+                $fromHorPoulePlaces = array_values( array_slice($fromHorPoule->getPlaces()->toArray(), 0 ) );
+            }
+            if( $fromHorPoule === null ) {
+                throw new Exception('fromHorPoule can not be null');
+            }
+            // SingleRule
+            if (count($fromHorPoulePlaces) <= count($childPlaces)) {
+                $byRankMappings = $this->fromPlacesToByRankMappings($qualifyTarget, $fromHorPoulePlaces, $childPlaces);
+                $previous = new VerticalSingleQualifyRule($fromHorPoule, $qualifyGroup, $byRankMappings, $previous);
+            } else {
+                $toPlaces = [];
+                $nrOfHorPoulePlaces = count($fromHorPoulePlaces);
+                while ($nrOfHorPoulePlaces-- > 0 && count($childPlaces) > 0) {
+                    $toPlaces[] = array_shift($childPlaces);
                 }
+                new VerticalMultipleQualifyRule($fromHorPoule, $qualifyGroup, $toPlaces);
             }
         }
-        return [];
-        // console.log(qualifyGroup.getFirstVerticalRule());
+        return $fromRoundHorPoules;
     }
-
-    // protected shiftChildPlace(childPlaces: Place[], childPlacesByPoule: (Place[])[]): Place|undefined {
-
-    // }
 
     /**
      * @param Round $round

@@ -48,20 +48,6 @@ class Creator
 
                 }
                 $fromRoundHorPoules = $creator->createRules($fromRoundHorPoules, $qualifyGroup);
-
-//                $childRound = $qualifyGroup->getChildRound();
-//                $defaultRuleCreator = new Creator($childRound);
-//                $nrOfChildRoundPlaces = $childRound->getNrOfPlaces();
-//                $fromHorPoules = [];
-//                while ($nrOfChildRoundPlaces > 0) {
-//                    $fromRoundHorPoule = array_shift($fromRoundHorPoules);
-//                    if ($fromRoundHorPoule === null) {
-//                        throw new Exception('fromRoundHorPoule should not be null', E_ERROR);
-//                    }
-//                    array_push($fromHorPoules, $fromRoundHorPoule);
-//                    $nrOfChildRoundPlaces -= $fromRoundHorPoule->getPlaces()->count();
-//                }
-//                $defaultRuleCreator->createRules($fromHorPoules, $qualifyGroup);
             }
         }
     }

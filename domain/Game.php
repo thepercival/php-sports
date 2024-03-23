@@ -67,6 +67,15 @@ abstract class Game extends Identifiable
         return $this->competitionSport;
     }
 
+    public function getCompetitionSportId(): string|int
+    {
+        $competitionSportId = $this->getCompetitionSport()->getId();
+        if ($competitionSportId === null) {
+            throw new \Exception('competitionsport can not be null', E_ERROR);
+        }
+        return $competitionSportId;
+    }
+
     public function getState(): Game\State
     {
         return $this->state;
