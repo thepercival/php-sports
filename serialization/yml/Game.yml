@@ -11,15 +11,14 @@ Sports\Game:
     state:
     startDateTime:
       type: DateTimeImmutable<'Y-m-d\TH:i:s.u\Z'>
-    competitionSportId:
-      type: string
-      access_type: public_method # defaults to property
-      accessor: # access_type must be set to public_method
-        getter: getCompetitionSportId
     refereeStructureLocation:
       type: string
       access_type: public_method # defaults to property
       accessor: # access_type must be set to public_method
         getter: getRefereeStructureLocation
         setter: setRefereeStructureLocation
+  virtual_properties:
+    getCompetitionSportId:
+      type: string
+      serialized_name: competitionSportId
 

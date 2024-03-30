@@ -9,7 +9,8 @@ Sports\Place:
       type: integer
       groups: [ structure, noReference ]
     qualifiedPlace:
-      type: Sports\Place
+      type: SportsHelpers\PlaceLocation
       groups: [structure]
+      read_only: true
     placeNr:
       type: integer

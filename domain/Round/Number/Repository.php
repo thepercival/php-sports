@@ -33,9 +33,6 @@ class Repository extends EntityRepository
                 $this->getEntityManager()->remove($game);
             }
         }
-        // $roundNumber->setHasPlanning(false);
-        // $this->_em->persist($roundNumber);
-
         $this->getEntityManager()->flush();
     }
 
@@ -44,11 +41,6 @@ class Repository extends EntityRepository
         foreach ($roundNumber->getGames(Order::ByPoule) as $game) {
             $this->getEntityManager()->persist($game);
         }
-//        if ($hasPlanning !== null) {
-//            $roundNumber->setHasPlanning($hasPlanning);
-//            $this->_em->persist($roundNumber);
-//        }
-
         $this->getEntityManager()->flush();
     }
 }

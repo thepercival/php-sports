@@ -131,6 +131,14 @@ class Sport extends PersistVariant implements \Stringable
         }
     }
 
+    public function equals(self $competitionSport): bool {
+        return $this->getSport() === $competitionSport->getSport()
+            && $this->getGameMode() == $competitionSport->getGameMode()
+            && $this->getNrOfHomePlaces() == $competitionSport->getNrOfHomePlaces()
+            && $this->getNrOfAwayPlaces() == $competitionSport->getNrOfAwayPlaces()
+            && $this->getNrOfGamePlaces() == $competitionSport->getNrOfGamePlaces();
+    }
+
     public function __toString(): string
     {
         return $this->createVariant() . ' f=>' . $this->getFields()->count();

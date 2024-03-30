@@ -26,20 +26,10 @@ use Sports\Structure;
 
 class Copier
 {
-    private const SPORT_MAPPING_PROP_ID = 1;
-    private const SPORT_MAPPING_PROP_NAME = 2;
-
-    protected int $sportMappingProperty = self::SPORT_MAPPING_PROP_ID;
-
     public function __construct(
         private HorizontalPouleCreator $horPouleCreator,
         private QualifyRuleCreator $qualifyRuleCreator
     ) {
-    }
-
-    public function setSportMappingPropertyToName(): void
-    {
-        $this->sportMappingProperty = self::SPORT_MAPPING_PROP_NAME;
     }
 
     public function copy(Structure $structure, Competition $newCompetition): Structure
@@ -65,7 +55,7 @@ class Copier
             $planningConfigService->copy($planningConfig, $newRoundNumber);
         }
         foreach ($roundNumber->getGameAmountConfigs() as $gameAmountConfig) {
-            $newCompetitionSport = $this->getNewCompetitionSport(
+            $newCompetitionSport = $this->getNewCompetitionSportById(
                 $gameAmountConfig->getCompetitionSport(),
                 $newRoundNumber->getCompetition()
             );
@@ -81,21 +71,31 @@ class Copier
         }
     }
 
-    protected function getNewCompetitionSport(CompetitionSport $sourceCompetitionSport, Competition $newCompetition): CompetitionSport
+    protected function getNewCompetitionSportById(CompetitionSport $sourceCompetitionSport, Competition $newCompetition): CompetitionSport
     {
         foreach ($newCompetition->getSports() as $competitionSport) {
-            if ($this->sportMappingProperty === self::SPORT_MAPPING_PROP_ID) {
-                if ($competitionSport->getSport()->getId() === $sourceCompetitionSport->getSport()->getId()) {
-                    return $competitionSport;
-                }
-            } else {
-                if ($competitionSport->getSport()->getName() === $sourceCompetitionSport->getSport()->getName()) {
-                    return $competitionSport;
-                }
+            if ($competitionSport->getId() === $sourceCompetitionSport->getId()) {
+                return $competitionSport;
             }
         }
-        throw new Exception("een sport kon niet gevonden worden", E_ERROR);
+        throw new Exception("een competitiesport kon niet gevonden worden", E_ERROR);
     }
+
+//    protected function getNewCompetitionSport(CompetitionSport $sourceCompetitionSport, Competition $newCompetition): CompetitionSport
+//    {
+//        foreach ($newCompetition->getSports() as $competitionSport) {
+//            if ($this->sportMappingProperty === self::SPORT_MAPPING_PROP_ID) {
+//                if ($competitionSport->getSport()->getId() === $sourceCompetitionSport->getSport()->getId()) {
+//                    return $competitionSport;
+//                }
+//            } else {
+//                if ($competitionSport->getSport()->getName() === $sourceCompetitionSport->getSport()->getName()) {
+//                    return $competitionSport;
+//                }
+//            }
+//        }
+//        throw new Exception("een sport kon niet gevonden worden", E_ERROR);
+//    }
 
     protected function copyCategory(Category $category, Category $newCategory, RoundNumber $firstRoundNumber): void
     {
@@ -151,7 +151,7 @@ class Copier
         }
         $scoreConfigService = new ScoreConfigService();
         foreach ($scoreConfigs as $scoreConfig) {
-            $newCompetitionSport = $this->getNewCompetitionSport(
+            $newCompetitionSport = $this->getNewCompetitionSportById(
                 $scoreConfig->getCompetitionSport(),
                 $newRound->getCompetition()
             );
@@ -159,7 +159,7 @@ class Copier
         }
         $againstQualifyConfigService = new AgainstQualifyConfigService();
         foreach ($againstQualifyConfigs as $againstQualifyConfig) {
-            $newCompetitionSport = $this->getNewCompetitionSport(
+            $newCompetitionSport = $this->getNewCompetitionSportById(
                 $againstQualifyConfig->getCompetitionSport(),
                 $newRound->getCompetition()
             );
