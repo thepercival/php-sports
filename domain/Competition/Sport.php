@@ -132,7 +132,7 @@ class Sport extends PersistVariant implements \Stringable
     }
 
     public function equals(self $competitionSport): bool {
-        return $this->getSport() === $competitionSport->getSport()
+        return $this->getSport()->getName() === $competitionSport->getSport()->getName()
             && $this->getGameMode() == $competitionSport->getGameMode()
             && $this->getNrOfHomePlaces() == $competitionSport->getNrOfHomePlaces()
             && $this->getNrOfAwayPlaces() == $competitionSport->getNrOfAwayPlaces()

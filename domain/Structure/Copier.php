@@ -55,7 +55,7 @@ class Copier
             $planningConfigService->copy($planningConfig, $newRoundNumber);
         }
         foreach ($roundNumber->getGameAmountConfigs() as $gameAmountConfig) {
-            $newCompetitionSport = $this->getNewCompetitionSportById(
+            $newCompetitionSport = $this->getNewCompetitionSport(
                 $gameAmountConfig->getCompetitionSport(),
                 $newRoundNumber->getCompetition()
             );
@@ -71,10 +71,10 @@ class Copier
         }
     }
 
-    protected function getNewCompetitionSportById(CompetitionSport $sourceCompetitionSport, Competition $newCompetition): CompetitionSport
+    protected function getNewCompetitionSport(CompetitionSport $sourceCompetitionSport, Competition $newCompetition): CompetitionSport
     {
         foreach ($newCompetition->getSports() as $competitionSport) {
-            if ($competitionSport->getId() === $sourceCompetitionSport->getId()) {
+            if ($competitionSport->equals($sourceCompetitionSport)) {
                 return $competitionSport;
             }
         }
@@ -151,7 +151,7 @@ class Copier
         }
         $scoreConfigService = new ScoreConfigService();
         foreach ($scoreConfigs as $scoreConfig) {
-            $newCompetitionSport = $this->getNewCompetitionSportById(
+            $newCompetitionSport = $this->getNewCompetitionSport(
                 $scoreConfig->getCompetitionSport(),
                 $newRound->getCompetition()
             );
@@ -159,7 +159,7 @@ class Copier
         }
         $againstQualifyConfigService = new AgainstQualifyConfigService();
         foreach ($againstQualifyConfigs as $againstQualifyConfig) {
-            $newCompetitionSport = $this->getNewCompetitionSportById(
+            $newCompetitionSport = $this->getNewCompetitionSport(
                 $againstQualifyConfig->getCompetitionSport(),
                 $newRound->getCompetition()
             );
