@@ -2,5 +2,7 @@ Sports\Game\Place:
   exclusion_policy: ALL
   exclude: false
   properties:
-    place:
-      type: Sports\Place
+  virtual_properties:
+    getPlaceNr:
+      type: integer
+      serialized_name: placeNr

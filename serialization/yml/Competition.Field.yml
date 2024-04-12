@@ -4,7 +4,5 @@ Sports\Competition\Field:
   properties:
     priority:
       type: integer
-      groups: [noReference]
     name:
       type: string
-      groups: [noReference]

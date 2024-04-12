@@ -21,9 +21,9 @@ use Sports\Structure\Cell;
 /**
  * @psalm-type _Sport = array{id: int|string}
  * @psalm-type _CompetitionSport = array{id: int|string, sport: _Sport}
- * @psalm-type _AgainstQualifyConfig = array{pointsCalculation: string, winPoints: float, drawPoints: float, winPointsExt: float, drawPointsExt: float, losePointsExt: float, competitionSport: _CompetitionSport}
- * @psalm-type _ScoreConfig = array{direction: int, maximum: int, enabled: bool, competitionSport: _CompetitionSport}
- * @psalm-type _ScoreConfigFieldValue = array{direction: int, maximum: int, enabled: bool, competitionSport: _CompetitionSport, next: _ScoreConfig|null}
+ * @psalm-type _AgainstQualifyConfig = array{pointsCalculation: string, winPoints: float, drawPoints: float, winPointsExt: float, drawPointsExt: float, losePointsExt: float, competitionSportId: int}
+ * @psalm-type _ScoreConfig = array{direction: int, maximum: int, enabled: bool, competitionSportId: int}
+ * @psalm-type _ScoreConfigFieldValue = array{direction: int, maximum: int, enabled: bool, competitionSportId: int, next: _ScoreConfig|null}
  * @psalm-type _Poule = array{round: Round}
  * @psalm-type _QualifyGroup = array{parentRound: Round, nextStructureCell: Cell}
  * @psalm-type _FieldValue = array{parentQualifyGroup: QualifyGroup|null, structureCell: Cell, poules: list<_Poule>, qualifyGroups: list<_QualifyGroup>, againstQualifyConfigs: list<_AgainstQualifyConfig>, scoreConfigs: list<_ScoreConfigFieldValue>}
@@ -56,58 +56,56 @@ class RoundHandler extends Handler implements SubscribingHandlerInterface
         Context $context
     ): Round {
         $parentQualifyGroup = null;
-        if (isset($fieldValue["parentQualifyGroup"])) {
-            $parentQualifyGroup = $fieldValue["parentQualifyGroup"];
+        if (isset($fieldValue['parentQualifyGroup'])) {
+            $parentQualifyGroup = $fieldValue['parentQualifyGroup'];
         }
         if ($parentQualifyGroup instanceof QualifyGroup) {
             $round = $parentQualifyGroup->getChildRound();
         } else {
-            $round = new Round($fieldValue["structureCell"], null);
+            $round = new Round($fieldValue['structureCell'], null);
         }
         $structureCell = $round->getStructureCell();
 
-        if (isset($fieldValue["scoreConfigs"])) {
-            foreach ($fieldValue["scoreConfigs"] as $arrScoreConfig) {
+        if (isset($fieldValue['scoreConfigs'])) {
+            foreach ($fieldValue['scoreConfigs'] as $arrScoreConfig) {
                 $competitionSport = $this->dummyCreator->createCompetitionSport(
                     $round->getCompetition(),
-                    (int) $arrScoreConfig["competitionSport"]["id"],
-                    (int) $arrScoreConfig["competitionSport"]["sport"]["id"]
+                    $arrScoreConfig['competitionSportId']
                 );
                 $this->createScoreConfig($arrScoreConfig, $competitionSport, $round);
             }
         }
-        if (isset($fieldValue["againstQualifyConfigs"])) {
-            foreach ($fieldValue["againstQualifyConfigs"] as $arrAgainstQualifyConfig) {
+        if (isset($fieldValue['againstQualifyConfigs'])) {
+            foreach ($fieldValue['againstQualifyConfigs'] as $arrAgainstQualifyConfig) {
                 $competitionSport = $this->dummyCreator->createCompetitionSport(
                     $round->getCompetition(),
-                    (int) $arrAgainstQualifyConfig["competitionSport"]["id"],
-                    (int) $arrAgainstQualifyConfig["competitionSport"]["sport"]["id"]
+                    $arrAgainstQualifyConfig['competitionSportId'],
                 );
                 $this->createAgainstQualifyConfig($arrAgainstQualifyConfig, $competitionSport, $round);
             }
         }
 
-        foreach ($fieldValue["poules"] as $arrPoule) {
-            $fieldValue["poule"] = $arrPoule;
-            $fieldValue["poule"]["round"] = $round;
+        foreach ($fieldValue['poules'] as $arrPoule) {
+            $fieldValue['poule'] = $arrPoule;
+            $fieldValue['poule']['round'] = $round;
             $this->getProperty(
                 $visitor,
                 $fieldValue,
-                "poule",
+                'poule',
                 Poule::class
             );
         }
 
         $nextStructureCell = $structureCell->getNext();
-        if ($nextStructureCell !== null && isset($fieldValue["qualifyGroups"])) {
-            foreach ($fieldValue["qualifyGroups"] as $arrQualifyGroup) {
-                $fieldValue["qualifyGroup"] = $arrQualifyGroup;
-                $fieldValue["qualifyGroup"]["parentRound"] = $round;
-                $fieldValue["qualifyGroup"]["nextStructureCell"] = $nextStructureCell;
+        if ($nextStructureCell !== null && isset($fieldValue['qualifyGroups'])) {
+            foreach ($fieldValue['qualifyGroups'] as $arrQualifyGroup) {
+                $fieldValue['qualifyGroup'] = $arrQualifyGroup;
+                $fieldValue['qualifyGroup']['parentRound'] = $round;
+                $fieldValue['qualifyGroup']['nextStructureCell'] = $nextStructureCell;
                 $this->getProperty(
                     $visitor,
                     $fieldValue,
-                    "qualifyGroup",
+                    'qualifyGroup',
                     QualifyGroup::class
                 );
             }
@@ -131,14 +129,14 @@ class RoundHandler extends Handler implements SubscribingHandlerInterface
         $config = new ScoreConfig(
             $competitionSport,
             $round,
-            $arrScoreConfig["direction"],
-            $arrScoreConfig["maximum"],
-            $arrScoreConfig["enabled"],
+            $arrScoreConfig['direction'],
+            $arrScoreConfig['maximum'],
+            $arrScoreConfig['enabled'],
             $previous
         );
-        if (isset($arrScoreConfig["next"])) {
+        if (isset($arrScoreConfig['next'])) {
             /** @psalm-suppress InvalidArgument */
-            $this->createScoreConfig($arrScoreConfig["next"], $competitionSport, $round, $config);
+            $this->createScoreConfig($arrScoreConfig['next'], $competitionSport, $round, $config);
         }
         return $config;
     }

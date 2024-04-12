@@ -4,10 +4,10 @@ Sports\Place:
   properties:
     id:
       type: integer
-      groups: [structure, noReference]
+      groups: [structure]
     extraPoints:
       type: integer
-      groups: [ structure, noReference ]
+      groups: [structure]
     qualifiedPlace:
       type: SportsHelpers\PlaceLocation
       groups: [structure]

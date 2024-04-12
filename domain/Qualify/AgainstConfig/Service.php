@@ -29,63 +29,17 @@ class Service
         );
     }
 
-
-
-
-
-//
-//    public function isDefault(SportConfig $sportConfig): bool
-//    {
-//        $sport = $sportConfig->getSport();
-//        return ($sportConfig->getWinPoints() !== $this->getDefaultWinPoints($sport)
-//            || $sportConfig->getDrawPoints() !== $this->getDefaultDrawPoints($sport)
-//            || $sportConfig->getWinPointsExt() !== $this->getDefaultWinPointsExt($sport)
-//            || $sportConfig->getDrawPointsExt() !== $this->getDefaultDrawPointsExt($sport)
-//            || $sportConfig->getLosePointsExt() !== $this->getDefaultLosePointsExt($sport)
-//            || $sportConfig->getPointsCalculation() !== SportConfig::POINTS_CALC_GAMEPOINTS
-//            || $sportConfig->getNrOfGamePlaces() !== SportConfig::DEFAULT_NROFGAMEPLACES
-//        );
-//    }
-//
-//    public function areEqual(SportConfig $sportConfigA, SportConfig $sportConfigB): bool
-//    {
-//        return ($sportConfigA->getSport() !== $sportConfigB->getSport()
-//            || $sportConfigA->getWinPoints() !== $sportConfigB->getWinPoints()
-//            || $sportConfigA->getDrawPoints() !== $sportConfigB->getDrawPoints()
-//            || $sportConfigA->getWinPointsExt() !== $sportConfigB->getWinPointsExt()
-//            || $sportConfigA->getDrawPointsExt() !== $sportConfigB->getDrawPointsExt()
-//            || $sportConfigA->getLosePointsExt() !== $sportConfigB->getLosePointsExt()
-//            || $sportConfigA->getPointsCalculation() !== $sportConfigB->getPointsCalculation()
-//            || $sportConfigA->getNrOfGamePlaces() !== $sportConfigB->getNrOfGamePlaces()
-//        );
-//    }
-//
-//    public function copy(SportConfig $sourceConfig, Competition $newCompetition, Sport $sport): SportConfig
-//    {
-//        $newConfig = new SportConfig($sport, $newCompetition);
-//        $newConfig->setWinPoints($sourceConfig->getWinPoints());
-//        $newConfig->setDrawPoints($sourceConfig->getDrawPoints());
-//        $newConfig->setWinPointsExt($sourceConfig->getWinPointsExt());
-//        $newConfig->setDrawPointsExt($sourceConfig->getDrawPointsExt());
-//        $newConfig->setLosePointsExt($sourceConfig->getLosePointsExt());
-//        $newConfig->setPointsCalculation($sourceConfig->getPointsCalculation());
-//        $newConfig->setNrOfGamePlaces($sourceConfig->getNrOfGamePlaces());
-//        $newConfig->setVersusMode($sourceConfig->getVersusMode());
-//        return $newConfig;
-//    }
-//
-
-    public function copy(CompetitionSport $competitionSport, Round $round, QualifyConfig $sourceConfig): void
+    public function copy(QualifyConfig $fromConfig, CompetitionSport $competitionSport, Round $round): void
     {
         new QualifyConfig(
             $competitionSport,
             $round,
-            $sourceConfig->getPointsCalculation(),
-            $sourceConfig->getWinPoints(),
-            $sourceConfig->getDrawPoints(),
-            $sourceConfig->getWinPointsExt(),
-            $sourceConfig->getDrawPointsExt(),
-            $sourceConfig->getLosePointsExt()
+            $fromConfig->getPointsCalculation(),
+            $fromConfig->getWinPoints(),
+            $fromConfig->getDrawPoints(),
+            $fromConfig->getWinPointsExt(),
+            $fromConfig->getDrawPointsExt(),
+            $fromConfig->getLosePointsExt()
         );
     }
 }

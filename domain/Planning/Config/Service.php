@@ -28,20 +28,20 @@ class Service
         );
     }
 
-    public function copy(PlanningConfig $planningConfig, RoundNumber $roundNumber): PlanningConfig
+    public function copy(PlanningConfig $fromPlanningConfig, RoundNumber $toRoundNumber): PlanningConfig
     {
         return new PlanningConfig(
-            $roundNumber,
-            $planningConfig->getEditMode(),
-            $planningConfig->getExtension(),
-            $planningConfig->getEnableTime(),
-            $planningConfig->getMinutesPerGame(),
-            $planningConfig->getMinutesPerGameExt(),
-            $planningConfig->getMinutesBetweenGames(),
-            $planningConfig->getMinutesAfter(),
-            $planningConfig->getPerPoule(),
-            $planningConfig->getSelfReferee(),
-            $planningConfig->getNrOfSimSelfRefs()
+            $toRoundNumber,
+            $fromPlanningConfig->getEditMode(),
+            $fromPlanningConfig->getExtension(),
+            $fromPlanningConfig->getEnableTime(),
+            $fromPlanningConfig->getMinutesPerGame(),
+            $fromPlanningConfig->getMinutesPerGameExt(),
+            $fromPlanningConfig->getMinutesBetweenGames(),
+            $fromPlanningConfig->getMinutesAfter(),
+            $fromPlanningConfig->getPerPoule(),
+            $fromPlanningConfig->getSelfReferee(),
+            $fromPlanningConfig->getNrOfSimSelfRefs()
         );
     }
 

@@ -20,8 +20,6 @@ abstract class Game extends Identifiable
     protected Field|null $field = null;
     protected Game\State $state;
 
-    private string|null $refereeStructureLocation = null; // json
-
     public function __construct(
         protected Poule $poule,
         protected int $batchNr,
@@ -91,6 +89,11 @@ abstract class Game extends Identifiable
         return $this->referee;
     }
 
+    public function getRefereeId(): int|string|null
+    {
+        return $this->referee?->getId();
+    }
+
     public function setReferee(Referee $referee = null): void
     {
         $this->referee = $referee;
@@ -109,6 +112,11 @@ abstract class Game extends Identifiable
     public function getField(): ?Field
     {
         return $this->field;
+    }
+
+    public function getFieldId(): int|string|null
+    {
+        return $this->getField()?->getId();
     }
 
     /**
@@ -137,15 +145,6 @@ abstract class Game extends Identifiable
 
     public function getRefereeStructureLocation(): string|null
     {
-        $refereePlace = $this->getRefereePlace();
-        if ($refereePlace !== null) {
-            return $refereePlace->getStructureLocation();
-        }
-        return $this->refereeStructureLocation;
-    }
-
-    public function setRefereeStructureLocation(string|null $refereeStructureLocation): void
-    {
-        $this->refereeStructureLocation = $refereeStructureLocation;
+        return $this->getRefereePlace()?->getStructureLocation();
     }
 }

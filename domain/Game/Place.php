@@ -15,9 +15,13 @@ abstract class Place extends Identifiable
     {
         $this->place = $place;
     }
-
     public function getPlace(): PlaceBase
     {
         return $this->place;
+    }
+
+    public function getPlaceNr(): int
+    {
+        return $this->place->getPlaceNr();
     }
 }

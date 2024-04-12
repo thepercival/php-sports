@@ -13,5 +13,7 @@ Sports\Qualify\AgainstConfig:
     losePointsExt:
       type: float
     pointsCalculation:
-    competitionSport:
-      type: Sports\Competition\Sport
+  virtual_properties:
+    getCompetitionSportId:
+      type: integer
+      serialized_name: competitionSportId

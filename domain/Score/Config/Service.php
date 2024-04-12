@@ -53,18 +53,18 @@ class Service
         return false;
     }
 
-    public function copy(CompetitionSport $competitionSport, Round $round, ScoreConfig $sourceConfig): void
+    public function copy(ScoreConfig $fromConfig, CompetitionSport $competitionSport, Round $round): void
     {
         $newScoreConfig = new ScoreConfig(
             $competitionSport,
             $round,
-            $sourceConfig->getDirection(),
-            $sourceConfig->getMaximum(),
-            $sourceConfig->getEnabled(),
+            $fromConfig->getDirection(),
+            $fromConfig->getMaximum(),
+            $fromConfig->getEnabled(),
             null
         );
 
-        $previousSubScoreConfig = $sourceConfig->getNext();
+        $previousSubScoreConfig = $fromConfig->getNext();
         if ($previousSubScoreConfig !== null) {
             new ScoreConfig(
                 $competitionSport,

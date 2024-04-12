@@ -30,6 +30,10 @@ class AgainstConfig extends Identifiable
         return $this->competitionSport;
     }
 
+    public function getCompetitionSportId(): string|int|null {
+        return $this->competitionSport->getId();
+    }
+
     public function getSport(): Sport
     {
         return $this->competitionSport->getSport();

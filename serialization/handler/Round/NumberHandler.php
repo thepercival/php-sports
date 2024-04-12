@@ -27,7 +27,7 @@ use Sports\Structure\Cell;
  * @psalm-type _Sport = array{id: int|string}
  * @psalm-type _CompetitionSport = array{id: int|string, sport: _Sport}
  * @psalm-type _PlanningConfig = array{roundNumber: RoundNumber}
- * @psalm-type _GameAmountConfig = array{amount: int, competitionSport: _CompetitionSport}
+ * @psalm-type _GameAmountConfig = array{amount: int, competitionSportId: int}
  * @psalm-type _RoundNumber = array{previous: RoundNumber|null, planningConfig: _PlanningConfig|null, gameAmountConfigs: list<_GameAmountConfig>}
  * @psalm-type _FieldValue = array{previous: RoundNumber|null, planningConfig: _PlanningConfig|null, gameAmountConfigs: list<_GameAmountConfig>, next: _RoundNumber|null}
  *
@@ -79,8 +79,7 @@ class NumberHandler extends Handler implements SubscribingHandlerInterface
             foreach ($fieldValue["gameAmountConfigs"] as $arrGameAmountConfig) {
                 $competitionSport = $this->dummyCreator->createCompetitionSport(
                     $roundNumber->getCompetition(),
-                    (int) $arrGameAmountConfig["competitionSport"]["id"],
-                    (int) $arrGameAmountConfig["competitionSport"]["sport"]["id"]
+                    $arrGameAmountConfig["competitionSportId"]
                 );
                 new GameAmountConfig(
                     $competitionSport,

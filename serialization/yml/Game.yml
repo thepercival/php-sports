@@ -2,23 +2,27 @@ Sports\Game:
   exclusion_policy: ALL
   exclude: false
   properties:
-    field:
-      type: Sports\Competition\Field
-    referee:
-      type: Sports\Competition\Referee
+#    field:
+#      type: Sports\Competition\Field
+#      groups: [deserialize]
+#    referee:
+#      type: Sports\Competition\Referee
+#      groups: [deserialize]
     batchNr:
       type: integer
     state:
     startDateTime:
       type: DateTimeImmutable<'Y-m-d\TH:i:s.u\Z'>
-    refereeStructureLocation:
-      type: string
-      access_type: public_method # defaults to property
-      accessor: # access_type must be set to public_method
-        getter: getRefereeStructureLocation
-        setter: setRefereeStructureLocation
   virtual_properties:
     getCompetitionSportId:
-      type: string
+      type: integer
       serialized_name: competitionSportId
-
+    getFieldId:
+      type: integer
+      serialized_name: fieldId
+    getRefereeId:
+      type: integer
+      serialized_name: refereeId
+    getRefereeStructureLocation:
+      type: string
+      serialized_name: refereeStructureLocation

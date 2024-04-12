@@ -4,15 +4,10 @@ Sports\Sport:
   properties:
     name:
       type: string
-      groups: [noReference]
     team:
       type: boolean
-      groups: [noReference]
     customId:
       type: integer
-      groups: [noReference]
     defaultGameMode:
-      groups: [noReference]
     defaultNrOfSidePlaces:
       type: integer
-      groups: [ noReference ]

@@ -20,6 +20,9 @@ jobs:
       - name: Validate composer.json and composer.lock
         run: composer validate --strict
 
+      - name: View Version
+        run: composer -V
+
       - name: Install dependencies
         run: composer install --prefer-dist --no-progress --no-suggest
 

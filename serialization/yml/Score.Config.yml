@@ -10,5 +10,7 @@ Sports\Score\Config:
       type: boolean
     next:
       type: Sports\Score\Config
-    competitionSport:
-      type: Sports\Competition\Sport
+  virtual_properties:
+    getCompetitionSportId:
+      type: integer
+      serialized_name: competitionSportId

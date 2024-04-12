@@ -8,6 +8,7 @@ use Exception;
 use Sports\Category;
 use Sports\Competition;
 use Sports\Competition\Sport as CompetitionSport;
+use Sports\Competition\Sport\FromToMapper as CompetitionSportFromToMapper;
 use Sports\Place;
 use Sports\Planning\Config\Service as PlanningConfigService;
 use Sports\Planning\Config as PlanningConfig;
@@ -28,57 +29,46 @@ class Copier
 {
     public function __construct(
         private HorizontalPouleCreator $horPouleCreator,
-        private QualifyRuleCreator $qualifyRuleCreator
+        private QualifyRuleCreator $qualifyRuleCreator,
+        private CompetitionSportFromToMapper $competitionSportFromToMapper
     ) {
     }
 
-    public function copy(Structure $structure, Competition $newCompetition): Structure
+    public function copy(Structure $fromStructure, Competition $toCompetition): Structure
     {
-        $newFirstRoundNumber = new RoundNumber($newCompetition);
-        $this->copyRoundNumber($structure->getFirstRoundNumber(), $newFirstRoundNumber);
+        $newFirstRoundNumber = new RoundNumber($toCompetition);
+        $this->copyRoundNumber($fromStructure->getFirstRoundNumber(), $newFirstRoundNumber);
         $newCategories = [];
-        foreach ($structure->getCategories() as $category) {
-            $newCategory = new Category($newCompetition, $category->getName(), $category->getNumber());
-            $newCategory->setAbbreviation($category->getAbbreviation());
+        foreach ($fromStructure->getCategories() as $fromCategory) {
+            $newCategory = new Category($toCompetition, $fromCategory->getName(), $fromCategory->getNumber());
+            $newCategory->setAbbreviation($fromCategory->getAbbreviation());
             $newCategories[] = $newCategory;
-            $this->copyCategory($category, $newCategory, $newFirstRoundNumber);
+            $this->copyCategory($fromCategory, $newCategory, $newFirstRoundNumber);
         }
         return new Structure($newCategories, $newFirstRoundNumber);
     }
 
-    protected function copyRoundNumber(RoundNumber $roundNumber, RoundNumber $newRoundNumber): void
+    protected function copyRoundNumber(RoundNumber $fromRoundNumber, RoundNumber $toRoundNumber): void
     {
         $planningConfigService = new PlanningConfigService();
 
-        $planningConfig = $roundNumber->getPlanningConfig();
-        if ($planningConfig !== null) {
-            $planningConfigService->copy($planningConfig, $newRoundNumber);
+        $fromPlanningConfig = $fromRoundNumber->getPlanningConfig();
+        if ($fromPlanningConfig !== null) {
+            $planningConfigService->copy($fromPlanningConfig, $toRoundNumber);
         }
-        foreach ($roundNumber->getGameAmountConfigs() as $gameAmountConfig) {
-            $newCompetitionSport = $this->getNewCompetitionSport(
-                $gameAmountConfig->getCompetitionSport(),
-                $newRoundNumber->getCompetition()
-            );
-            new GameAmountConfig(
-                $newCompetitionSport,
-                $newRoundNumber,
-                $gameAmountConfig->getAmount()
-            );
+        foreach ($fromRoundNumber->getGameAmountConfigs() as $fromGameAmountConfig) {
+            $toCompetitionSport = $this->getToCompetitionSport($fromGameAmountConfig->getCompetitionSport());
+            new GameAmountConfig($toCompetitionSport, $toRoundNumber, $fromGameAmountConfig->getAmount() );
         }
-        $nextRoundNumber = $roundNumber->getNext();
-        if ($nextRoundNumber !== null) {
-            $this->copyRoundNumber($nextRoundNumber, $newRoundNumber->createNext());
+        $fromNextRoundNumber = $fromRoundNumber->getNext();
+        if ($fromNextRoundNumber !== null) {
+            $this->copyRoundNumber($fromNextRoundNumber, $toRoundNumber->createNext());
         }
     }
 
-    protected function getNewCompetitionSport(CompetitionSport $sourceCompetitionSport, Competition $newCompetition): CompetitionSport
+    protected function getToCompetitionSport(CompetitionSport $fromCompetitionSport): CompetitionSport
     {
-        foreach ($newCompetition->getSports() as $competitionSport) {
-            if ($competitionSport->equals($sourceCompetitionSport)) {
-                return $competitionSport;
-            }
-        }
-        throw new Exception("een competitiesport kon niet gevonden worden", E_ERROR);
+        return $this->competitionSportFromToMapper->getToCompetitionSport($fromCompetitionSport);
     }
 
 //    protected function getNewCompetitionSport(CompetitionSport $sourceCompetitionSport, Competition $newCompetition): CompetitionSport
@@ -97,86 +87,80 @@ class Copier
 //        throw new Exception("een sport kon niet gevonden worden", E_ERROR);
 //    }
 
-    protected function copyCategory(Category $category, Category $newCategory, RoundNumber $firstRoundNumber): void
+    protected function copyCategory(Category $fromCategory, Category $toCategory, RoundNumber $toRoundNumber): void
     {
-        $newRoundNumber = $firstRoundNumber;
-        $structureCells = $category->getStructureCells()->toArray();
-        while( array_shift($structureCells) !== null && $newRoundNumber !== null) {
-            new Cell($newCategory, $newRoundNumber);
+        $newRoundNumber = $toRoundNumber;
+        $fromStructureCells = $fromCategory->getStructureCells()->toArray();
+        while( array_shift($fromStructureCells) !== null && $newRoundNumber !== null) {
+            new Cell($toCategory, $newRoundNumber);
             $newRoundNumber = $newRoundNumber->getNext();
         }
 
-        $newRootRound = new Round($newCategory->getFirstStructureCell());
-        $this->deepCopyRound($category->getRootRound(), $newRootRound);
+        $newRootRound = new Round($toCategory->getFirstStructureCell());
+        $this->deepCopyRound($fromCategory->getRootRound(), $newRootRound);
     }
 
-    protected function deepCopyRound(Round $round, Round $newRound): void
+    protected function deepCopyRound(Round $fromRound, Round $toRound): void
     {
         $this->copyRoundHelper(
-            $newRound,
-            array_values($round->getPoules()->toArray()),
-            array_values($round->getFirstScoreConfigs()->toArray()),
-            array_values($round->getAgainstQualifyConfigs()->toArray())
+            array_values($fromRound->getPoules()->toArray()),
+            array_values($fromRound->getFirstScoreConfigs()->toArray()),
+            array_values($fromRound->getAgainstQualifyConfigs()->toArray()),
+            $toRound
         );
-        $this->horPouleCreator->create($newRound);
+        $this->horPouleCreator->create($toRound);
 
-        $newNextCell = $newRound->getStructureCell()->getNext();
+        $newNextCell = $toRound->getStructureCell()->getNext();
         if ($newNextCell === null) {
             return;
         }
-        foreach ($round->getQualifyGroups() as $qualifyGroup) {
-            $newQualifyGroup = new QualifyGroup($newRound, $qualifyGroup->getTarget(), $newNextCell);
+        foreach ($fromRound->getQualifyGroups() as $qualifyGroup) {
+            $newQualifyGroup = new QualifyGroup($toRound, $qualifyGroup->getTarget(), $newNextCell);
             $newQualifyGroup->setNumber($qualifyGroup->getNumber());
             $newQualifyGroup->setDistribution($qualifyGroup->getDistribution());
             // $qualifyGroup->setNrOfHorizontalPoules( $qualifyGroupSerialized->getNrOfHorizontalPoules() );
             $this->deepCopyRound($qualifyGroup->getChildRound(), $newQualifyGroup->getChildRound());
         }
-        $this->qualifyRuleCreator->create($newRound, null);
+        $this->qualifyRuleCreator->create($toRound, null);
     }
 
     /**
-     * @param Round $newRound
-     * @param list<Poule> $poules
-     * @param list<ScoreConfig> $scoreConfigs
-     * @param list<AgainstQualifyConfig> $againstQualifyConfigs
+     * @param list<Poule> $fromPoules
+     * @param list<ScoreConfig> $fromScoreConfigs
+     * @param list<AgainstQualifyConfig> $fromAgainstQualifyConfigs
+     * @param Round $toRound
      */
     protected function copyRoundHelper(
-        Round $newRound,
-        array $poules,
-        array $scoreConfigs,
-        array $againstQualifyConfigs
+        array $fromPoules,
+        array $fromScoreConfigs,
+        array $fromAgainstQualifyConfigs,
+        Round $toRound
     ): void {
-        foreach ($poules as $poule) {
-            $this->copyPoule($newRound, $poule->getNumber(), array_values($poule->getPlaces()->toArray()));
+        foreach ($fromPoules as $fromPoule) {
+            $this->copyPoule($fromPoule->getNumber(), array_values($fromPoule->getPlaces()->toArray()), $toRound);
         }
         $scoreConfigService = new ScoreConfigService();
-        foreach ($scoreConfigs as $scoreConfig) {
-            $newCompetitionSport = $this->getNewCompetitionSport(
-                $scoreConfig->getCompetitionSport(),
-                $newRound->getCompetition()
-            );
-            $scoreConfigService->copy($newCompetitionSport, $newRound, $scoreConfig);
+        foreach ($fromScoreConfigs as $fromScoreConfig) {
+            $newCompetitionSport = $this->getToCompetitionSport($fromScoreConfig->getCompetitionSport() );
+            $scoreConfigService->copy($fromScoreConfig, $newCompetitionSport, $toRound );
         }
         $againstQualifyConfigService = new AgainstQualifyConfigService();
-        foreach ($againstQualifyConfigs as $againstQualifyConfig) {
-            $newCompetitionSport = $this->getNewCompetitionSport(
-                $againstQualifyConfig->getCompetitionSport(),
-                $newRound->getCompetition()
-            );
-            $againstQualifyConfigService->copy($newCompetitionSport, $newRound, $againstQualifyConfig);
+        foreach ($fromAgainstQualifyConfigs as $fromAgainstQualifyConfig) {
+            $newCompetitionSport = $this->getToCompetitionSport($fromAgainstQualifyConfig->getCompetitionSport() );
+            $againstQualifyConfigService->copy($fromAgainstQualifyConfig, $newCompetitionSport, $toRound);
         }
     }
 
     /**
-     * @param Round $newRound
-     * @param int $number
-     * @param list<Place> $places
+     * @param int $fromNumber
+     * @param list<Place> $fromPlaces
+     * @param Round $toRound
      */
-    protected function copyPoule(Round $newRound, int $number, array $places): void
+    protected function copyPoule(int $fromNumber, array $fromPlaces, Round $toRound): void
     {
-        $newPoule = new Poule($newRound, $number);
-        foreach ($places as $place) {
-            new Place($newPoule, $place->getPlaceNr());
+        $newPoule = new Poule($toRound, $fromNumber);
+        foreach ($fromPlaces as $fromPlace) {
+            new Place($newPoule, $fromPlace->getPlaceNr());
         }
     }
 }

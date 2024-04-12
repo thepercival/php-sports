@@ -73,6 +73,10 @@ class Config extends Identifiable
         return $this->competitionSport;
     }
 
+    public function getCompetitionSportId(): string|int|null {
+        return $this->competitionSport->getId();
+    }
+
     public function getRound(): Round
     {
         return $this->round;
