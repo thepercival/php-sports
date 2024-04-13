@@ -10,9 +10,9 @@ use Sports\Competition\Sport as CompetitionSport;
 use Sports\Competitor\StartLocation;
 use Sports\Game\Against as AgainstGame;
 use Sports\Game\Place\Together as TogetherGamePlace;
-use Sports\Game\State;
 use Sports\Game\State as GameState;
 use Sports\Game\Together as TogetherGame;
+use Sports\Place\Location as PlaceLocation;
 use SportsHelpers\Identifiable;
 use SportsHelpers\PlaceLocationInterface;
 use Sports\Poule\Horizontal as HorizontalPoule;
@@ -170,6 +170,15 @@ class Place extends Identifiable implements PlaceLocationInterface
     public function getQualifiedPlace(): Place|null
     {
         return $this->qualifiedPlace;
+    }
+
+    public function getQualifiedPlaceLocation(): PlaceLocation|null
+    {
+        $qualifiedPlace = $this->getQualifiedPlace();
+        if( $qualifiedPlace === null ) {
+            return null;
+        }
+        return new PlaceLocation($qualifiedPlace->getPouleNr(), $qualifiedPlace->getPlaceNr());
     }
 
     public function setQualifiedPlace(Place|null $place): void

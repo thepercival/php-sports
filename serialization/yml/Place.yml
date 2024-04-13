@@ -8,9 +8,10 @@ Sports\Place:
     extraPoints:
       type: integer
       groups: [structure]
-    qualifiedPlace:
-      type: SportsHelpers\PlaceLocation
-      groups: [structure]
-      read_only: true
     placeNr:
       type: integer
+  virtual_properties:
+    getQualifiedPlaceLocation:
+      type: Sports\Place\Location
+      serialized_name: qualifiedPlaceLocation
+      groups: [ structure ]
