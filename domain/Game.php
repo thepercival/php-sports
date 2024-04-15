@@ -11,6 +11,7 @@ use Sports\Competition\Referee;
 use Sports\Competition\Sport as CompetitionSport;
 use Sports\Planning\Config as PlanningConfig;
 use Sports\Score\Config as ScoreConfig;
+use Sports\Structure\Locations\StructureLocationPlace;
 use SportsHelpers\Identifiable;
 
 abstract class Game extends Identifiable
@@ -104,6 +105,11 @@ abstract class Game extends Identifiable
         return $this->refereePlace;
     }
 
+    public function getRefereeStructureLocation(): StructureLocationPlace|null
+    {
+        return $this->getRefereePlace()?->getStructureLocation();
+    }
+
     public function setRefereePlace(Place $refereePlace = null): void
     {
         $this->refereePlace = $refereePlace;
@@ -141,11 +147,5 @@ abstract class Game extends Identifiable
     public function getPeriod(): Period
     {
         return new Period($this->getStartDateTime(), $this->getEndDateTime());
-    }
-
-    public function getRefereeStructureLocation(): string|null
-    {
-        $structureLocation = $this->getRefereePlace()?->getStructureLocation();
-        return $structureLocation !== null ? (string)$structureLocation : null;
     }
 }
