@@ -9,6 +9,7 @@ use Sports\Category;
 use Sports\Game\State as GameState;
 use Sports\Place;
 use Sports\Poule\Horizontal as HorizontalPoule;
+use Sports\Qualify\Distribution;
 use Sports\Qualify\Rule\Horizontal\Single as HorizontalSingleQualifyRule;
 use Sports\Qualify\Rule\Vertical\Single as VerticalSingleQualifyRule;
 use Sports\Qualify\Target;
@@ -73,14 +74,20 @@ class End
         $dropouts = [];
         $nrOfDropouts = $round->getNrOfDropoutPlaces();
         while ($nrOfDropouts > 0) {
-            // foreach ([QualifyTarget::Winners, QualifyTarget::Losers] as $qualifyTarget) {
-            foreach ($round->getHorizontalPoules(QualifyTarget::Winners) as $horPoule) {
-                $horPouleDropouts = $this->getHorizontalPouleDropouts($horPoule, $nrOfDropouts);
-                $dropouts = array_merge( $dropouts, $horPouleDropouts );
-                if ($nrOfDropouts === 0) {
-                    break;
+            $distribution = $round->getParentQualifyGroup()?->getDistribution() ?? Distribution::HorizontalSnake;
+            if( $distribution === Distribution::HorizontalSnake ) {
+                foreach ($round->getHorizontalPoules(QualifyTarget::Winners) as $horPoule) {
+                    $horPouleDropouts = $this->getHorizontalPouleDropouts($horPoule, $nrOfDropouts);
+                    $dropouts = array_merge( $dropouts, $horPouleDropouts );
+                    if ($nrOfDropouts === 0) {
+                        break;
+                    }
                 }
+            } else {
+                $roundDropouts = $this->getPoulesDropouts($round, $nrOfDropouts);
+                $dropouts = array_merge( $dropouts, $roundDropouts );
             }
+
         }
         return $dropouts;
     }
@@ -116,5 +123,32 @@ class End
             return count($qualifyRule->getMappings());
         }
         return $qualifyRule->getNrOfToPlaces();
+    }
+
+    /**
+     * @param Round $round
+     * @param int $nrOfDropouts
+     * @return list<EndRankingItem>
+     */
+    protected function getPoulesDropouts(Round $round, int &$nrOfDropouts): array
+    {
+        $dropOutPlaces = [];
+        $places = $round->getPlaces(Round::ORDER_POULE_NUMBER);
+
+        $nrOfDropoutPlaces = $round->getNrOfDropoutPlaces();
+
+        $nrOfWinners = $round->getNrOfPlacesChildren(Target::Winners);
+        {
+            array_splice($places, 0, $nrOfWinners);
+            while( $nrOfDropouts > 0 && $nrOfDropoutPlaces > 0) {
+                $dropOutPlaces[] = array_shift($places);
+                $nrOfDropouts--;
+                $nrOfDropoutPlaces--;
+            }
+        }
+
+        return array_map(function (Place $dropOutPlace): EndRankingItem {
+            return new EndRankingItem($this->currentRank, $this->currentRank++, $dropOutPlace->getStartLocation());
+        }, $dropOutPlaces);
     }
 }

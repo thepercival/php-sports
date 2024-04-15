@@ -160,12 +160,13 @@ class DummyCreator
 
     public function createRefereePlace(string $refereeStructureLocation, Round $round): Place {
         $parts = explode('.', $refereeStructureLocation );
-        if( count($parts) !== 3 ) {
+        if( count($parts) < 3 ) {
             throw new \Exception('incorrect structurelocation');
         }
-        $poule = $this->createPouleFromStructureLocation((int)$parts[1], $round);
+        $pouleNr = (int)$parts[count($parts) - 2];
+        $placeNr = (int)$parts[count($parts) - 1];
+        $poule = $this->createPouleFromStructureLocation($pouleNr, $round);
 
-        $placeNr = (int)$parts[2];
         $place = null;
         while ( $place === null && $placeNr > 0) {
             try {

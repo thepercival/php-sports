@@ -5,17 +5,22 @@ declare(strict_types=1);
 namespace Sports\Tests\Ranking\Calculator;
 
 use PHPUnit\Framework\TestCase;
+use Sports\Competitor;
 use Sports\Competitor\StartLocation;
+use Sports\Competitor\StartLocationMap;
+use Sports\Competitor\Team as TeamCompetitor;
 use Sports\Place\Location as PlaceLocation;
 use Sports\Qualify\Distribution;
 use Sports\Qualify\Service as QualifyService;
 use Sports\Qualify\Target as QualifyTarget;
 use Sports\Ranking\Calculator\End as EndRankingCalculator;
+use Sports\Team;
 use Sports\TestHelper\CompetitionCreator;
 use Sports\TestHelper\GamesCreator;
 use Sports\TestHelper\SetScores;
 use Sports\TestHelper\StructureEditorCreator;
 use Sports\Output\StructureOutput;
+use Sports\Output\Games as GamesOutput;
 
 class EndTest extends TestCase
 {
@@ -300,5 +305,139 @@ class EndTest extends TestCase
         self::assertInstanceOf(StartLocation::class, $startLocation);
         self::assertSame(3, $startLocation->getPouleNr());
         self::assertSame(4, $startLocation->getPlaceNr());
+    }
+
+    public function testTwoRoundNumbers33ToW4L2WinnersVertical(): void
+    {
+
+        $competition = $this->createCompetition();
+        $association = $competition->getLeague()->getAssociation();
+
+        $structureEditor = $this->createStructureEditor();
+        $structure = $structureEditor->create($competition, [3, 3]);
+
+        new TeamCompetitor( $competition, new StartLocation(1, 1,1), new Team( $association, 'zes') );
+        new TeamCompetitor( $competition, new StartLocation(1, 1,2), new Team( $association, 'vier') );
+        new TeamCompetitor( $competition, new StartLocation(1, 1,3), new Team( $association, 'twee') );
+        new TeamCompetitor( $competition, new StartLocation(1, 2,1), new Team( $association, 'vijf') );
+        new TeamCompetitor( $competition, new StartLocation(1, 2,2), new Team( $association, 'drie') );
+        new TeamCompetitor( $competition, new StartLocation(1, 2,3), new Team( $association, 'een') );
+
+        $defaultCategory = $structure->getSingleCategory();
+        $rootRound = $defaultCategory->getRootRound();
+
+        $winnersRound = $structureEditor->addChildRound($rootRound, QualifyTarget::Winners, [2, 2], Distribution::Vertical);
+        $losersRound = $structureEditor->addChildRound($rootRound, QualifyTarget::Losers, [2]);
+
+        $pouleOne = $rootRound->getPoule(1);
+        $pouleTwo = $rootRound->getPoule(2);
+
+        (new GamesCreator())->createStructureGames($structure);
+
+        $this->setAgainstScore($pouleOne, 1, 2, 1, 2);
+        $this->setAgainstScore($pouleOne, 1, 3, 1, 3);
+        $this->setAgainstScore($pouleOne, 2, 3, 2, 3);
+
+        $this->setAgainstScore($pouleTwo, 1, 2, 2, 4);
+        $this->setAgainstScore($pouleTwo, 1, 3, 2, 6);
+        $this->setAgainstScore($pouleTwo, 2, 3, 4, 6);
+
+        // 1 : B3, 2 : A3, 3 : B2, 4 : A2, 5 : B1, 6 : A1
+        $winnersPoule12 = $winnersRound->getPoule(1);
+        $this->setAgainstScore($winnersPoule12, 1/*B3*/, 2/*A3*/, 1, 0);
+
+        $winnersPoule34 = $winnersRound->getPoule(2);
+        $this->setAgainstScore($winnersPoule34, 1/*B2*/, 2/*A2*/, 1, 0);
+
+        $losersPoule = $losersRound->getPoule(1);
+        $this->setAgainstScore($losersPoule, 1/*A1*/, 2/*B1*/, 0, 1);
+
+        $qualifyService = new QualifyService($rootRound);
+        $qualifyService->setQualifiers();
+
+//        (new StructureOutput())->output($structure);
+//        (new GamesOutput())->outputRoundNumber($winnersRound->getNumber());
+
+        $calculator = new EndRankingCalculator($defaultCategory);
+        $items = $calculator->getItems();
+        $startLocationMap = new StartLocationMap(array_values($competition->getTeamCompetitors()->toArray()));
+
+        $startLocationTmp = $losersPoule->getPlace(1)->getStartLocation();
+        self::assertInstanceOf(StartLocation::class, $startLocationTmp);
+        $competitorTmp = $startLocationMap->getCompetitor($startLocationTmp);
+        self::assertInstanceOf(Competitor::class, $competitorTmp);
+        self::assertSame('zes', $competitorTmp->getName());
+
+        $rank1 = array_shift($items);
+        self::assertNotNull($rank1);
+        self::assertSame(1, $rank1->getUniqueRank());
+        $startLocation = $rank1->getStartLocation();
+        self::assertInstanceOf(StartLocation::class, $startLocation);
+        self::assertSame(2, $startLocation->getPouleNr());
+        self::assertSame(3, $startLocation->getPlaceNr());
+
+        $competitor1 = $startLocationMap->getCompetitor($startLocation);
+        self::assertInstanceOf(Competitor::class, $competitor1);
+        self::assertSame('een', $competitor1->getName());
+
+        $rank2 = array_shift($items);
+        self::assertNotNull($rank2);
+        self::assertSame(2, $rank2->getUniqueRank());
+        $startLocation = $rank2->getStartLocation();
+        self::assertInstanceOf(StartLocation::class, $startLocation);
+        self::assertSame(1, $startLocation->getPouleNr());
+        self::assertSame(3, $startLocation->getPlaceNr());
+
+        $competitor2 = $startLocationMap->getCompetitor($startLocation);
+        self::assertInstanceOf(Competitor::class, $competitor2);
+        self::assertSame('twee', $competitor2->getName());
+
+        $rank3 = array_shift($items);
+        self::assertNotNull($rank3);
+        self::assertSame(3, $rank3->getUniqueRank());
+        $startLocation = $rank3->getStartLocation();
+        self::assertInstanceOf(StartLocation::class, $startLocation);
+        self::assertSame(2, $startLocation->getPouleNr());
+        self::assertSame(2, $startLocation->getPlaceNr());
+
+        $competitor3 = $startLocationMap->getCompetitor($startLocation);
+        self::assertInstanceOf(Competitor::class, $competitor3);
+        self::assertSame('drie', $competitor3->getName());
+
+        $rank4 = array_shift($items);
+        self::assertNotNull($rank4);
+        self::assertSame(4, $rank4->getUniqueRank());
+        $startLocation = $rank4->getStartLocation();
+        self::assertInstanceOf(StartLocation::class, $startLocation);
+        self::assertSame(1, $startLocation->getPouleNr());
+        self::assertSame(2, $startLocation->getPlaceNr());
+
+        $competitor4 = $startLocationMap->getCompetitor($startLocation);
+        self::assertInstanceOf(Competitor::class, $competitor4);
+        self::assertSame('vier', $competitor4->getName());
+
+        $rank5 = array_shift($items);
+        self::assertNotNull($rank5);
+        self::assertSame(5, $rank5->getUniqueRank());
+        $startLocation = $rank5->getStartLocation();
+        self::assertInstanceOf(StartLocation::class, $startLocation);
+        self::assertSame(2, $startLocation->getPouleNr());
+        self::assertSame(1, $startLocation->getPlaceNr());
+
+        $competitor5 = $startLocationMap->getCompetitor($startLocation);
+        self::assertInstanceOf(Competitor::class, $competitor5);
+        self::assertSame('vijf', $competitor5->getName());
+
+        $rank6 = array_shift($items);
+        self::assertNotNull($rank6);
+        self::assertSame(6, $rank6->getUniqueRank());
+        $startLocation = $rank6->getStartLocation();
+        self::assertInstanceOf(StartLocation::class, $startLocation);
+        self::assertSame(1, $startLocation->getPouleNr());
+        self::assertSame(1, $startLocation->getPlaceNr());
+
+        $competitor6 = $startLocationMap->getCompetitor($startLocation);
+        self::assertInstanceOf(Competitor::class, $competitor6);
+        self::assertSame('zes', $competitor6->getName());
     }
 }
