@@ -24,7 +24,7 @@ class PouleStructureNumberMap
 
     public function get(Poule $poule): int
     {
-        return $this->map[$poule->getStructureLocation()];
+        return $this->map[(string)$poule->getStructureLocation()];
     }
 
     private function constructMap(RoundNumber $startRoundNumber, RoundRankService $roundRankService): void
@@ -49,7 +49,7 @@ class PouleStructureNumberMap
             foreach ($rounds as $round) {
                 foreach ($round->getPoules() as $poule) {
                     /** @var int $pouleNr */
-                    $this->map[$poule->getStructureLocation()] = $pouleNr;
+                    $this->map[(string)$poule->getStructureLocation()] = $pouleNr;
                     $pouleNr++;
                 }
             }

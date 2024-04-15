@@ -7,18 +7,21 @@ namespace Sports\SerializationHandler;
 use Sports\Association;
 use Sports\Category;
 use Sports\Competition;
+use Sports\Competition\Field;
 use Sports\Competition\Referee;
 use Sports\Competition\Sport as CompetitionSport;
-use Sports\Competition\Field;
 use Sports\League;
 use Sports\Place;
 use Sports\Poule;
+use Sports\Qualify\Group as QualifyGroup;
 use Sports\Ranking\PointsCalculation;
 use Sports\Round;
 use Sports\Round\Number as RoundNumber;
 use Sports\Season;
 use Sports\Sport;
 use Sports\Structure\Cell as StructureCell;
+use Sports\Structure\Locations\StructureLocationPlace;
+use Sports\Structure\PathNode;
 use SportsHelpers\GameMode;
 use SportsHelpers\Sport\PersistVariant as PersistSportVariant;
 
@@ -94,6 +97,20 @@ class DummyCreator
         return $competitionSport;
     }
 
+    public function createCategoryIfNotExists(int $categoryNr): Category {
+        $competition = $this->createCompetition();
+        foreach( $competition->getCategories() as $category) {
+            if( $category->getNumber() === $categoryNr) {
+                return $category;
+            }
+        }
+        $category = new Category($competition, Category::DEFAULTNAME . count($competition->getCategories()) );
+        while( $category->getNumber() < $categoryNr ) {
+            $category = new Category($competition, Category::DEFAULTNAME . count($competition->getCategories()) );
+        }
+        return $category;
+    }
+
     public function createReferee(int $refereeId, Competition $competition): Referee
     {
         if (array_key_exists($refereeId, $this->referees)) {
@@ -124,18 +141,18 @@ class DummyCreator
         return new RoundNumber($this->createCompetition());
     }
 
-    public function createPoule(int $nrOfPlaces): Poule
-    {
-        $competition = $this->createCompetition();
-        $category = new Category($competition, Category::DEFAULTNAME);
-        $structureCell = new StructureCell($category, $this->createRoundNumber() );
-        $round = new Round($structureCell);
-        $poule = new Poule( $round );
-        for( $placeNr = 1 ; $placeNr <= $nrOfPlaces ; $placeNr++ ) {
-            new Place($poule);
-        }
-        return $poule;
-    }
+//    public function createPoule(int $nrOfPlaces): Poule
+//    {
+//        $competition = $this->createCompetition();
+//        $category = new Category($competition, Category::DEFAULTNAME);
+//        $structureCell = new StructureCell($category, $this->createRoundNumber() );
+//        $round = new Round($structureCell);
+//        $poule = new Poule( $round );
+//        for( $placeNr = 1 ; $placeNr <= $nrOfPlaces ; $placeNr++ ) {
+//            new Place($poule);
+//        }
+//        return $poule;
+//    }
 
     public function createField(string|int $fieldId, CompetitionSport $competitionSport): Field {
         if (array_key_exists($fieldId, $this->fields)) {
@@ -158,38 +175,86 @@ class DummyCreator
         return $field;
     }
 
-    public function createRefereePlace(string $refereeStructureLocation, Round $round): Place {
-        $parts = explode('.', $refereeStructureLocation );
-        if( count($parts) < 3 ) {
-            throw new \Exception('incorrect structurelocation');
-        }
-        $pouleNr = (int)$parts[count($parts) - 2];
-        $placeNr = (int)$parts[count($parts) - 1];
-        $poule = $this->createPouleFromStructureLocation($pouleNr, $round);
+    public function createRefereePlace(StructureLocationPlace $structureLocation): Place {
 
-        $place = null;
-        while ( $place === null && $placeNr > 0) {
-            try {
-                $place = $poule->getPlace($placeNr);
-                return $place;
-            } catch(\Exception $e) {
-                new Place($poule);
-            }
-        }
-        throw new \Exception('place cannot be null');
+        $category = $this->createCategoryIfNotExists($structureLocation->getCategoryNr());
+        $rootRound = $category->getRootRound();
+        $pathNode = $structureLocation->getPathNode();
+        $placeLocation = $structureLocation->getPlaceLocation();
+        return $this->createFromRootRoundToPlaceIfNotExists($rootRound, $pathNode, $placeLocation);
     }
 
-    private function createPouleFromStructureLocation(int $pouleNr, Round $round): Poule {
-
-        $poule = null;
-        while ( $poule === null && $pouleNr > 0) {
-            try {
-                $poule = $round->getPoule($pouleNr);
-                return $poule;
-            } catch(\Exception $e) {
-                new Poule($round);
-            }
-        }
-        throw new \Exception('poule cannot be null');
+    private function createFromRootRoundToPlaceIfNotExists(
+        Round $rootRound, PathNode $pathNode, Place\Location $placeLocation): Place
+    {
+        $round = $this->createRoundsIfNotExists($rootRound, $pathNode->getRoot() );
+        return $this->createPoulesAndPlacesIfNotExists($round, $placeLocation );
     }
+
+    private function createRoundsIfNotExists(Round $round, PathNode $pathNode): Round
+    {
+        $nextPathNode = $pathNode->getNext();
+        if( $nextPathNode === null ) {
+            return $round;
+        }
+        $nextQualifyTarget = $nextPathNode->getQualifyTarget();
+        if( $nextQualifyTarget === null ) {
+            throw new \Exception('qualifygroup has incorrect target');
+        }
+        $borderQualifyGroup = $round->getBorderQualifyGroup($nextQualifyTarget);
+
+        $qualifyGroup = null;
+        if( $borderQualifyGroup !== null && $borderQualifyGroup->getNumber() >= $nextPathNode->getQualifyGroupNumber() ) {
+            $qualifyGroup = $round->getQualifyGroup($nextQualifyTarget, $nextPathNode->getQualifyGroupNumber() );
+            if( $qualifyGroup === null ) {
+                throw new \Exception('qualifygroup has incorrect number');
+            }
+            return $qualifyGroup->getChildRound();
+        }
+        $structureCell = $round->getStructureCell();
+        $nextStructureCell = $structureCell->getNext();
+        if( $nextStructureCell === null ) {
+            $nextStructureCell = $structureCell->createNext();
+        }
+
+        $qualifyGroupNr = $borderQualifyGroup?->getNumber() ?? 0;
+        while ( $qualifyGroupNr < $nextPathNode->getQualifyGroupNumber() ) {
+            $qualifyGroup = new QualifyGroup($round, $nextQualifyTarget, $nextStructureCell);
+            $qualifyGroupNr = $qualifyGroup->getNumber();
+        }
+        if( $qualifyGroup === null ) {
+            throw new \Exception('qualifygroup has incorrect number');
+        }
+
+        return $this->createRoundsIfNotExists($qualifyGroup->getChildRound(), $nextPathNode);
+    }
+
+    private function createPoulesAndPlacesIfNotExists(Round $round, Place\Location $placeLocation ): Place {
+        $poule = $this->createPoulesIfNotExists($round, $placeLocation->getPouleNr());
+        return $this->createPlacesIfNotExists($poule, $placeLocation->getPlaceNr());
+    }
+
+    private function createPoulesIfNotExists(Round $round, int $pouleNr ): Poule {
+        if( $pouleNr <= $round->getLastPoule()->getNumber() ) {
+            return $round->getPoule($pouleNr);
+        }
+        $poule = new Poule($round);
+        while ( $poule->getNumber() < $pouleNr ) {
+            $poule = new Poule($round);
+        }
+        return $poule;
+    }
+
+    private function createPlacesIfNotExists(Poule $poule, int $placeNr ): Place {
+        if( $placeNr <= $poule->getPlace(count($poule->getPlaces()))->getPlaceNr() ) {
+            return $poule->getPlace($placeNr);
+        }
+        $place = new Place($poule);
+        while ( $place->getPlaceNr() < $placeNr ) {
+            $place = new Place($poule);
+        }
+        return $place;
+    }
+
+
 }

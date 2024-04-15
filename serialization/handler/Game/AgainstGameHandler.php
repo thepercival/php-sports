@@ -13,10 +13,11 @@ use Sports\Game\Place\Against as AgainstGamePlace;
 use Sports\Poule;
 use Sports\Score\Against as AgainstScore;
 use Sports\SerializationHandler\DummyCreator;
+use Sports\Structure\Locations\StructureLocationPlace;
 
 /**
  * @psalm-type _AgainstGamePlace = array{placeNr: int, side: string}
- * @psalm-type _FieldValue = array{poule: Poule, batchNr: int, startDateTime: string, competitionSportId: int, gameRoundNumber: int, fieldId: int, refereeId: int, state: string, refereeStructureLocation: string, places: list<_AgainstGamePlace>, scores: list<AgainstScore>}
+ * @psalm-type _FieldValue = array{poule: Poule, batchNr: int, startDateTime: string, competitionSportId: int, gameRoundNumber: int, fieldId: int, refereeId: int, state: string, refereeStructureLocation: StructureLocationPlace|null, places: list<_AgainstGamePlace>, scores: list<AgainstScore>}
  */
 class AgainstGameHandler extends GameHandler implements SubscribingHandlerInterface
 {
@@ -50,7 +51,7 @@ class AgainstGameHandler extends GameHandler implements SubscribingHandlerInterf
             return $arrGamePlace['placeNr'];
         }, $fieldValue['places'] );
         $maxPlaceNr = $this->getMaxPlaceNr($arrPlaceNrs);
-        $poule = $this->dummyCreator->createPoule($maxPlaceNr);
+        $poule = $this->createPoule($maxPlaceNr);
 
         $competition = $this->dummyCreator->createCompetition();
         $competitionSport = $this->dummyCreator->createCompetitionSport(

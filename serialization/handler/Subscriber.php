@@ -32,5 +32,6 @@ class Subscriber
         $registry->registerSubscribingHandler(new AgainstGamePlaceHandler());
         $registry->registerSubscribingHandler(new TogetherGameHandler($this->dummyCreator));
         $registry->registerSubscribingHandler(new TogetherGamePlaceHandler());
+        $registry->registerSubscribingHandler(new StructureLocationPlaceHandler($this->dummyCreator));
     }
 }

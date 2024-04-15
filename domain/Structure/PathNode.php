@@ -8,6 +8,8 @@ use Sports\Qualify\Target as QualifyTarget;
 
 class PathNode implements \Stringable
 {
+    private PathNode|null $next = null;
+
     public function __construct(
         private QualifyTarget|null $qualifyTarget,
         private int $qualifyGroupNumber,
@@ -20,9 +22,13 @@ class PathNode implements \Stringable
 
     public function createNext(QualifyTarget $qualifyTarget, int $qualifyGroupNumber): PathNode
     {
-        $path = new PathNode($qualifyTarget, $qualifyGroupNumber, $this);
-        // this.next = path;
-        return $path;
+        $this->next = new self($qualifyTarget, $qualifyGroupNumber, $this);
+        return $this->next;
+    }
+
+    public function getNext(): PathNode|null
+    {
+        return $this->next;
     }
 
     public function getQualifyTarget(): QualifyTarget|null
@@ -43,6 +49,14 @@ class PathNode implements \Stringable
     public function hasPrevious(): bool
     {
         return $this->previous !== null;
+    }
+
+    public function getRoot(): self
+    {
+        if( $this->previous !== null ) {
+            return $this->previous->getRoot();
+        }
+        return $this;
     }
 
     public function __toString(): string

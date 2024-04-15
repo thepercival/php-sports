@@ -5,16 +5,20 @@ declare(strict_types=1);
 namespace Sports\SerializationHandler\Game;
 
 use JMS\Serializer\Context;
-
+use Sports\Category;
 use Sports\Game\Against as AgainstGame;
-use Sports\Game\Together as TogetherGame;
 use Sports\Game\State as GameState;
+use Sports\Game\Together as TogetherGame;
+use Sports\Place;
 use Sports\Poule;
+use Sports\Round;
+use Sports\Structure\Cell as StructureCell;
 use Sports\SerializationHandler\DummyCreator;
 use Sports\SerializationHandler\Handler;
+use Sports\Structure\Locations\StructureLocationPlace;
 
 /**
- * @psalm-type _FieldValue = array{poule: Poule, batchNr: int, startDateTime: string, competitionSportId: int, fieldId: int, refereeId: int|null, state: string, refereeStructureLocation: string|null}
+ * @psalm-type _FieldValue = array{poule: Poule, batchNr: int, startDateTime: string, competitionSportId: int, fieldId: int, refereeId: int|null, state: string, refereeStructureLocation: StructureLocationPlace|null}
  */
 class GameHandler extends Handler
 {
@@ -57,11 +61,13 @@ class GameHandler extends Handler
             }
         }
 
+        // hier via serializer aanroepen en dan handler voor StructureLocationPlace
+
         if( array_key_exists('refereeStructureLocation', $fieldValue) ) {
-            $refereeStructureLocation = (string)$fieldValue['refereeStructureLocation'];
+            $refereeStructureLocation = $fieldValue['refereeStructureLocation'];
             if (!empty($refereeStructureLocation)) {
                 $round = $game->getPoule()->getRound();
-                $refereePlace = $this->dummyCreator->createRefereePlace($refereeStructureLocation, $round);
+                $refereePlace = $this->dummyCreator->createRefereePlace($refereeStructureLocation);
                 $game->setRefereePlace($refereePlace);
             }
         }
@@ -79,6 +85,19 @@ class GameHandler extends Handler
             }
         }
         return $maxPlaceNr;
+    }
+
+    protected function createPoule(int $nrOfPlaces): Poule
+    {
+        $competition = $this->dummyCreator->createCompetition();
+        $category = new Category($competition, Category::DEFAULTNAME);
+        $structureCell = new StructureCell($category, $this->dummyCreator->createRoundNumber() );
+        $round = new Round($structureCell);
+        $poule = new Poule( $round );
+        for( $placeNr = 1 ; $placeNr <= $nrOfPlaces ; $placeNr++ ) {
+            new Place($poule);
+        }
+        return $poule;
     }
 
 }

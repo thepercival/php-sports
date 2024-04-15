@@ -145,6 +145,7 @@ abstract class Game extends Identifiable
 
     public function getRefereeStructureLocation(): string|null
     {
-        return $this->getRefereePlace()?->getStructureLocation();
+        $structureLocation = $this->getRefereePlace()?->getStructureLocation();
+        return $structureLocation !== null ? (string)$structureLocation : null;
     }
 }

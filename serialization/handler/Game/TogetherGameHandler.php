@@ -7,6 +7,7 @@ namespace Sports\SerializationHandler\Game;
 use JMS\Serializer\Handler\SubscribingHandlerInterface;
 use JMS\Serializer\JsonDeserializationVisitor;
 use JMS\Serializer\Context;
+use Sports\Structure\Locations\StructureLocationPlace;
 
 use Sports\Game\Together as TogetherGame;
 
@@ -16,7 +17,7 @@ use Sports\SerializationHandler\DummyCreator;
 
 /**
  * @psalm-type _TogetherGamePlace = array{placeNr: int, gameRoundNumber: int}
- * @psalm-type _FieldValue = array{poule: Poule, batchNr: int, startDateTime: string, competitionSportId: int, fieldId: int, refereeId: int, state: string, refereeStructureLocation: string, places: list<_TogetherGamePlace>}
+ * @psalm-type _FieldValue = array{poule: Poule, batchNr: int, startDateTime: string, competitionSportId: int, fieldId: int, refereeId: int, state: string, refereeStructureLocation: StructureLocationPlace|null, places: list<_TogetherGamePlace>}
  */
 class TogetherGameHandler extends GameHandler implements SubscribingHandlerInterface
 {
@@ -50,7 +51,7 @@ class TogetherGameHandler extends GameHandler implements SubscribingHandlerInter
             return $arrGamePlace['placeNr'];
         }, $fieldValue['places'] );
         $maxPlaceNr = $this->getMaxPlaceNr($arrPlaceNrs);
-        $poule = $this->dummyCreator->createPoule($maxPlaceNr);
+        $poule = $this->createPoule($maxPlaceNr);
 
         $competition = $this->dummyCreator->createCompetition();
         $competitionSport = $this->dummyCreator->createCompetitionSport(

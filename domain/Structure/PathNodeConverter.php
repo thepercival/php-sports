@@ -52,10 +52,10 @@ class PathNodeConverter
         $nextQualifyTargetPos = $this->getPosQualifyTargetCharacter($pathNodeAsString, $qualifyTargetPos + 1);
         if( $nextQualifyTargetPos === false) {
             $qualifyGroupNumber = (int)substr($pathNodeAsString, $roundNumberStartPos);
-            return new StructurePathNode($qualifyTarget, $qualifyGroupNumber,$previous );
+            return $previous->createNext($qualifyTarget, $qualifyGroupNumber);
         }
         $qualifyGroupNumber = (int)substr($pathNodeAsString, $roundNumberStartPos, $nextQualifyTargetPos - $roundNumberStartPos);
-        $pathNode = new StructurePathNode($qualifyTarget, $qualifyGroupNumber, $previous );
+        $pathNode = $previous->createNext($qualifyTarget, $qualifyGroupNumber);
         return $this->createPathNodeRecursive($pathNodeAsString, $nextQualifyTargetPos, $pathNode);
     }
 

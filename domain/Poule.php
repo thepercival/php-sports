@@ -11,6 +11,7 @@ use Sports\Competition\Sport as CompetitionSport;
 use Sports\Game\Against as AgainstGame;
 use Sports\Game\State as GameState;
 use Sports\Game\Together as TogetherGame;
+use Sports\Structure\Locations\StructureLocationPoule;
 use SportsHelpers\Identifiable;
 
 class Poule extends Identifiable
@@ -87,17 +88,13 @@ class Poule extends Identifiable
         $this->name = $name;
     }
 
-    public function getCategoryLocation(): string
+    public function getStructureLocation(): StructureLocationPoule
     {
-        if ($this->categoryLocation === null) {
-            $this->categoryLocation = $this->round->getStructurePathNode() . '.' . $this->getNumber();
-        }
-        return $this->categoryLocation;
-    }
-
-    public function getStructureLocation(): string
-    {
-        return $this->round->getCategory()->getNumber() . '.' . $this->getCategoryLocation();
+        return new StructureLocationPoule(
+            $this->round->getCategory()->getNumber(),
+            $this->round->getStructurePathNode(),
+            $this->getNumber()
+        );
     }
 
     /**

@@ -300,15 +300,15 @@ class GamesValidator
         foreach ($roundNumber->getGames(Order::ByPoule) as $game) {
             $refereePlace = $game->getRefereePlace();
             if ($refereePlace !== null) {
-                $pouleNr = $refereePlace->getPoule()->getStructureLocation();
-                if (array_key_exists($pouleNr, $refereePlaces) === false) {
-                    $refereePlaces[$pouleNr] = [];
+                $pouleStructureLocationId = (string)$refereePlace->getPoule()->getStructureLocation();
+                if (array_key_exists($pouleStructureLocationId, $refereePlaces) === false) {
+                    $refereePlaces[$pouleStructureLocationId] = [];
                 }
                 $uniqueIdx = $refereePlace->getUniqueIndex();
-                if (array_key_exists($uniqueIdx, $refereePlaces[$pouleNr]) === false) {
-                    $refereePlaces[$pouleNr][$uniqueIdx] = 0;
+                if (array_key_exists($uniqueIdx, $refereePlaces[$pouleStructureLocationId]) === false) {
+                    $refereePlaces[$pouleStructureLocationId][$uniqueIdx] = 0;
                 }
-                $refereePlaces[$pouleNr][$uniqueIdx]++;
+                $refereePlaces[$pouleStructureLocationId][$uniqueIdx]++;
             }
 
             $referee = $game->getReferee();

@@ -1,16 +1,14 @@
 <?php
 
-namespace Sports\Structure;
+namespace Sports\Structure\Locations;
 
 use Sports\Place\Location as PlaceLocation;
 use Sports\Structure\PathNode as StructurePathNode;
 
-readonly class Location implements \Stringable
+readonly class StructureLocationPlace extends Location implements \Stringable
 {
-    public function __construct(
-        private int               $categoryNr,
-        private StructurePathNode $pathNode,
-        private PlaceLocation     $placeLocation ) {
+    public function __construct(int $categoryNr, StructurePathNode $pathNode, private PlaceLocation $placeLocation ) {
+        parent::__construct($categoryNr, $pathNode);
     }
 
     public function getCategoryNr(): int {
@@ -27,8 +25,6 @@ readonly class Location implements \Stringable
 
     public function __toString(): string
     {
-        return $this->categoryNr . '.' .
-            $this->pathNode . '.' .
-            $this->placeLocation->getUniqueIndex();
+        return parent::__toString() . '.' . $this->placeLocation->getUniqueIndex();
     }
 }

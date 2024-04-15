@@ -13,6 +13,7 @@ use Sports\Game\Place\Together as TogetherGamePlace;
 use Sports\Game\State as GameState;
 use Sports\Game\Together as TogetherGame;
 use Sports\Place\Location as PlaceLocation;
+use Sports\Structure\Locations\StructureLocationPlace;
 use SportsHelpers\Identifiable;
 use SportsHelpers\PlaceLocationInterface;
 use Sports\Poule\Horizontal as HorizontalPoule;
@@ -201,9 +202,13 @@ class Place extends Identifiable implements PlaceLocationInterface
         return $this->qualifiedPlace->getStartLocation();
     }
 
-    public function getStructureLocation(): string
+    public function getStructureLocation(): StructureLocationPlace
     {
-        return $this->poule->getStructureLocation() . '.' . $this->getPlaceNr();
+        return new StructureLocationPlace(
+            $this->getRound()->getCategory()->getNumber(),
+            $this->getRound()->getStructurePathNode(),
+            new PlaceLocation($this->getPouleNr(), $this->getPouleNr())
+        );
     }
 
     public function getGamesState(CompetitionSport|null $competitionSport = null): GameState

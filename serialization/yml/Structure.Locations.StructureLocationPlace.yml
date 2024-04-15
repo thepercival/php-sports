@@ -1,0 +1,10 @@
+Sports\Structure\Locations\StructureLocationPlace:
+  exclusion_policy: ALL
+  exclude: false
+  properties:
+    categoryNr:
+      type: integer
+    pathNode:
+      type: string
+    placeLocation:
+      type: Sports\Place\Location
