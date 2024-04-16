@@ -7,7 +7,7 @@ use Sports\Structure\PathNode as StructurePathNode;
 
 abstract readonly class Location implements \Stringable
 {
-    public function __construct(protected int $categoryNr, protected StructurePathNode $pathNode ) {
+    public function __construct(private int $categoryNr, private StructurePathNode $pathNode ) {
     }
 
     public function getCategoryNr(): int {

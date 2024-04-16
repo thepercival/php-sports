@@ -11,14 +11,6 @@ readonly class StructureLocationPoule extends Location implements \Stringable
         parent::__construct($categoryNr, $pathNode);
     }
 
-    public function getCategoryNr(): int {
-        return $this->categoryNr;
-    }
-
-    public function getPathNode(): StructurePathNode {
-        return $this->pathNode;
-    }
-
     public function getPouleNr(): int {
         return $this->pouleNr;
     }

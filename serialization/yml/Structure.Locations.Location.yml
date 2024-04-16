@@ -1,0 +1,12 @@
+Sports\Structure\Locations\Location:
+  exclusion_policy: ALL
+  exclude: false
+  properties:
+    categoryNr:
+      type: integer
+    pathNode:
+      type: string
+#  virtual_properties:
+#    getPathNodeAsString:
+#      type: string
+#      serialized_name: pathNode
