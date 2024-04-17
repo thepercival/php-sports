@@ -8,6 +8,7 @@ use Exception;
 use League\Period\Period;
 use Sports\Competition\Field;
 use Sports\Competition\Sport as CompetitionSport;
+use Sports\Exceptions\RefereesPriorityNotCorrectlyAppliedInGamesException;
 use Sports\Game\Against as AgainstGame;
 use Sports\Game\Order;
 use Sports\Game\Place\Against as AgainstGamePlace;
@@ -384,17 +385,19 @@ class GamesValidator
     {
         $orderedGames = $roundNumber->getGames(Order::ByBatch);
         $gamesFirstBatch = $this->getGamesForBatch($roundNumber, $orderedGames);
-        $priority = 1;
+        $orderedGameNr = 1;
         foreach ($gamesFirstBatch as $game) {
 //            $field = $game->getField();
 //            if ($field !== null && $field->getPriority() !== $priority) {
 //                throw new Exception("fields are not prioritized", E_ERROR);
 //            }
             $referee = $game->getReferee();
-            if ($referee !== null && $referee->getPriority() !== $priority) {
-                throw new Exception("referees are not prioritized", E_ERROR);
+            if ($referee !== null && $referee->getPriority() !== $orderedGameNr) {
+                throw new RefereesPriorityNotCorrectlyAppliedInGamesException(
+                    $roundNumber->getNumber(), $orderedGameNr, $referee->getPriority()
+                );
             }
-            $priority++;
+            $orderedGameNr++;
         }
     }
 
