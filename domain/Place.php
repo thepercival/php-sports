@@ -207,7 +207,7 @@ class Place extends Identifiable implements PlaceLocationInterface
         return new StructureLocationPlace(
             $this->getRound()->getCategory()->getNumber(),
             $this->getRound()->getStructurePathNode(),
-            new PlaceLocation($this->getPouleNr(), $this->getPouleNr())
+            new PlaceLocation($this->getPouleNr(), $this->getPlaceNr())
         );
     }
 
