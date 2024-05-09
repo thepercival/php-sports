@@ -35,8 +35,7 @@ class PouleStructureNumberMap
         $setPouleStructureNumbers = function (RoundNumber $roundNumber) use (
             $roundRankService,
             &$pouleNr,
-            &
-            $setPouleStructureNumbers
+            &$setPouleStructureNumbers
         ): void {
             /** @var Closure $setPouleStructureNumbers */
             $rounds = $roundNumber->getRounds();

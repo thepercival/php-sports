@@ -20,3 +20,5 @@ Sports\Planning\Config:
     selfReferee:
     nrOfSimSelfRefs:
       type: integer
+    bestLast:
+      type: boolean

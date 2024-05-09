@@ -14,7 +14,7 @@ use Sports\Output\Game\Together as TogetherGameOutput;
 use Sports\Round\Number as RoundNumber;
 use SportsHelpers\Output as OutputBase;
 
-class Games extends OutputBase
+class GamesOutput extends OutputBase
 {
     protected AgainstGameOutput $againstOutput;
     protected TogetherGameOutput $togetherOutput;

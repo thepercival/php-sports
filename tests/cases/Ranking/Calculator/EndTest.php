@@ -20,7 +20,7 @@ use Sports\TestHelper\GamesCreator;
 use Sports\TestHelper\SetScores;
 use Sports\TestHelper\StructureEditorCreator;
 use Sports\Output\StructureOutput;
-use Sports\Output\Games as GamesOutput;
+use Sports\Output\GamesOutput as GamesOutput;
 
 class EndTest extends TestCase
 {

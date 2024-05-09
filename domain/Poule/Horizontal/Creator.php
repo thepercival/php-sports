@@ -87,19 +87,6 @@ class Creator
                 return $placeA->getPouleNr() - $placeB->getPouleNr();
             }
             return $placeA->getPlaceNr() - $placeB->getPlaceNr();
-//            if ($placeA->getPlaceNr() > $placeB->getPlaceNr()) {
-//                return 1;
-//            }
-//            if ($placeA->getPlaceNr() < $placeB->getPlaceNr()) {
-//                return -1;
-//            }
-//            if ($placeA->getPouleNr() > $placeB->getPouleNr()) {
-//                return 1;
-//            }
-//            if ($placeA->getPouleNr() < $placeB->getPouleNr()) {
-//                return -1;
-//            }
-//            return 0;
         });
         return array_values($places);
     }

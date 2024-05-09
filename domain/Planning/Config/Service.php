@@ -24,7 +24,8 @@ class Service
             $this->getDefaultMinutesAfter(),
             false,
             SelfReferee::Disabled,
-            0
+            0,
+            false
         );
     }
 
@@ -41,7 +42,8 @@ class Service
             $fromPlanningConfig->getMinutesAfter(),
             $fromPlanningConfig->getPerPoule(),
             $fromPlanningConfig->getSelfReferee(),
-            $fromPlanningConfig->getNrOfSimSelfRefs()
+            $fromPlanningConfig->getNrOfSimSelfRefs(),
+            $fromPlanningConfig->getBestLast()
         );
     }
 

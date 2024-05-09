@@ -16,7 +16,7 @@ use Sports\TestHelper\CompetitionCreator;
 use Sports\TestHelper\GamesCreator;
 use Sports\TestHelper\SetScores;
 use Sports\TestHelper\StructureEditorCreator;
-use Sports\Output\Games as OutputGames;
+use Sports\Output\GamesOutput as OutputGames;
 
 class RoundTest extends TestCase
 {

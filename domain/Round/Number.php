@@ -13,6 +13,7 @@ use Sports\Competition;
 use Sports\Competition\Sport as CompetitionSport;
 use Sports\Exceptions\CellNotFoundException;
 use Sports\Game\Against as AgainstGame;
+use Sports\Game\Order;
 use Sports\Game\Order as GameOrder;
 use Sports\Game\State as GameState;
 use Sports\Game\Together as TogetherGame;
@@ -223,10 +224,10 @@ class Number extends Identifiable
     }
 
     /**
-     * @param int $order
+     * @param Order $order
      * @return list<AgainstGame|TogetherGame>
      */
-    public function getGames(int $order): array
+    public function getGames(Order $order): array
     {
         $games = [];
         foreach ($this->getPoules() as $poule) {

@@ -13,5 +13,6 @@
         <field name="perPoule" column="perPoule" type="boolean" nullable="false" unique="false"/>
         <field name="selfReferee" column="selfReferee" type="enum_SelfReferee" nullable="false" unique="false"/>
         <field name="nrOfSimSelfRefs" column="nrOfSimSelfRefs" type="smallint" nullable="false" unique="false"/>
+        <field name="bestLast" column="bestLast" type="boolean" nullable="false" unique="false"/>
     </entity>
 </doctrine-mapping>

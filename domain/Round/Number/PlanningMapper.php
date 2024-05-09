@@ -150,13 +150,16 @@ class PlanningMapper
         if ($roundNumber->isFirst()) {
             usort($poules, $fncBaseSort);
         } else {
+            $bestLast = $roundNumber->getValidPlanningConfig()->getBestLast();
             $pouleStructureNumberMap = new PouleStructureNumberMap($roundNumber, new RoundRankService());
             usort(
                 $poules,
-                function (Poule $pouleA, Poule $pouleB) use ($fncBaseSort, $pouleStructureNumberMap): int {
-                    $baseSort = $fncBaseSort($pouleA, $pouleB);
-                    if ($baseSort !== 0) {
-                        return $baseSort;
+                function (Poule $pouleA, Poule $pouleB) use ($fncBaseSort, $pouleStructureNumberMap, $bestLast): int {
+                    if( !$bestLast ) {
+                        $baseSort = $fncBaseSort($pouleA, $pouleB);
+                        if ($baseSort !== 0) {
+                            return $baseSort;
+                        }
                     }
                     $pouleAStructureNumber = $pouleStructureNumberMap->get($pouleA);
                     $pouleBStructureNumber = $pouleStructureNumberMap->get($pouleB);

@@ -31,7 +31,7 @@ class ConfigHandler extends Handler implements SubscribingHandlerInterface
 
     /**
      * @param JsonDeserializationVisitor $visitor
-     * @param array{roundNumber: RoundNumber, editMode: string, extension: bool, enableTime: bool, minutesPerGame: int, minutesPerGameExt: int, minutesBetweenGames: int, minutesAfter: int, perPoule: bool, selfReferee: string, nrOfSimSelfRefs: int} $fieldValue
+     * @param array{roundNumber: RoundNumber, editMode: string, extension: bool, enableTime: bool, minutesPerGame: int, minutesPerGameExt: int, minutesBetweenGames: int, minutesAfter: int, perPoule: bool, selfReferee: string, nrOfSimSelfRefs: int, bestLast: bool} $fieldValue
      * @param array<string, int|string> $type
      * @param Context $context
      * @return PlanningConfig
@@ -42,23 +42,22 @@ class ConfigHandler extends Handler implements SubscribingHandlerInterface
         array $type,
         Context $context
     ): PlanningConfig {
-        if (!isset($fieldValue["roundNumber"])) {
-            $fieldValue["roundNumber"] = $this->dummyCreator->createRoundNumber();
+        if (!isset($fieldValue['roundNumber'])) {
+            $fieldValue['roundNumber'] = $this->dummyCreator->createRoundNumber();
         }
-        $planningConfig = new PlanningConfig(
-            $fieldValue["roundNumber"],
-            EditMode::from($fieldValue["editMode"]),
-            $fieldValue["extension"],
-            $fieldValue["enableTime"],
-            $fieldValue["minutesPerGame"],
-            $fieldValue["minutesPerGameExt"],
-            $fieldValue["minutesBetweenGames"],
-            $fieldValue["minutesAfter"],
-            $fieldValue["perPoule"],
-            SelfReferee::from($fieldValue["selfReferee"]),
-            $fieldValue["nrOfSimSelfRefs"]
+        return new PlanningConfig(
+            $fieldValue['roundNumber'],
+            EditMode::from($fieldValue['editMode']),
+            $fieldValue['extension'],
+            $fieldValue['enableTime'],
+            $fieldValue['minutesPerGame'],
+            $fieldValue['minutesPerGameExt'],
+            $fieldValue['minutesBetweenGames'],
+            $fieldValue['minutesAfter'],
+            $fieldValue['perPoule'],
+            SelfReferee::from($fieldValue['selfReferee']),
+            $fieldValue['nrOfSimSelfRefs'],
+            $fieldValue['bestLast']
         );
-
-        return $planningConfig;
     }
 }

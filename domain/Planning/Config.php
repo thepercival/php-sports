@@ -27,6 +27,7 @@ class Config extends Identifiable
         protected bool $perPoule,
         protected SelfReferee $selfReferee,
         protected int $nrOfSimSelfRefs,
+        protected bool $bestLast
     ) {
         $this->roundNumber->setPlanningConfig($this);
     }
@@ -143,6 +144,16 @@ class Config extends Identifiable
     public function setNrOfSimSelfRefs(int $nrOfSimSelfRefs): void
     {
         $this->nrOfSimSelfRefs = $nrOfSimSelfRefs;
+    }
+
+    public function getBestLast(): bool
+    {
+        return $this->bestLast;
+    }
+
+    public function setBestLast(bool $bestLast): void
+    {
+        $this->bestLast = $bestLast;
     }
 
     public function getSelfRefereeInfo(): SelfRefereeInfo {
