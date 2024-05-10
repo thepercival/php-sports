@@ -10,7 +10,7 @@ interface Competitor extends StartLocationInterface
 {
     public function getName(): string;
 
-    public function getRegistered(): bool;
+    public function getPresent(): bool;
 
     public function getInfo(): ?string;
 

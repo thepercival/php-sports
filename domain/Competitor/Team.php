@@ -14,7 +14,7 @@ class Team extends StartLocation implements CompetitorInterface
     public const MAX_LENGTH_INGO = 200;
 
     protected int|string|null $id = null;
-    protected bool $registered = false;
+    protected bool $present = false;
     protected string|null $info = null;
 
     public function __construct(
@@ -53,14 +53,14 @@ class Team extends StartLocation implements CompetitorInterface
         return $this->competition;
     }
 
-    public function getRegistered(): bool
+    public function getPresent(): bool
     {
-        return $this->registered;
+        return $this->present;
     }
 
-    public function setRegistered(bool $registered): void
+    public function setPresent(bool $present): void
     {
-        $this->registered = $registered;
+        $this->present = $present;
     }
 
     public function getInfo(): ?string

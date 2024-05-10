@@ -8,7 +8,7 @@ Sports\Competitor\Team:
       type: Sports\Team
     abbreviation:
       type: string
-    registered:
+    present:
       type: boolean
     info:
       type: string

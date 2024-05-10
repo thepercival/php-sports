@@ -6,7 +6,7 @@
         <id name="id" type="integer" column="id">
             <generator strategy="AUTO"/>
         </id>
-        <field name="registered" column="registered" type="boolean" nullable="false" unique="false"/>
+        <field name="present" column="present" type="boolean" nullable="false" unique="false"/>
         <field name="info" column="info" type="string" length="200" nullable="true" unique="false"/>
         <many-to-one field="team" target-entity="Sports\Team">
             <cascade>
