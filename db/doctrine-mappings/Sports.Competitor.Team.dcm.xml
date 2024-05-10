@@ -7,8 +7,8 @@
             <generator strategy="AUTO"/>
         </id>
         <field name="present" column="present" type="boolean" nullable="false" unique="false"/>
-        <field name="publicInfo" column="publicInfo" type="string" length="200" nullable="true" unique="false"/>
         <field name="privateInfo" column="privateInfo" type="string" length="200" nullable="true" unique="false"/>
+        <field name="publicInfo" column="publicInfo" type="string" length="200" nullable="true" unique="false"/>
         <many-to-one field="team" target-entity="Sports\Team">
             <cascade>
                 <cascade-persist/>
