@@ -12,7 +12,8 @@ interface Competitor extends StartLocationInterface
 
     public function getPresent(): bool;
 
-    public function getInfo(): ?string;
+    public function getPublicInfo(): ?string;
+    public function getPrivateInfo(): ?string;
 
     public function getCompetition(): Competition;
 }

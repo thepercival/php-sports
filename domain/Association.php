@@ -27,9 +27,9 @@ class Association extends Identifiable
      */
     protected Collection $teams;
 
-    public const MIN_LENGTH_NAME = 2;
-    public const MAX_LENGTH_NAME = 40;
-    public const MAX_LENGTH_DESCRIPTION = 50;
+    public const int MIN_LENGTH_NAME = 2;
+    public const int MAX_LENGTH_NAME = 40;
+    public const int MAX_LENGTH_DESCRIPTION = 50;
 
     public function __construct(string $name)
     {

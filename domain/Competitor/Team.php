@@ -11,11 +11,12 @@ use Sports\Team as TeamBase;
 
 class Team extends StartLocation implements CompetitorInterface
 {
-    public const MAX_LENGTH_INGO = 200;
+    public const int MAX_LENGTH_INFO = 200;
 
     protected int|string|null $id = null;
     protected bool $present = false;
-    protected string|null $info = null;
+    protected string|null $publicInfo = null;
+    protected string|null $privateInfo = null;
 
     public function __construct(
         protected Competition $competition,
@@ -63,21 +64,39 @@ class Team extends StartLocation implements CompetitorInterface
         $this->present = $present;
     }
 
-    public function getInfo(): ?string
+    public function getPublicInfo(): ?string
     {
-        return $this->info;
+        return $this->publicInfo;
     }
 
-    public function setInfo(string $info = null): void
+    public function setPublicInfo(string $info = null): void
     {
         if ($info !== null && strlen($info) === 0) {
             $info = null;
         }
-        if ($info !== null && strlen($info) > self::MAX_LENGTH_INGO) {
+        if ($info !== null && strlen($info) > self::MAX_LENGTH_INFO) {
             throw new InvalidArgumentException(
-                'de extra-info mag maximaal ' . self::MAX_LENGTH_INGO . ' karakters bevatten', E_ERROR
+                'de extra-info mag maximaal ' . self::MAX_LENGTH_INFO . ' karakters bevatten', E_ERROR
             );
         }
-        $this->info = $info;
+        $this->publicInfo = $info;
+    }
+
+    public function getPrivateInfo(): ?string
+    {
+        return $this->privateInfo;
+    }
+
+    public function setPrivateInfo(string $info = null): void
+    {
+        if ($info !== null && strlen($info) === 0) {
+            $info = null;
+        }
+        if ($info !== null && strlen($info) > self::MAX_LENGTH_INFO) {
+            throw new InvalidArgumentException(
+                'de extra-info mag maximaal ' . self::MAX_LENGTH_INFO . ' karakters bevatten', E_ERROR
+            );
+        }
+        $this->privateInfo = $info;
     }
 }

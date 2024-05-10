@@ -161,7 +161,7 @@ final class PlanningMapperTest extends TestCase
         $planningAssigner->assignPlanningToRoundNumber($secondRoundNumber, $secondPlanning);
 
 //        (new PlanningOutput())->output($secondPlanning, PlanningOutputExtra::Games->value );
-        (new GamesOutput())->outputRoundNumber($secondRoundNumber);
+//        (new GamesOutput())->outputRoundNumber($secondRoundNumber);
 
         foreach ($winnersRound->getGames() as $winnersGame) {
             self::assertSame(1, $winnersGame->getBatchNr());
