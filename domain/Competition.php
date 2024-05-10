@@ -46,8 +46,8 @@ class Competition extends Identifiable
      */
     private Collection $teamCompetitors;
 
-    public const MIN_COMPETITORS = 3;
-    public const MAX_COMPETITORS = 40;
+    public const int MIN_COMPETITORS = 3;
+    public const int MAX_COMPETITORS = 40;
 
     public function __construct(League $league, private Season $season)
     {

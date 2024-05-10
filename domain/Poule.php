@@ -33,7 +33,7 @@ class Poule extends Identifiable
 
     protected string|null $categoryLocation = null;
 
-    public const MAX_LENGTH_NAME = 10;
+    public const int MAX_LENGTH_NAME = 10;
 
     public function __construct(protected Round $round, int $number = null)
     {

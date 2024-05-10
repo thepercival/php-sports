@@ -16,9 +16,12 @@ use Sports\Structure\Cell as StructureCell;
 use Sports\SerializationHandler\DummyCreator;
 use Sports\SerializationHandler\Handler;
 use Sports\Structure\Locations\StructureLocationPlace;
+use Sports\Structure\PathNodeConverter;
 
 /**
- * @psalm-type _FieldValue = array{poule: Poule, batchNr: int, startDateTime: string, competitionSportId: int, fieldId: int, refereeId: int|null, state: string, refereeStructureLocation: StructureLocationPlace|null}
+ * @psalm-type _PlaceLocationArray = array{pouleNr: int, placeNr: int}
+ * @psalm-type _StructureLocationPlaceArray = array{categoryNr: int, pathNode: string, placeLocation: _PlaceLocationArray}
+ * @psalm-type _FieldValue = array{poule: Poule, batchNr: int, startDateTime: string, competitionSportId: int, fieldId: int, refereeId: int|null, state: string, refereeStructureLocation: _StructureLocationPlaceArray|null}
  */
 class GameHandler extends Handler
 {
@@ -64,11 +67,21 @@ class GameHandler extends Handler
         // hier via serializer aanroepen en dan handler voor StructureLocationPlace
 
         if( array_key_exists('refereeStructureLocation', $fieldValue) ) {
-            $refereeStructureLocation = $fieldValue['refereeStructureLocation'];
-            if (!empty($refereeStructureLocation)) {
-                $round = $game->getPoule()->getRound();
-                $refereePlace = $this->dummyCreator->createRefereePlace($refereeStructureLocation);
-                $game->setRefereePlace($refereePlace);
+            $arrRefereeStructureLocation = $fieldValue['refereeStructureLocation'];
+            if (is_array($arrRefereeStructureLocation)) {
+                $pathNode = (new PathNodeConverter())->createPathNode($arrRefereeStructureLocation['pathNode']);
+                if( $pathNode !== null ) {
+                    $refereeStructureLocation = new StructureLocationPlace(
+                        $arrRefereeStructureLocation['categoryNr'],
+                        $pathNode,
+                        new Place\Location(
+                            $arrRefereeStructureLocation['placeLocation']['pouleNr'],
+                            $arrRefereeStructureLocation['placeLocation']['placeNr']
+                        )
+                    );
+                    $refereePlace = $this->dummyCreator->createRefereePlace($refereeStructureLocation);
+                    $game->setRefereePlace($refereePlace);
+                }
             }
         }
     }
@@ -91,7 +104,7 @@ class GameHandler extends Handler
     {
         $competition = $this->dummyCreator->createCompetition();
         $category = new Category($competition, Category::DEFAULTNAME);
-        $structureCell = new StructureCell($category, $this->dummyCreator->createRoundNumber() );
+        $structureCell = new StructureCell($category, $this->dummyCreator->createFirstRoundNumberIfNotExists() );
         $round = new Round($structureCell);
         $poule = new Poule( $round );
         for( $placeNr = 1 ; $placeNr <= $nrOfPlaces ; $placeNr++ ) {

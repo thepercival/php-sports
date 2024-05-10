@@ -17,14 +17,14 @@ class Referee extends Identifiable implements Prioritizable
     private string|null $emailaddress = null;
     private string|null $info = null;
 
-    public const MIN_LENGTH_INITIALS = 1;
-    public const MAX_LENGTH_INITIALS = 3;
-    public const MIN_LENGTH_NAME = 1;
-    public const MAX_LENGTH_NAME = 30;
-    public const MIN_LENGTH_EMAIL = 6;
-    public const MAX_LENGTH_EMAIL = 100;
-    public const MAX_LENGTH_INFO = 200;
-    public const DEFAULT_PRIORITY = 1;
+    public const int MIN_LENGTH_INITIALS = 1;
+    public const int MAX_LENGTH_INITIALS = 3;
+    public const int MIN_LENGTH_NAME = 1;
+    public const int MAX_LENGTH_NAME = 30;
+    public const int MIN_LENGTH_EMAIL = 6;
+    public const int MAX_LENGTH_EMAIL = 100;
+    public const int MAX_LENGTH_INFO = 200;
+    public const int DEFAULT_PRIORITY = 1;
 
     public function __construct(private Competition $competition, string $initials, int $priority = null)
     {

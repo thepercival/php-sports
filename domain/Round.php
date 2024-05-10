@@ -56,21 +56,19 @@ class Round extends Identifiable
     protected Collection $scoreConfigs;
     protected StructurePathNode $structurePathNode;
 
-    public const MAX_LENGTH_NAME = 20;
+    public const int MAX_LENGTH_NAME = 20;
 
-    public const ORDER_NUMBER_POULE = 1;
-    public const ORDER_POULE_NUMBER = 2;
+    public const int ORDER_NUMBER_POULE = 1;
+    public const int ORDER_POULE_NUMBER = 2;
 
-    public const QUALIFYORDER_CROSS = 1;
-    public const QUALIFYORDER_RANK = 2;
-    public const QUALIFYORDER_DRAW = 4;
-    public const QUALIFYORDER_CUSTOM1 = 8;
-    public const QUALIFYORDER_CUSTOM2 = 16;
+    public const int QUALIFYORDER_CROSS = 1;
+    public const int QUALIFYORDER_RANK = 2;
+    public const int QUALIFYORDER_DRAW = 4;
+    public const int QUALIFYORDER_CUSTOM1 = 8;
+    public const int QUALIFYORDER_CUSTOM2 = 16;
 
-    public const RANK_NUMBER_POULE = 6;
-    public const RANK_POULE_NUMBER = 7;
-
-    protected RoundNumber|null $numberDep = null; // @TODO CDK REMOVE
+    public const int RANK_NUMBER_POULE = 6;
+    public const int RANK_POULE_NUMBER = 7;
 
     public function __construct(
         protected StructureCell $structureCell,

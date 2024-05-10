@@ -12,8 +12,8 @@ class Config extends Identifiable
 {
     protected Config|null $next = null;
 
-    public const UPWARDS = 1;
-    public const DOWNWARDS = 2;
+    public const int UPWARDS = 1;
+    public const int DOWNWARDS = 2;
 
     public function __construct(
         protected CompetitionSport $competitionSport,

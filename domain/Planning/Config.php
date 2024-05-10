@@ -11,9 +11,9 @@ use SportsHelpers\SelfRefereeInfo;
 
 class Config extends Identifiable
 {
-    public const DEFAULTEXTENSION = false;
-    public const DEFAULTENABLETIME = true;
-    public const DEFAULTGAMEAMOUNT = 1;
+    public const bool DEFAULTEXTENSION = false;
+    public const bool DEFAULTENABLETIME = true;
+    public const int DEFAULTGAMEAMOUNT = 1;
 
     public function __construct(
         protected RoundNumber $roundNumber,

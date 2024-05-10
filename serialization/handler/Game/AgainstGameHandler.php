@@ -13,11 +13,12 @@ use Sports\Game\Place\Against as AgainstGamePlace;
 use Sports\Poule;
 use Sports\Score\Against as AgainstScore;
 use Sports\SerializationHandler\DummyCreator;
-use Sports\Structure\Locations\StructureLocationPlace;
 
 /**
  * @psalm-type _AgainstGamePlace = array{placeNr: int, side: string}
- * @psalm-type _FieldValue = array{poule: Poule, batchNr: int, startDateTime: string, competitionSportId: int, gameRoundNumber: int, fieldId: int, refereeId: int, state: string, refereeStructureLocation: StructureLocationPlace|null, places: list<_AgainstGamePlace>, scores: list<AgainstScore>}
+ * @psalm-type _PlaceLocationArray = array{pouleNr: int, placeNr: int}
+ * @psalm-type _StructureLocationPlaceArray = array{categoryNr: int, pathNode: string, placeLocation: _PlaceLocationArray}
+ * @psalm-type _FieldValue = array{poule: Poule, batchNr: int, startDateTime: string, competitionSportId: int, gameRoundNumber: int, fieldId: int, refereeId: int, state: string, refereeStructureLocation: _StructureLocationPlaceArray|null, places: list<_AgainstGamePlace>, scores: list<AgainstScore>}
  */
 class AgainstGameHandler extends GameHandler implements SubscribingHandlerInterface
 {

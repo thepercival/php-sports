@@ -22,12 +22,12 @@ class Person extends Identifiable
      */
     protected Collection $players;
 
-    public const MIN_LENGTH_FIRSTNAME = 2;
-    public const MAX_LENGTH_FIRSTNAME = 50;
-    public const MIN_LENGTH_NAMEINSERTION = 1;
-    public const MAX_LENGTH_NAMEINSERTION = 10;
-    public const MIN_LENGTH_LASTNAME = 2;
-    public const MAX_LENGTH_LASTNAME = 50;
+    public const int MIN_LENGTH_FIRSTNAME = 2;
+    public const int MAX_LENGTH_FIRSTNAME = 50;
+    public const int MIN_LENGTH_NAMEINSERTION = 1;
+    public const int MAX_LENGTH_NAMEINSERTION = 10;
+    public const int MIN_LENGTH_LASTNAME = 2;
+    public const int MAX_LENGTH_LASTNAME = 50;
 
     public function __construct(string $firstName, string|null $nameInsertion, string $lastName)
     {

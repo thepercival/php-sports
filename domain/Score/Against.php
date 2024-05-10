@@ -11,8 +11,8 @@ class Against extends Score
 {
     use AgainstTrait;
 
-    public const SCORED = 1;
-    public const RECEIVED = 2;
+    public const int SCORED = 1;
+    public const int RECEIVED = 2;
 
     public function __construct(protected AgainstGame $game, float $home, float $away, int $phase, int $number = null)
     {

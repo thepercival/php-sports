@@ -104,11 +104,34 @@ class DummyCreator
                 return $category;
             }
         }
-        $category = new Category($competition, Category::DEFAULTNAME . count($competition->getCategories()) );
+
+        $category = new Category($competition, Category::DEFAULTNAME . (count($competition->getCategories()) + 1) );
         while( $category->getNumber() < $categoryNr ) {
             $category = new Category($competition, Category::DEFAULTNAME . count($competition->getCategories()) );
         }
         return $category;
+    }
+
+    public function createRootRoundIfNotExists(int $categoryNr): Round {
+
+        $category = $this->createCategoryIfNotExists($categoryNr);
+        $structureCells = $category->getStructureCells();
+        if( count($structureCells) === 0 ) {
+            $structureCell = new StructureCell($category, $this->createFirstRoundNumberIfNotExists() );
+        } else {
+            $structureCell = $category->getFirstStructureCell();
+        }
+
+        $rounds = $structureCell->getRounds();
+        if( count($rounds) === 0 ) {
+            $rootRound = new Round($structureCell);
+        } else {
+            $rootRound = $structureCell->getRounds()->first();
+            if( $rootRound === false) {
+                throw new \Exception('rootRound should be available');
+            }
+        }
+        return $rootRound;
     }
 
     public function createReferee(int $refereeId, Competition $competition): Referee
@@ -136,9 +159,18 @@ class DummyCreator
         return $referee;
     }
 
-    public function createRoundNumber(): RoundNumber
+    public function createFirstRoundNumberIfNotExists(): RoundNumber
     {
-        return new RoundNumber($this->createCompetition());
+        $competition = $this->createCompetition();
+        if( count($competition->getRoundNumbers()) === 0 ) {
+            $competition->getRoundNumbers()->add(new RoundNumber($competition));
+        }
+        $firstRoundNumber = $competition->getRoundNumbers()->first();
+        if( $firstRoundNumber === false) {
+            throw new \Exception('roundNumber should be available');
+        }
+
+        return $firstRoundNumber;
     }
 
 //    public function createPoule(int $nrOfPlaces): Poule
@@ -177,8 +209,7 @@ class DummyCreator
 
     public function createRefereePlace(StructureLocationPlace $structureLocation): Place {
 
-        $category = $this->createCategoryIfNotExists($structureLocation->getCategoryNr());
-        $rootRound = $category->getRootRound();
+        $rootRound = $this->createRootRoundIfNotExists($structureLocation->getCategoryNr());
         $pathNode = $structureLocation->getPathNode();
         $placeLocation = $structureLocation->getPlaceLocation();
         return $this->createFromRootRoundToPlaceIfNotExists($rootRound, $pathNode, $placeLocation);
@@ -235,7 +266,8 @@ class DummyCreator
     }
 
     private function createPoulesIfNotExists(Round $round, int $pouleNr ): Poule {
-        if( $pouleNr <= $round->getLastPoule()->getNumber() ) {
+        $nrOfRoundPoules = count($round->getPoules());
+        if( $pouleNr <= $nrOfRoundPoules ) {
             return $round->getPoule($pouleNr);
         }
         $poule = new Poule($round);
@@ -246,7 +278,8 @@ class DummyCreator
     }
 
     private function createPlacesIfNotExists(Poule $poule, int $placeNr ): Place {
-        if( $placeNr <= $poule->getPlace(count($poule->getPlaces()))->getPlaceNr() ) {
+        $nrOfPoulePlaces = count($poule->getPlaces());
+        if( $placeNr <= $nrOfPoulePlaces ) {
             return $poule->getPlace($placeNr);
         }
         $place = new Place($poule);

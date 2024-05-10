@@ -20,8 +20,8 @@ class Season extends Identifiable
      */
     private Collection $competitions;
 
-    public const MIN_LENGTH_NAME = 2;
-    public const MAX_LENGTH_NAME = 9;
+    public const int MIN_LENGTH_NAME = 2;
+    public const int MAX_LENGTH_NAME = 9;
 
     public function __construct(string $name, Period $period)
     {

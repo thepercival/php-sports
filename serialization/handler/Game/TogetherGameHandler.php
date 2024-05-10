@@ -17,7 +17,9 @@ use Sports\SerializationHandler\DummyCreator;
 
 /**
  * @psalm-type _TogetherGamePlace = array{placeNr: int, gameRoundNumber: int}
- * @psalm-type _FieldValue = array{poule: Poule, batchNr: int, startDateTime: string, competitionSportId: int, fieldId: int, refereeId: int, state: string, refereeStructureLocation: StructureLocationPlace|null, places: list<_TogetherGamePlace>}
+ * @psalm-type _PlaceLocationArray = array{pouleNr: int, placeNr: int}
+ * @psalm-type _StructureLocationPlaceArray = array{categoryNr: int, pathNode: string, placeLocation: _PlaceLocationArray}
+ * @psalm-type _FieldValue = array{poule: Poule, batchNr: int, startDateTime: string, competitionSportId: int, fieldId: int, refereeId: int, state: string, refereeStructureLocation: _StructureLocationPlaceArray|null, places: list<_TogetherGamePlace>}
  */
 class TogetherGameHandler extends GameHandler implements SubscribingHandlerInterface
 {

@@ -43,7 +43,7 @@ class ConfigHandler extends Handler implements SubscribingHandlerInterface
         Context $context
     ): PlanningConfig {
         if (!isset($fieldValue['roundNumber'])) {
-            $fieldValue['roundNumber'] = $this->dummyCreator->createRoundNumber();
+            $fieldValue['roundNumber'] = $this->dummyCreator->createFirstRoundNumberIfNotExists();
         }
         return new PlanningConfig(
             $fieldValue['roundNumber'],

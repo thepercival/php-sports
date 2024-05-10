@@ -19,10 +19,10 @@ class League extends Identifiable
     protected Collection $competitions;
     protected Association $association;
 
-    public const MIN_LENGTH_NAME = 3;
-    public const MAX_LENGTH_NAME = 60;
-    public const MAX_LENGTH_ABBREVIATION = 7;
-    public const MAX_LENGTH_SPORT = 30;
+    public const int MIN_LENGTH_NAME = 3;
+    public const int MAX_LENGTH_NAME = 60;
+    public const int MAX_LENGTH_ABBREVIATION = 7;
+    public const int MAX_LENGTH_SPORT = 30;
 
     public function __construct(Association $association, string $name, string |null $abbreviation = null)
     {

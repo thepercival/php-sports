@@ -13,13 +13,13 @@ use SportsHelpers\Sport\PersistVariant as SportPersistVariant;
 
 class Sport extends Identifiable
 {
-    public const MIN_LENGTH_NAME = 3;
-    public const MAX_LENGTH_NAME = 30;
-    public const MIN_LENGTH_UNITNAME = 2;
-    public const MAX_LENGTH_UNITNAME = 20;
+    public const int MIN_LENGTH_NAME = 3;
+    public const int MAX_LENGTH_NAME = 30;
+    public const int MIN_LENGTH_UNITNAME = 2;
+    public const int MAX_LENGTH_UNITNAME = 20;
 
-    public const WARNING = 1;
-    public const SENDOFF = 2;
+    public const int WARNING = 1;
+    public const int SENDOFF = 2;
 
     private string $name;
     private int $customId = 0;

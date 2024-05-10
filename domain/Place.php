@@ -27,7 +27,7 @@ class Place extends Identifiable implements PlaceLocationInterface
     protected int $extraPoints;
     protected Place|null $qualifiedPlace = null;
 
-    public const MAX_LENGTH_NAME = 10;
+    public const int MAX_LENGTH_NAME = 10;
 
     public function __construct(protected Poule $poule, int $number = null)
     {

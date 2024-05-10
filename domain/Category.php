@@ -16,9 +16,9 @@ use InvalidArgumentException;
 
 class Category extends Identifiable
 {
-    public const MAX_LENGTH_NAME = 15;
-    public const MAX_LENGTH_ABBREVIATION = 2;
-    public const DEFAULTNAME = 'standaard';
+    public const int MAX_LENGTH_NAME = 15;
+    public const int MAX_LENGTH_ABBREVIATION = 2;
+    public const string DEFAULTNAME = 'standaard';
     protected string $name;
     protected int $number;
     protected string|null $abbreviation = null;
