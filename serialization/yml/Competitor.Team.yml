@@ -10,7 +10,7 @@ Sports\Competitor\Team:
       type: string
     present:
       type: boolean
-    info:
+    publicInfo:
       type: string
     imageUrl:
       type: string
