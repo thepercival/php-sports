@@ -6,26 +6,26 @@ namespace Sports\Sport;
 
 abstract class Custom
 {
-    public const Min = 1;
-    public const Badminton = 1;
-    public const Basketball = 2;
-    public const Darts = 3;
-    public const ESports = 4;
-    public const Hockey = 5;
-    public const Korfball = 6;
-    public const Chess = 7;
-    public const Squash = 8;
-    public const TableTennis = 9;
-    public const Tennis = 10;
-    public const Football = 11;
-    public const Volleyball = 12;
-    public const Baseball = 13;
-    public const IceHockey = 14;
-    public const Shuffleboard = 15;
-    public const Jass = 16;
-    public const Padel = 17;
-    public const Rugby = 18;
-    public const Max = 18;
+    public const int Min = 1;
+    public const int Badminton = 1;
+    public const int Basketball = 2;
+    public const int Darts = 3;
+    public const int ESports = 4;
+    public const int Hockey = 5;
+    public const int Korfball = 6;
+    public const int Chess = 7;
+    public const int Squash = 8;
+    public const int TableTennis = 9;
+    public const int Tennis = 10;
+    public const int Football = 11;
+    public const int Volleyball = 12;
+    public const int Baseball = 13;
+    public const int IceHockey = 14;
+    public const int Shuffleboard = 15;
+    public const int Jass = 16;
+    public const int Padel = 17;
+    public const int Rugby = 18;
+    public const int Max = 18;
 
     /**
      * @return list<int>
