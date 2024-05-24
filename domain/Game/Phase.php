@@ -6,7 +6,7 @@ namespace Sports\Game;
 
 class Phase
 {
-    public const RegularTime = 1;
-    public const ExtraTime = 2;
-    public const Penalties = 4;
+    public const int RegularTime = 1;
+    public const int ExtraTime = 2;
+    public const int Penalties = 4;
 }

@@ -33,7 +33,7 @@ final class DrawHelper
 {
     protected StructureNameService $structureNameService;
     protected RangeCalculator $rangeCalculator;
-    public const HorizontalPouleWidth = 2;
+    public const int HorizontalPouleWidth = 2;
 
     public function __construct(protected Drawer $drawer)
     {

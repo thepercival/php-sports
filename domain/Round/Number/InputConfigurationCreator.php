@@ -31,13 +31,11 @@ class InputConfigurationCreator
         $sportVariantsWithFields = $this->createSportVariantsWithFields($roundNumber);
 
         $configurationValidator = new ConfigurationValidator();
-        return $configurationValidator->reduce(
-            new InputConfiguration(
-                $pouleStructure,
-                $sportVariantsWithFields,
-                $refereeInfo,
-                $config->getPerPoule()
-            )
+        return $configurationValidator->createReducedAndValidatedInputConfiguration(
+            $pouleStructure,
+            $sportVariantsWithFields,
+            $refereeInfo,
+            $config->getPerPoule()
         );
     }
 

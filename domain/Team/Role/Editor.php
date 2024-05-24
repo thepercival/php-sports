@@ -13,7 +13,7 @@ use Sports\Team\Player;
 
 class Editor
 {
-    private const DELTAINTERVAL = 'P1D';
+    private const string DELTAINTERVAL = 'P1D';
 
     // protected const MAX_MONTHS_FOR_MERGE = 1;
 

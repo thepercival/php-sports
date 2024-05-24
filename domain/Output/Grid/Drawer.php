@@ -11,8 +11,8 @@ use SportsHelpers\Output\Color;
 
 final class Drawer
 {
-    public const HORIZONTAL_BORDER = '-';
-    public const VERTICAL_BORDER = '|';
+    public const string HORIZONTAL_BORDER = '-';
+    public const string VERTICAL_BORDER = '|';
 
     public function __construct(protected Grid $grid)
     {

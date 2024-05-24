@@ -17,12 +17,12 @@ use SportsHelpers\PouleStructure;
 
 final class RangeCalculator
 {
-    // protected const MARGIN = 1;
-    public const PADDING = 1;
-    public const BORDER = 1;
-    protected const PLACEWIDTH = 3;
-    protected const HORPLACEWIDTH = 3;
-    public const QUALIFYGROUPHEIGHT = 3;
+    // protected const int MARGIN = 1;
+    public const int PADDING = 1;
+    public const int BORDER = 1;
+    protected const int PLACEWIDTH = 3;
+    protected const int HORPLACEWIDTH = 3;
+    public const int QUALIFYGROUPHEIGHT = 3;
 
     protected NameService $nameService;
 
