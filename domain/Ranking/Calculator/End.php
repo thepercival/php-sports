@@ -133,18 +133,24 @@ class End
     protected function getPoulesDropouts(Round $round, int &$nrOfDropouts): array
     {
         $dropOutPlaces = [];
-        $places = $round->getPlaces(Round::ORDER_POULE_NUMBER);
-
         $nrOfDropoutPlaces = $round->getNrOfDropoutPlaces();
-
         $nrOfWinners = $round->getNrOfPlacesChildren(Target::Winners);
-        {
-            array_splice($places, 0, $nrOfWinners);
-            while( $nrOfDropouts > 0 && $nrOfDropoutPlaces > 0) {
-                $dropOutPlaces[] = array_shift($places);
-                $nrOfDropouts--;
-                $nrOfDropoutPlaces--;
+        $roundRankingCalculator = new RoundRankingCalculator();
+
+        $rankedPlaces = [];
+        $poules = $round->getPoules();
+        foreach ($poules as $poule) {
+            $rankedPlaces = array_merge($rankedPlaces, $roundRankingCalculator->getPlacesForPoule($poule));
+        }
+
+        array_splice($rankedPlaces, 0, $nrOfWinners);
+        while( $nrOfDropouts > 0 && $nrOfDropoutPlaces > 0) {
+            $rankedPlace = array_shift($rankedPlaces);
+            if( $rankedPlace !== null ) {
+                $dropOutPlaces[] = $rankedPlace;
             }
+            $nrOfDropouts--;
+            $nrOfDropoutPlaces--;
         }
 
         return array_map(function (Place $dropOutPlace): EndRankingItem {

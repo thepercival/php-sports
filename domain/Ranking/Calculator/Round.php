@@ -44,6 +44,16 @@ class Round
         return new TogetherSportRoundRankingCalculator($competitionSport, $this->gameStates);
     }
 
+    /**
+     * @param Poule $poule
+     * @return list<Place>
+     */
+    public function getPlacesForPoule(Poule $poule): array
+    {
+        return array_map(function (RoundRankingItem $rankingItem): Place {
+            return $rankingItem->getPlace();
+        }, $this->getItemsForPoule($poule));
+    }
 
     /**
      * @param Poule $poule

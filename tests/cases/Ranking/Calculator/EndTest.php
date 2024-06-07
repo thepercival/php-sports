@@ -7,6 +7,7 @@ namespace Sports\Tests\Ranking\Calculator;
 use PHPUnit\Framework\TestCase;
 use Sports\Competitor;
 use Sports\Competitor\StartLocation;
+use Sports\Competitor\StartLocationInterface;
 use Sports\Competitor\StartLocationMap;
 use Sports\Competitor\Team as TeamCompetitor;
 use Sports\Place\Location as PlaceLocation;
@@ -14,6 +15,7 @@ use Sports\Qualify\Distribution;
 use Sports\Qualify\Service as QualifyService;
 use Sports\Qualify\Target as QualifyTarget;
 use Sports\Ranking\Calculator\End as EndRankingCalculator;
+use Sports\Ranking\Item\End as EndRankingItem;
 use Sports\Team;
 use Sports\TestHelper\CompetitionCreator;
 use Sports\TestHelper\GamesCreator;
@@ -439,5 +441,73 @@ class EndTest extends TestCase
         $competitor6 = $startLocationMap->getCompetitor($startLocation);
         self::assertInstanceOf(Competitor::class, $competitor6);
         self::assertSame('zes', $competitor6->getName());
+    }
+
+    public function testTwoRoundNumbers22To22WinnersVertical(): void
+    {
+
+        $competition = $this->createCompetition();
+        $association = $competition->getLeague()->getAssociation();
+
+        $structureEditor = $this->createStructureEditor();
+        $structure = $structureEditor->create($competition, [2, 2]);
+
+        new TeamCompetitor( $competition, new StartLocation(1, 1,1), new Team( $association, 'een') );
+        new TeamCompetitor( $competition, new StartLocation(1, 1,2), new Team( $association, 'twee') );
+        new TeamCompetitor( $competition, new StartLocation(1, 2,1), new Team( $association, 'drie') );
+        new TeamCompetitor( $competition, new StartLocation(1, 2,2), new Team( $association, 'vier') );
+
+        $defaultCategory = $structure->getSingleCategory();
+        $rootRound = $defaultCategory->getRootRound();
+
+        $winnersRound12 = $structureEditor->addChildRound($rootRound, QualifyTarget::Winners, [2], Distribution::Vertical);
+        $winnersRound34 = $structureEditor->addChildRound($rootRound, QualifyTarget::Winners, [2], Distribution::Vertical);
+
+        $pouleOne = $rootRound->getPoule(1);
+        $pouleTwo = $rootRound->getPoule(2);
+
+        (new GamesCreator())->createStructureGames($structure);
+
+        $this->setAgainstScore($pouleOne, 1, 2, 1, 0);
+        $this->setAgainstScore($pouleTwo, 1, 2, 2, 0);
+
+        $winnersPoule12 = $winnersRound12->getPoule(1);
+        $this->setAgainstScore($winnersPoule12, 1/*B1*/, 2/*A1*/, 0, 1);
+
+        $winnersPoule34 = $winnersRound34->getPoule(1);
+        $this->setAgainstScore($winnersPoule34, 1/*A2*/, 2/*B2*/, 1, 0);
+
+        $qualifyService = new QualifyService($rootRound);
+        $qualifyService->setQualifiers();
+
+//        (new StructureOutput())->output($structure);
+//        (new GamesOutput())->outputRoundNumber($winnersRound->getNumber());
+
+        $calculator = new EndRankingCalculator($defaultCategory);
+        $items = $calculator->getItems();
+
+        $endRankingItem = array_shift($items);
+        self::assertInstanceOf(EndRankingItem::class, $endRankingItem);
+        $startLocation = $endRankingItem->getStartLocation();
+        self::assertInstanceOf(StartLocationInterface::class, $startLocation);
+        self::assertSame('1.1.1', $startLocation->getStartId());
+
+        $endRankingItem = array_shift($items);
+        self::assertInstanceOf(EndRankingItem::class, $endRankingItem);
+        $startLocation = $endRankingItem->getStartLocation();
+        self::assertInstanceOf(StartLocationInterface::class, $startLocation);
+        self::assertSame('1.2.1', $startLocation->getStartId());
+
+        $endRankingItem = array_shift($items);
+        self::assertInstanceOf(EndRankingItem::class, $endRankingItem);
+        $startLocation = $endRankingItem->getStartLocation();
+        self::assertInstanceOf(StartLocationInterface::class, $startLocation);
+        self::assertSame('1.1.2', $startLocation->getStartId());
+
+        $endRankingItem = array_shift($items);
+        self::assertInstanceOf(EndRankingItem::class, $endRankingItem);
+        $startLocation = $endRankingItem->getStartLocation();
+        self::assertInstanceOf(StartLocationInterface::class, $startLocation);
+        self::assertSame('1.2.2', $startLocation->getStartId());
     }
 }
