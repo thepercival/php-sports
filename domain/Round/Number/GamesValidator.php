@@ -18,10 +18,9 @@ use Sports\Place;
 use Sports\Poule;
 use Sports\Round\Number as RoundNumber;
 use Sports\Structure;
-use SportsPlanning\PouleStructure as PlanningPouleStructure;
+use SportsPlanning\PlanningPouleStructure;
 use SportsPlanning\Referee\Info as PlanningRefereeInfo;
-use SportsHelpers\Sport\Variant\Creator as VariantCreator;
-use SportsHelpers\Sport\Variant\WithPoule\Against\GamesPerPlace as AgainstGppWithPoule;
+use SportsHelpers\SportVariants\Helpers\SportVariantWithNrOfPlacesCreator;
 use SportsHelpers\SelfReferee;
 
 class GamesValidator

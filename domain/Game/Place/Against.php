@@ -16,7 +16,7 @@ use Sports\Game\Participation;
 use Sports\Game\Place as GamePlaceBase;
 use Sports\Person;
 use Sports\Place as PlaceBase;
-use SportsHelpers\Against\Side as AgainstSide;
+use SportsHelpers\Against\AgainstSide;
 
 class Against extends GamePlaceBase
 {

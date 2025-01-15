@@ -5,11 +5,10 @@ declare(strict_types=1);
 namespace Sports;
 
 use InvalidArgumentException;
-use Sports\Ranking\PointsCalculation;
 use Sports\Sport\Custom as CustomSport;
 use SportsHelpers\GameMode;
 use SportsHelpers\Identifiable;
-use SportsHelpers\Sport\PersistVariant as SportPersistVariant;
+use SportsHelpers\SportVariants\Persist\SportPersistVariant;
 
 class Sport extends Identifiable
 {

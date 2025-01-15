@@ -25,12 +25,13 @@ use Sports\Poule;
 use Sports\Round;
 use Sports\Round\Number as RoundNumber;
 use SportsHelpers\Identifiable;
-use SportsHelpers\PouleStructure;
+use SportsHelpers\PouleStructures\PouleStructure;
 use SportsHelpers\SelfRefereeInfo;
-use SportsHelpers\Sport\Variant\Against\H2h as AgainstH2h;
-use SportsHelpers\Sport\Variant\Against\GamesPerPlace as AgainstGpp;
-use SportsHelpers\Sport\Variant\AllInOneGame;
-use SportsHelpers\Sport\Variant\Single;
+use SportsHelpers\SportVariants\AgainstOneVsOne;
+use SportsHelpers\SportVariants\AgainstOneVsTwo;
+use SportsHelpers\SportVariants\AgainstTwoVsTwo;
+use SportsHelpers\SportVariants\AllInOneGame;
+use SportsHelpers\SportVariants\Single;
 use SportsHelpers\RefereeInfo;
 
 class Number extends Identifiable
@@ -412,14 +413,14 @@ class Number extends Identifiable
     }
 
     /**
-     * @return list<AgainstH2h|AgainstGpp|AllInOneGame|Single>
+     * @return list<AgainstOneVsOne|AgainstOneVsTwo|AgainstTwoVsTwo|AllInOneGame|Single>
      */
     public function createSportVariants(): array
     {
         return array_map(
             fn(
                 GameAmountConfig $gameAmountConfig
-            ): AgainstH2h|AgainstGpp|AllInOneGame|Single => $gameAmountConfig->createVariant(),
+            ): AgainstOneVsOne|AgainstOneVsTwo|AgainstTwoVsTwo|AllInOneGame|Single => $gameAmountConfig->createVariant(),
             $this->getValidGameAmountConfigs()
         );
     }

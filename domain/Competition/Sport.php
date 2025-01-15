@@ -10,10 +10,10 @@ use Sports\Competition;
 use Sports\Ranking\PointsCalculation;
 use Sports\Sport as SportsSport;
 use SportsHelpers\GameMode;
-use SportsHelpers\Sport\PersistVariant;
-use SportsHelpers\Sport\VariantWithFields as SportVariantWithFields;
+use SportsHelpers\SportVariants\Persist\SportPersistVariant;
+use SportsHelpers\SportVariants\Persist\SportPersistVariantWithNrOfFields;
 
-class Sport extends PersistVariant implements \Stringable
+class Sport extends SportPersistVariant implements \Stringable
 {
     /**
      * @var Collection<int|string,Field>
@@ -30,18 +30,18 @@ class Sport extends PersistVariant implements \Stringable
         protected float $defaultWinPointsExt,
         protected float $defaultDrawPointsExt,
         protected float $defaultLosePointsExt,
-        PersistVariant $sportVariant
+        SportPersistVariant $sportPersistVariant
     ) {
         parent::__construct(
-            $sportVariant->getGameMode(),
-            $sportVariant->getNrOfHomePlaces(),
-            $sportVariant->getNrOfAwayPlaces(),
-            $sportVariant->getNrOfGamePlaces(),
-            $sportVariant->getNrOfH2H(),
-            $sportVariant->getNrOfGamesPerPlace()
+            $sportPersistVariant->getGameMode(),
+            $sportPersistVariant->getNrOfHomePlaces(),
+            $sportPersistVariant->getNrOfAwayPlaces(),
+            $sportPersistVariant->getNrOfGamePlaces(),
+            $sportPersistVariant->getNrOfCycles(),
+            $sportPersistVariant->getNrOfGamesPerPlace()
         );
         $this->defaultPointsCalculation =
-            $sportVariant->getGameMode() === GameMode::Against ? $defaultPointsCalculation : PointsCalculation::Scores;
+            $sportPersistVariant->getGameMode() === GameMode::Against ? $defaultPointsCalculation : PointsCalculation::Scores;
 
         $this->competition->getSports()->add($this);
         $this->fields = new ArrayCollection();
@@ -115,21 +115,21 @@ class Sport extends PersistVariant implements \Stringable
         return $field;
     }
 
-    public function createVariantWithFields(): SportVariantWithFields
+    public function createVariantWithFields(): SportPersistVariantWithNrOfFields
     {
-        return new SportVariantWithFields($this->createVariant(), $this->getFields()->count());
+        return new SportPersistVariantWithNrOfFields($this->createVariant(), count($this->getFields()));
     }
 
-    public function convertAgainst(): void
-    {
-        if ($this->getNrOfH2H() > 0) {
-            $this->nrOfH2H = 0;
-            $this->nrOfGamesPerPlace = 1;
-        } else {
-            $this->nrOfH2H = 1;
-            $this->nrOfGamesPerPlace = 0;
-        }
-    }
+//    public function convertAgainst(): void
+//    {
+//        if ($this->getNrOf() > 0) {
+//            $this->nrOfH2H = 0;
+//            $this->nrOfGamesPerPlace = 1;
+//        } else {
+//            $this->nrOfH2H = 1;
+//            $this->nrOfGamesPerPlace = 0;
+//        }
+//    }
 
     public function equals(self $competitionSport): bool {
         return $this->getSport()->getName() === $competitionSport->getSport()->getName()

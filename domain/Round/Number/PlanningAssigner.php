@@ -15,10 +15,10 @@ use Sports\Poule;
 use Sports\Round\Number as RoundNumber;
 use SportsPlanning\Batch;
 use SportsPlanning\Batch\SelfReferee as SelfRefereeBatch;
-use SportsPlanning\Game\Against as AgainstPlanningGame;
-use SportsPlanning\Game\Place\Against as AgainstPlanningGamePlace;
-use SportsPlanning\Game\Place\Together as TogetherPlanningGamePlace;
-use SportsPlanning\Game\Together as TogetherPlanningGame;
+use SportsPlanning\Game\AgainstGame as AgainstPlanningGame;
+use SportsPlanning\Game\AgainstGamePlace as AgainstPlanningGamePlace;
+use SportsPlanning\Game\TogetherGamePlace as TogetherPlanningGamePlace;
+use SportsPlanning\Game\TogetherGame as TogetherPlanningGame;
 use SportsPlanning\Planning;
 
 class PlanningAssigner

@@ -8,10 +8,11 @@ use Sports\Competition\Sport as CompetitionSport;
 use Sports\Round\Number as RoundNumber;
 use SportsHelpers\GameMode;
 use SportsHelpers\Identifiable;
-use SportsHelpers\Sport\Variant\Against\H2h as AgainstH2h;
-use SportsHelpers\Sport\Variant\Against\GamesPerPlace as AgainstGpp;
-use SportsHelpers\Sport\Variant\AllInOneGame;
-use SportsHelpers\Sport\Variant\Single;
+use SportsHelpers\SportVariants\AgainstOneVsOne;
+use SportsHelpers\SportVariants\AgainstOneVsTwo;
+use SportsHelpers\SportVariants\AgainstTwoVsTwo;
+use SportsHelpers\SportVariants\AllInOneGame;
+use SportsHelpers\SportVariants\Single;
 
 class GameAmountConfig extends Identifiable
 {
@@ -47,7 +48,7 @@ class GameAmountConfig extends Identifiable
         $this->amount = $amount;
     }
 
-    public function createVariant(): Single|AgainstH2h|AgainstGpp|AllInOneGame
+    public function createVariant(): AgainstOneVsOne|AgainstOneVsTwo|AgainstTwoVsTwo|Single|AllInOneGame
     {
         $competitionSport = $this->getCompetitionSport();
         if ($competitionSport->getGameMode() === GameMode::Single) {
@@ -56,17 +57,15 @@ class GameAmountConfig extends Identifiable
         if ($competitionSport->getGameMode() === GameMode::AllInOneGame) {
             return new AllInOneGame($this->getAmount());
         }
-        if ($competitionSport->getNrOfH2H() > 0) {
-            return new AgainstH2h(
-                $competitionSport->getNrOfHomePlaces(),
-                $competitionSport->getNrOfAwayPlaces(),
-                $this->getAmount()
-            );
+        if( $competitionSport->getNrOfHomePlaces() === 1 && $competitionSport->getNrOfAwayPlaces() === 1 ) {
+            return new AgainstOneVsOne($this->getAmount());
         }
-        return new AgainstGpp(
-            $competitionSport->getNrOfHomePlaces(),
-            $competitionSport->getNrOfAwayPlaces(),
-            $this->getAmount()
-        );
+        if( $competitionSport->getNrOfHomePlaces() === 1 && $competitionSport->getNrOfAwayPlaces() === 2 ) {
+            return new AgainstOneVsTwo($this->getAmount());
+        }
+        if( $competitionSport->getNrOfHomePlaces() === 2 && $competitionSport->getNrOfAwayPlaces() === 2 ) {
+            return new AgainstTwoVsTwo($this->getAmount());
+        }
+        throw new \Exception("incorrect nrOfGamePlaces for : " . $competitionSport );
     }
 }

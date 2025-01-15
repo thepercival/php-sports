@@ -9,7 +9,8 @@ use Sports\Qualify\Target as QualifyTarget;
 use Exception;
 use Sports\Qualify\Group as QualifyGroup;
 use Sports\Round;
-use SportsHelpers\PouleStructure;
+use SportsHelpers\PouleStructures\PouleStructure;
+use SportsHelpers\PouleStructures\ValidMinimumBalancedPouleStructure;
 
 class RemovalValidator
 {
@@ -67,7 +68,7 @@ class RemovalValidator
                 }
 
                 $poules = $childRound->createPouleStructure()->toArray();
-                $newChildPouleStructure = new PouleStructure\ValidMinimumBalanced($minNrOfPlacesPerPoule, ...$poules);
+                $newChildPouleStructure = new ValidMinimumBalancedPouleStructure($minNrOfPlacesPerPoule, ...$poules);
                 while ($nrOfPlacesToRemove--) {
                     $newChildPouleStructure = $newChildPouleStructure->removePlace2();
                 }
@@ -85,10 +86,10 @@ class RemovalValidator
 
     /**
      * @param Round $round
-     * @param PouleStructure\ValidMinimumBalanced $pouleStructure
+     * @param ValidMinimumBalancedPouleStructure $pouleStructure
      * @return list<Place>
      */
-    private function getRemovedPlaces(Round $round, PouleStructure\ValidMinimumBalanced $pouleStructure): array
+    private function getRemovedPlaces(Round $round, ValidMinimumBalancedPouleStructure $pouleStructure): array
     {
         $removedPlaces = [];
         $pouleStructureasArray = $pouleStructure->toArray();

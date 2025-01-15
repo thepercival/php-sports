@@ -15,9 +15,9 @@ use Sports\Qualify\RoundRank\Service as RoundRankService;
 use Sports\Round\Number as RoundNumber;
 use Sports\Structure\PouleStructureNumberMap;
 use SportsPlanning\Field as PlanningField;
-use SportsPlanning\Game as PlanningGame;
-use SportsPlanning\Game\Against as PlanningAgainstGame;
-use SportsPlanning\Game\Together as PlanningTogetherGame;
+use SportsPlanning\Game\GameAbstract as PlanningGameAbstract;
+use SportsPlanning\Game\AgainstGame as PlanningAgainstGame;
+use SportsPlanning\Game\TogetherGame as PlanningTogetherGame;
 use SportsPlanning\Input;
 use SportsPlanning\Place as PlanningPlace;
 use SportsPlanning\Planning;
@@ -71,7 +71,7 @@ class PlanningMapper
      */
     private function getGamesForInit(RoundNumber $roundNumber, Planning $planning): array
     {
-        $planningGames = $planning->getGames(PlanningGame::ORDER_BY_BATCH);
+        $planningGames = $planning->getGames(PlanningGameAbstract::ORDER_BY_BATCH);
         if (!$roundNumber->isFirst()) {
             return array_reverse($planningGames);
         }
@@ -216,7 +216,7 @@ class PlanningMapper
     ): CompetitionSport {
         $competitionSports = $p_competitionSports;
         $planningSportVariantWithFields = $planningSport->createVariantWithFields();
-        $planningSportVariant = $planningSportVariantWithFields->getSportVariant();
+        $planningSportVariant = $planningSportVariantWithFields->createSportVariant();
         $sameCompetitionSports = array_filter(
             $competitionSports,
             function (CompetitionSport $competitionSport) use ($roundNumber, $planningSportVariant): bool {
@@ -227,7 +227,7 @@ class PlanningMapper
         $sameCompetitionSportsAndFields = array_filter(
             $sameCompetitionSports,
             function (CompetitionSport $competitionSport) use ($planningSportVariantWithFields): bool {
-                return count($competitionSport->getFields()) >= $planningSportVariantWithFields->getNrOfFields();
+                return count($competitionSport->getFields()) >= $planningSportVariantWithFields->nrOfFields;
             }
         );
 

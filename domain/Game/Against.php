@@ -20,7 +20,7 @@ use Sports\Place;
 use Sports\Poule;
 use Sports\Qualify\AgainstConfig as QualifyConfig;
 use Sports\Score\Against as AgainstScore;
-use SportsHelpers\Against\Side as AgainstSide;
+use SportsHelpers\Against\AgainstSide;
 
 class Against extends GameBase
 {

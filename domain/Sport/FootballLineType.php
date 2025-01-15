@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Sports\Sport;
 
 use Doctrine\DBAL\Platforms\AbstractPlatform;
-use SportsHelpers\EnumDbType;
+use SportsHelpers\DbEnums\EnumDbType;
 
 class FootballLineType extends EnumDbType
 {

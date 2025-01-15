@@ -6,7 +6,7 @@ use Sports\Competition;
 use Sports\Competitor\StartLocationMap;
 use Sports\Competitor\Team as TeamCompetitor;
 use Sports\Team;
-use SportsHelpers\Against\Side;
+use SportsHelpers\Against\AgainstSide;
 use Sports\Game\Against as AgainstGame;
 
 class Calculator
@@ -25,7 +25,7 @@ class Calculator
      */
     public function getTeams(AgainstGame $againstGame): array {
         $teams = [];
-        foreach ([Side::Home, Side::Away] as $side) {
+        foreach ([AgainstSide::Home, AgainstSide::Away] as $side) {
             try {
                 $teams[] = $this->getSingleTeam($againstGame, $side);
             } catch( \Exception $e ) {
@@ -35,7 +35,7 @@ class Calculator
         return $teams;
     }
 
-    public function getSingleTeam(AgainstGame $againstGame, Side $side): Team
+    public function getSingleTeam(AgainstGame $againstGame, AgainstSide $side): Team
     {
         foreach ($againstGame->getSidePlaces($side) as $gamePlace) {
             $startLocation = $gamePlace->getPlace()->getStartLocation();
