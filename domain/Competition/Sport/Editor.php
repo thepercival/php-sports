@@ -4,16 +4,16 @@ declare(strict_types=1);
 
 namespace Sports\Competition\Sport;
 
-use Sports\Category;
-use Sports\Round;
 use Closure;
-use Sports\Planning\Config as PlanningConfig;
-use Sports\Score\Config as ScoreConfig;
+use Sports\Category;
+use Sports\Competition\CompetitionSport as CompetitionSport;
 use Sports\Planning\GameAmountConfig as GameAmountConfig;
+use Sports\Planning\PlanningConfig as PlanningConfig;
 use Sports\Qualify\AgainstConfig as QualifyConfig;
-use Sports\Score\Config\Service as ScoreConfigService;
-use Sports\Qualify\AgainstConfig\Service as QualifyConfigService;
-use Sports\Competition\Sport as CompetitionSport;
+use Sports\Qualify\AgainstConfigService as QualifyConfigService;
+use Sports\Round;
+use Sports\Score\ScoreConfig as ScoreConfig;
+use Sports\Score\ScoreConfigService as ScoreConfigService;
 use Sports\Structure;
 
 class Editor

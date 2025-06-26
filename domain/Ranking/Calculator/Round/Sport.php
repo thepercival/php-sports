@@ -5,21 +5,22 @@ declare(strict_types=1);
 namespace Sports\Ranking\Calculator\Round;
 
 use Closure;
-use Sports\Game\State as GameState;
+use Sports\Game\GameState as GameState;
 use Sports\Game\Together as TogetherGame;
 use Sports\Game\Against as AgainstGame;
 use Sports\Place\SportPerformance\Calculator as PerformanceCalculator;
 use Sports\Ranking\AgainstRuleSet;
-use SportsHelpers\Sport\Variant\Against as AgainstSportVariant;
 use Sports\Poule;
-use Sports\Poule\Horizontal as HorizontalPoule;
 use Sports\Place;
 use Sports\Ranking\Item\Round\Sport as SportRoundRankingItem;
 use Sports\Ranking\Rule\Getter as RankingRuleGetter;
 use Sports\Place\SportPerformance;
-use Sports\Competition\Sport as CompetitionSport;
+use Sports\Competition\CompetitionSport as CompetitionSport;
 use Sports\Round;
 use Sports\Ranking\Rule as RankingRule;
+use SportsHelpers\SportVariants\AgainstOneVsOne;
+use SportsHelpers\SportVariants\AgainstOneVsTwo;
+use SportsHelpers\SportVariants\AgainstTwoVsTwo;
 
 abstract class Sport
 {
@@ -165,7 +166,10 @@ abstract class Sport
     protected function getRuleSet(): AgainstRuleSet|null
     {
         $sportVariant = $this->competitionSport->createVariant();
-        if ($sportVariant instanceof AgainstSportVariant) {
+        if ($sportVariant instanceof AgainstOneVsOne ||
+            $sportVariant instanceof AgainstOneVsTwo ||
+            $sportVariant instanceof AgainstTwoVsTwo
+        ) {
             return $this->competitionSport->getCompetition()->getAgainstRuleSet();
         }
         return null;

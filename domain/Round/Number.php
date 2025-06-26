@@ -10,31 +10,30 @@ use Doctrine\Common\Collections\Collection;
 use Exception;
 use Sports\Category;
 use Sports\Competition;
-use Sports\Competition\Sport as CompetitionSport;
+use Sports\Competition\CompetitionSport as CompetitionSport;
 use Sports\Exceptions\CellNotFoundException;
 use Sports\Game\Against as AgainstGame;
 use Sports\Game\Order;
 use Sports\Game\Order as GameOrder;
-use Sports\Game\State as GameState;
+use Sports\Game\GameState as GameState;
 use Sports\Game\Together as TogetherGame;
 use Sports\Place;
-use Sports\Structure\Cell as StructureCell;
-use Sports\Planning\Config as PlanningConfig;
-use Sports\Planning\GameAmountConfig as GameAmountConfig;
+use Sports\Structure\StructureCell as StructureCell;
+use Sports\Planning\PlanningConfig as PlanningConfig;
+use Sports\Planning\GameAmountConfig;
 use Sports\Poule;
 use Sports\Round;
 use Sports\Round\Number as RoundNumber;
 use SportsHelpers\Identifiable;
 use SportsHelpers\PouleStructures\PouleStructure;
 use SportsHelpers\SelfRefereeInfo;
-use SportsHelpers\SportVariants\AgainstOneVsOne;
-use SportsHelpers\SportVariants\AgainstOneVsTwo;
-use SportsHelpers\SportVariants\AgainstTwoVsTwo;
-use SportsHelpers\SportVariants\AllInOneGame;
-use SportsHelpers\SportVariants\Single;
 use SportsHelpers\RefereeInfo;
+use SportsHelpers\Sports\AgainstOneVsOne;
+use SportsHelpers\Sports\AgainstOneVsTwo;
+use SportsHelpers\Sports\AgainstTwoVsTwo;
+use SportsHelpers\Sports\TogetherSport;
 
-class Number extends Identifiable
+final class Number extends Identifiable
 {
     protected int $number;
     protected RoundNumber|null $next = null;
@@ -413,14 +412,14 @@ class Number extends Identifiable
     }
 
     /**
-     * @return list<AgainstOneVsOne|AgainstOneVsTwo|AgainstTwoVsTwo|AllInOneGame|Single>
+     * @return list<AgainstOneVsOne|AgainstOneVsTwo|AgainstTwoVsTwo|TogetherSport>
      */
-    public function createSportVariants(): array
+    public function createSports(): array
     {
         return array_map(
             fn(
                 GameAmountConfig $gameAmountConfig
-            ): AgainstOneVsOne|AgainstOneVsTwo|AgainstTwoVsTwo|AllInOneGame|Single => $gameAmountConfig->createVariant(),
+            ): AgainstOneVsOne|AgainstOneVsTwo|AgainstTwoVsTwo|TogetherSport => $gameAmountConfig->createSport(),
             $this->getValidGameAmountConfigs()
         );
     }
@@ -429,9 +428,9 @@ class Number extends Identifiable
     {
         $planningConfig = $this->getValidPlanningConfig();
         if ($planningConfig->selfRefereeEnabled()) {
-            return new RefereeInfo($planningConfig->getSelfRefereeInfo());
+            return RefereeInfo::fromSelfRefereeInfo($planningConfig->getSelfRefereeInfo());
         }
-        return new RefereeInfo($this->getCompetition()->getReferees()->count());
+        return RefereeInfo::fromNrOfReferees($this->getCompetition()->getReferees()->count());
     }
 
     public function createPouleStructure(): PouleStructure
@@ -440,7 +439,7 @@ class Number extends Identifiable
         foreach ($this->getPoules() as $poule) {
             $placesPerPoule[] = $poule->getPlaces()->count();
         }
-        return new PouleStructure(...$placesPerPoule);
+        return new PouleStructure($placesPerPoule);
     }
 
     public function detach(): void

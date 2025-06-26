@@ -6,11 +6,11 @@ namespace Sports;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-use Sports\Competition\Sport as CompetitionSport;
+use Sports\Competition\CompetitionSport as CompetitionSport;
 use Sports\Exceptions\StructureNotFoundException;
-use Sports\Game\State as GameState;
+use Sports\Game\GameState as GameState;
 use Sports\Round\Number as RoundNumber;
-use Sports\Structure\Cell as StructureCell;
+use Sports\Structure\StructureCell as StructureCell;
 use SportsHelpers\Identifiable;
 use InvalidArgumentException;
 

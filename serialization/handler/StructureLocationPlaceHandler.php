@@ -9,12 +9,12 @@ use JMS\Serializer\Handler\SubscribingHandlerInterface;
 use JMS\Serializer\JsonDeserializationVisitor;
 use JMS\Serializer\Context;
 
-use Sports\Competition\Sport as CompetitionSport;
+use Sports\Competition\CompetitionSport as CompetitionSport;
 use Sports\Place;
 use Sports\Poule;
 use Sports\Ranking\PointsCalculation;
 use Sports\Round;
-use Sports\Score\Config as ScoreConfig;
+use Sports\Score\ScoreConfig as ScoreConfig;
 use Sports\Qualify\AgainstConfig as AgainstQualifyConfig;
 use Sports\Structure\Locations\StructureLocationPlace;
 use Sports\Structure\PathNodeConverter;

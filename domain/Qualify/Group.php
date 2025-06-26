@@ -11,24 +11,24 @@ use Sports\Qualify\Rule\Horizontal\Single as HorizontalSingleQualifyRule;
 use Sports\Qualify\Rule\Vertical\Multiple as VerticalMultipleQualifyRule;
 use Sports\Qualify\Rule\Vertical\Single as VerticalSingleQualifyRule;
 use Sports\Round;
-use Sports\Qualify\Target as QualifyTarget;
+use Sports\Qualify\QualifyTarget as QualifyTarget;
 use Sports\Qualify\Group as QualifyGroup;
-use Sports\Structure\Cell as StructureCell;
+use Sports\Structure\StructureCell as StructureCell;
 use SportsHelpers\Identifiable;
 
 class Group extends Identifiable
 {
     protected int $number;
     protected Round $childRound;
-    protected Distribution $distribution = Distribution::HorizontalSnake;
+    protected QualifyDistribution $distribution = QualifyDistribution::HorizontalSnake;
     protected HorizontalSingleQualifyRule|VerticalSingleQualifyRule|null $firstSingleRule = null;
     protected HorizontalMultipleQualifyRule|VerticalMultipleQualifyRule|null $multipleRule = null;
 
     public function __construct(
-        protected Round $parentRound,
-        protected Target $target,
-        StructureCell $nextStructureCell,
-        int|null $numberAsValue = null
+        protected Round         $parentRound,
+        protected QualifyTarget $target,
+        StructureCell           $nextStructureCell,
+        int|null                $numberAsValue = null
     ) {
         if ($numberAsValue !== null) {
             $this->number = $numberAsValue;
@@ -40,12 +40,12 @@ class Group extends Identifiable
         $this->childRound = new Round($nextStructureCell, $this);
     }
 
-    public function getTarget(): Target
+    public function getTarget(): QualifyTarget
     {
         return $this->target;
     }
 
-    public function setTarget(Target $target): void
+    public function setTarget(QualifyTarget $target): void
     {
         $this->target = $target;
     }
@@ -60,11 +60,11 @@ class Group extends Identifiable
         $this->number = $number;
     }
 
-    public function getDistribution(): Distribution {
+    public function getDistribution(): QualifyDistribution {
         return $this->distribution;
     }
 
-    public function setDistribution(Distribution $distribution): void {
+    public function setDistribution(QualifyDistribution $distribution): void {
         $this->distribution = $distribution;
     }
 

@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Sports\Qualify\Rule;
 
-use Sports\Qualify\Distribution as QualifyDistribution;
+use Sports\Qualify\QualifyDistribution as QualifyDistribution;
 use Sports\Qualify\Rule\Creator\Horizontal as HorizontalQualifyRuleCreator;
 use Sports\Qualify\Rule\Creator\Vertical as VerticalQualifyRuleCreator;
-use Sports\Qualify\Target as QualifyTarget;
+use Sports\Qualify\QualifyTarget as QualifyTarget;
 use Sports\Round;
 
 class Creator

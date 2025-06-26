@@ -43,7 +43,7 @@ class PossibleFromMap
 
     protected function addGroup(QualifyGroup $group): void
     {
-        if( $group->getDistribution() === Distribution::Vertical ) {
+        if( $group->getDistribution() === QualifyDistribution::Vertical ) {
             if( $group->getFirstSingleRule() !== null || $group->getMultipleRule() !== null ) {
                 $this->addGroupToMap($group);
             }

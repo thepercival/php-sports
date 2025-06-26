@@ -13,7 +13,7 @@ use Sports\Qualify\Mapping\ByPlace as ByPlaceMapping;
 use Sports\Qualify\Rule\Horizontal as HorizontalQualifyRule;
 use Sports\Qualify\Rule\Horizontal\Single as HorizontalSingleQualifyRule;
 use Sports\Qualify\Rule\Single as SingleQualifyRule;
-use Sports\Qualify\Target as QualifyTarget;
+use Sports\Qualify\QualifyTarget as QualifyTarget;
 
 class Single extends HorizontalQualifyRule implements SingleQualifyRule
 {

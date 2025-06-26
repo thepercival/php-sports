@@ -7,7 +7,7 @@ namespace Sports\Game;
 use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-use Sports\Competition\Sport as CompetitionSport;
+use Sports\Competition\CompetitionSport as CompetitionSport;
 use Sports\Competitor;
 use Sports\Competitor\Map as CompetitorMap;
 use Sports\Game as GameBase;
@@ -19,7 +19,7 @@ use Sports\Person;
 use Sports\Place;
 use Sports\Poule;
 use Sports\Qualify\AgainstConfig as QualifyConfig;
-use Sports\Score\Against as AgainstScore;
+use Sports\Score\AgainstScore;
 use SportsHelpers\Against\AgainstSide;
 
 class Against extends GameBase

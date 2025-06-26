@@ -6,18 +6,18 @@ namespace Sports;
 
 use Exception;
 use InvalidArgumentException;
-use Sports\Competition\Sport as CompetitionSport;
+use Sports\Competition\CompetitionSport as CompetitionSport;
 use Sports\Competitor\StartLocation;
 use Sports\Game\Against as AgainstGame;
 use Sports\Game\Place\Together as TogetherGamePlace;
-use Sports\Game\State as GameState;
+use Sports\Game\GameState as GameState;
 use Sports\Game\Together as TogetherGame;
 use Sports\Place\Location as PlaceLocation;
 use Sports\Structure\Locations\StructureLocationPlace;
 use SportsHelpers\Identifiable;
 use SportsHelpers\PlaceLocationInterface;
 use Sports\Poule\Horizontal as HorizontalPoule;
-use Sports\Qualify\Target as QualifyTarget;
+use Sports\Qualify\QualifyTarget as QualifyTarget;
 
 class Place extends Identifiable implements PlaceLocationInterface
 {

@@ -4,22 +4,23 @@ declare(strict_types=1);
 
 namespace Sports\Planning;
 
-use Sports\Competition\Sport as CompetitionSport;
+use Sports\Competition\CompetitionSport;
 use Sports\Round\Number as RoundNumber;
-use SportsHelpers\GameMode;
 use SportsHelpers\Identifiable;
-use SportsHelpers\SportVariants\AgainstOneVsOne;
-use SportsHelpers\SportVariants\AgainstOneVsTwo;
-use SportsHelpers\SportVariants\AgainstTwoVsTwo;
-use SportsHelpers\SportVariants\AllInOneGame;
-use SportsHelpers\SportVariants\Single;
+use SportsHelpers\Sports\AgainstOneVsOne;
+use SportsHelpers\Sports\AgainstOneVsTwo;
+use SportsHelpers\Sports\AgainstTwoVsTwo;
+use SportsHelpers\Sports\TogetherSport;
 
 class GameAmountConfig extends Identifiable
 {
+    protected int $amount;
+
     public function __construct(
         protected CompetitionSport $competitionSport,
         protected RoundNumber $roundNumber,
-        protected int $amount,
+        protected int $nrOfCycles,
+        protected int $nrOfCycleParts
     ) {
         $this->roundNumber->getGameAmountConfigs()->add($this);
     }
@@ -29,43 +30,23 @@ class GameAmountConfig extends Identifiable
         return $this->competitionSport;
     }
 
-    public function getCompetitionSportId(): string|int|null {
-        return $this->competitionSport->getId();
-    }
-
     public function getRoundNumber(): RoundNumber
     {
         return $this->roundNumber;
     }
 
-    public function getAmount(): int
+    public function createSport(): AgainstOneVsOne|AgainstOneVsTwo|AgainstTwoVsTwo|TogetherSport
     {
-        return $this->amount;
+        return $this->getCompetitionSport()->createSport();
     }
 
-    public function setAmount(int $amount): void
+    public function getNrOfCycles(): int
     {
-        $this->amount = $amount;
+        return $this->nrOfCycles;
     }
 
-    public function createVariant(): AgainstOneVsOne|AgainstOneVsTwo|AgainstTwoVsTwo|Single|AllInOneGame
+    public function getNrOfCycleParts(): int
     {
-        $competitionSport = $this->getCompetitionSport();
-        if ($competitionSport->getGameMode() === GameMode::Single) {
-            return new Single($competitionSport->getNrOfGamePlaces(), $this->getAmount());
-        }
-        if ($competitionSport->getGameMode() === GameMode::AllInOneGame) {
-            return new AllInOneGame($this->getAmount());
-        }
-        if( $competitionSport->getNrOfHomePlaces() === 1 && $competitionSport->getNrOfAwayPlaces() === 1 ) {
-            return new AgainstOneVsOne($this->getAmount());
-        }
-        if( $competitionSport->getNrOfHomePlaces() === 1 && $competitionSport->getNrOfAwayPlaces() === 2 ) {
-            return new AgainstOneVsTwo($this->getAmount());
-        }
-        if( $competitionSport->getNrOfHomePlaces() === 2 && $competitionSport->getNrOfAwayPlaces() === 2 ) {
-            return new AgainstTwoVsTwo($this->getAmount());
-        }
-        throw new \Exception("incorrect nrOfGamePlaces for : " . $competitionSport );
+        return $this->nrOfCycleParts;
     }
 }

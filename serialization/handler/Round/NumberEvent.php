@@ -5,7 +5,7 @@ namespace Sports\SerializationHandler\Round;
 use JMS\Serializer\EventDispatcher\EventSubscriberInterface;
 use JMS\Serializer\EventDispatcher\PreSerializeEvent;
 use Sports\Round\Number as RoundNumber;
-use Sports\Score\Config as ScoreConfig;
+use Sports\Score\ScoreConfig as ScoreConfig;
 
 class NumberEvent implements EventSubscriberInterface
 {

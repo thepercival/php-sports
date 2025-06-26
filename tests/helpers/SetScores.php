@@ -7,10 +7,10 @@ namespace Sports\TestHelper;
 use Sports\Game\Against as AgainstGame;
 use Sports\Game\Phase as GamePhase;
 use Sports\Game\Place\Against as AgainstGamPlace;
-use Sports\Game\State as GameState;
+use Sports\Game\GameState as GameState;
 use Sports\Place;
 use Sports\Poule;
-use Sports\Score\Against as AgainstGameScore;
+use Sports\Score\AgainstScore as AgainstGameScore;
 use SportsHelpers\Against\Side as AgainstSide;
 
 trait SetScores

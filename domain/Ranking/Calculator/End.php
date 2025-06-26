@@ -6,14 +6,14 @@ namespace Sports\Ranking\Calculator;
 
 use Closure;
 use Sports\Category;
-use Sports\Game\State as GameState;
+use Sports\Game\GameState as GameState;
 use Sports\Place;
 use Sports\Poule\Horizontal as HorizontalPoule;
-use Sports\Qualify\Distribution;
+use Sports\Qualify\QualifyDistribution;
 use Sports\Qualify\Rule\Horizontal\Single as HorizontalSingleQualifyRule;
 use Sports\Qualify\Rule\Vertical\Single as VerticalSingleQualifyRule;
-use Sports\Qualify\Target;
-use Sports\Qualify\Target as QualifyTarget;
+use Sports\Qualify\QualifyTarget;
+use Sports\Qualify\QualifyTarget as QualifyTarget;
 use Sports\Ranking\Calculator\Round as RoundRankingCalculator;
 use Sports\Ranking\Item\End as EndRankingItem;
 use Sports\Round;
@@ -74,8 +74,8 @@ class End
         $dropouts = [];
         $nrOfDropouts = $round->getNrOfDropoutPlaces();
         while ($nrOfDropouts > 0) {
-            $distribution = $round->getParentQualifyGroup()?->getDistribution() ?? Distribution::HorizontalSnake;
-            if( $distribution === Distribution::HorizontalSnake ) {
+            $distribution = $round->getParentQualifyGroup()?->getDistribution() ?? QualifyDistribution::HorizontalSnake;
+            if( $distribution === QualifyDistribution::HorizontalSnake ) {
                 foreach ($round->getHorizontalPoules(QualifyTarget::Winners) as $horPoule) {
                     $horPouleDropouts = $this->getHorizontalPouleDropouts($horPoule, $nrOfDropouts);
                     $dropouts = array_merge( $dropouts, $horPouleDropouts );
@@ -134,7 +134,7 @@ class End
     {
         $dropOutPlaces = [];
         $nrOfDropoutPlaces = $round->getNrOfDropoutPlaces();
-        $nrOfWinners = $round->getNrOfPlacesChildren(Target::Winners);
+        $nrOfWinners = $round->getNrOfPlacesChildren(QualifyTarget::Winners);
         $roundRankingCalculator = new RoundRankingCalculator();
 
         $rankedPlaces = [];

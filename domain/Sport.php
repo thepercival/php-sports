@@ -5,12 +5,15 @@ declare(strict_types=1);
 namespace Sports;
 
 use InvalidArgumentException;
+use Sports\Repositories\DBSport;
 use Sports\Sport\Custom as CustomSport;
-use SportsHelpers\GameMode;
 use SportsHelpers\Identifiable;
-use SportsHelpers\SportVariants\Persist\SportPersistVariant;
+use SportsHelpers\Sports\AgainstOneVsOne;
+use SportsHelpers\Sports\AgainstOneVsTwo;
+use SportsHelpers\Sports\AgainstTwoVsTwo;
+use SportsHelpers\Sports\TogetherSport;
 
-class Sport extends Identifiable
+final class Sport extends DBSport
 {
     public const int MIN_LENGTH_NAME = 3;
     public const int MAX_LENGTH_NAME = 30;
@@ -26,10 +29,10 @@ class Sport extends Identifiable
     public function __construct(
         string $name,
         private bool $team,
-        private GameMode $defaultGameMode,
-        private int $defaultNrOfSidePlaces
+        AgainstOneVsOne|AgainstOneVsTwo|AgainstTwoVsTwo|TogetherSport $sport
     ) {
         $this->setName($name);
+        parent::__construct($sport);
     }
 
     public function getName(): string
@@ -51,21 +54,6 @@ class Sport extends Identifiable
         return $this->team;
     }
 
-    public function getDefaultGameMode(): GameMode
-    {
-        return $this->defaultGameMode;
-    }
-
-    public function setDefaultGameModeN(GameMode $defaultGameMode): void
-    {
-        $this->defaultGameMode = $defaultGameMode;
-    }
-
-    public function getDefaultNrOfSidePlaces(): int
-    {
-        return $this->defaultNrOfSidePlaces;
-    }
-
     public function getCustomId(): int
     {
         return $this->customId;
@@ -75,35 +63,6 @@ class Sport extends Identifiable
     {
         $this->customId = $id;
     }
-
-    public function createAgainstPersistVariant(int $nrOfH2H, int|null $nrOfSidePlaces = null): SportPersistVariant
-    {
-        return new SportPersistVariant(
-            GameMode::Against,
-            $nrOfSidePlaces !== null ? $nrOfSidePlaces : $this->getDefaultNrOfSidePlaces(),
-            $nrOfSidePlaces !== null ? $nrOfSidePlaces : $this->getDefaultNrOfSidePlaces(),
-            0,
-            $nrOfH2H,
-            0
-        );
-    }
-
-    public function createTogetherPersistVariant(
-        GameMode $gameMode,
-        int $nrOfGamePlaces,
-        int $nrOfGamesPerPlace
-    ): SportPersistVariant {
-        return new SportPersistVariant(
-            $gameMode,
-            0,
-            0,
-            $nrOfGamePlaces,
-            0,
-            $nrOfGamesPerPlace
-        );
-    }
-
-
 
     public function hasNextDefaultScoreConfig(): bool
     {

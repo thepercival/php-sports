@@ -11,7 +11,7 @@ use JMS\Serializer\Context;
 use Sports\Game\Together as TogetherGame;
 
 use Sports\Game\Place\Together as TogetherGamePlace;
-use Sports\Score\Together as TogetherScore;
+use Sports\Score\TogetherScore as TogetherScore;
 use Sports\SerializationHandler\Handler;
 
 /**

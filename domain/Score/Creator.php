@@ -6,10 +6,10 @@ namespace Sports\Score;
 
 use Sports\Game\Against as AgainstGame;
 use Sports\Game\Place\Together as TogetherGamePlace;
-use Sports\Score\Against as AgainstScore;
-use Sports\Score\Together as TogetherScore;
+use Sports\Score\AgainstScore as AgainstScore;
+use Sports\Score\TogetherScore as TogetherScore;
 
-class Creator
+final class Creator
 {
     public function __construct()
     {

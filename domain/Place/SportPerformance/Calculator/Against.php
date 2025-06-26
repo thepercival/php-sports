@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Sports\Place\SportPerformance\Calculator;
 
-use Sports\Competition\Sport as CompetitionSport;
+use Sports\Competition\CompetitionSport as CompetitionSport;
 use Sports\Game\Against as AgainstGame;
 use Sports\Game\Phase as GamePhase;
 use Sports\Game\Together as TogetherGame;
@@ -13,11 +13,11 @@ use Sports\Place\SportPerformance;
 use Sports\Place\SportPerformance\Calculator;
 use Sports\Ranking\PointsCalculation;
 use Sports\Round;
-use Sports\Score\Against as AgainstGameScore;
-use Sports\Score\Against as AgainstScore;
+use Sports\Score\AgainstScore as AgainstGameScore;
+use Sports\Score\AgainstScore as AgainstScore;
 use Sports\Score\AgainstHelper as AgainstScoreHelper;
-use SportsHelpers\Against\Result as AgainstResult;
-use SportsHelpers\Against\Side as AgainstSide;
+use SportsHelpers\Against\AgainstResult;
+use SportsHelpers\Against\AgainstSide;
 
 class Against extends Calculator
 {

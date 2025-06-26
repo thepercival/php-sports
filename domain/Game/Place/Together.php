@@ -9,7 +9,7 @@ use Doctrine\Common\Collections\Collection;
 use Sports\Game\Place as GamePlaceBase;
 use Sports\Game\Together as TogetherGame;
 use Sports\Place as PlaceBase;
-use Sports\Score\Together as TogetherScore;
+use Sports\Score\TogetherScore as TogetherScore;
 
 class Together extends GamePlaceBase
 {

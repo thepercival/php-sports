@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Sports\Ranking\Calculator\Round\Sport;
 
-use Sports\Competition\Sport as CompetitionSport;
+use Sports\Competition\CompetitionSport as CompetitionSport;
 use Sports\Game\Against as AgainstGame;
-use Sports\Game\State as GameState;
+use Sports\Game\GameState as GameState;
 use Sports\Place;
 use Sports\Place\SportPerformance\Calculator as PerformanceCalculator;
 use Sports\Place\SportPerformance\Calculator\Against as AgainstPerformanceCalculator;
@@ -15,7 +15,7 @@ use Sports\Ranking\Calculator\Round\Sport as SportRoundRankingCalculator;
 use Sports\Ranking\FunctionMapCreator\Against as AgainstRankingFunctionMapCreator;
 use Sports\Ranking\Item\Round\Sport as SportRoundRankingItem;
 use Sports\Round;
-use SportsHelpers\Against\Side as AgainstSide;
+use SportsHelpers\Against\AgainstSide;
 
 class Against extends SportRoundRankingCalculator
 {

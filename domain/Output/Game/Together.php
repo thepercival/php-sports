@@ -10,7 +10,7 @@ use Sports\Competitor\StartLocationMap;
 use Sports\Output\Game as OutputGame;
 use Sports\Game\Together as TogetherGame;
 use Sports\Game\Place\Together as TogetherGamePlace;
-use Sports\Game\State as GameState;
+use Sports\Game\GameState as GameState;
 
 class Together extends OutputGame
 {

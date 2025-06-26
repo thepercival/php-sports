@@ -10,11 +10,11 @@ use Sports\Category;
 use Sports\Output\StructureOutput;
 use Sports\Place;
 use Sports\Qualify\Group as QualifyGroup;
-use Sports\Qualify\Target as QualifyTarget;
+use Sports\Qualify\QualifyTarget as QualifyTarget;
 use Sports\Round;
 use Sports\Round\Number as RoundNumber;
 use Sports\Structure;
-use Sports\Structure\Validator as StructureValidator;
+use Sports\Structure\StructureValidator as StructureValidator;
 use Sports\TestHelper\CompetitionCreator;
 use Sports\TestHelper\GamesCreator;
 use Sports\TestHelper\StructureEditorCreator;
@@ -43,7 +43,7 @@ final class ValidatorTest extends TestCase
 
         $category = new Category($competition, Category::DEFAULTNAME);
         $firstRoundNumber = new RoundNumber($competition);
-        $structureCell = new Structure\Cell($category, $firstRoundNumber);
+        $structureCell = new Structure\StructureCell($category, $firstRoundNumber);
         new Round($structureCell);
         $structureCell->getRounds()->clear();
         $structure = new Structure([$category], $firstRoundNumber);
@@ -224,7 +224,7 @@ final class ValidatorTest extends TestCase
         $rootRound = $category->getRootRound();
 
         $secondRoundNumber = new RoundNumber($competition);
-        $nextStructureCell = new Structure\Cell($category, $secondRoundNumber);
+        $nextStructureCell = new Structure\StructureCell($category, $secondRoundNumber);
 
         new QualifyGroup($rootRound, QualifyTarget::Winners, $nextStructureCell);
 

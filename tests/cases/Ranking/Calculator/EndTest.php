@@ -11,9 +11,9 @@ use Sports\Competitor\StartLocationInterface;
 use Sports\Competitor\StartLocationMap;
 use Sports\Competitor\Team as TeamCompetitor;
 use Sports\Place\Location as PlaceLocation;
-use Sports\Qualify\Distribution;
+use Sports\Qualify\QualifyDistribution;
 use Sports\Qualify\Service as QualifyService;
-use Sports\Qualify\Target as QualifyTarget;
+use Sports\Qualify\QualifyTarget as QualifyTarget;
 use Sports\Ranking\Calculator\End as EndRankingCalculator;
 use Sports\Ranking\Item\End as EndRankingItem;
 use Sports\Team;
@@ -148,8 +148,8 @@ class EndTest extends TestCase
         $defaultCategory = $structure->getSingleCategory();
         $rootRound = $defaultCategory->getRootRound();
 
-        $winnersRound = $structureEditor->addChildRound($rootRound, QualifyTarget::Winners, [5], Distribution::Vertical);
-        $losersRound = $structureEditor->addChildRound($rootRound, QualifyTarget::Losers, [5], Distribution::Vertical);
+        $winnersRound = $structureEditor->addChildRound($rootRound, QualifyTarget::Winners, [5], QualifyDistribution::Vertical);
+        $losersRound = $structureEditor->addChildRound($rootRound, QualifyTarget::Losers, [5], QualifyDistribution::Vertical);
 
         $pouleOne = $rootRound->getPoule(1);
         $pouleTwo = $rootRound->getPoule(2);
@@ -328,7 +328,7 @@ class EndTest extends TestCase
         $defaultCategory = $structure->getSingleCategory();
         $rootRound = $defaultCategory->getRootRound();
 
-        $winnersRound = $structureEditor->addChildRound($rootRound, QualifyTarget::Winners, [2, 2], Distribution::Vertical);
+        $winnersRound = $structureEditor->addChildRound($rootRound, QualifyTarget::Winners, [2, 2], QualifyDistribution::Vertical);
         $losersRound = $structureEditor->addChildRound($rootRound, QualifyTarget::Losers, [2]);
 
         $pouleOne = $rootRound->getPoule(1);
@@ -460,8 +460,8 @@ class EndTest extends TestCase
         $defaultCategory = $structure->getSingleCategory();
         $rootRound = $defaultCategory->getRootRound();
 
-        $winnersRound12 = $structureEditor->addChildRound($rootRound, QualifyTarget::Winners, [2], Distribution::Vertical);
-        $winnersRound34 = $structureEditor->addChildRound($rootRound, QualifyTarget::Winners, [2], Distribution::Vertical);
+        $winnersRound12 = $structureEditor->addChildRound($rootRound, QualifyTarget::Winners, [2], QualifyDistribution::Vertical);
+        $winnersRound34 = $structureEditor->addChildRound($rootRound, QualifyTarget::Winners, [2], QualifyDistribution::Vertical);
 
         $pouleOne = $rootRound->getPoule(1);
         $pouleTwo = $rootRound->getPoule(2);

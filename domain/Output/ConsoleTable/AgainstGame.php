@@ -13,10 +13,10 @@ use Sports\Game\Event\Goal as GoalEvent;
 use Sports\Game\Event\Substitution as SubstitutionEvent;
 use Sports\Game\Participation;
 use Sports\Game\Participation as GameParticipation;
-use Sports\Structure\NameService as StructureNameService;
-use Sports\Score\Config\Service as ScoreConfigService;
+use Sports\Score\ScoreConfigService as ScoreConfigService;
 use Sports\Sport;
-use SportsHelpers\Against\Side as AgainstSide;
+use Sports\Structure\NameService as StructureNameService;
+use SportsHelpers\Against\AgainstSide;
 
 class AgainstGame
 {

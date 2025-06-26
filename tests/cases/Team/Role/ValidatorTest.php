@@ -6,23 +6,20 @@ namespace Sports\Tests\Team\Role;
 
 use League\Period\Period;
 use Sports\Association;
-use Sports\Category;
 use Sports\Competition;
-use Sports\Competition\Sport as CompetitionSport;
+use Sports\Competition\CompetitionSport as CompetitionSport;
 use Sports\Competition\Sport\Editor as CompetitionSportEditor;
 use Sports\Game\Against as AgainstGame;
 use Sports\Game\Participation as GameParticipation;
 use Sports\Game\Place\Against as AgainstGamePlace;
 use Sports\League;
 use Sports\Person;
-use Sports\Planning\Config\Service as PlanningConfigService;
-use Sports\Poule;
+use Sports\Planning\PlanningConfigService as PlanningConfigService;
 use Sports\Ranking\PointsCalculation;
 use Sports\Season;
 use Sports\Sport;
 use Sports\Sport\FootballLine;
-use Sports\Structure;
-use Sports\Structure\Editor;
+use Sports\Structure\StructureEditor;
 use Sports\Team;
 use Sports\Team\Player as TeamPlayer;
 use Sports\Team\Role\Validator as Validator;
@@ -251,7 +248,7 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
 
     protected function createGame(Competition $competition, TeamPlayer $player, \DateTimeImmutable $startDateTime): void
     {
-        $structureEditor = new Editor(
+        $structureEditor = new StructureEditor(
             new CompetitionSportEditor(),
             new PlanningConfigService()
         );

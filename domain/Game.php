@@ -8,9 +8,9 @@ use DateTimeImmutable;
 use League\Period\Period;
 use Sports\Competition\Field;
 use Sports\Competition\Referee;
-use Sports\Competition\Sport as CompetitionSport;
-use Sports\Planning\Config as PlanningConfig;
-use Sports\Score\Config as ScoreConfig;
+use Sports\Competition\CompetitionSport as CompetitionSport;
+use Sports\Planning\PlanningConfig as PlanningConfig;
+use Sports\Score\ScoreConfig as ScoreConfig;
 use Sports\Structure\Locations\StructureLocationPlace;
 use SportsHelpers\Identifiable;
 
@@ -19,7 +19,7 @@ abstract class Game extends Identifiable
     protected Referee|null $referee = null;
     protected Place|null $refereePlace = null;
     protected Field|null $field = null;
-    protected Game\State $state;
+    protected Game\GameState $state;
 
     public function __construct(
         protected Poule $poule,
@@ -27,7 +27,7 @@ abstract class Game extends Identifiable
         protected DateTimeImmutable $startDateTime,
         protected CompetitionSport $competitionSport
     ) {
-        $this->setState(Game\State::Created);
+        $this->setState(Game\GameState::Created);
     }
 
     public function getPoule(): Poule
@@ -75,12 +75,12 @@ abstract class Game extends Identifiable
         return $competitionSportId;
     }
 
-    public function getState(): Game\State
+    public function getState(): Game\GameState
     {
         return $this->state;
     }
 
-    final public function setState(Game\State $state): void
+    final public function setState(Game\GameState $state): void
     {
         $this->state = $state;
     }

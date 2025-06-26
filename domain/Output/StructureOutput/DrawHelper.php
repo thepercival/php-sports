@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace Sports\Output\StructureOutput;
 
 use Sports\Category;
-use Sports\Game\State;
-use Sports\Game\State as GameState;
+use Sports\Game\GameState;
+use Sports\Game\GameState as GameState;
 use Sports\Place;
-use Sports\Qualify\Target as QualifyTarget;
+use Sports\Qualify\QualifyTarget as QualifyTarget;
 use Sports\Ranking\Calculator\Cumulative;
 use Sports\Structure\NameService as StructureNameService;
 use Sports\Output\Coordinate;
@@ -25,7 +25,7 @@ use Sports\Qualify\Rule\Vertical\Single as VerticalSingleQualifyRule;
 use Sports\Ranking\Calculator\Round as RoundRankingCalculator;
 use Sports\Round;
 use Sports\Round\Number as RoundNumber;
-use Sports\Qualify\Distribution as QualifyDistribution;
+use Sports\Qualify\QualifyDistribution as QualifyDistribution;
 use Sports\Structure;
 use SportsHelpers\Output\Color;
 
@@ -167,7 +167,7 @@ final class DrawHelper
         Place $place
     ): bool
     {
-        if ($place->getRound()->getGamesState() !== State::Finished) {
+        if ($place->getRound()->getGamesState() !== GameState::Finished) {
             return false;
         }
 //        $rankingCalculator = new RoundRankingCalculator(null, Cumulative::ByPerformance);

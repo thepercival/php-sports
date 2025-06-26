@@ -6,14 +6,14 @@ namespace Sports\Tests\Qualify;
 
 use Sports\Competitor\StartLocation;
 use Sports\Competitor\Team as TeamCompetitor;
-use Sports\Qualify\Target as QualifyTarget;
+use Sports\Qualify\QualifyTarget as QualifyTarget;
 use Sports\Output\StructureOutput;
 use PHPUnit\Framework\TestCase;
 use Sports\Team;
 use Sports\TestHelper\CompetitionCreator;
 use Sports\TestHelper\GamesCreator;
 use Sports\TestHelper\SetScores;
-use Sports\Qualify\Distribution as QualifyDistribution;
+use Sports\Qualify\QualifyDistribution as QualifyDistribution;
 use Sports\Qualify\Service as QualifyService;
 use Sports\Competitor\StartLocationMap;
 use Sports\Qualify\Rule\Horizontal\Single as HorizontalSingleQualifyRule;

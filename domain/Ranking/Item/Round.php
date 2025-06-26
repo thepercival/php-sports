@@ -6,7 +6,7 @@ namespace Sports\Ranking\Item;
 
 use Exception;
 use Sports\Place;
-use Sports\Competition\Sport as CompetitionSport;
+use Sports\Competition\CompetitionSport as CompetitionSport;
 use Sports\Place\Performance as PlacePerformance;
 use Sports\Ranking\Calculator\Cumulative;
 use Sports\Ranking\Item\Round as RoundRankingItem;

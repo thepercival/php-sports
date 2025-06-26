@@ -18,8 +18,9 @@ abstract readonly class Location implements \Stringable
         return $this->pathNode;
     }
 
+    #[\Override]
     public function __toString(): string
     {
-        return $this->categoryNr . '.' . $this->pathNode;
+        return $this->categoryNr . '.' . (string)$this->pathNode;
     }
 }

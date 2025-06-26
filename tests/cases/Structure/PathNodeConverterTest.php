@@ -7,7 +7,7 @@ namespace Sports\Tests\Structure;
 use Exception;
 use PHPUnit\Framework\TestCase;
 use Sports\Output\StructureOutput;
-use Sports\Qualify\Target;
+use Sports\Qualify\QualifyTarget;
 use Sports\Structure;
 
 final class PathNodeConverterTest extends TestCase
@@ -42,10 +42,10 @@ final class PathNodeConverterTest extends TestCase
         $pathNodeConverter = new Structure\PathNodeConverter();
         $leafPathNode = $pathNodeConverter->createPathNode('1W2L3');
         self::assertInstanceOf(Structure\PathNode::class, $leafPathNode);
-        self::assertSame(Target::Losers, $leafPathNode->getQualifyTarget());
+        self::assertSame(QualifyTarget::Losers, $leafPathNode->getQualifyTarget());
         $middlePathNode = $leafPathNode->getPrevious();
         self::assertInstanceOf(Structure\PathNode::class, $middlePathNode);
-        self::assertSame(Target::Winners, $middlePathNode->getQualifyTarget());
+        self::assertSame(QualifyTarget::Winners, $middlePathNode->getQualifyTarget());
         $rootPathNode = $middlePathNode->getPrevious();
         self::assertInstanceOf(Structure\PathNode::class, $rootPathNode);
         self::assertSame(null, $rootPathNode->getQualifyTarget());
@@ -57,11 +57,11 @@ final class PathNodeConverterTest extends TestCase
         $pathNodeConverter = new Structure\PathNodeConverter();
         $leafPathNode = $pathNodeConverter->createPathNode('11W12L13');
         self::assertInstanceOf(Structure\PathNode::class, $leafPathNode);
-        self::assertSame(Target::Losers, $leafPathNode->getQualifyTarget());
+        self::assertSame(QualifyTarget::Losers, $leafPathNode->getQualifyTarget());
         self::assertSame(13, $leafPathNode->getQualifyGroupNumber());
         $middlePathNode = $leafPathNode->getPrevious();
         self::assertInstanceOf(Structure\PathNode::class, $middlePathNode);
-        self::assertSame(Target::Winners, $middlePathNode->getQualifyTarget());
+        self::assertSame(QualifyTarget::Winners, $middlePathNode->getQualifyTarget());
         self::assertSame(12, $middlePathNode->getQualifyGroupNumber());
         $rootPathNode = $middlePathNode->getPrevious();
         self::assertInstanceOf(Structure\PathNode::class, $rootPathNode);

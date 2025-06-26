@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Sports\Tests\Ranking\Calculator;
 
 use PHPUnit\Framework\TestCase;
-use Sports\Game\State as GameState;
+use Sports\Game\GameState as GameState;
 use Sports\Poule;
-use Sports\Qualify\Target as QualifyTarget;
+use Sports\Qualify\QualifyTarget as QualifyTarget;
 use Sports\Ranking\AgainstRuleSet;
 use Sports\Ranking\Calculator\Cumulative;
 use Sports\Ranking\Calculator\Round as RoundRankingCalculator;

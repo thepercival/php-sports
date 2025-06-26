@@ -11,7 +11,7 @@ use Sports\Exceptions\NoStructureException;
 use Sports\Exceptions\StructureNotFoundException;
 use Sports\Round\Number as RoundNumber;
 
-class Structure
+final class Structure
 {
     /**
      * @var non-empty-list<Category>

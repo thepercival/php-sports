@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Sports\Tests\Qualify;
 
-use Sports\Qualify\Target as QualifyTarget;
+use Sports\Qualify\QualifyTarget as QualifyTarget;
 use PHPUnit\Framework\TestCase;
 use Sports\TestHelper\CompetitionCreator;
 use Sports\TestHelper\GamesCreator;

@@ -11,11 +11,11 @@ use Monolog\Processor\UidProcessor;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 use Sports\Output\StructureOutput;
-use Sports\Qualify\Distribution;
+use Sports\Qualify\QualifyDistribution;
 use Sports\Qualify\Group as QualifyGroup;
 use Sports\Qualify\Rule\Creator\Vertical;
 use Sports\Qualify\Rule\Horizontal\Single as HorizontalSingleQualifyRule;
-use Sports\Qualify\Target as QualifyTarget;
+use Sports\Qualify\QualifyTarget as QualifyTarget;
 use Sports\Structure;
 use Sports\TestHelper\CompetitionCreator;
 use Sports\TestHelper\StructureEditorCreator;
@@ -255,7 +255,7 @@ final class EditorTest extends TestCase
 
 //        (new StructureOutput())->output($structure);
 
-        $structureEditor->addQualifiers($rootRound, QualifyTarget::Winners, 1, Distribution::HorizontalSnake, 3);
+        $structureEditor->addQualifiers($rootRound, QualifyTarget::Winners, 1, QualifyDistribution::HorizontalSnake, 3);
 
 //        (new StructureOutput())->output($structure);
 
@@ -274,7 +274,7 @@ final class EditorTest extends TestCase
         $structure = $structureEditor->create($competition, [4, 4, 4]);
         $rootRound = $structure->getSingleCategory()->getRootRound();
 
-        $winnersRound = $structureEditor->addChildRound($rootRound, QualifyTarget::Winners, [4, 4, 4], Distribution::Vertical);
+        $winnersRound = $structureEditor->addChildRound($rootRound, QualifyTarget::Winners, [4, 4, 4], QualifyDistribution::Vertical);
         //(new StructureOutput()).toConsole(structure, console);
 
         $ruleOne = $winnersRound->getParentQualifyGroup()?->getFirstSingleRule();
@@ -475,11 +475,11 @@ final class EditorTest extends TestCase
 
         $parentQualifyGroup = $winnersRound->getParentQualifyGroup();
         self::assertInstanceOf(QualifyGroup::class, $parentQualifyGroup);
-        $structureEditor->updateDistribution($parentQualifyGroup, Distribution::Vertical);
+        $structureEditor->updateDistribution($parentQualifyGroup, QualifyDistribution::Vertical);
 
 //        (new StructureOutput($this->getLogger()))->output($structure);
 
-        self::assertSame(Distribution::Vertical, $parentQualifyGroup->getDistribution());
+        self::assertSame(QualifyDistribution::Vertical, $parentQualifyGroup->getDistribution());
 
         self::assertInstanceOf(VerticalSingleQualifyRule::class, $parentQualifyGroup->getFirstSingleRule());
         // $structureEditor->addQualifiers($rootRound, QualifyTarget::Winners, 1, Distribution::HorizontalSnake);
@@ -495,7 +495,7 @@ final class EditorTest extends TestCase
         $rootRound = $structure->getSingleCategory()->getRootRound();
 
         self::expectException(Exception::class);
-        $structureEditor->addQualifiers($rootRound, QualifyTarget::Winners, 1, Distribution::HorizontalSnake);
+        $structureEditor->addQualifiers($rootRound, QualifyTarget::Winners, 1, QualifyDistribution::HorizontalSnake);
     }
 
     // out of range
@@ -521,7 +521,7 @@ final class EditorTest extends TestCase
         $structureEditor->addChildRound($rootRound, QualifyTarget::Winners, [4]);
 
         self::expectException(Exception::class);
-        $structureEditor->addQualifiers($rootRound, QualifyTarget::Winners, 1, Distribution::HorizontalSnake);
+        $structureEditor->addQualifiers($rootRound, QualifyTarget::Winners, 1, QualifyDistribution::HorizontalSnake);
     }
 
     // new Round
@@ -532,7 +532,7 @@ final class EditorTest extends TestCase
         $structure = $structureEditor->create($competition, [4]);
         $rootRound = $structure->getSingleCategory()->getRootRound();
 
-        $structureEditor->addQualifiers($rootRound, QualifyTarget::Winners, 2, Distribution::HorizontalSnake);
+        $structureEditor->addQualifiers($rootRound, QualifyTarget::Winners, 2, QualifyDistribution::HorizontalSnake);
 
         $winnersRound = $rootRound->getChild(QualifyTarget::Winners, 1);
         self::assertNotNull($winnersRound);

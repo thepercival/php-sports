@@ -4,9 +4,10 @@ declare(strict_types=1);
 
 namespace Sports\Ranking;
 
-use SportsHelpers\Sport\Variant\Against;
-use SportsHelpers\Sport\Variant\AllInOneGame;
-use SportsHelpers\Sport\Variant\Single;
+use SportsHelpers\Sports\AgainstOneVsOne;
+use SportsHelpers\Sports\AgainstOneVsTwo;
+use SportsHelpers\Sports\AgainstTwoVsTwo;
+use SportsHelpers\Sports\TogetherSport;
 
 enum PointsCalculation: string
 {
@@ -14,8 +15,10 @@ enum PointsCalculation: string
     case Scores = 'scores';
     case Both = 'both';
 
-    public static function getDefault(Single|Against|AllInOneGame $sportVariant): self {
-        if( $sportVariant instanceof Against) {
+    public static function getDefault(AgainstOneVsOne|AgainstOneVsTwo|AgainstTwoVsTwo|TogetherSport $sport): self {
+        if( $sport instanceof AgainstOneVsOne ||
+            $sport instanceof AgainstOneVsTwo ||
+            $sport instanceof AgainstTwoVsTwo) {
             return self::AgainstGamePoints;
         }
         return self::Scores;

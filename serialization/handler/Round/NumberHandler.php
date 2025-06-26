@@ -19,9 +19,9 @@ use Sports\Season;
 use Sports\SerializationHandler\DummyCreator;
 use Sports\SerializationHandler\Handler;
 use Sports\Planning\GameAmountConfig;
-use Sports\Planning\Config as PlanningConfig;
-use Sports\Competition\Sport as CompetitionSport;
-use Sports\Structure\Cell;
+use Sports\Planning\PlanningConfig as PlanningConfig;
+use Sports\Competition\CompetitionSport as CompetitionSport;
+use Sports\Structure\StructureCell;
 
 /**
  * @psalm-type _Sport = array{id: int|string}

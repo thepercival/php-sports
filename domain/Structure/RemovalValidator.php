@@ -5,14 +5,14 @@ declare(strict_types=1);
 namespace Sports\Structure;
 
 use Sports\Place;
-use Sports\Qualify\Target as QualifyTarget;
+use Sports\Qualify\QualifyTarget as QualifyTarget;
 use Exception;
 use Sports\Qualify\Group as QualifyGroup;
 use Sports\Round;
 use SportsHelpers\PouleStructures\PouleStructure;
 use SportsHelpers\PouleStructures\ValidMinimumBalancedPouleStructure;
 
-class RemovalValidator
+final class RemovalValidator
 {
 //    protected NameService $nameService;
 
@@ -68,7 +68,7 @@ class RemovalValidator
                 }
 
                 $poules = $childRound->createPouleStructure()->toArray();
-                $newChildPouleStructure = new ValidMinimumBalancedPouleStructure($minNrOfPlacesPerPoule, ...$poules);
+                $newChildPouleStructure = new ValidMinimumBalancedPouleStructure($minNrOfPlacesPerPoule, $poules);
                 while ($nrOfPlacesToRemove--) {
                     $newChildPouleStructure = $newChildPouleStructure->removePlace2();
                 }

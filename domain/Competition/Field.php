@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Sports\Competition;
 
 use Sports\Competition;
-use Sports\Competition\Sport as CompetitionSport;
+use Sports\Competition\CompetitionSport as CompetitionSport;
 use Sports\Priority\Prioritizable;
 use SportsHelpers\Identifiable;
 

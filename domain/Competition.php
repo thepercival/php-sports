@@ -10,15 +10,16 @@ use Doctrine\Common\Collections\Collection;
 use Exception;
 use Sports\Competition\Field as CompetitionField;
 use Sports\Competition\Referee;
-use Sports\Competition\Sport as CompetitionSport;
+use Sports\Competition\CompetitionSport as CompetitionSport;
 use Sports\Competitor\Team as TeamCompetitor;
 use Sports\Ranking\AgainstRuleSet;
 use SportsHelpers\Identifiable;
-use SportsHelpers\Sport\VariantWithFields as SportVariantWithFields;
-use SportsHelpers\Sport\Variant\Against\GamesPerPlace as AgainstGpp;
-use SportsHelpers\Sport\Variant\Against\H2h as AgainstH2h;
-use SportsHelpers\Sport\Variant\AllInOneGame;
-use SportsHelpers\Sport\Variant\Single;
+use SportsHelpers\SportVariants\AgainstOneVsOne;
+use SportsHelpers\SportVariants\AgainstOneVsTwo;
+use SportsHelpers\SportVariants\AgainstTwoVsTwo;
+use SportsHelpers\SportVariants\AllInOneGame;
+use SportsHelpers\SportVariants\Persist\SportPersistVariantWithNrOfFields;
+use SportsHelpers\SportVariants\Single;
 
 class Competition extends Identifiable
 {
@@ -191,14 +192,14 @@ class Competition extends Identifiable
     }
 
     /**
-     * @return list<SportVariantWithFields>
+     * @return list<SportPersistVariantWithNrOfFields>
      */
-    public function createSportVariantsWithFields(): array
+    public function createSportPersistVariantsWithNrOfFields(): array
     {
         return array_values(
             array_map(
-                function (CompetitionSport $competitionSport): SportVariantWithFields {
-                    return $competitionSport->createVariantWithFields();
+                function (CompetitionSport $competitionSport): SportPersistVariantWithNrOfFields {
+                    return $competitionSport->createSportPersistVariantWithNrOfFields();
                 }, $this->getSports()->toArray()
             )
         );
@@ -206,13 +207,13 @@ class Competition extends Identifiable
 
 
     /**
-     * @return list<AllInOneGame|Single|AgainstH2h|AgainstGpp>
+     * @return list<AgainstOneVsOne|AgainstOneVsTwo|AgainstTwoVsTwo|AllInOneGame|Single>
      */
     public function createSportVariants(): array
     {
         return array_values(
             array_map(
-                function (CompetitionSport $competitionSport): AllInOneGame|Single|AgainstH2h|AgainstGpp {
+                function (CompetitionSport $competitionSport): AgainstOneVsOne|AgainstOneVsTwo|AgainstTwoVsTwo|AllInOneGame|Single {
                     return $competitionSport->createVariant();
                 }, $this->getSports()->toArray()
             )

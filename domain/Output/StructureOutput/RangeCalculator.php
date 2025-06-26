@@ -9,11 +9,11 @@ use Sports\Category;
 use Sports\Poule;
 use Sports\Round\Number as RoundNumber;
 use Sports\NameService;
-use Sports\Qualify\Target as QualifyTarget;
+use Sports\Qualify\QualifyTarget as QualifyTarget;
 use Sports\Structure;
-use Sports\Structure\Cell as StructureCell;
+use Sports\Structure\StructureCell as StructureCell;
 use Sports\Round;
-use SportsHelpers\PouleStructure;
+use SportsHelpers\PouleStructures\PouleStructure;
 
 final class RangeCalculator
 {
@@ -109,7 +109,7 @@ final class RangeCalculator
         return $titleWidth > $maxWidth ? $titleWidth : $maxWidth;
     }
 
-    public function getStructureCellWidth(Structure\Cell $structureCell): int
+    public function getStructureCellWidth(Structure\StructureCell $structureCell): int
     {
         $width = self::PADDING;
         foreach ($structureCell->getRounds() as $round) {

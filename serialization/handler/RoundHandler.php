@@ -8,15 +8,15 @@ use JMS\Serializer\Handler\SubscribingHandlerInterface;
 use JMS\Serializer\JsonDeserializationVisitor;
 use JMS\Serializer\Context;
 
-use Sports\Competition\Sport as CompetitionSport;
+use Sports\Competition\CompetitionSport as CompetitionSport;
 use Sports\Poule;
 use Sports\Ranking\PointsCalculation;
 use Sports\Round;
 use Sports\Qualify\Group as QualifyGroup;
 use Sports\Round\Number as RoundNumber;
-use Sports\Score\Config as ScoreConfig;
+use Sports\Score\ScoreConfig as ScoreConfig;
 use Sports\Qualify\AgainstConfig as AgainstQualifyConfig;
-use Sports\Structure\Cell;
+use Sports\Structure\StructureCell;
 
 /**
  * @psalm-type _Sport = array{id: int|string}
@@ -25,8 +25,8 @@ use Sports\Structure\Cell;
  * @psalm-type _ScoreConfig = array{direction: int, maximum: int, enabled: bool, competitionSportId: int}
  * @psalm-type _ScoreConfigFieldValue = array{direction: int, maximum: int, enabled: bool, competitionSportId: int, next: _ScoreConfig|null}
  * @psalm-type _Poule = array{round: Round}
- * @psalm-type _QualifyGroup = array{parentRound: Round, nextStructureCell: Cell}
- * @psalm-type _FieldValue = array{parentQualifyGroup: QualifyGroup|null, structureCell: Cell, poules: list<_Poule>, qualifyGroups: list<_QualifyGroup>, againstQualifyConfigs: list<_AgainstQualifyConfig>, scoreConfigs: list<_ScoreConfigFieldValue>}
+ * @psalm-type _QualifyGroup = array{parentRound: Round, nextStructureCell: StructureCell}
+ * @psalm-type _FieldValue = array{parentQualifyGroup: QualifyGroup|null, structureCell: StructureCell, poules: list<_Poule>, qualifyGroups: list<_QualifyGroup>, againstQualifyConfigs: list<_AgainstQualifyConfig>, scoreConfigs: list<_ScoreConfigFieldValue>}
  */
 class RoundHandler extends Handler implements SubscribingHandlerInterface
 {

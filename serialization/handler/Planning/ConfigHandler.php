@@ -7,7 +7,7 @@ namespace Sports\SerializationHandler\Planning;
 use JMS\Serializer\Context;
 use JMS\Serializer\Handler\SubscribingHandlerInterface;
 use JMS\Serializer\JsonDeserializationVisitor;
-use Sports\Planning\Config as PlanningConfig;
+use Sports\Planning\PlanningConfig as PlanningConfig;
 use Sports\Planning\EditMode;
 use Sports\Round\Number as RoundNumber;
 use Sports\SerializationHandler\DummyCreator;

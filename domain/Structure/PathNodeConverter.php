@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Sports\Structure;
 
-use Sports\Qualify\Target;
+use Sports\Qualify\QualifyTarget;
 use Sports\Structure\PathNode as StructurePathNode;
 
-class PathNodeConverter
+final class PathNodeConverter
 {
     public function __construct() {
     }
@@ -46,7 +46,7 @@ class PathNodeConverter
 //        if( ($qualifyTargetPos + 1) >= strlen($pathNodeAsString) )  {
 //            return $previous;
 //        }
-        $qualifyTarget = Target::from( substr($pathNodeAsString, $qualifyTargetPos, 1) );
+        $qualifyTarget = QualifyTarget::from( substr($pathNodeAsString, $qualifyTargetPos, 1) );
 
         $roundNumberStartPos = $qualifyTargetPos + 1;
         $nextQualifyTargetPos = $this->getPosQualifyTargetCharacter($pathNodeAsString, $qualifyTargetPos + 1);
@@ -65,8 +65,8 @@ class PathNodeConverter
      */
     private function getPosQualifyTargetCharacter(string $pathNodeAsString, int $fromIndex): int|false {
 
-        $posFirstWinnersCharacter = strpos($pathNodeAsString, Target::Winners->value, $fromIndex);
-        $posFirstLosersCharacter = strpos($pathNodeAsString, Target::Losers->value, $fromIndex);
+        $posFirstWinnersCharacter = strpos($pathNodeAsString, QualifyTarget::Winners->value, $fromIndex);
+        $posFirstLosersCharacter = strpos($pathNodeAsString, QualifyTarget::Losers->value, $fromIndex);
         if( $posFirstWinnersCharacter === false && $posFirstLosersCharacter === false ) {
             return false;
         }

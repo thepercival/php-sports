@@ -7,14 +7,14 @@ namespace Sports\SerializationHandler\Qualify;
 use JMS\Serializer\Context;
 use JMS\Serializer\Handler\SubscribingHandlerInterface;
 use JMS\Serializer\JsonDeserializationVisitor;
-use Sports\Qualify\Distribution;
+use Sports\Qualify\QualifyDistribution;
 use Sports\Qualify\Group as QualifyGroup;
-use Sports\Qualify\Target;
+use Sports\Qualify\QualifyTarget;
 use Sports\Round;
 use Sports\Category;
 use Sports\Round\Number as RoundNumber;
 use Sports\SerializationHandler\Handler;
-use Sports\Structure\Cell;
+use Sports\Structure\StructureCell;
 
 /**
  * @psalm-type _Round = array{parentQualifyGroup: QualifyGroup, category: Category}
@@ -31,7 +31,7 @@ class GroupHandler extends Handler implements SubscribingHandlerInterface
 
     /**
      * @param JsonDeserializationVisitor $visitor
-     * @param array{parentRound: Round, target: string, nextStructureCell: Cell, number: int, childRound: _Round, distribution: string} $fieldValue
+     * @param array{parentRound: Round, target: string, nextStructureCell: StructureCell, number: int, childRound: _Round, distribution: string} $fieldValue
      * @param array<string, array<string, Round|RoundNumber>> $type
      * @param Context $context
      * @return QualifyGroup
@@ -47,11 +47,11 @@ class GroupHandler extends Handler implements SubscribingHandlerInterface
         }
         $qualifyGroup = new QualifyGroup(
             $fieldValue['parentRound'],
-            Target::from($fieldValue['target']),
+            QualifyTarget::from($fieldValue['target']),
             $fieldValue['nextStructureCell'],
             $fieldValue['number']
         );
-        $qualifyGroup->setDistribution(Distribution::from($fieldValue['distribution']));
+        $qualifyGroup->setDistribution(QualifyDistribution::from($fieldValue['distribution']));
 
         //$fieldValue["childRound"] = $qualifyGroup->getChildRound();
         $fieldValue['childRound']['parentQualifyGroup'] = $qualifyGroup;

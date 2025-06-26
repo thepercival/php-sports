@@ -11,7 +11,7 @@ use JMS\Serializer\Context;
 use Sports\Game\Against as AgainstGame;
 use Sports\Game\Place\Against as AgainstGamePlace;
 use Sports\Poule;
-use Sports\Score\Against as AgainstScore;
+use Sports\Score\AgainstScore as AgainstScore;
 use Sports\SerializationHandler\DummyCreator;
 use Sports\SerializationHandler\Handler;
 use SportsHelpers\Against\Side;

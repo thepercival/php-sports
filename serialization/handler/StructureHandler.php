@@ -11,7 +11,7 @@ use Sports\Category;
 use Sports\Round;
 use Sports\Round\Number as RoundNumber;
 use Sports\Structure;
-use Sports\Structure\Cell;
+use Sports\Structure\StructureCell;
 
 class StructureHandler extends Handler implements SubscribingHandlerInterface
 {
@@ -100,7 +100,7 @@ class StructureHandler extends Handler implements SubscribingHandlerInterface
      */
     protected function createStructureCells(array $arrStructureCell, Category $category, RoundNumber $roundNumber): void
     {
-        new Cell($category, $roundNumber);
+        new StructureCell($category, $roundNumber);
         $nextRoundNumber = $roundNumber->getNext();
         if (array_key_exists('next', $arrStructureCell) && $nextRoundNumber !== null) {
             $this->createStructureCells($arrStructureCell['next'], $category, $nextRoundNumber);

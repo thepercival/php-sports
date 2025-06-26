@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Sports\Ranking\Calculator\Round\Sport;
 
-use Sports\Competition\Sport as CompetitionSport;
+use Sports\Competition\CompetitionSport as CompetitionSport;
 use Sports\Poule;
 use Sports\Place;
 use Sports\Round;
@@ -13,7 +13,7 @@ use Sports\Ranking\Item\Round\Sport as SportRoundRankingItem;
 use Sports\Ranking\FunctionMapCreator as RankingFunctionMapCreator;
 use Sports\Place\SportPerformance\Calculator\Together as PlaceTogetherPerformanceCalculator;
 use Sports\Place\SportPerformance\Calculator as PerformanceCalculator;
-use Sports\Game\State as GameState;
+use Sports\Game\GameState as GameState;
 use Sports\Ranking\Calculator\Round\Sport as SportRoundRankingCalculator;
 
 class Together extends SportRoundRankingCalculator

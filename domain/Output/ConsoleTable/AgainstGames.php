@@ -11,8 +11,8 @@ use Sports\Competitor\StartLocationMap;
 use Sports\Competitor\Team as TeamCompetitor;
 use Sports\Game\Against as AgainstGame;
 use Sports\Structure\NameService as StructureNameService;
-use Sports\Score\Against as AgainstScore;
-use SportsHelpers\Against\Side as AgainstSide;
+use Sports\Score\AgainstScore as AgainstScore;
+use SportsHelpers\Against\AgainstSide;
 
 class AgainstGames
 {

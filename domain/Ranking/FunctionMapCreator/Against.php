@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Sports\Ranking\FunctionMapCreator;
 
-use Sports\Competition\Sport as CompetitionSport;
-use Sports\Game\State as GameState;
+use Sports\Competition\CompetitionSport as CompetitionSport;
+use Sports\Game\GameState as GameState;
 use Sports\Place;
 use Sports\Place\SportPerformance;
 use Sports\Ranking\Calculator\Round\Sport\Against as AgainstSportRoundRankingCalculator;

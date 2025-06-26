@@ -6,9 +6,9 @@ namespace Sports\Tests\Structure;
 
 use Sports\Competitor\StartLocation;
 use Sports\Competitor\StartLocationMap;
-use Sports\Qualify\Distribution;
-use Sports\Qualify\Target;
-use Sports\Qualify\Target as QualifyTarget;
+use Sports\Qualify\QualifyDistribution;
+use Sports\Qualify\QualifyTarget;
+use Sports\Qualify\QualifyTarget as QualifyTarget;
 use PHPUnit\Framework\TestCase;
 use Sports\Output\StructureOutput;
 use Sports\Team;
@@ -355,8 +355,8 @@ final class NameServiceTest extends TestCase
 
             $nameService = new NameService();
 
-            $winnersRound = $structureEditor->addChildRound($rootRound, QualifyTarget::Winners, [3, 3, 3], Distribution::Vertical);
-            $losersRound = $structureEditor->addChildRound($rootRound, QualifyTarget::Losers, [3, 3, 3], Distribution::Vertical);
+            $winnersRound = $structureEditor->addChildRound($rootRound, QualifyTarget::Winners, [3, 3, 3], QualifyDistribution::Vertical);
+            $losersRound = $structureEditor->addChildRound($rootRound, QualifyTarget::Losers, [3, 3, 3], QualifyDistribution::Vertical);
             // (new StructureOutput())->output($structure);
 
             $winnersThirdPlaceThirdPoule = $winnersRound->getPoule(3)->getPlace(3); // 1e3
@@ -393,7 +393,7 @@ final class NameServiceTest extends TestCase
 
             $nameService = new NameService();
 
-            $losersRound = $structureEditor->addChildRound($rootRound, QualifyTarget::Losers, [3, 3], Distribution::Vertical);
+            $losersRound = $structureEditor->addChildRound($rootRound, QualifyTarget::Losers, [3, 3], QualifyDistribution::Vertical);
             // (new StructureOutput())->output($structure);
 
             $losersSecondPlaceFirstPoule = $losersRound->getPoule(1)->getPlace(2);
@@ -428,7 +428,7 @@ final class NameServiceTest extends TestCase
 
             $nameService = new NameService();
 
-            $winnersRound = $structureEditor->addChildRound($rootRound, QualifyTarget::Winners, [2, 2], Distribution::Vertical);
+            $winnersRound = $structureEditor->addChildRound($rootRound, QualifyTarget::Winners, [2, 2], QualifyDistribution::Vertical);
             // (new StructureOutput())->output($structure);
 
             $losersFirstPlaceFirstPoule = $winnersRound->getPoule(1)->getPlace(1);

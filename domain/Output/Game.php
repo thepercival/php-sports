@@ -12,9 +12,9 @@ use Sports\Game\Against as AgainstGame;
 use Sports\Game\Place\Against as AgainstGamePlace;
 use Sports\Game\Place\Together as TogetherGamePlace;
 use Sports\Game\Together as TogetherGame;
-use Sports\Structure\NameService as StructureNameService;
 use Sports\Place;
-use Sports\Score\Config\Service as ScoreConfigService;
+use Sports\Score\ScoreConfigService as ScoreConfigService;
+use Sports\Structure\NameService as StructureNameService;
 use SportsHelpers\Output as OutputBase;
 use SportsHelpers\Output\Color;
 

@@ -13,7 +13,7 @@ abstract class Rule
     {
     }
 
-    public function getQualifyTarget(): Target
+    public function getQualifyTarget(): QualifyTarget
     {
         return $this->fromHorizontalPoule->getQualifyTarget();
     }

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Sports\Qualify;
 
-use Sports\Game\State as GameState;
+use Sports\Game\GameState as GameState;
 use Sports\Place;
 use Sports\Poule;
 use Sports\Qualify\Mapping\ByRank as ByRankMapping;
@@ -14,7 +14,7 @@ use Sports\Qualify\Rule\Horizontal\Multiple as HorizontalMultipleQualifyRule;
 use Sports\Qualify\Rule\Horizontal\Single as HorizontalSingleQualifyRule;
 use Sports\Qualify\Rule\Vertical\Multiple as VerticalMultipleQualifyRule;
 use Sports\Qualify\Rule\Vertical\Single as VerticalSingleQualifyRule;
-use Sports\Qualify\Target as QualifyTarget;
+use Sports\Qualify\QualifyTarget as QualifyTarget;
 use Sports\Ranking\Calculator\Round as RoundRankingCalculator;
 use Sports\Round;
 
