@@ -52,7 +52,6 @@ class Player extends Role
         $this->marketValue = $marketValue;
     }
 
-
     public function getShirtNumber(): ?int
     {
         return $this->shirtNumber;
