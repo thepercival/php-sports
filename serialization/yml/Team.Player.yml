@@ -4,3 +4,5 @@ Sports\Team\Player:
   properties:
     line:
       type: integer
+    marketValue:
+      type: integer

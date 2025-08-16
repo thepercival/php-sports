@@ -16,6 +16,7 @@ class Player extends Role
 {
     protected int|null $shirtNumber = null;
     protected int $line;
+    protected int $marketValue = 0;
     /**
      * @var Collection<int|string, GameParticipation>
      */
@@ -39,6 +40,16 @@ class Player extends Role
     public function setLine(int $line): void
     {
         $this->line = $line;
+    }
+
+    public function getMarketValue(): int
+    {
+        return $this->marketValue;
+    }
+
+    public function setMarketValue(int $marketValue): void
+    {
+        $this->marketValue = $marketValue;
     }
 
     public function getShirtNumber(): ?int
