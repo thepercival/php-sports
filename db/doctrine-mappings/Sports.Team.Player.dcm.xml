@@ -5,7 +5,7 @@
     <entity name="Sports\Team\Player" table="teamPlayers" repository-class="Sports\Team\Player\Repository">
         <field name="shirtNumber" column="shirtNumber" type="smallint" nullable="true" unique="false"/>
         <field name="line" column="line" type="smallint" nullable="false" unique="false"/>
-        <field name="marketValue" column="marketValue" type="bigint" nullable="true" unique="false"/>
+        <field name="marketValue" column="marketValue" type="bigint" nullable="false" unique="false"/>
         <one-to-many field="gameParticipations" target-entity="Sports\Game\Participation" mapped-by="player">
             <cascade>
                 <cascade-persist/>
