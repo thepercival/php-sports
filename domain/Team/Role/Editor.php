@@ -26,7 +26,8 @@ class Editor
         Person $person,
         DateTimeImmutable $dateTime,
         Team $newTeam,
-        FootballLine $newLine
+        FootballLine $newLine,
+        int $newMarketValue
     ): Player|null {
         $seasonPeriod = $this->checkPeriod($person, $season, $dateTime);
 
@@ -40,6 +41,9 @@ class Editor
         $overlappingPlayer = $this->getOverlapping($players, $dateTime);
         if ($overlappingPlayer !== null) {
             if ($overlappingPlayer->getTeam() == $newTeam) {
+                if ($overlappingPlayer->getMarketValue() != $newMarketValue) {
+                    $overlappingPlayer->setMarketValue($newMarketValue);
+                }
                 return null;
             }
             if ($overlappingPlayer->getLine() !== $newLine->value) {
@@ -52,7 +56,9 @@ class Editor
             $endDateTime = $dateTime->sub(new \DateInterval(self::DELTAINTERVAL));
             $overlappingPlayer->setEndDateTime($endDateTime);
             $newPeriod = new Period($startDateTime, $seasonPeriod->getEndDate());
-            return new Player($newTeam, $person, $newPeriod, $newLine->value);
+            $newPlayer = new Player($newTeam, $person, $newPeriod, $newLine->value);
+            $newPlayer->setMarketValue($newMarketValue);
+            return $newPlayer;
 //            if ($overlappingPlayer->getTeam() !== $newTeam) {
 //                // new maken en oude stoppen
 //                $msg = 'for person "' . $person->getName() . '" ';
@@ -100,7 +106,11 @@ class Editor
 //        if (!$this->isPeriodFree($players, $newPeriod)) {
 //            throw new \Exception('period already taken', E_ERROR);
 //        }
-        return new Player($newTeam, $person, $newPeriod, $newLine->value);
+        $newPlayer = new Player($newTeam, $person, $newPeriod, $newLine->value);
+        if ($newPlayer->getMarketValue() != $newMarketValue) {
+            $newPlayer->setMarketValue($newMarketValue);
+        }
+        return $newPlayer;
     }
 
     /**
