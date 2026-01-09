@@ -16,7 +16,7 @@ use Sports\Poule\Horizontal\Creator as HorizontalPouleCreator;
 use Sports\Qualify\AgainstConfig as AgainstQualifyConfig;
 use Sports\Qualify\AgainstConfigService as AgainstQualifyConfigService;
 use Sports\Qualify\Group as QualifyGroup;
-use Sports\Qualify\Rule\Creator as QualifyRuleCreator;
+use Sports\Qualify\Rule\QualifyRulesCreator as QualifyRuleCreator;
 use Sports\Round;
 use Sports\Round\Number as RoundNumber;
 use Sports\Score\ScoreConfig as ScoreConfig;

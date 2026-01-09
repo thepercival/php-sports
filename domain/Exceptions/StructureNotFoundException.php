@@ -4,7 +4,7 @@ namespace Sports\Exceptions;
 
 use Exception;
 
-class StructureNotFoundException extends Exception
+final class StructureNotFoundException extends Exception
 {
 
 }

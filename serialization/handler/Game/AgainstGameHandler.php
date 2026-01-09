@@ -18,18 +18,16 @@ use Sports\SerializationHandler\DummyCreator;
  * @psalm-type _AgainstGamePlace = array{placeNr: int, side: string}
  * @psalm-type _PlaceLocationArray = array{pouleNr: int, placeNr: int}
  * @psalm-type _StructureLocationPlaceArray = array{categoryNr: int, pathNode: string, placeLocation: _PlaceLocationArray}
- * @psalm-type _FieldValue = array{poule: Poule, batchNr: int, startDateTime: string, competitionSportId: int, gameRoundNumber: int, fieldId: int, refereeId: int, state: string, refereeStructureLocation: _StructureLocationPlaceArray|null, places: list<_AgainstGamePlace>, scores: list<AgainstScore>}
+ * @psalm-type _FieldValue = array{poule: Poule, batchNr: int, startDateTime: string, competitionSportId: int, cycleNr: int, cyclePartNr: int, fieldId: int, refereeId: int, state: string, refereeStructureLocation: _StructureLocationPlaceArray|null, places: list<_AgainstGamePlace>, scores: list<AgainstScore>}
  */
-class AgainstGameHandler extends GameHandler implements SubscribingHandlerInterface
+final class AgainstGameHandler extends GameHandler implements SubscribingHandlerInterface
 {
     public function __construct(DummyCreator $dummyCreator)
     {
         parent::__construct($dummyCreator);
     }
 
-    /**
-     * @psalm-return list<array<string, int|string>>
-     */
+    #[\Override]
     public static function getSubscribingMethods(): array
     {
         return static::getDeserializationMethods(AgainstGame::class);
@@ -64,13 +62,15 @@ class AgainstGameHandler extends GameHandler implements SubscribingHandlerInterf
             $fieldValue['batchNr'],
             new \DateTimeImmutable($fieldValue['startDateTime']),
             $competitionSport,
-            $fieldValue['gameRoundNumber']);
+            $fieldValue['cycleNr'],
+            $fieldValue['cyclePartNr']);
 
         $arrPlaces = $fieldValue['places'];
         unset($fieldValue['places']);
         $arrScores = $fieldValue['scores'];
         unset($fieldValue['scores']);
-        unset($fieldValue['gameRoundNumber']);
+        unset($fieldValue['cycleNr']);
+        unset($fieldValue['cyclePartNr']);
         $this->setGameProperties($game, $fieldValue, $type, $context);
 
         // _GameProps

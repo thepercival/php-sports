@@ -1,0 +1,129 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Sports\Qualify\Rule\Creator;
+
+use Exception;
+use Sports\Place;
+use Sports\Poule;
+use Sports\Qualify\QualifyTarget;
+use Sports\Poule\Horizontal as HorizontalPoule;
+use Sports\Qualify\FromPoulePicker;
+use Sports\Qualify\Group as QualifyGroup;
+use Sports\Qualify\Mapping\ByRank as ByRankMapping;
+use Sports\Qualify\PossibleFromMap;
+use Sports\Qualify\Rule\Vertical\MultipleVerticalQualifyRule as VerticalMultipleQualifyRule;
+use Sports\Qualify\Rule\Vertical\SingleVerticalQualifyRule as VerticalSingleQualifyRule;
+use Sports\Round;
+
+final class VerticalQualifyRuleCreator
+{
+    public function __construct()
+    {
+    }
+
+    /**
+     * @param list<HorizontalPoule> $fromRoundHorPoules
+     * @param QualifyGroup $qualifyGroup
+     * @return list<HorizontalPoule>
+     */
+    public function createRules(array $fromRoundHorPoules, QualifyGroup $qualifyGroup): array
+    {
+        $childRound = $qualifyGroup->getChildRound();
+        $childPlaces = $this->getRoundPlaces($childRound);
+        $qualifyTarget = $qualifyGroup->getTarget();
+        if( $qualifyTarget === QualifyTarget::Losers) {
+            $childPlaces = array_reverse($childPlaces);
+        }
+
+        $previous = null; // : VerticalSingleQualifyRule |  undefined;
+
+        $fromHorPoulePlaces = [];
+        $fromHorPoule = null;
+        while ( count($childPlaces) > 0 && count($fromRoundHorPoules) > 0 ) {
+            if( count($fromHorPoulePlaces) === 0 ) {
+                $fromHorPoule = array_shift($fromRoundHorPoules);
+                $fromHorPoulePlaces = array_values( array_slice($fromHorPoule->getPlaces()->toArray(), 0 ) );
+            }
+            if( $fromHorPoule === null ) {
+                throw new Exception('fromHorPoule can not be null');
+            }
+            // SingleRule
+            if (count($fromHorPoulePlaces) <= count($childPlaces)) {
+                $byRankMappings = $this->fromPlacesToByRankMappings($qualifyTarget, $fromHorPoulePlaces, $childPlaces);
+                $previous = new VerticalSingleQualifyRule($fromHorPoule, $qualifyGroup, $byRankMappings, $previous);
+            } else {
+                $toPlaces = [];
+                $nrOfHorPoulePlaces = count($fromHorPoulePlaces);
+                while ($nrOfHorPoulePlaces-- > 0 && count($childPlaces) > 0) {
+                    $toPlaces[] = array_shift($childPlaces);
+                }
+                new VerticalMultipleQualifyRule($fromHorPoule, $qualifyGroup, $toPlaces);
+            }
+        }
+        return $fromRoundHorPoules;
+    }
+
+    /**
+     * @param Round $round
+     * @return list<Place>
+     */
+    protected function getRoundPlaces(Round $round): array {
+        $roundPlacesByPoule = $this->getRoundPlacesByPoule($round, QualifyTarget::Winners);
+        $roundPlaces = [];
+        foreach( $roundPlacesByPoule as $pouleRoundPlaces ) {
+           $roundPlaces = array_merge($roundPlaces, $pouleRoundPlaces);
+        }
+        return $roundPlaces;
+    }
+
+    /**
+     * @param Round $round
+     * @param QualifyTarget $target
+     * @return list<list<Place>>
+     */
+    protected function getRoundPlacesByPoule(Round $round, QualifyTarget $target): array {
+        if ( $target === QualifyTarget::Losers) {
+            $poules = array_reverse( $round->getPoules()->toArray() );
+            return array_values( array_map( function (Poule $poule): array {
+                return array_values( array_reverse( $poule->getPlaces()->toArray() ) );
+            }, $poules ) );
+        }
+        return array_values( array_map( function(Poule $poule): array {
+            return array_values( array_slice( $poule->getPlaces()->toArray(), 0 ) );
+        }, $round->getPoules()->toArray() ) );
+    }
+
+    /**
+     * @param QualifyTarget $qualifyTarget
+     * @param list<Place> $fromHorPoulePlaces
+     * @param list<Place> $childPlaces
+     * @return list<ByRankMapping>
+     */
+    protected function fromPlacesToByRankMappings(QualifyTarget $qualifyTarget, array &$fromHorPoulePlaces, array &$childPlaces): array {
+        $mapping = [];
+        if( $qualifyTarget === QualifyTarget::Losers ) {
+            $rank = count($fromHorPoulePlaces);
+        } else {
+            $rank = 1;
+        }
+
+        $fromHorPoulePlace = array_shift($fromHorPoulePlaces);
+        while ($fromHorPoulePlace !== null) {
+
+            $childPoulePlace = array_shift($childPlaces);
+            if( $childPoulePlace === null ) {
+                throw new Exception('childPoulePlace should not be null', E_ERROR);
+            }
+            $mapping[] =  new ByRankMapping($rank, $childPoulePlace );
+            if( $qualifyTarget === QualifyTarget::Losers ) {
+                $rank--;
+            } else {
+                $rank++;
+            }
+            $fromHorPoulePlace = array_shift($fromHorPoulePlaces);
+        }
+        return $mapping;
+    }
+}

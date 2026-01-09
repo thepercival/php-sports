@@ -8,6 +8,9 @@ Sports\Sport:
       type: boolean
     customId:
       type: integer
-    defaultGameMode:
-    defaultNrOfSidePlaces:
+    nrOfHomePlaces:
+      type: integer
+    nrOfAwayPlaces:
+      type: integer
+    nrOfGamePlaces:
       type: integer

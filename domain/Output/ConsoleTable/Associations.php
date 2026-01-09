@@ -7,7 +7,7 @@ namespace Sports\Output\ConsoleTable;
 use LucidFrame\Console\ConsoleTable;
 use Sports\Association;
 
-class Associations
+final class Associations
 {
     /**
      * @param list<Association> $associations
@@ -20,7 +20,7 @@ class Associations
             return $a->getName() < $b->getName() ? -1 : 1;
         });
         foreach ($associations as $association) {
-            $row = array( $association->getId(), $association->getName() );
+            $row = array( $association->id, $association->getName() );
             $parent = $association->getParent();
             $parentName = ($parent !== null) ? $parent->getName() : null;
             $row[] = $parentName;

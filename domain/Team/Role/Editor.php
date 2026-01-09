@@ -228,18 +228,18 @@ final class Editor
 //    {
 //        $players = $this->person->getPlayers($newTeam, null, $newLine);
 //
-//        $sevenMonthsEarlier = $newPeriod->getStartDate()->modify("-". self::MAX_MONTHS_FOR_MERGE ." months");
+//        $sevenMonthsEarlier = $newPeriod->startDate->modify("-". self::MAX_MONTHS_FOR_MERGE ." months");
 //        foreach ($players as $player) {
 //            if ($player->getPeriod()->contains($newPeriod)) {
 //                continue;
 //            }
-//            if ($player->getPeriod()->getEndDate() < $sevenMonthsEarlier) {
+//            if ($player->getPeriod()->endDate < $sevenMonthsEarlier) {
 //                continue;
 //            }
-//            if ($player->getPeriod()->getStartDate() > $newPeriod->getStartDate()) { // future
+//            if ($player->getPeriod()->startDate > $newPeriod->startDate) { // future
 //                continue;
 //            }
-//            $player->setEndDateTime($newPeriod->getEndDate());
+//            $player->setEndDateTime($newPeriod->endDate);
 //        }
 //    }
 //
@@ -256,14 +256,14 @@ final class Editor
 //                    || $newTeam === $playerOverlaps->getTeam())) {
 //                continue;
 //            }
-//            if ($playerOverlaps->getPeriod()->getStartDate() > $newPeriod->getStartDate()) { // future
-//                if ($playerOverlaps->getPeriod()->getEndDate()->getTimestamp()
-//                    <= $newPeriod->getEndDate()->getTimestamp()) {
-//                    $playerOverlaps->setStartDateTime($newPeriod->getStartDate());
+//            if ($playerOverlaps->getPeriod()->startDate > $newPeriod->startDate) { // future
+//                if ($playerOverlaps->getPeriod()->endDate->getTimestamp()
+//                    <= $newPeriod->endDate->getTimestamp()) {
+//                    $playerOverlaps->setStartDateTime($newPeriod->startDate);
 //                }
 //                continue;
 //            }
-//            $playerOverlaps->setEndDateTime($newPeriod->getStartDate());
+//            $playerOverlaps->setEndDateTime($newPeriod->startDate);
 //        }
 //    }
 //
@@ -286,7 +286,7 @@ final class Editor
 //
 //        $players = $this->person->getPlayers($team);
 //        return $players->filter(function (Player $player) use ($newPeriod): bool {
-//            return $player->getPeriod()->getStartDate() > $newPeriod->getStartDate();
+//            return $player->getPeriod()->startDate > $newPeriod->startDate;
 //        })->count() > 0;
 //    }
 }

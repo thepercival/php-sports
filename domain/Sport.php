@@ -4,10 +4,9 @@ declare(strict_types=1);
 
 namespace Sports;
 
+use Sports\Sport\DBSport;
 use InvalidArgumentException;
-use Sports\Repositories\DBSport;
 use Sports\Sport\Custom as CustomSport;
-use SportsHelpers\Identifiable;
 use SportsHelpers\Sports\AgainstOneVsOne;
 use SportsHelpers\Sports\AgainstOneVsTwo;
 use SportsHelpers\Sports\AgainstTwoVsTwo;
@@ -29,10 +28,10 @@ final class Sport extends DBSport
     public function __construct(
         string $name,
         private bool $team,
-        AgainstOneVsOne|AgainstOneVsTwo|AgainstTwoVsTwo|TogetherSport $sport
+        AgainstOneVsOne|AgainstOneVsTwo|AgainstTwoVsTwo|TogetherSport $defaultSport
     ) {
         $this->setName($name);
-        parent::__construct($sport);
+        parent::__construct($defaultSport);
     }
 
     public function getName(): string
@@ -120,6 +119,17 @@ final class Sport extends DBSport
     public function getDefaultLosePointsExt(): float
     {
         if ($this->customId === CustomSport::IceHockey) {
+            return 1;
+        }
+        return 0;
+    }
+
+    public function getDefaultNrOfReferees(): int
+    {
+        if ($this->customId === CustomSport::IceHockey) {
+            return 2;
+        }
+        if ($this->customId === CustomSport::Football) {
             return 1;
         }
         return 0;

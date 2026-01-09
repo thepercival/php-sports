@@ -7,7 +7,7 @@ namespace Sports\Place;
 use Sports\Place;
 use Sports\Competition\CompetitionSport as CompetitionSport;
 
-class SportPerformance extends Performance
+final class SportPerformance extends Performance
 {
     public function __construct(
         private CompetitionSport $competitionSport,

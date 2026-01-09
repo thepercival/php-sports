@@ -7,7 +7,7 @@ namespace Sports\Output\ConsoleTable;
 use LucidFrame\Console\ConsoleTable;
 use Sports\League;
 
-class Leagues
+final class Leagues
 {
     /**
      * @param list<League> $leagues
@@ -24,7 +24,7 @@ class Leagues
         });
         foreach ($leagues as $league) {
             $row = array(
-                $league->getId(),
+                $league->id,
                 $league->getName(),
                 $league->getAssociation()->getName()
             );

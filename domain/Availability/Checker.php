@@ -16,7 +16,7 @@ use Sports\Competitor\StartLocationMap;
 use SportsHelpers\PlaceLocationInterface;
 use Sports\Priority\Prioritizable;
 
-class Checker
+final class Checker
 {
     public function checkRefereeInitials(Competition $competition, string $initials, Referee $refereeToCheck = null): void
     {

@@ -7,7 +7,7 @@ namespace Sports\Formation;
 use SportsHelpers\Identifiable;
 use Sports\Formation;
 
-class Line extends Identifiable
+final class Line extends Identifiable
 {
     public function __construct(
         protected Formation $formation,

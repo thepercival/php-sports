@@ -17,11 +17,9 @@ use Sports\SerializationHandler\Handler;
 /**
  * @psalm-type _FieldValue = array{game: TogetherGame, id: int, placeNr: int, gameRoundNumber: int, scores: list<TogetherScore>}
  */
-class TogetherGamePlaceHandler extends Handler implements SubscribingHandlerInterface
+final class TogetherGamePlaceHandler extends Handler implements SubscribingHandlerInterface
 {
-    /**
-     * @psalm-return list<array<string, int|string>>
-     */
+    #[\Override]
     public static function getSubscribingMethods(): array
     {
         return static::getDeserializationMethods(TogetherGamePlace::class);
@@ -44,7 +42,7 @@ class TogetherGamePlaceHandler extends Handler implements SubscribingHandlerInte
         $place = $game->getPoule()->getPlace( $fieldValue['placeNr'] );
 
         $gamePlace = new TogetherGamePlace( $game, $place, $fieldValue['gameRoundNumber']);
-        $gamePlace->setId($fieldValue['id']);
+        $gamePlace->id = $fieldValue['id'];
 
         foreach ($fieldValue['scores'] as $arrScore) {
             $fieldValue['score'] = $arrScore;

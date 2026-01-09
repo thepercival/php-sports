@@ -6,10 +6,11 @@ namespace Sports\Planning;
 
 use Sports\Round\Number as RoundNumber;
 use SportsHelpers\Identifiable;
+use SportsHelpers\RefereeInfo;
 use SportsHelpers\SelfReferee;
 use SportsHelpers\SelfRefereeInfo;
 
-class PlanningConfig extends Identifiable
+final class PlanningConfig extends Identifiable
 {
     public const bool DEFAULTEXTENSION = false;
     public const bool DEFAULTENABLETIME = true;
@@ -25,8 +26,8 @@ class PlanningConfig extends Identifiable
         protected int $minutesBetweenGames,
         protected int $minutesAfter,
         protected bool $perPoule,
-        protected SelfReferee $selfReferee,
-        protected int $nrOfSimSelfRefs,
+        protected SelfReferee|null $selfReferee,
+        protected int|null $nrOfSimSelfRefs,
         protected bool $bestLast
     ) {
         $this->roundNumber->setPlanningConfig($this);
@@ -121,30 +122,45 @@ class PlanningConfig extends Identifiable
 //        $this->minutesPerGameExt = $minutesPerGameExt;
 //    }
 
-    public function getSelfReferee(): SelfReferee
-    {
-        return $this->selfReferee;
+    public function getSelfRefereeInfo(): SelfRefereeInfo|null {
+        if( $this->selfReferee === null ) {
+            return null;
+        }
+        if( $this->nrOfSimSelfRefs === null ) {
+            return new SelfRefereeInfo($this->selfReferee);
+        }
+        return new SelfRefereeInfo($this->selfReferee, $this->nrOfSimSelfRefs);
     }
 
-    public function setSelfReferee(SelfReferee $selfReferee): void
-    {
-        $this->selfReferee = $selfReferee;
+    public function setSelfRefereeInfo(SelfRefereeInfo|null $selfRefereeInfo): void {
+        $this->selfReferee = $selfRefereeInfo?->selfReferee;
+        $this->nrOfSimSelfRefs = $selfRefereeInfo?->nrOfSimSelfRefs;
     }
 
-    public function selfRefereeEnabled(): bool
-    {
-        return $this->selfReferee !== SelfReferee::Disabled;
-    }
-
-    public function getNrOfSimSelfRefs(): int
-    {
-        return $this->nrOfSimSelfRefs;
-    }
-
-    public function setNrOfSimSelfRefs(int $nrOfSimSelfRefs): void
-    {
-        $this->nrOfSimSelfRefs = $nrOfSimSelfRefs;
-    }
+//    public function getSelfReferee(): SelfReferee
+//    {
+//        return $this->selfReferee;
+//    }
+//
+//    public function setSelfReferee(SelfReferee $selfReferee): void
+//    {
+//        $this->selfReferee = $selfReferee;
+//    }
+//
+//    public function selfRefereeEnabled(): bool
+//    {
+//        return $this->selfReferee !== SelfReferee::Disabled;
+//    }
+//
+//    public function getNrOfSimSelfRefs(): int
+//    {
+//        return $this->nrOfSimSelfRefs;
+//    }
+//
+//    public function setNrOfSimSelfRefs(int $nrOfSimSelfRefs): void
+//    {
+//        $this->nrOfSimSelfRefs = $nrOfSimSelfRefs;
+//    }
 
     public function getBestLast(): bool
     {
@@ -154,10 +170,6 @@ class PlanningConfig extends Identifiable
     public function setBestLast(bool $bestLast): void
     {
         $this->bestLast = $bestLast;
-    }
-
-    public function getSelfRefereeInfo(): SelfRefereeInfo {
-        return new SelfRefereeInfo($this->selfReferee, $this->getNrOfSimSelfRefs() );
     }
 
     protected function getRoundNumber(): RoundNumber

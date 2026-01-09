@@ -12,7 +12,7 @@ use Sports\Season;
 use Sports\Sport\FootballLine;
 use Sports\Team;
 
-class EditorTest extends \PHPUnit\Framework\TestCase
+final class EditorTest extends \PHPUnit\Framework\TestCase
 {
     public function testGameDateTimeOutsideSeason(): void
     {
@@ -21,14 +21,14 @@ class EditorTest extends \PHPUnit\Framework\TestCase
         $association = new Association('testAssociation');
         $team = new Team($association, 'testTeam');
 
-        $seasonPeriod = new Period('2015-07-01', '2016-07-01');
+        $seasonPeriod = Period::fromDate('2015-07-01', '2016-07-01');
         $season = new Season('2015/2016', $seasonPeriod);
 
         $person = new Person('FirstName', null, 'LastName');
 
-        $seasonStart = $seasonPeriod->getStartDate();
+        $seasonStart = $seasonPeriod->startDate;
 
-        $periodBefore = new Period(
+        $periodBefore = Period::fromDate(
             $seasonStart->add(new \DateInterval('P4D')),
             $seasonStart->add(new \DateInterval('P8D'))
         );
@@ -46,13 +46,13 @@ class EditorTest extends \PHPUnit\Framework\TestCase
         $association = new Association('testAssociation');
         $team = new Team($association, 'testTeam');
 
-        $seasonPeriod = new Period('2015-07-01', '2016-07-01');
+        $seasonPeriod = Period::fromDate('2015-07-01', '2016-07-01');
         $season = new Season('2015/2016', $seasonPeriod);
 
         $person = new Person('FirstName', null, 'LastName');
 
-        $seasonStart = $seasonPeriod->getStartDate();
-//        $period = new Period($seasonStart->modify('+8 days'), $seasonStart->modify('+10 days'));
+        $seasonStart = $seasonPeriod->startDate;
+//        $period = Period::fromDate($seasonStart->modify('+8 days'), $seasonStart->modify('+10 days'));
 
         $gameDateTime = $seasonStart->add(new \DateInterval('P8D'));
         $editor->update($season, $person, $gameDateTime, $team, FootballLine::Defense);
@@ -66,14 +66,14 @@ class EditorTest extends \PHPUnit\Framework\TestCase
         $association = new Association('testAssociation');
         $team = new Team($association, 'testTeam');
 
-        $seasonPeriod = new Period('2015-07-01', '2016-07-01');
+        $seasonPeriod = Period::fromDate('2015-07-01', '2016-07-01');
         $season = new Season('2015/2016', $seasonPeriod);
 
         $person = new Person('FirstName', null, 'LastName');
 
-        $seasonStart = $seasonPeriod->getStartDate();
+        $seasonStart = $seasonPeriod->startDate;
 
-        $period = new Period(
+        $period = Period::fromDate(
             $seasonStart->add(new \DateInterval('P4D')),
             $seasonStart->add(new \DateInterval('P8D'))
         );
@@ -91,14 +91,14 @@ class EditorTest extends \PHPUnit\Framework\TestCase
         $association = new Association('testAssociation');
         $team = new Team($association, 'testTeam');
 
-        $seasonPeriod = new Period('2015-07-01', '2016-07-01');
+        $seasonPeriod = Period::fromDate('2015-07-01', '2016-07-01');
         $season = new Season('2015/2016', $seasonPeriod);
 
         $person = new Person('FirstName', null, 'LastName');
 
-        $seasonStart = $seasonPeriod->getStartDate();
+        $seasonStart = $seasonPeriod->startDate;
 
-        $periodBefore = new Period(
+        $periodBefore = Period::fromDate(
             $seasonStart->add(new \DateInterval('P4D')),
             $seasonStart->add(new \DateInterval('P8D'))
         );
@@ -116,14 +116,14 @@ class EditorTest extends \PHPUnit\Framework\TestCase
         $association = new Association('testAssociation');
         $team = new Team($association, 'testTeam');
 
-        $seasonPeriod = new Period('2015-07-01', '2016-07-01');
+        $seasonPeriod = Period::fromDate('2015-07-01', '2016-07-01');
         $season = new Season('2015/2016', $seasonPeriod);
 
         $person = new Person('FirstName', null, 'LastName');
 
-        $seasonStart = $seasonPeriod->getStartDate();
+        $seasonStart = $seasonPeriod->startDate;
 
-        $periodBefore = new Period(
+        $periodBefore = Period::fromDate(
             $seasonStart->add(new \DateInterval('P4D')),
             $seasonStart->add(new \DateInterval('P8D'))
         );
@@ -143,14 +143,14 @@ class EditorTest extends \PHPUnit\Framework\TestCase
         $association = new Association('testAssociation');
         $team = new Team($association, 'testTeam');
 
-        $seasonPeriod = new Period('2015-07-01', '2016-07-01');
+        $seasonPeriod = Period::fromDate('2015-07-01', '2016-07-01');
         $season = new Season('2015/2016', $seasonPeriod);
 
         $person = new Person('FirstName', null, 'LastName');
 
-        $seasonStart = $seasonPeriod->getStartDate();
+        $seasonStart = $seasonPeriod->startDate;
 
-        $periodBefore = new Period(
+        $periodBefore = Period::fromDate(
             $seasonStart->add(new \DateInterval('P4D')),
             $seasonStart->add(new \DateInterval('P8D'))
         );
@@ -170,14 +170,14 @@ class EditorTest extends \PHPUnit\Framework\TestCase
         $association = new Association('testAssociation');
         $team = new Team($association, 'testTeam');
 
-        $seasonPeriod = new Period('2015-07-01', '2016-07-01');
+        $seasonPeriod = Period::fromDate('2015-07-01', '2016-07-01');
         $season = new Season('2015/2016', $seasonPeriod);
 
         $person = new Person('FirstName', null, 'LastName');
 
-        $seasonStart = $seasonPeriod->getStartDate();
+        $seasonStart = $seasonPeriod->startDate;
 
-        $periodBefore = new Period(
+        $periodBefore = Period::fromDate(
             $seasonStart->add(new \DateInterval('P4D')),
             $seasonStart->add(new \DateInterval('P8D'))
         );
@@ -195,15 +195,15 @@ class EditorTest extends \PHPUnit\Framework\TestCase
         $association = new Association('testAssociation');
         $team = new Team($association, 'testTeam');
 
-        $seasonPeriod = new Period('2015-07-01', '2016-07-01');
+        $seasonPeriod = Period::fromDate('2015-07-01', '2016-07-01');
         $season = new Season('2015/2016', $seasonPeriod);
 
         $person = new Person('FirstName', null, 'LastName');
 
-        $seasonStart = $seasonPeriod->getStartDate();
-        $seasonEnd = $seasonPeriod->getEndDate();
+        $seasonStart = $seasonPeriod->startDate;
+        $seasonEnd = $seasonPeriod->endDate;
 
-        $periodBefore = new Period(
+        $periodBefore = Period::fromDate(
             $seasonStart->add(new \DateInterval('P4D')),
             $seasonStart->add(new \DateInterval('P8D'))
         );
@@ -226,14 +226,14 @@ class EditorTest extends \PHPUnit\Framework\TestCase
         $association = new Association('testAssociation');
         $team = new Team($association, 'testTeam');
 
-        $seasonPeriod = new Period('2015-07-01', '2016-07-01');
+        $seasonPeriod = Period::fromDate('2015-07-01', '2016-07-01');
         $season = new Season('2015/2016', $seasonPeriod);
 
         $person = new Person('FirstName', null, 'LastName');
 
-        $seasonStart = $seasonPeriod->getStartDate();
+        $seasonStart = $seasonPeriod->startDate;
 
-        $periodBefore = new Period(
+        $periodBefore = Period::fromDate(
             $seasonStart->add(new \DateInterval('P4D')),
             $seasonStart->add(new \DateInterval('P8D'))
         );
@@ -241,7 +241,7 @@ class EditorTest extends \PHPUnit\Framework\TestCase
 
         $otherTeam = new Team($association, 'otherTeam');
 
-        $periodBefore = new Period(
+        $periodBefore = Period::fromDate(
             $seasonStart->add(new \DateInterval('P12D')),
             $seasonStart->add(new \DateInterval('P16D'))
         );
@@ -261,14 +261,14 @@ class EditorTest extends \PHPUnit\Framework\TestCase
         $association = new Association('testAssociation');
         $team = new Team($association, 'testTeam');
 
-        $seasonPeriod = new Period('2015-07-01', '2016-07-01');
+        $seasonPeriod = Period::fromDate('2015-07-01', '2016-07-01');
         $season = new Season('2015/2016', $seasonPeriod);
 
         $person = new Person('FirstName', null, 'LastName');
 
-        $seasonStart = $seasonPeriod->getStartDate();
+        $seasonStart = $seasonPeriod->startDate;
 
-        $periodBefore = new Period(
+        $periodBefore = Period::fromDate(
             $seasonStart->add(new \DateInterval('P4D')),
             $seasonStart->add(new \DateInterval('P8D'))
         );
@@ -288,14 +288,14 @@ class EditorTest extends \PHPUnit\Framework\TestCase
         $association = new Association('testAssociation');
         $team = new Team($association, 'testTeam');
 
-        $seasonPeriod = new Period('2015-07-01', '2016-07-01');
+        $seasonPeriod = Period::fromDate('2015-07-01', '2016-07-01');
         $season = new Season('2015/2016', $seasonPeriod);
 
         $person = new Person('FirstName', null, 'LastName');
 
-        $seasonStart = $seasonPeriod->getStartDate();
+        $seasonStart = $seasonPeriod->startDate;
 
-        $periodBefore = new Period(
+        $periodBefore = Period::fromDate(
             $seasonStart->add(new \DateInterval('P4D')),
             $seasonStart->add(new \DateInterval('P8D'))
         );
@@ -313,15 +313,15 @@ class EditorTest extends \PHPUnit\Framework\TestCase
         $association = new Association('testAssociation');
         $team = new Team($association, 'testTeam');
 
-        $seasonPeriod = new Period('2015-07-01', '2016-07-01');
+        $seasonPeriod = Period::fromDate('2015-07-01', '2016-07-01');
         $season = new Season('2015/2016', $seasonPeriod);
 
         $person = new Person('FirstName', null, 'LastName');
 
-        $seasonStart = $seasonPeriod->getStartDate();
-        $seasonEnd = $seasonPeriod->getEndDate();
+        $seasonStart = $seasonPeriod->startDate;
+        $seasonEnd = $seasonPeriod->endDate;
 
-        $periodBefore = new Period(
+        $periodBefore = Period::fromDate(
             $seasonStart->add(new \DateInterval('P4D')),
             $seasonStart->add(new \DateInterval('P8D'))
         );
@@ -344,14 +344,14 @@ class EditorTest extends \PHPUnit\Framework\TestCase
         $association = new Association('testAssociation');
         $team = new Team($association, 'testTeam');
 
-        $seasonPeriod = new Period('2015-07-01', '2016-07-01');
+        $seasonPeriod = Period::fromDate('2015-07-01', '2016-07-01');
         $season = new Season('2015/2016', $seasonPeriod);
 
         $person = new Person('FirstName', null, 'LastName');
 
-        $seasonStart = $seasonPeriod->getStartDate();
+        $seasonStart = $seasonPeriod->startDate;
 
-        $periodBefore = new Period(
+        $periodBefore = Period::fromDate(
             $seasonStart->add(new \DateInterval('P4D')),
             $seasonStart->add(new \DateInterval('P8D'))
         );
@@ -359,7 +359,7 @@ class EditorTest extends \PHPUnit\Framework\TestCase
 
         $otherTeam = new Team($association, 'otherTeam');
 
-        $periodBefore = new Period(
+        $periodBefore = Period::fromDate(
             $seasonStart->add(new \DateInterval('P12D')),
             $seasonStart->add(new \DateInterval('P16D'))
         );
@@ -379,15 +379,15 @@ class EditorTest extends \PHPUnit\Framework\TestCase
         $association = new Association('testAssociation');
         $team = new Team($association, 'testTeam');
 
-        $seasonPeriod = new Period('2015-07-01', '2016-07-01');
+        $seasonPeriod = Period::fromDate('2015-07-01', '2016-07-01');
         $season = new Season('2015/2016', $seasonPeriod);
 
         $person = new Person('FirstName', null, 'LastName');
 
-        $seasonStart = $seasonPeriod->getStartDate();
-        $seasonEnd = $seasonPeriod->getEndDate();
+        $seasonStart = $seasonPeriod->startDate;
+        $seasonEnd = $seasonPeriod->endDate;
 
-        $period = new Period(
+        $period = Period::fromDate(
             $seasonStart->add(new \DateInterval('P4D')),
             $seasonStart->add(new \DateInterval('P8D'))
         );
@@ -412,13 +412,13 @@ class EditorTest extends \PHPUnit\Framework\TestCase
 //        $association = new Association('testAssociation');
 //        $team = new Team($association, 'testTeam');
 //
-//        $seasonPeriod = new Period('2015-07-01', '2016-07-01');
+//        $seasonPeriod = Period::fromDate('2015-07-01', '2016-07-01');
 //        $season = new Season('2015/2016', $seasonPeriod);
 //
 //        $person = new Person('FirstName', null, 'LastName');
 //
-//        $seasonStart = $seasonPeriod->getStartDate();
-////        $period = new Period($seasonStart->modify('+8 days'), $seasonStart->modify('+10 days'));
+//        $seasonStart = $seasonPeriod->startDate;
+////        $period = Period::fromDate($seasonStart->modify('+8 days'), $seasonStart->modify('+10 days'));
 //
 //        $gameDateTime = $seasonStart->modify('+8 days');
 //        $editor->update($season, $person, $gameDateTime, $team, FootballLine::Defense);
@@ -434,15 +434,15 @@ class EditorTest extends \PHPUnit\Framework\TestCase
 //        $association = new Association('testAssociation');
 //        $league = new League($association, 'testLeague');
 //
-//        $seasonPeriod = new Period('2015-07-01', '2016-07-01');
+//        $seasonPeriod = Period::fromDate('2015-07-01', '2016-07-01');
 //        $season = new Season('2015/2016', $seasonPeriod);
 //
 //        $competition = new Competition($league, $season);
 //        $team = new Team($association, 'testTeam');
 //        $person = new Person('FirstName', null, 'LastName');
 //
-//        $seasonStart = $seasonPeriod->getStartDate();
-//        $period = new Period($seasonStart->modify('+8 days'), $seasonStart->modify('+10 days'));
+//        $seasonStart = $seasonPeriod->startDate;
+//        $period = Period::fromDate($seasonStart->modify('+8 days'), $seasonStart->modify('+10 days'));
 //
 //        $teamPlayer = new TeamPlayer($team, $person, $period, FootballLine::Defense->value);
 //

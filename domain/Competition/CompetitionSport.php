@@ -6,16 +6,16 @@ namespace Sports\Competition;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Sports\Sport\DBSport;
 use Sports\Competition;
 use Sports\Ranking\PointsCalculation;
-use Sports\Repositories\DBSport;
 use Sports\Sport;
 use SportsHelpers\Sports\AgainstOneVsOne;
 use SportsHelpers\Sports\AgainstOneVsTwo;
 use SportsHelpers\Sports\AgainstTwoVsTwo;
 use SportsHelpers\Sports\TogetherSport;
 
-class CompetitionSport extends DBSport
+final class CompetitionSport extends DBSport
 {
     /**
      * @var Collection<int|string,Field>
@@ -33,9 +33,10 @@ class CompetitionSport extends DBSport
         protected float $defaultDrawPointsExt,
         protected float $defaultLosePointsExt
     ) {
-        parent::__construct($sport->createSport());
+        $baseSport = $sport->createSport();
+        parent::__construct($baseSport);
         $this->defaultPointsCalculation =
-            ($sport instanceof TogetherSport) ? PointsCalculation::Scores : $defaultPointsCalculation;
+            ($baseSport instanceof TogetherSport) ? PointsCalculation::Scores : $defaultPointsCalculation;
 
         $this->competition->getSports()->add($this);
         $this->fields = new ArrayCollection();
@@ -109,10 +110,10 @@ class CompetitionSport extends DBSport
         return $field;
     }
 
-    public function createSportPersistVariantWithNrOfFields(): SportPersistVariantWithNrOfFields
-    {
-        return new SportPersistVariantWithNrOfFields($this->createVariant(), count($this->getFields()));
-    }
+//    public function createSportPersistVariantWithNrOfFields(): SportPersistVariantWithNrOfFields
+//    {
+//        return new SportPersistVariantWithNrOfFields($this->createVariant(), count($this->getFields()));
+//    }
 
 //    public function convertAgainst(): void
 //    {
@@ -126,11 +127,26 @@ class CompetitionSport extends DBSport
 //    }
 
     public function equals(self $competitionSport): bool {
-        return $this->getSport()->getName() === $competitionSport->getSport()->getName()
-            && $this->getGameMode() == $competitionSport->getGameMode()
-            && $this->getNrOfHomePlaces() == $competitionSport->getNrOfHomePlaces()
-            && $this->getNrOfAwayPlaces() == $competitionSport->getNrOfAwayPlaces()
-            && $this->getNrOfGamePlaces() == $competitionSport->getNrOfGamePlaces();
+        $thisSport = $this->getSport();
+        $thisBaseSport = $thisSport->createSport();
+        $sport = $competitionSport->getSport();
+        $baseSport = $sport->createSport();
+        if( $thisSport->getName() !== $sport->getName() ) {
+            return false;
+        }
+        if( $thisBaseSport instanceof TogetherSport && $baseSport instanceof TogetherSport) {
+            return $thisBaseSport->getNrOfGamePlaces() == $baseSport->getNrOfGamePlaces();
+        }
+        if( $thisBaseSport instanceof AgainstOneVsOne && $baseSport instanceof AgainstOneVsOne) {
+            return true;
+        }
+        if( $thisBaseSport instanceof AgainstOneVsTwo && $baseSport instanceof AgainstOneVsTwo) {
+            return true;
+        }
+        if( $thisBaseSport instanceof AgainstTwoVsTwo && $baseSport instanceof AgainstTwoVsTwo) {
+            return true;
+        }
+        return false;
     }
 
 //    public function __toString(): string

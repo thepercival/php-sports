@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Sports\Priority;
 
-class Service
+final class Service
 {
     /**
      * @param list<Prioritizable> $prioritizables

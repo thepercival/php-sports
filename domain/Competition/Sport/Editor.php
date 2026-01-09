@@ -16,7 +16,7 @@ use Sports\Score\ScoreConfig as ScoreConfig;
 use Sports\Score\ScoreConfigService as ScoreConfigService;
 use Sports\Structure;
 
-class Editor
+final class Editor
 {
     protected ScoreConfigService $scoreConfigService;
     protected QualifyConfigService $qualifyConfigService;
@@ -35,7 +35,8 @@ class Editor
                 new GameAmountConfig(
                     $competitionSport,
                     $roundNumber,
-                    PlanningConfig::DEFAULTGAMEAMOUNT
+                    PlanningConfig::DEFAULTGAMEAMOUNT,
+                    0
                 );
             }
             $roundNumber = $roundNumber->getNext();

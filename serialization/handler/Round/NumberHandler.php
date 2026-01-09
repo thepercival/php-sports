@@ -27,20 +27,18 @@ use Sports\Structure\StructureCell;
  * @psalm-type _Sport = array{id: int|string}
  * @psalm-type _CompetitionSport = array{id: int|string, sport: _Sport}
  * @psalm-type _PlanningConfig = array{roundNumber: RoundNumber}
- * @psalm-type _GameAmountConfig = array{amount: int, competitionSportId: int}
+ * @psalm-type _GameAmountConfig = array{competitionSportId: int, nrOfCycles: int, nrOfCycleParts: int}
  * @psalm-type _RoundNumber = array{previous: RoundNumber|null, planningConfig: _PlanningConfig|null, gameAmountConfigs: list<_GameAmountConfig>}
  * @psalm-type _FieldValue = array{previous: RoundNumber|null, planningConfig: _PlanningConfig|null, gameAmountConfigs: list<_GameAmountConfig>, next: _RoundNumber|null}
  *
  **/
-class NumberHandler extends Handler implements SubscribingHandlerInterface
+final class NumberHandler extends Handler implements SubscribingHandlerInterface
 {
     public function __construct(protected DummyCreator $dummyCreator)
     {
     }
 
-    /**
-     * @psalm-return list<array<string, int|string>>
-     */
+    #[\Override]
     public static function getSubscribingMethods(): array
     {
         return static::getDeserializationMethods(RoundNumber::class);
@@ -84,7 +82,8 @@ class NumberHandler extends Handler implements SubscribingHandlerInterface
                 new GameAmountConfig(
                     $competitionSport,
                     $roundNumber,
-                    $arrGameAmountConfig["amount"]
+                    $arrGameAmountConfig["nrOfCycles"],
+                    $arrGameAmountConfig["nrOfCycleParts"]
                 );
             }
         }

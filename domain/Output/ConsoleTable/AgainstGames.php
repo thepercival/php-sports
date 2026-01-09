@@ -14,7 +14,7 @@ use Sports\Structure\NameService as StructureNameService;
 use Sports\Score\AgainstScore as AgainstScore;
 use SportsHelpers\Against\AgainstSide;
 
-class AgainstGames
+final class AgainstGames
 {
     /**
      * @param Competition $competition
@@ -24,7 +24,7 @@ class AgainstGames
     public function display(Competition $competition, array $games, array $teamCompetitors): void
     {
         $table = new ConsoleTable();
-        $table->setHeaders(array('league', 'season', 'gameRoundNr', 'batchNr', 'id', 'datetime', 'state', 'home', 'score', 'away' ));
+        $table->setHeaders(array('league', 'season', 'cyclePartNr', 'batchNr', 'id', 'datetime', 'state', 'home', 'score', 'away' ));
 
         $structureNameService = new StructureNameService(new StartLocationMap($teamCompetitors));
 
@@ -32,9 +32,9 @@ class AgainstGames
             $row = array(
                 $competition->getLeague()->getName(),
                 $competition->getSeason()->getName(),
-                $game->getGameRoundNumber(),
+                $game->cyclePartNr,
                 $game->getBatchNr(),
-                $game->getId(),
+                $game->id,
                 $game->getStartDateTime()->format(DateTimeInterface::ATOM),
                 $game->getState()->name,
                 $structureNameService->getPlacesFromName($game->getSidePlaces(AgainstSide::Home), true, true),
@@ -49,7 +49,7 @@ class AgainstGames
     protected function getScore(AgainstGame $game): string
     {
         return join("&", array_map(function (AgainstScore $gameScore): string {
-            return $gameScore->getHome() . " - " . $gameScore->getAway() ;
+            return (string)$gameScore->getHome() . " - " . (string)$gameScore->getAway() ;
         }, $game->getScores()->toArray()));
     }
 }

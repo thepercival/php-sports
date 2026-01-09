@@ -10,10 +10,10 @@ use Sports\Poule;
 use Sports\Qualify\Mapping\ByPlace as QualifyByPlaceMapping;
 use Sports\Qualify\Mapping\ByRank as QualifyByRankMapping;
 use Sports\Qualify\Group as QualifyGroup;
-use Sports\Qualify\Rule\Multiple as MultipleRule;
+use Sports\Qualify\Rule\MultipleQualifyRuleInterface as MultipleRule;
 use Sports\Round;
 
-class PossibleFromMap
+final class PossibleFromMap
 {
     /**
      * @var array<int, list<Poule>>

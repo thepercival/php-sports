@@ -32,11 +32,15 @@ abstract class Game extends OutputBase
         $this->scoreConfigService = new ScoreConfigService();
     }
 
-    protected function getGameRoundNrAsString(int $gameRoundNr): string
+    protected function getCycleNrAsString(int $cycleNr, int|null $cyclePartNr): string
     {
-        $gameRoundNrColor = $this->useColors() ? ($gameRoundNr % 10) : -1;
+        $valueAsString = (string)$cycleNr;
+        if($cyclePartNr !== null) {
+            $valueAsString .= '(' . (string)$cyclePartNr . ')';
+        }
+        $gameRoundNrColor = $this->useColors() ? (($cyclePartNr ?? $cycleNr) % 10) : -1;
         $gameRoundNrColor = $this->convertNumberToColor($gameRoundNrColor);
-        $retVal = ($gameRoundNr < 10 ? ' ' : '') . $gameRoundNr;
+        $retVal = (($cyclePartNr ?? $cycleNr) < 10 ? ' ' : '') . $valueAsString;
         return Color::getColored($gameRoundNrColor, $retVal);
     }
 

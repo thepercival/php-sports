@@ -29,7 +29,7 @@ class FunctionMapCreator
 
     private function initMap(): void
     {
-        $this->map[Rule::MostPoints->name] = function (array $sportPerformances): array {
+        $this->map[RankingRule::MostPoints->name] = function (array $sportPerformances): array {
             /** @var list<SportPerformance> $sportPerformances */
             $mostPoints = null;
             $bestSportPerformances = [];
@@ -46,7 +46,7 @@ class FunctionMapCreator
             }
             return $bestSportPerformances;
         };
-        $this->map[Rule::FewestGames->name] = function (array $sportPerformances): array {
+        $this->map[RankingRule::FewestGames->name] = function (array $sportPerformances): array {
             /** @var list<SportPerformance> $sportPerformances */
             $fewestGames = null;
             $bestSportPerformances = [];
@@ -78,11 +78,11 @@ class FunctionMapCreator
             }
             return $bestSportPerformances;
         };
-        $this->map[Rule::MostUnitsScored->name] = function (array $sportPerformances) use ($mostScored): array {
+        $this->map[RankingRule::MostUnitsScored->name] = function (array $sportPerformances) use ($mostScored): array {
             /** @var list<SportPerformance> $sportPerformances */
             return $mostScored($sportPerformances, false);
         };
-        $this->map[Rule::MostSubUnitsScored->name] = function (array $sportPerformances) use ($mostScored): array {
+        $this->map[RankingRule::MostSubUnitsScored->name] = function (array $sportPerformances) use ($mostScored): array {
             /** @var list<SportPerformance> $sportPerformances */
             return $mostScored($sportPerformances, true);
         };

@@ -6,10 +6,10 @@ namespace Sports\Structure;
 
 use Sports\Category;
 use Sports\Poule\Horizontal as HorizontalPoule;
-use Sports\Qualify\Rule\Horizontal\Single as HorizontalSingle;
-use Sports\Qualify\Rule\Horizontal\Multiple as HorizontalMultiple;
-use Sports\Qualify\Rule\Vertical\Single as VerticalSingle;
-use Sports\Qualify\Rule\Vertical\Multiple as VerticalMultiple;
+use Sports\Qualify\Rule\Horizontal\SingleHorizontalQualifyRule as HorizontalSingle;
+use Sports\Qualify\Rule\Horizontal\MultipleHorizontalQualifyRule as HorizontalMultiple;
+use Sports\Qualify\Rule\Vertical\SingleVerticalQualifyRule as VerticalSingle;
+use Sports\Qualify\Rule\Vertical\MultipleVerticalQualifyRule as VerticalMultiple;
 use Sports\Qualify\QualifyTarget as QualifyTarget;
 use Exception;
 use Sports\Structure\NameService as StructureNameService;

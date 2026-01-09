@@ -7,7 +7,7 @@ namespace Sports\Output\ConsoleTable;
 use LucidFrame\Console\ConsoleTable;
 use Sports\Sport;
 
-class Sports
+final class Sports
 {
     /**
      * @param list<Sport> $sports
@@ -17,7 +17,7 @@ class Sports
         $table = new ConsoleTable();
         $table->setHeaders(array('id', 'name'));
         foreach ($sports as $sport) {
-            $row = array( $sport->getId(), $sport->getName() );
+            $row = array( $sport->id, $sport->getName() );
             $table->addRow($row);
         }
         $table->display();

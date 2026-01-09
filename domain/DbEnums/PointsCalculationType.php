@@ -31,6 +31,9 @@ final class PointsCalculationType extends EnumDbType
         return null;
     }
 
+    /**
+     * @psalm-suppress MethodSignatureMismatch
+     */
     #[\Override]
     public function getSQLDeclaration(array $column, AbstractPlatform $platform): string
     {

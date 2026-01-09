@@ -9,7 +9,7 @@ use Sports\Person;
 use Sports\Priority\Prioritizable;
 use SportsHelpers\Identifiable;
 
-class Referee extends Identifiable implements Prioritizable
+final class Referee extends Identifiable implements Prioritizable
 {
     private string $initials;
     protected int $priority;
@@ -42,11 +42,13 @@ class Referee extends Identifiable implements Prioritizable
         $this->competition->getReferees()->add($this);
     }
 
+    #[\Override]
     public function getPriority(): int
     {
         return $this->priority;
     }
 
+    #[\Override]
     final public function setPriority(int $priority): void
     {
         $this->priority = $priority;

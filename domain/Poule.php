@@ -14,7 +14,7 @@ use Sports\Game\Together as TogetherGame;
 use Sports\Structure\Locations\StructureLocationPoule;
 use SportsHelpers\Identifiable;
 
-class Poule extends Identifiable
+final class Poule extends Identifiable
 {
     protected int $number;
     protected string|null $name = null;

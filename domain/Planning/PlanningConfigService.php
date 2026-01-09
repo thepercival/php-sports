@@ -6,9 +6,8 @@ namespace Sports\Planning;
 
 use Sports\Planning\PlanningConfig as PlanningConfig;
 use Sports\Round\Number as RoundNumber;
-use SportsHelpers\SelfReferee;
 
-class PlanningConfigService
+final class PlanningConfigService
 {
     public function createDefault(RoundNumber $roundNumber): PlanningConfig
     {
@@ -22,8 +21,8 @@ class PlanningConfigService
             $this->getDefaultMinutesBetweenGames(),
             $this->getDefaultMinutesAfter(),
             false,
-            SelfReferee::Disabled,
-            0,
+            null,
+            null,
             false
         );
     }
@@ -40,8 +39,8 @@ class PlanningConfigService
             $fromPlanningConfig->getMinutesBetweenGames(),
             $fromPlanningConfig->getMinutesAfter(),
             $fromPlanningConfig->getPerPoule(),
-            $fromPlanningConfig->getSelfReferee(),
-            $fromPlanningConfig->getNrOfSimSelfRefs(),
+            $fromPlanningConfig->getSelfRefereeInfo()?->selfReferee,
+            $fromPlanningConfig->getSelfRefereeInfo()?->nrOfSimSelfRefs,
             $fromPlanningConfig->getBestLast()
         );
     }

@@ -15,7 +15,6 @@ use Sports\Qualify\RoundRank\Service as RoundRankService;
 use Sports\Round\Number as RoundNumber;
 use Sports\Structure\PouleStructureNumberMap;
 use SportsPlanning\Field as PlanningField;
-use SportsPlanning\Game\GameAbstract as PlanningGameAbstract;
 use SportsPlanning\Game\AgainstGame as PlanningAgainstGame;
 use SportsPlanning\Game\TogetherGame as PlanningTogetherGame;
 use SportsPlanning\Place as PlanningPlace;
@@ -35,7 +34,7 @@ final class PlanningMapper
      */
     protected array $pouleMap;
     /**
-     * @var array<string, Referee>
+     * @var array<int, Referee>
      */
     protected array $refereeMap;
     /**
@@ -54,13 +53,12 @@ final class PlanningMapper
 
     private function init(RoundNumber $roundNumber, Planning $planning): void
     {
+        $this->initPoules($roundNumber, $planning);
+
+        $this->initCompetitionSportsMap($roundNumber, $planning->sports);
+        $this->initFields($roundNumber, $planning);
+
         $planningGames = $this->getGamesForInit($roundNumber, $planning);
-
-        $this->initPoules($roundNumber, $planningGames);
-
-        $this->initCompetitionSportsMap($roundNumber, $planning);
-        $this->initFields($roundNumber, $planningGames);
-
         $this->refereeMap = [];
         if (count($planning->referees) > 0) {
             $this->initReferees($roundNumber, $planningGames);
@@ -81,30 +79,26 @@ final class PlanningMapper
         return $planningGames;
     }
 
-    /**
-     * @param RoundNumber $roundNumber
-     * @param list<PlanningAgainstGame|PlanningTogetherGame> $planningGames
-     * @throws Exception
-     */
-    private function initPoules(RoundNumber $roundNumber, array $planningGames): void
+    private function initPoules(RoundNumber $roundNumber, Planning $planning): void
     {
+        $planningGames = $this->getGamesForInit($roundNumber, $planning);
         $poulesNrOfPlacesMap = $this->getPoulesNrOfPlacesMap($roundNumber);
 
         $this->pouleMap = [];
         $planningGame = array_shift($planningGames);
         while (count($poulesNrOfPlacesMap) > 0 && $planningGame !== null) {
-            $planningPoule = $planningGame->getPoule();
-            if (isset($this->pouleMap[$planningPoule->getNumber()])) {
+            $planningPoule = $planning->getPoule($planningGame->pouleNr);
+            if (isset($this->pouleMap[$planningPoule->pouleNr])) {
                 $planningGame = array_shift($planningGames);
                 continue;
             }
-            $nrOfPlaces = $planningPoule->getPlaces()->count();
+            $nrOfPlaces = count($planningPoule->places);
             $poule = array_shift($poulesNrOfPlacesMap[$nrOfPlaces]);
             if ($poule !== null) {
                 if (count($poulesNrOfPlacesMap[$nrOfPlaces]) === 0) {
                     unset($poulesNrOfPlacesMap[$nrOfPlaces]);
                 }
-                $this->pouleMap[$planningPoule->getNumber()] = $poule;
+                $this->pouleMap[$planningPoule->pouleNr] = $poule;
             }
             $planningGame = array_shift($planningGames);
         }
@@ -190,8 +184,10 @@ final class PlanningMapper
         );
         usort(
             $sportsWithNrAndFields,
-            function (PlanningSport $planningSportA, PlanningSport $planningSportB): int {
-                return count($planningSportB->getFields()) - count($planningSportA->getFields());
+            function (
+                TogetherSportWithNrAndFields|AgainstOneVsOneWithNrAndFields|AgainstOneVsTwoWithNrAndFields|AgainstTwoVsTwoWithNrAndFields $planningSportA,
+                TogetherSportWithNrAndFields|AgainstOneVsOneWithNrAndFields|AgainstOneVsTwoWithNrAndFields|AgainstTwoVsTwoWithNrAndFields $planningSportB): int {
+                return count($planningSportB->fields) - count($planningSportA->fields);
             }
         );
         foreach ($sportsWithNrAndFields as $sportWithNrAndFields) {
@@ -246,30 +242,25 @@ final class PlanningMapper
         return $competitionSport;
     }
 
-    /**
-     * @param RoundNumber $roundNumber
-     * @param list<PlanningAgainstGame|PlanningTogetherGame> $planningGames
-     * @throws Exception
-     */
-    private function initFields(RoundNumber $roundNumber, array $planningGames): void
+    private function initFields(RoundNumber $roundNumber, Planning $planning): void
     {
+        $planningGames = $this->getGamesForInit($roundNumber, $planning);
         $competitionSportsFieldMap = $this->getCompetitionSportsFieldMap($roundNumber->getCompetition());
         $this->fieldMap = [];
 
         $planningGame = array_shift($planningGames);
         while (count($competitionSportsFieldMap) > 0 && $planningGame !== null) {
             $planningField = $planningGame->getField();
-            $planningSportNr = $planningField->getSport()->getNumber();
             if (isset($this->fieldMap[$planningField->getUniqueIndex()])
-                || !isset($competitionSportsFieldMap[$planningSportNr])) {
+                || !isset($competitionSportsFieldMap[$planningField->sportNr])) {
                 $planningGame = array_shift($planningGames);
                 continue;
             }
 
-            $field = array_shift($competitionSportsFieldMap[$planningSportNr]);
+            $field = array_shift($competitionSportsFieldMap[$planningField->sportNr]);
             if ($field !== null) {
-                if (count($competitionSportsFieldMap[$planningSportNr]) === 0) {
-                    unset($competitionSportsFieldMap[$planningSportNr]);
+                if (count($competitionSportsFieldMap[$planningField->sportNr]) === 0) {
+                    unset($competitionSportsFieldMap[$planningField->sportNr]);
                 }
                 $this->fieldMap[$planningField->getUniqueIndex()] = $field;
             }
@@ -300,12 +291,15 @@ final class PlanningMapper
     private function initReferees(RoundNumber $roundNumber, array $planningGames): void
     {
         $referees = $this->getSortedReferees($roundNumber->getCompetition());
-
+        $refereeInfo = $roundNumber->getRefereeInfo();
+        if( $refereeInfo === null || $refereeInfo->nrOfReferees === 0 ) {
+            return;
+        }
         $planningGame = array_shift($planningGames);
         while (count($referees) > 0 && $planningGame !== null) {
-            $planningReferee = $planningGame->getReferee();
-            if ($planningReferee !== null && !isset($this->refereeMap[$planningReferee->getUniqueIndex()])) {
-                $this->refereeMap[$planningReferee->getUniqueIndex()] = array_shift($referees);
+            $refereeNr = $planningGame->getRefereeNr();
+            if ($refereeNr !== null && !isset($this->refereeMap[$refereeNr])) {
+                $this->refereeMap[$refereeNr] = array_shift($referees);
             }
             $planningGame = array_shift($planningGames);
         }
@@ -322,18 +316,18 @@ final class PlanningMapper
 
     public function getPoule(PlanningPoule $poule): Poule
     {
-        if (!array_key_exists($poule->getNumber(), $this->pouleMap)) {
+        if (!array_key_exists($poule->pouleNr, $this->pouleMap)) {
             throw new Exception('de poule kan niet gevonden worden', E_ERROR);
         }
-        return $this->pouleMap[$poule->getNumber()];
+        return $this->pouleMap[$poule->pouleNr];
     }
 
-    public function getCompetitionSport(PlanningSport $planningSport): CompetitionSport
+    public function getCompetitionSport(AgainstOneVsOneWithNrAndFields|AgainstOneVsTwoWithNrAndFields|AgainstTwoVsTwoWithNrAndFields|TogetherSportWithNrAndFields $sportWithNrAndFields): CompetitionSport
     {
-        if (!array_key_exists($planningSport->getNumber(), $this->competitionSportMap)) {
+        if (!array_key_exists($sportWithNrAndFields->sportNr, $this->competitionSportMap)) {
             throw new Exception('de sport kan niet gevonden worden', E_ERROR);
         }
-        return $this->competitionSportMap[$planningSport->getNumber()];
+        return $this->competitionSportMap[$sportWithNrAndFields->sportNr];
     }
 
     public function getField(PlanningField|null $planningField): Field|null
@@ -352,23 +346,24 @@ final class PlanningMapper
         if ($planningReferee === null) {
             return null;
         }
-        if (!array_key_exists($planningReferee->getUniqueIndex(), $this->refereeMap)) {
+        if (!array_key_exists($planningReferee->refereeNr, $this->refereeMap)) {
             throw new Exception('de scheidsrechter kan niet gevonden worden', E_ERROR);
         }
-        return $this->refereeMap[$planningReferee->getUniqueIndex()];
+        return $this->refereeMap[$planningReferee->refereeNr];
     }
 
-    public function getRefereePlace(PlanningPlace $planningPlace = null): Place|null
+    public function getRefereePlace(Planning $planning, PlanningPlace $planningPlace = null): Place|null
     {
         if ($planningPlace === null) {
             return null;
         }
-        return $this->getPlace($planningPlace);
+        return $this->getPlace($planning, $planningPlace);
     }
 
-    public function getPlace(PlanningPlace $planningPlace): Place
+    public function getPlace(Planning $planning, PlanningPlace $planningPlace): Place
     {
-        $poule = $this->getPoule($planningPlace->getPoule());
+        $planningPoule = $planning->getPoule($planningPlace->pouleNr);
+        $poule = $this->getPoule($planningPoule);
         return $poule->getPlace($planningPlace->getPlaceNr());
     }
 }

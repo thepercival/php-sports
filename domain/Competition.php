@@ -21,7 +21,7 @@ use SportsHelpers\SportVariants\AllInOneGame;
 use SportsHelpers\SportVariants\Persist\SportPersistVariantWithNrOfFields;
 use SportsHelpers\SportVariants\Single;
 
-class Competition extends Identifiable
+final class Competition extends Identifiable
 {
     private League $league;
     private DateTimeImmutable $startDateTime;
@@ -191,34 +191,34 @@ class Competition extends Identifiable
         return $this->sports;
     }
 
-    /**
-     * @return list<SportPersistVariantWithNrOfFields>
-     */
-    public function createSportPersistVariantsWithNrOfFields(): array
-    {
-        return array_values(
-            array_map(
-                function (CompetitionSport $competitionSport): SportPersistVariantWithNrOfFields {
-                    return $competitionSport->createSportPersistVariantWithNrOfFields();
-                }, $this->getSports()->toArray()
-            )
-        );
-    }
-
-
-    /**
-     * @return list<AgainstOneVsOne|AgainstOneVsTwo|AgainstTwoVsTwo|AllInOneGame|Single>
-     */
-    public function createSportVariants(): array
-    {
-        return array_values(
-            array_map(
-                function (CompetitionSport $competitionSport): AgainstOneVsOne|AgainstOneVsTwo|AgainstTwoVsTwo|AllInOneGame|Single {
-                    return $competitionSport->createVariant();
-                }, $this->getSports()->toArray()
-            )
-        );
-    }
+//    /**
+//     * @return list<SportPersistVariantWithNrOfFields>
+//     */
+//    public function createSportPersistVariantsWithNrOfFields(): array
+//    {
+//        return array_values(
+//            array_map(
+//                function (CompetitionSport $competitionSport): SportPersistVariantWithNrOfFields {
+//                    return $competitionSport->createSportPersistVariantWithNrOfFields();
+//                }, $this->getSports()->toArray()
+//            )
+//        );
+//    }
+//
+//
+//    /**
+//     * @return list<AgainstOneVsOne|AgainstOneVsTwo|AgainstTwoVsTwo|AllInOneGame|Single>
+//     */
+//    public function createSportVariants(): array
+//    {
+//        return array_values(
+//            array_map(
+//                function (CompetitionSport $competitionSport): AgainstOneVsOne|AgainstOneVsTwo|AgainstTwoVsTwo|AllInOneGame|Single {
+//                    return $competitionSport->createVariant();
+//                }, $this->getSports()->toArray()
+//            )
+//        );
+//    }
 
     public function getSingleSport(): CompetitionSport
     {

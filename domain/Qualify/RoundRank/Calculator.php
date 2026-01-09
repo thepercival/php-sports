@@ -8,7 +8,7 @@ use Sports\Category;
 use Sports\Round;
 use Sports\Qualify\QualifyTarget as QualifyTarget;
 
-class Calculator
+final class Calculator
 {
     /**
      * @var array<string, int>

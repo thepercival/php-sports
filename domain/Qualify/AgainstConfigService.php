@@ -7,9 +7,8 @@ namespace Sports\Qualify;
 use Sports\Competition\CompetitionSport as CompetitionSport;
 use Sports\Qualify\AgainstConfig as QualifyConfig;
 use Sports\Round;
-use SportsHelpers\GameMode;
 
-class AgainstConfigService
+final class AgainstConfigService
 {
     public function createDefault(CompetitionSport $competitionSport, Round $round): QualifyConfig
     {

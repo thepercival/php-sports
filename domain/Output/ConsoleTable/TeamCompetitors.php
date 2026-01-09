@@ -5,7 +5,7 @@ namespace Sports\Output\ConsoleTable;
 use LucidFrame\Console\ConsoleTable;
 use Sports\Competitor\Team as TeamCompetitor;
 
-class TeamCompetitors
+final class TeamCompetitors
 {
     /**
      * @param list<TeamCompetitor> $teamCompetitors

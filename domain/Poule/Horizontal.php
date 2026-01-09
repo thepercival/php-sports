@@ -8,10 +8,10 @@ use Doctrine\Common\Collections\Collection;
 use Exception;
 use Sports\Place;
 use Sports\Poule\Horizontal as HorizontalPoule;
-use Sports\Qualify\Rule\Horizontal\Multiple as HorizontalMultipleQualifyRule;
-use Sports\Qualify\Rule\Horizontal\Single as HorizontalSingleQualifyRule;
-use Sports\Qualify\Rule\Vertical\Multiple as VerticalMultipleQualifyRule;
-use Sports\Qualify\Rule\Vertical\Single as VerticalSingleQualifyRule;
+use Sports\Qualify\Rule\Horizontal\MultipleHorizontalQualifyRule as HorizontalMultipleQualifyRule;
+use Sports\Qualify\Rule\Horizontal\SingleHorizontalQualifyRule as HorizontalSingleQualifyRule;
+use Sports\Qualify\Rule\Vertical\MultipleVerticalQualifyRule as VerticalMultipleQualifyRule;
+use Sports\Qualify\Rule\Vertical\SingleVerticalQualifyRule as VerticalSingleQualifyRule;
 use Sports\Qualify\QualifyTarget as QualifyTarget;
 use Sports\Round;
 
@@ -26,7 +26,7 @@ use Sports\Round;
  *  [ C1 B1 A1 ]
  *
  **/
-class Horizontal
+final class Horizontal
 {
     protected int $number;
     protected HorizontalMultipleQualifyRule | HorizontalSingleQualifyRule |

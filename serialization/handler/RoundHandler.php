@@ -28,15 +28,13 @@ use Sports\Structure\StructureCell;
  * @psalm-type _QualifyGroup = array{parentRound: Round, nextStructureCell: StructureCell}
  * @psalm-type _FieldValue = array{parentQualifyGroup: QualifyGroup|null, structureCell: StructureCell, poules: list<_Poule>, qualifyGroups: list<_QualifyGroup>, againstQualifyConfigs: list<_AgainstQualifyConfig>, scoreConfigs: list<_ScoreConfigFieldValue>}
  */
-class RoundHandler extends Handler implements SubscribingHandlerInterface
+final class RoundHandler extends Handler implements SubscribingHandlerInterface
 {
     public function __construct(protected DummyCreator $dummyCreator)
     {
     }
 
-    /**
-     * @psalm-return list<array<string, int|string>>
-     */
+    #[\Override]
     public static function getSubscribingMethods(): array
     {
         return static::getDeserializationMethods(Round::class);

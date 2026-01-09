@@ -18,7 +18,7 @@ use Sports\Sport;
 use Sports\Structure\NameService as StructureNameService;
 use SportsHelpers\Against\AgainstSide;
 
-class AgainstGame
+final class AgainstGame
 {
 //    $competitorMap = new CompetitorMap($teamCompetitors);
 //    $structureNameService = new StructureNameService($competitorMap);
@@ -52,7 +52,7 @@ class AgainstGame
         return [
             $competition->getLeague()->getName(), '', '',
             $competition->getSeason()->getName(),
-            $game->getStartDateTime()->format(DateTimeInterface::ATOM), 'GR ' . $game->getGameRoundNumber(), ''
+            $game->getStartDateTime()->format(DateTimeInterface::ATOM), 'CP ' . $game->cyclePartNr, ''
         ];
     }
 
@@ -70,7 +70,7 @@ class AgainstGame
 
         $score = " - ";
         if ($finalScore !== null) {
-            $score = $finalScore->getHome() . $score . $finalScore->getAway();
+            $score = (string)$finalScore->getHome() . $score . (string)$finalScore->getAway();
         }
         $homePlaces = $game->getSidePlaces(AgainstSide::Home);
         $awayPlaces = $game->getSidePlaces(AgainstSide::Away);

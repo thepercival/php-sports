@@ -8,12 +8,12 @@ use Sports\Competition\CompetitionSport as CompetitionSport;
 use Sports\Game\GameState as GameState;
 use Sports\Place;
 use Sports\Place\SportPerformance;
-use Sports\Ranking\Calculator\Round\Sport\Against as AgainstSportRoundRankingCalculator;
+use Sports\Ranking\Calculator\Round\RoundRankingCalculatorForAgainstSport as AgainstSportRoundRankingCalculator;
 use Sports\Ranking\FunctionMapCreator as BaseFunctionMapCreator;
-use Sports\Ranking\Item\Round\Sport as SportRoundRankingItem;
-use Sports\Ranking\Rule;
+use Sports\Ranking\Item\RoundRankingItemForSport as SportRoundRankingItem;
+use Sports\Ranking\RankingRule;
 
-class Against extends BaseFunctionMapCreator
+final class Against extends BaseFunctionMapCreator
 {
     /**
      * @param CompetitionSport $competitionSport
@@ -43,15 +43,15 @@ class Against extends BaseFunctionMapCreator
             }
             return $bestSportPerformances;
         };
-        $this->map[Rule::BestUnitDifference->name] = function (array $sportPerformances) use ($bestDifference): array {
+        $this->map[RankingRule::BestUnitDifference->name] = function (array $sportPerformances) use ($bestDifference): array {
             /** @var list<SportPerformance> $sportPerformances */
             return $bestDifference($sportPerformances, false);
         };
-        $this->map[Rule::BestSubUnitDifference->name] = function (array $sportPerformances) use ($bestDifference): array {
+        $this->map[RankingRule::BestSubUnitDifference->name] = function (array $sportPerformances) use ($bestDifference): array {
             /** @var list<SportPerformance> $sportPerformances */
             return $bestDifference($sportPerformances, true);
         };
-        $this->map[Rule::BestAmongEachOther->name] = function (array $sportPerformances): array {
+        $this->map[RankingRule::BestAmongEachOther->name] = function (array $sportPerformances): array {
             /** @var list<SportPerformance> $sportPerformances */
             $places = array_map(
                 function (SportPerformance $sportPerformance): Place {

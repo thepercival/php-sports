@@ -7,7 +7,7 @@ namespace Sports\Competition;
 use Exception;
 use Sports\Competition;
 
-class Validator
+final class Validator
 {
     public function __construct()
     {
@@ -19,7 +19,7 @@ class Validator
 
         foreach ($competition->getSports() as $competitionSport) {
             try {
-                $competitionSport->createVariant();
+                $competitionSport->createSport();
             } catch (Exception $e) {
                 $message .=  $e->getMessage();
                 throw new Exception($message, E_ERROR);

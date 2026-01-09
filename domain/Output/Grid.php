@@ -32,11 +32,11 @@ final class Grid extends OutputBase
 
     public function getCell(Coordinate $coordinate): Cell {
         if( !array_key_exists($coordinate->getY(), $this->grid) ) {
-            throw new \Exception('no column found for coordinate ' . $coordinate);
+            throw new \Exception('no column found for coordinate ' . (string)$coordinate);
         }
         $rows = $this->grid[$coordinate->getY()];
         if( !array_key_exists($coordinate->getX(), $rows) ) {
-            throw new \Exception('no row found for coordinate ' . $coordinate);
+            throw new \Exception('no row found for coordinate ' . (string)$coordinate);
         }
         return $rows[$coordinate->getX()];
     }
@@ -75,7 +75,7 @@ final class Grid extends OutputBase
         foreach ($this->grid as $line) {
             $string = '';
             foreach ($line as $cell) {
-                $string .= $cell;
+                $string .= (string)$cell;
             }
             $this->logger->info($string);
         }

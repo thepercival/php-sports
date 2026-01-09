@@ -19,7 +19,7 @@ use SportsHelpers\PlaceLocationInterface;
 use Sports\Poule\Horizontal as HorizontalPoule;
 use Sports\Qualify\QualifyTarget as QualifyTarget;
 
-class Place extends Identifiable implements PlaceLocationInterface
+final class Place extends Identifiable implements PlaceLocationInterface
 {
     private int $placeNr;
 
@@ -47,11 +47,13 @@ class Place extends Identifiable implements PlaceLocationInterface
         return $this->poule;
     }
 
+    #[\Override]
     public function getPouleNr(): int
     {
         return $this->poule->getNumber();
     }
 
+    #[\Override]
     public function getPlaceNr(): int
     {
         return $this->placeNr;
@@ -232,6 +234,7 @@ class Place extends Identifiable implements PlaceLocationInterface
         return GameState::Created;
     }
 
+    #[\Override]
     public function getUniqueIndex(): string
     {
         return $this->getPouleNr() . '.' . $this->getPlaceNr();

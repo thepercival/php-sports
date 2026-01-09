@@ -6,6 +6,7 @@ namespace Sports\TestHelper;
 
 use League\Period\Period;
 use Monolog\Handler\StreamHandler;
+use Monolog\Level;
 use Monolog\Logger;
 use Monolog\Processor\UidProcessor;
 use Psr\Log\LoggerInterface;
@@ -13,18 +14,17 @@ use Sports\Round\Number as RoundNumber;
 use Sports\Round\Number\PlanningAssigner;
 use Sports\Round\Number\PlanningScheduler;
 use Sports\Structure;
-use SportsHelpers\SelfReferee;
-use SportsPlanning\Referee\Info as RefereeInfo;
+use SportsHelpers\RefereeInfo;
 use SportsHelpers\SportRange;
-use SportsPlanning\Batch\SelfReferee\OtherPoule as SelfRefereeBatchOtherPoule;
-use SportsPlanning\Batch\SelfReferee\SamePoule as SelfRefereeBatchSamePoule;
-use SportsPlanning\Planning;
-use SportsScheduler\Resource\RefereePlace\Service as RefereePlaceService;
-use SportsScheduler\Schedule\Creator as ScheduleCreator;
+use SportsPlanning\Batches\SelfRefereeBatchOtherPoules;
+use SportsPlanning\Batches\SelfRefereeBatchSamePoule;
+use SportsPlanning\PlanningConfiguration;
+use SportsPlanning\PlanningOrchestration;
+use SportsPlanning\PlanningWithMeta;
+use SportsScheduler\Resource\RefereePlaces\RefereePlaceService;
 
-class GamesCreator
+final class GamesCreator
 {
-    use GppMarginCalculator;
 
     protected function getLogger(): LoggerInterface
     {
@@ -32,7 +32,7 @@ class GamesCreator
         $processor = new UidProcessor();
         $logger->pushProcessor($processor);
 
-        $handler = new StreamHandler('php://stdout', Logger::INFO);
+        $handler = new StreamHandler('php://stdout', Level::Info);
         $logger->pushHandler($handler);
         return $logger;
     }
@@ -41,93 +41,77 @@ class GamesCreator
      * @param Structure $structure
      * @param list<Period> $blockedPeriods
      * @param SportRange|null $batchGamesRange
-     * @param int|null $allowedGppMargin
      */
     public function createStructureGames(
         Structure $structure,
         array $blockedPeriods = [],
-        SportRange $batchGamesRange = null,
-        int|null $allowedGppMargin = null
+        SportRange $batchGamesRange = null
     ): void {
         $this->removeGamesHelper($structure->getFirstRoundNumber());
-        $this->createGamesHelper($structure->getFirstRoundNumber(), $blockedPeriods, $batchGamesRange, $allowedGppMargin);
+        $this->createGamesHelper($structure->getFirstRoundNumber(), $blockedPeriods, $batchGamesRange);
     }
 
     /**
      * @param RoundNumber $roundNumber
      * @param list<Period> $blockedPeriods
      * @param SportRange|null $range
-     * @param int|null $allowedGppMargin
      */
     public function createGames(
         RoundNumber $roundNumber,
         array $blockedPeriods = [],
-        SportRange $batchGamesRange = null,
-        int|null $allowedGppMargin = null): void
+        SportRange $batchGamesRange = null): void
     {
         $this->removeGamesHelper($roundNumber);
-        $this->createGamesHelper($roundNumber, $blockedPeriods, $batchGamesRange, $allowedGppMargin);
+        $this->createGamesHelper($roundNumber, $blockedPeriods, $batchGamesRange);
     }
 
-    public function createPlanning(
+    public function createPlanningWithMeta(
         RoundNumber $roundNumber,
         RefereeInfo|null $refereeInfo = null,
-        SportRange $batchGamesRange = null,
-        int|null $allowedGppMargin = null): Planning
+        SportRange $batchGamesRange = null): PlanningWithMeta
     {
-        $planningCreator = new PlanningCreator();
-        if( $refereeInfo === null ) {
-            $refereeInfo = new RefereeInfo($roundNumber->getCompetition()->getReferees()->count());
+        $nrOfReferees = $roundNumber->getCompetition()->getReferees()->count();
+        if( $refereeInfo === null && $nrOfReferees > 0 ) {
+            $refereeInfo = RefereeInfo::fromNrOfReferees($nrOfReferees);
         }
-        $input = $planningCreator->createInput(
-            $roundNumber->createPouleStructure(),
-            $roundNumber->getCompetition()->createSportVariantsWithFields(),
-            $refereeInfo
-        );
-        $planningCreator = new PlanningCreator();
 
-        if( $allowedGppMargin === null) {
-            $allowedGppMargin = $this->getMaxGppMargin($input->getPoule(1), $this->getLogger());
-        }
-        return $planningCreator->createPlanning($input, $batchGamesRange, $allowedGppMargin);
+        $planningConfiguration = new PlanningConfiguration(
+            $roundNumber->createPouleStructure(),
+            $roundNumber->createSportWithNrOfFieldsAndNrOfCycles(),
+            $refereeInfo,
+            false
+        );
+
+        $planningOrchestration = new PlanningOrchestration($planningConfiguration);
+        $planningCreator = new PlanningCreator();
+        return $planningCreator->createPlanningWithMeta($planningOrchestration, $batchGamesRange);
     }
 
     /**
      * @param RoundNumber $roundNumber
      * @param list<Period> $blockedPeriods
      * @param SportRange|null $range
-     * @param int|null $allowedGppMargin
      */
     private function createGamesHelper(
         RoundNumber $roundNumber,
         array $blockedPeriods,
-        SportRange|null $batchGamesRange,
-        int|null $allowedGppMargin
+        SportRange|null $batchGamesRange
     ): void {
-        if( $allowedGppMargin === null) {
-            $allowedGppMargin = 2; // (new ScheduleCreator($this->getLogger()))->getMaxGppMargin($input, $input->getPoule(1));
-        }
+        $refereeInfo = $roundNumber->getRefereeInfo();
 
-        $selfRefereeInfo = $roundNumber->getValidPlanningConfig()->getSelfRefereeInfo();
-        if( $selfRefereeInfo->selfReferee === SelfReferee::Disabled ) {
-            $refereeInfo = new RefereeInfo(count($roundNumber->getCompetition()->getReferees()));
-        } else {
-            $refereeInfo = new RefereeInfo($selfRefereeInfo);
-        }
-
-        $minIsMaxPlanning = $this->createPlanning($roundNumber, $refereeInfo, $batchGamesRange, $allowedGppMargin);
-        $firstBatch = $minIsMaxPlanning->createFirstBatch();
-        if ($firstBatch instanceof SelfRefereeBatchOtherPoule ||
+        $planningWithMeta = $this->createPlanningWithMeta($roundNumber, $refereeInfo, $batchGamesRange);
+        $firstBatch = $planningWithMeta->createFirstBatch();
+        if ($firstBatch instanceof SelfRefereeBatchOtherPoules ||
             $firstBatch instanceof SelfRefereeBatchSamePoule) {
-            $refereePlaceService = new RefereePlaceService($minIsMaxPlanning);
+            $refereePlaceService = new RefereePlaceService($planningWithMeta);
             $refereePlaceService->assign($firstBatch);
         }
 
         $planningAssigner = new PlanningAssigner(new PlanningScheduler($blockedPeriods));
-        $planningAssigner->assignPlanningToRoundNumber($roundNumber, $minIsMaxPlanning);
+        $planningAssigner->assignPlanningToRoundNumber($roundNumber, $planningWithMeta);
         $nextRoundNumber = $roundNumber->getNext();
         if ($nextRoundNumber !== null) {
-            $this->createGamesHelper($nextRoundNumber, $blockedPeriods, $batchGamesRange, $allowedGppMargin);
+            $this->createGamesHelper($nextRoundNumber, $blockedPeriods, $batchGamesRange);
         }
     }
 

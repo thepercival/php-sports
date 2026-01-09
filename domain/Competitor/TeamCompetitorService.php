@@ -2,10 +2,7 @@
 
 namespace Sports\Competitor;
 
-use Sports\Competitor\Base as CompetitorBase;
-use Sports\Competitor\Service as CompetitorService;
-
-class TeamCompetitorService // implements CompetitorService
+final class TeamCompetitorService // implements CompetitorService
 {
     // move to competitor\team\service with interfacee with this function
 //    /**

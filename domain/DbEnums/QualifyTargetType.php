@@ -10,6 +10,7 @@ use SportsHelpers\DbEnums\EnumDbType;
 
 final class QualifyTargetType extends EnumDbType
 {
+    #[\Override]
     public static function getNameHelper(): string
     {
         return 'enum_QualifyTarget';
@@ -30,6 +31,9 @@ final class QualifyTargetType extends EnumDbType
         return null;
     }
 
+    /**
+     * @psalm-suppress MethodSignatureMismatch
+     */
     #[\Override]
     public function getSQLDeclaration(array $column, AbstractPlatform $platform): string
     {

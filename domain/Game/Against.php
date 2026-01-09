@@ -8,8 +8,6 @@ use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Sports\Competition\CompetitionSport as CompetitionSport;
-use Sports\Competitor;
-use Sports\Competitor\Map as CompetitorMap;
 use Sports\Game as GameBase;
 use Sports\Game\Event\Card as CardEvent;
 use Sports\Game\Event\Goal as GoalEvent;
@@ -22,7 +20,7 @@ use Sports\Qualify\AgainstConfig as QualifyConfig;
 use Sports\Score\AgainstScore;
 use SportsHelpers\Against\AgainstSide;
 
-class Against extends GameBase
+final class Against extends GameBase
 {
     /**
      * @var Collection<int|string, AgainstGamePlace>
@@ -35,12 +33,16 @@ class Against extends GameBase
     protected int $homeExtraPoints = 0;
     protected int $awayExtraPoints = 0;
 
+    // tmp for conversion
+    private int $gameRoundNumber = 0;
+
     public function __construct(
         Poule $poule,
         int $batchNr,
         DateTimeImmutable $startDateTime,
         CompetitionSport $competitionSport,
-        protected int $gameRoundNumber
+        public readonly int $cycleNr,
+        public readonly int $cyclePartNr
     ) {
         parent::__construct($poule, $batchNr, $startDateTime, $competitionSport);
         $this->places = new ArrayCollection();
@@ -48,11 +50,6 @@ class Against extends GameBase
         if (!$poule->getAgainstGames()->contains($this)) {
             $poule->getAgainstGames()->add($this);
         }
-    }
-
-    public function getGameRoundNumber(): int
-    {
-        return $this->gameRoundNumber;
     }
 
     /**

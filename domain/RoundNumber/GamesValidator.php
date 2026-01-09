@@ -18,11 +18,7 @@ use Sports\Place;
 use Sports\Poule;
 use Sports\Round\Number as RoundNumber;
 use Sports\Structure;
-use SportsHelpers\SportVariants\AgainstOneVsOne;
-use SportsHelpers\SportVariants\WithNrOfPlaces\AgainstWithNrOfPlaces;
 use SportsPlanning\PlanningPouleStructure;
-use SportsPlanning\Referee\Info as PlanningRefereeInfo;
-use SportsHelpers\SportVariants\Helpers\SportVariantWithNrOfPlacesCreator;
 use SportsHelpers\SelfReferee;
 
 final class GamesValidator
@@ -66,7 +62,7 @@ final class GamesValidator
         $this->validateEnoughTotalNrOfGames($roundNumber);
         $this->validateFields($roundNumber);
         $this->validateReferee($roundNumber, $nrOfReferees);
-        if( $roundNumber->getValidPlanningConfig()->selfRefereeEnabled() ) {
+        if( $roundNumber->getRefereeInfo()?->selfRefereeInfo !== null ) {
             $this->validateSelfReferee($roundNumber);
         }
         if (count($blockedPeriods) > 0) {
@@ -104,8 +100,8 @@ final class GamesValidator
 
     protected function validateReferee(RoundNumber $roundNumber, int $nrOfReferees): void
     {
-        $selfReferee = $roundNumber->getValidPlanningConfig()->getSelfReferee();
-        if ($selfReferee !== SelfReferee::Disabled || $nrOfReferees === 0) {
+        $refereeInfo = $roundNumber->getRefereeInfo();
+        if ($refereeInfo?->selfRefereeInfo !== null || $nrOfReferees === 0) {
             return;
         }
         foreach ($roundNumber->getGames(Order::ByPoule) as $game) {
@@ -117,14 +113,14 @@ final class GamesValidator
 
     protected function validateSelfReferee(RoundNumber $roundNumber): void
     {
-        if ($roundNumber->getRefereeInfo()->selfRefereeInfo->selfReferee === SelfReferee::Disabled ) {
+        if ($roundNumber->getRefereeInfo()?->selfRefereeInfo === null ) {
             return;
         }
 
         new PlanningPouleStructure(
             $roundNumber->createPouleStructure(),
-            $roundNumber->getCompetition()->createSportPersistVariantsWithNrOfFields(),
-            new PlanningRefereeInfo($roundNumber->getRefereeInfo())
+            $roundNumber->createSportWithNrOfFieldsAndNrOfCycles(),
+            $roundNumber->getRefereeInfo()
         );
         foreach ($roundNumber->getGames(Order::ByPoule) as $game) {
             if ($game->getRefereePlace() === null) {
@@ -138,13 +134,12 @@ final class GamesValidator
     /**
      * @param RoundNumber $roundNumber
      * @param non-empty-list<Period> $blockedPeriods
-     * @throws \League\Period\Exception
      */
     protected function validateGameNotInBlockedPeriod(RoundNumber $roundNumber, array $blockedPeriods): void
     {
         $maxNrOfMinutesPerGame = $roundNumber->getValidPlanningConfig()->getMaxNrOfMinutesPerGame();
         foreach ($roundNumber->getGames(Order::ByPoule) as $game) {
-            $gamePeriod = new Period(
+            $gamePeriod = Period::fromDate(
                 $game->getStartDateTime(),
                 $game->getStartDateTime()->add(new \DateInterval('PT' . $maxNrOfMinutesPerGame . 'M'))
             );
@@ -158,34 +153,35 @@ final class GamesValidator
 
     protected function validateThatAllPlacesPlaySameNrOfGames(RoundNumber $roundNumber): void
     {
-        $variantCreaotr = new SportVariantWithNrOfPlacesCreator();
-        foreach ($roundNumber->getCompetitionSports() as $competitionSport) {
-            $sportVariant = $competitionSport->createVariant();
-            foreach ($roundNumber->getPoules() as $poule) {
-                $nrOfPlaces = count($poule->getPlaces());
-                $sportVariantWithNrOfPlaces = $variantCreaotr->createWithNrOfPlaces($nrOfPlaces, $sportVariant);
-
-                // welke sporten niet controlere
-                if( $sportVariantWithNrOfPlaces instanceof AgainstWithNrOfPlaces
-                && $sportVariantWithNrOfPlaces->shouldAllPlaces()->) {
-
-                    //  CycleParts > 0 icm nrOfPlaces berekenen of ongelijk-aantal-wedstrijden is
-
-                }
-
-                // als ongelijk dan continue;
-                $sportVariantWithNrOfPlaces->
-                if($sportVariantWithNrOfPlaces->sportVariant instanceof AgainstOneVsOne &&
-                    $sportVariantWithNrOfPlaces->sportVariant->nrOfCycleParts
-                    $sportVariantWithNrOfPlaces->sportVariant->nrOfCycles
-                if ($sportVariantWithNrOfPlaces instanceof AgainstGppWithPoule && !$variantWithPoule->allPlacesSameNrOfGamesAssignable()) {
-                    continue;
-                }
-                if ($this->gameCountersOfEveryPlaceAreTheSame($poule, $competitionSport) === false) {
-                    throw new Exception("not all places within poule have same number of games", E_ERROR);
-                }
-            }
-        }
+        throw new \Exception('implement validateThatAllPlacesPlaySameNrOfGames');
+//        // $variantCreaotr = new SportVariantWithNrOfPlacesCreator();
+//        foreach ($roundNumber->getCompetitionSports() as $competitionSport) {
+//            $sportVariant = $competitionSport->createVariant();
+//            foreach ($roundNumber->getPoules() as $poule) {
+//                $nrOfPlaces = count($poule->getPlaces());
+//                $sportVariantWithNrOfPlaces = $variantCreaotr->createWithNrOfPlaces($nrOfPlaces, $sportVariant);
+//
+//                // welke sporten niet controlere
+//                if( $sportVariantWithNrOfPlaces instanceof AgainstWithNrOfPlaces
+//                && $sportVariantWithNrOfPlaces->shouldAllPlaces()->) {
+//
+//                    //  CycleParts > 0 icm nrOfPlaces berekenen of ongelijk-aantal-wedstrijden is
+//
+//                }
+//
+//                // als ongelijk dan continue;
+//                $sportVariantWithNrOfPlaces->
+//                if($sportVariantWithNrOfPlaces->sportVariant instanceof AgainstOneVsOne &&
+//                    $sportVariantWithNrOfPlaces->sportVariant->nrOfCycleParts
+//                    $sportVariantWithNrOfPlaces->sportVariant->nrOfCycles
+//                if ($sportVariantWithNrOfPlaces instanceof AgainstGppWithPoule && !$variantWithPoule->allPlacesSameNrOfGamesAssignable()) {
+//                    continue;
+//                }
+//                if ($this->gameCountersOfEveryPlaceAreTheSame($poule, $competitionSport) === false) {
+//                    throw new Exception("not all places within poule have same number of games", E_ERROR);
+//                }
+//            }
+//        }
     }
 
     protected function gameCountersOfEveryPlaceAreTheSame(Poule $poule, CompetitionSport $competitionSport): bool
@@ -437,11 +433,11 @@ final class GamesValidator
 
     protected function getFieldIndex(Field $field): string|int
     {
-        $fieldId = $field->getId();
+        $fieldId = $field->id;
         if ($fieldId !== null) {
             return $fieldId;
         }
-        $sportVariant = $field->getCompetitionSport()->createVariant();
-        return $field->getCompetitionSport()->getSport()->getName() . '-' . $sportVariant . '-' . $field->getPriority();
+        $sport = $field->getCompetitionSport()->createSport();
+        return $field->getCompetitionSport()->getSport()->getName() . '-' . $field->getPriority();
     }
 }

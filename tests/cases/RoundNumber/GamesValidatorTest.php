@@ -18,12 +18,16 @@ use Sports\Round\Number\GamesValidator;
 use Sports\TestHelper\CompetitionCreator;
 use Sports\TestHelper\GamesCreator;
 use Sports\TestHelper\StructureEditorCreator;
+use SportsHelpers\Against\AgainstSide;
 use SportsHelpers\Against\Side as AgainstSide;
 use SportsHelpers\SelfReferee;
+use SportsHelpers\SelfRefereeInfo;
 use SportsHelpers\Sport\Variant\Against\GamesPerPlace as AgainstGpp;
 use SportsHelpers\Sport\Variant\Against\H2h as AgainstH2h;
 use SportsHelpers\Sport\Variant\Single;
 use SportsHelpers\Sport\VariantWithFields as SportVariantWithFields;
+use SportsHelpers\Sports\AgainstOneVsOne;
+use SportsPlanning\Sports\SportWithNrOfFieldsAndNrOfCycles;
 
 class GamesValidatorTest extends TestCase
 {
@@ -225,7 +229,9 @@ class GamesValidatorTest extends TestCase
         $structure = $structureEditor->create($competition, [5]);
 
         $firstRoundNumber = $structure->getFirstRoundNumber();
-        $firstRoundNumber->getValidPlanningConfig()->setSelfReferee(SelfReferee::SamePoule);
+        $firstRoundNumber->getValidPlanningConfig()->setSelfRefereeInfo(
+            new SelfRefereeInfo(SelfReferee::SamePoule)
+        );
 
         (new GamesCreator())->createStructureGames($structure);
 
@@ -272,7 +278,9 @@ class GamesValidatorTest extends TestCase
         $structure = $structureEditor->create($competition, [5,4]);
 
         $firstRoundNumber = $structure->getFirstRoundNumber();
-        $firstRoundNumber->getValidPlanningConfig()->setSelfReferee(SelfReferee::OtherPoules);
+        $firstRoundNumber->getValidPlanningConfig()->setSelfRefereeInfo(
+            new SelfRefereeInfo(SelfReferee::OtherPoules)
+        );
 
         (new GamesCreator())->createStructureGames($structure);
 
@@ -298,12 +306,14 @@ class GamesValidatorTest extends TestCase
         $structure = $structureEditor->create($competition, [5, 4]);
 
         $firstRoundNumber = $structure->getFirstRoundNumber();
-        $firstRoundNumber->getValidPlanningConfig()->setSelfReferee(SelfReferee::OtherPoules);
+        $firstRoundNumber->getValidPlanningConfig()->setSelfRefereeInfo(
+            new SelfRefereeInfo(SelfReferee::OtherPoules)
+        );
 
         // 2 pak vervolgend een wedstrijd en laatr deze in de pauze zijn
         // 3 en laat de validator de boel opsporen!
         $start = $competition->getStartDateTime()->add(new \DateInterval('PT30M'));
-        $blockedPeriod = new Period($start, $start->add(new \DateInterval('PT30M')));
+        $blockedPeriod = Period::fromDate($start, $start->add(new \DateInterval('PT30M')));
         (new GamesCreator())->createStructureGames($structure);
 
         $games = $firstRoundNumber->getGames(GameOrder::ByBatch);
@@ -319,7 +329,7 @@ class GamesValidatorTest extends TestCase
         $gamesValidator = new GamesValidator();
         self::expectException(Exception::class);
         $nrOfReferees = $competition->getReferees()->count();
-        $firstRoundNumber->getValidPlanningConfig()->setSelfReferee(SelfReferee::Disabled);
+        $firstRoundNumber->getValidPlanningConfig()->setSelfRefereeInfo(null);
         $gamesValidator->validate($firstRoundNumber, $nrOfReferees, true, [$blockedPeriod]);
     }
 
@@ -329,6 +339,7 @@ class GamesValidatorTest extends TestCase
             $this->getAgainstGppSportVariantWithFields(3),
             $this->getAgainstGppSportVariantWithFields(3),
             $this->getAgainstGppSportVariantWithFields(2)
+            new SportWithNrOfFieldsAndNrOfCycles(new AgainstOneVsOne(), 2, 1);
         ];
         $competition = $this->createCompetition($sportVariantsWithFields);
 

@@ -10,7 +10,7 @@ use Sports\Poule;
 use Sports\Qualify\QualifyTarget as QualifyTarget;
 use Sports\Ranking\AgainstRuleSet;
 use Sports\Ranking\Calculator\Cumulative;
-use Sports\Ranking\Calculator\Round as RoundRankingCalculator;
+use Sports\Ranking\Calculator\RoundRankingCalculator as RoundRankingCalculator;
 use Sports\Ranking\PointsCalculation;
 use Sports\TestHelper\CompetitionCreator;
 use Sports\TestHelper\GamesCreator;

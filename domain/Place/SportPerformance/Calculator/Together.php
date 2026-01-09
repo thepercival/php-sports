@@ -12,18 +12,14 @@ use Sports\Place\SportPerformance;
 use Sports\Place\SportPerformance\Calculator;
 use Sports\Round;
 
-class Together extends Calculator
+final class Together extends Calculator
 {
     public function __construct(Round $round, CompetitionSport $competitionSport)
     {
         parent::__construct($round, $competitionSport);
     }
 
-    /**
-     * @param list<Place> $places
-     * @param list<TogetherGame|AgainstGame> $games
-     * @return list<SportPerformance>
-     */
+    #[\Override]
     public function getPerformances(array $places, array $games): array
     {
         $performances = $this->createPerformances($places);

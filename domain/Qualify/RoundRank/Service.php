@@ -7,7 +7,7 @@ namespace Sports\Qualify\RoundRank;
 use Sports\Category;
 use Sports\Round;
 
-class Service
+final class Service
 {
     /**
      * @var array<int, Calculator>

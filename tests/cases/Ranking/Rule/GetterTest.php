@@ -6,7 +6,7 @@ namespace Sports\Tests\Ranking\Rule;
 
 use PHPUnit\Framework\TestCase;
 use Sports\Ranking\AgainstRuleSet;
-use Sports\Ranking\Rule\Getter as RankingRuleGetter;
+use Sports\Ranking\RuleGetter as RankingRuleGetter;
 
 class GetterTest extends TestCase
 {

@@ -4,7 +4,7 @@ namespace Sports\Competitor;
 
 use Sports\Competitor;
 
-class StartLocationMap
+final class StartLocationMap
 {
     /**
      * @var array<string, Competitor|null>

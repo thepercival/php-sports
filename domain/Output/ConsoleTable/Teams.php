@@ -7,7 +7,7 @@ namespace Sports\Output\ConsoleTable;
 use LucidFrame\Console\ConsoleTable;
 use Sports\Team;
 
-class Teams
+final class Teams
 {
     /**
      * @param list<Team> $teams
@@ -18,7 +18,7 @@ class Teams
         $table->setHeaders(array('id', 'name', 'abbreviation', 'competition'));
         foreach ($teams as $team) {
             $row = array(
-                $team->getId(),
+                $team->id,
                 $team->getName(),
                 $team->getAbbreviation(),
                 $team->getName()

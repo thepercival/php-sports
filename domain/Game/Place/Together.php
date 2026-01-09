@@ -11,14 +11,14 @@ use Sports\Game\Together as TogetherGame;
 use Sports\Place as PlaceBase;
 use Sports\Score\TogetherScore as TogetherScore;
 
-class Together extends GamePlaceBase
+final class Together extends GamePlaceBase
 {
     /**
      * @var Collection<int|string, TogetherScore>
      */
     protected Collection $scores;
 
-    public function __construct(protected TogetherGame $game, PlaceBase $place, protected int $gameRoundNumber)
+    public function __construct(protected TogetherGame $game, PlaceBase $place, protected int $cycleNr)
     {
         parent::__construct($place);
         if (!$game->getPlaces()->contains($this)) {
@@ -27,6 +27,7 @@ class Together extends GamePlaceBase
         $this->scores = new ArrayCollection();
     }
 
+    #[\Override]
     public function getPlace(): PlaceBase
     {
         return $this->place;
@@ -37,14 +38,15 @@ class Together extends GamePlaceBase
         return $this->game;
     }
 
+    #[\Override]
     public function getPlaceNr(): int
     {
         return $this->getPlace()->getPlaceNr();
     }
 
-    public function getGameRoundNumber(): int
+    public function getCycleNr(): int
     {
-        return $this->gameRoundNumber;
+        return $this->cycleNr;
     }
 
     /**

@@ -8,7 +8,7 @@ use Psr\Log\LoggerInterface;
 use Sports\Team\Player as TeamPlayer;
 use SportsHelpers\Output as OutputBase;
 
-class Player extends OutputBase
+final class Player extends OutputBase
 {
     public function __construct(LoggerInterface|null $logger= null)
     {

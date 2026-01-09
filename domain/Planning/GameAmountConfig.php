@@ -12,9 +12,9 @@ use SportsHelpers\Sports\AgainstOneVsTwo;
 use SportsHelpers\Sports\AgainstTwoVsTwo;
 use SportsHelpers\Sports\TogetherSport;
 
-class GameAmountConfig extends Identifiable
+final class GameAmountConfig extends Identifiable
 {
-    protected int $amount;
+    protected int $amount = 1;
 
     public function __construct(
         protected CompetitionSport $competitionSport,

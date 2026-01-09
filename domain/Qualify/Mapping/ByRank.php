@@ -7,7 +7,7 @@ namespace Sports\Qualify\Mapping;
 use Sports\Place;
 use Sports\Qualify\Mapping;
 
-class ByRank extends Mapping
+final class ByRank extends Mapping
 {
     public function __construct(private readonly int $fromRank, Place $toPlace)
     {

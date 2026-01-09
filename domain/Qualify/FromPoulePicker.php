@@ -7,7 +7,7 @@ namespace Sports\Qualify;
 use Sports\Place;
 use Sports\Poule;
 
-class FromPoulePicker
+final class FromPoulePicker
 {
     protected PossibleFromMap|null $possibleParentFromMap = null;
 

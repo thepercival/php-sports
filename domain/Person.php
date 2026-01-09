@@ -11,7 +11,7 @@ use League\Period\Period;
 use Sports\Team\Player;
 use SportsHelpers\Identifiable;
 
-class Person extends Identifiable
+final class Person extends Identifiable
 {
     protected string $firstName;
     protected string|null $nameInsertion;

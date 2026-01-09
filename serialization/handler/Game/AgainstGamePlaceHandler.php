@@ -10,20 +10,15 @@ use JMS\Serializer\Context;
 
 use Sports\Game\Against as AgainstGame;
 use Sports\Game\Place\Against as AgainstGamePlace;
-use Sports\Poule;
-use Sports\Score\AgainstScore as AgainstScore;
-use Sports\SerializationHandler\DummyCreator;
 use Sports\SerializationHandler\Handler;
-use SportsHelpers\Against\Side;
+use SportsHelpers\Against\AgainstSide;
 
 /**
  * @psalm-type _FieldValue = array{game: AgainstGame, id: int, side: string, placeNr: int}
  */
-class AgainstGamePlaceHandler extends Handler implements SubscribingHandlerInterface
+final class AgainstGamePlaceHandler extends Handler implements SubscribingHandlerInterface
 {
-    /**
-     * @psalm-return list<array<string, int|string>>
-     */
+    #[\Override]
     public static function getSubscribingMethods(): array
     {
         return static::getDeserializationMethods(AgainstGamePlace::class);
@@ -45,8 +40,8 @@ class AgainstGamePlaceHandler extends Handler implements SubscribingHandlerInter
         $game = $fieldValue['game'];
         $place = $game->getPoule()->getPlace( $fieldValue['placeNr'] );
 
-        $gamePlace = new AgainstGamePlace( $game, $place, Side::from($fieldValue['side']));
-        $gamePlace->setId($fieldValue['id']);
+        $gamePlace = new AgainstGamePlace( $game, $place, AgainstSide::from($fieldValue['side']));
+        $gamePlace->id = $fieldValue['id'];
         return $gamePlace;
     }
 }

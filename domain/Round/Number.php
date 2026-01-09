@@ -32,6 +32,7 @@ use SportsHelpers\Sports\AgainstOneVsOne;
 use SportsHelpers\Sports\AgainstOneVsTwo;
 use SportsHelpers\Sports\AgainstTwoVsTwo;
 use SportsHelpers\Sports\TogetherSport;
+use SportsPlanning\Sports\SportWithNrOfFieldsAndNrOfCycles;
 
 final class Number extends Identifiable
 {
@@ -424,13 +425,29 @@ final class Number extends Identifiable
         );
     }
 
-    public function getRefereeInfo(): RefereeInfo
+    /**
+     * @return list<SportWithNrOfFieldsAndNrOfCycles>
+     */
+    public function createSportWithNrOfFieldsAndNrOfCycles(): array
     {
-        $planningConfig = $this->getValidPlanningConfig();
-        if ($planningConfig->selfRefereeEnabled()) {
-            return RefereeInfo::fromSelfRefereeInfo($planningConfig->getSelfRefereeInfo());
+        return array_map(function (GameAmountConfig $gameAmountConfig): SportWithNrOfFieldsAndNrOfCycles {
+            return new SportWithNrOfFieldsAndNrOfCycles(
+                $gameAmountConfig->createSport(),
+                $gameAmountConfig->getCompetitionSport()->getFields()->count(),
+                $gameAmountConfig->getNrOfCycles()
+            );
+        }, $this->getValidGameAmountConfigs());
+    }
+
+
+    public function getRefereeInfo(): RefereeInfo|null
+    {
+        $selfRefereeInfo = $this->getValidPlanningConfig()->getSelfRefereeInfo();
+        if ( $selfRefereeInfo !== null) {
+            return RefereeInfo::fromSelfRefereeInfo($selfRefereeInfo);
         }
-        return RefereeInfo::fromNrOfReferees($this->getCompetition()->getReferees()->count());
+        $nrOfReferees = $this->getCompetition()->getReferees()->count();
+        return $nrOfReferees > 0 ? RefereeInfo::fromNrOfReferees($nrOfReferees) : null;
     }
 
     public function createPouleStructure(): PouleStructure

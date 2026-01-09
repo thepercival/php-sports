@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Sports\Tests\Round\Number;
 
 use PHPUnit\Framework\TestCase;
-use Sports\Round\Number\InputConfigurationCreator;
+use Sports\Round\Number\PlanningConfigurationCreator;
 use Sports\TestHelper\CompetitionCreator;
 use Sports\TestHelper\StructureEditorCreator;
 use SportsPlanning\Referee\Info as RefereeInfo;
@@ -31,7 +31,7 @@ final class InputConfigurationCreatorTest extends TestCase
         $structure = $structureEditor->create($competition, [10]);
 
         $firstRoundNumber = $structure->getFirstRoundNumber();
-        $inputConfiguration = (new InputConfigurationCreator())->create(
+        $inputConfiguration = (new PlanningConfigurationCreator())->create(
             $firstRoundNumber, new RefereeInfo(count($competition->getReferees()))
         );
 

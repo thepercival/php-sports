@@ -14,7 +14,7 @@ use Sports\Output\Game as OutputGame;
 use Sports\Place\SportPerformance\Calculator\Against as AgainstSportPerformanceCalculator;
 use SportsHelpers\Against\AgainstSide;
 
-class Against extends OutputGame
+final class Against extends OutputGame
 {
     public function __construct(StartLocationMap $startLocationMap = null, LoggerInterface $logger = null)
     {
@@ -42,13 +42,13 @@ class Against extends OutputGame
             $content .= $game->getStartDateTime()->format("Y-m-d H:i") . ' ';
         }
         if (Column::has($sumColumns, Column::GameRoundNumber)) {
-            $content .= $this->getGameRoundNrAsString($game->getGameRoundNumber()) . ' ';
+            $content .= $this->getCycleNrAsString($game->cycleNr, $game->cyclePartNr) . ' ';
         }
         if (Column::has($sumColumns, Column::BatchNr)) {
             $content .= $this->getBatchNrAsString($game->getBatchNr()) . ' ';
         }
         if (Column::has($sumColumns, Column::Poule)) {
-            $content .= 'poule ' . $game->getPoule()->getStructureLocation();
+            $content .= 'poule ' . (string)$game->getPoule()->getStructureLocation();
         }
         if (Column::has($sumColumns, Column::ScoreAndPlaces)) {
             $content .= ', ' . $this->getScoreAndPlacesAsString($game);
@@ -88,7 +88,7 @@ class Against extends OutputGame
         if ($finalScore === null) {
             return $score;
         }
-        $retVal = $finalScore->getHome() . $score . $finalScore->getAway();
+        $retVal = (string)$finalScore->getHome() . $score . (string)$finalScore->getAway();
         if ($game->getFinalPhase() === GamePhase::ExtraTime) {
             $retVal .= ' nv';
         }
@@ -111,7 +111,7 @@ class Against extends OutputGame
         }
         $homePoints = $performanceCalculator->getNrOfPoints($finalScore, AgainstSide::Home, $game);
         $awayPoints = $performanceCalculator->getNrOfPoints($finalScore, AgainstSide::Away, $game);
-        return $homePoints . 'p' . $score . $awayPoints . 'p';
+        return (string)round($homePoints, 1) . 'p' . $score . (string)round($awayPoints, 1) . 'p';
     }
 
     protected function getScoresLineupsAndEventsAsString(AgainstGame $game): string

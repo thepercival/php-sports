@@ -5,7 +5,7 @@ namespace Sports\Competition\Sport;
 use Exception;
 use Sports\Competition\CompetitionSport as CompetitionSport;
 
-class FromToMapper
+final class FromToMapper
 {
     /**
      * @var array<string, CompetitionSport>
@@ -29,7 +29,7 @@ class FromToMapper
             $toCompetitionSport = null;
             foreach ($toCompetitionSports as $toCompetitionSportIt) {
                 if ($fromToMapStrategy === FromToMapStrategy::ById) {
-                    if ($fromCompetitionSport->getId() == $toCompetitionSportIt->getId()) {
+                    if ($fromCompetitionSport->id == $toCompetitionSportIt->id) {
                         $toCompetitionSport = $toCompetitionSportIt;
                         break;
                     }

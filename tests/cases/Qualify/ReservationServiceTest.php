@@ -9,7 +9,7 @@ use PHPUnit\Framework\TestCase;
 use Sports\TestHelper\CompetitionCreator;
 use Sports\TestHelper\GamesCreator;
 use Sports\TestHelper\SetScores;
-use Sports\Qualify\Service as QualifyService;
+use Sports\Qualify\QualifyService as QualifyService;
 use Sports\Qualify\ReservationService as QualifyReservationService;
 use Sports\TestHelper\StructureEditorCreator;
 

@@ -9,7 +9,7 @@ use Doctrine\Common\Collections\Collection;
 use InvalidArgumentException;
 use SportsHelpers\Identifiable;
 
-class League extends Identifiable
+final class League extends Identifiable
 {
     protected string $name;
     protected string|null $abbreviation;

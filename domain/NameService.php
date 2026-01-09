@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace Sports;
 
 use Sports\Ranking\AgainstRuleSet;
-use Sports\Ranking\Rule as RankingRule;
-use Sports\Ranking\Rule\Getter as RankingRuleGetter;
+use Sports\Ranking\RankingRule as RankingRule;
+use Sports\Ranking\RuleGetter as RankingRuleGetter;
 
-class NameService
+final class NameService
 {
     public function __construct()
     {

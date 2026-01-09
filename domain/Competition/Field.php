@@ -9,7 +9,7 @@ use Sports\Competition\CompetitionSport as CompetitionSport;
 use Sports\Priority\Prioritizable;
 use SportsHelpers\Identifiable;
 
-class Field extends Identifiable implements Prioritizable
+final class Field extends Identifiable implements Prioritizable
 {
     protected int $priority;
     private string|null $name = null;
@@ -26,11 +26,13 @@ class Field extends Identifiable implements Prioritizable
         $this->setPriority($priority);
     }
 
+    #[\Override]
     public function getPriority(): int
     {
         return $this->priority;
     }
 
+    #[\Override]
     public function setPriority(int $priority): void
     {
         $this->priority = $priority;

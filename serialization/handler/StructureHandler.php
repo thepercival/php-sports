@@ -13,15 +13,13 @@ use Sports\Round\Number as RoundNumber;
 use Sports\Structure;
 use Sports\Structure\StructureCell;
 
-class StructureHandler extends Handler implements SubscribingHandlerInterface
+final class StructureHandler extends Handler implements SubscribingHandlerInterface
 {
     public function __construct()
     {
     }
 
-    /**
-     * @psalm-return list<array<string, int|string>>
-     */
+    #[\Override]
     public static function getSubscribingMethods(): array
     {
         return static::getDeserializationMethods(Structure::class);
@@ -60,7 +58,7 @@ class StructureHandler extends Handler implements SubscribingHandlerInterface
         foreach ($fieldValue["categories"] as $arrCategory) {
             // Start RootRound
             $category = new Category($firstRoundNumber->getCompetition(), $arrCategory['name'], $arrCategory['number']);
-            $category->setId($arrCategory['id']);
+            $category->id = (int)$arrCategory['id'];
             $category->setAbbreviation($arrCategory['abbreviation']);
 
 

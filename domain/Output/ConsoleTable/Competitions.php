@@ -8,7 +8,7 @@ use DateTimeInterface;
 use LucidFrame\Console\ConsoleTable;
 use Sports\Competition;
 
-class Competitions
+final class Competitions
 {
     /**
      * @param list<Competition> $competitions
@@ -25,7 +25,7 @@ class Competitions
         });
         foreach ($competitions as $competition) {
             $row = array(
-                $competition->getId(),
+                $competition->id,
                 $competition->getLeague()->getName(),
                 $competition->getSeason()->getName(),
                 $competition->getStartDateTime()->format(DateTimeInterface::ATOM),
