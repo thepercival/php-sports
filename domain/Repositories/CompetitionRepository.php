@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Sports\Competition;
+namespace Sports\Repositories;
 
 use DateTimeImmutable;
 use Doctrine\ORM\EntityRepository;
@@ -11,18 +11,12 @@ use Sports\Competition;
 use Sports\League;
 use Sports\Season;
 use Sports\Sport;
-use SportsHelpers\Repository as BaseRepository;
 
 /**
  * @template-extends EntityRepository<Competition>
  */
-class Repository extends EntityRepository
+final class CompetitionRepository extends EntityRepository
 {
-    /**
-     * @use BaseRepository<Competition>
-     */
-    use BaseRepository;
-
     public function customPersist(Competition $competition): void
     {
         $em = $this->getEntityManager();
@@ -109,8 +103,8 @@ class Repository extends EntityRepository
         if ($period !== null) {
             $qb = $qb->andWhere('season.startDateTime < :periodEnd');
             $qb = $qb->andWhere('season.endDateTime > :periodStart');
-            $qb = $qb->setParameter('periodEnd', $period->getEndDate());
-            $qb = $qb->setParameter('periodStart', $period->getStartDate());
+            $qb = $qb->setParameter('periodEnd', $period->endDate);
+            $qb = $qb->setParameter('periodStart', $period->startDate);
         }
         /** @var list<Competition> $results */
         $results = $qb->getQuery()->getResult();

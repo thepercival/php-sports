@@ -14,7 +14,7 @@ use Sports\Structure\NameService as StructureNameService;
 use Sports\Score\Against as AgainstScore;
 use SportsHelpers\Against\Side as AgainstSide;
 
-class AgainstGames
+final class AgainstGames
 {
     /**
      * @param Competition $competition
@@ -49,7 +49,7 @@ class AgainstGames
     protected function getScore(AgainstGame $game): string
     {
         return join("&", array_map(function (AgainstScore $gameScore): string {
-            return $gameScore->getHome() . " - " . $gameScore->getAway() ;
+            return ((string)$gameScore->getHome()) . " - " . ((string)$gameScore->getAway() );
         }, $game->getScores()->toArray()));
     }
 }

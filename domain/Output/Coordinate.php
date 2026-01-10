@@ -55,6 +55,7 @@ final class Coordinate implements \Stringable
         return new Coordinate($this->getX(), $this->getY() - 1);
     }
 
+    #[\Override]
     public function __toString(): string
     {
         return $this->getX() . ',' . $this->getY();

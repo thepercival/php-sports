@@ -8,11 +8,10 @@ use Sports\Output\StructureOutput\RangeCalculator;
 use Psr\Log\LoggerInterface;
 use Sports\Output\StructureOutput\DrawHelper;
 use Sports\Output\Grid\Drawer as GridDrawer;
-use Sports\Round\Number as RoundNumber;
 use Sports\Structure;
-use SportsHelpers\Output as OutputBase;
+use SportsHelpers\Output\OutputAbstract;
 
-final class StructureOutput extends OutputBase
+final class StructureOutput extends OutputAbstract
 {
     /**
      * @var array<int, string>
@@ -20,7 +19,7 @@ final class StructureOutput extends OutputBase
     protected array $outputLines = [];
     protected RangeCalculator $rangeCalculator;
 
-    public function __construct(LoggerInterface $logger = null)
+    public function __construct(LoggerInterface $logger)
     {
         parent::__construct($logger);
         $this->rangeCalculator = new RangeCalculator();
@@ -45,6 +44,6 @@ final class StructureOutput extends OutputBase
     {
         $width = $this->rangeCalculator->getStructureWidth($structure);
         $height = $this->rangeCalculator->getStructureHeight($structure);
-        return new Grid($height, $width);
+        return new Grid($height, $width, $this->logger);
     }
 }

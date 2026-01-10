@@ -18,7 +18,7 @@ use Sports\Qualify\Target as QualifyTarget;
 use Sports\Ranking\Calculator\Round as RoundRankingCalculator;
 use Sports\Round;
 
-class Service
+final class Service
 {
     private RoundRankingCalculator $rankingCalculator;
     /**
@@ -36,7 +36,7 @@ class Service
      * @param Poule|null $filterPoule
      * @return list<Place>
      */
-    public function resetQualifiers(Poule $filterPoule = null): array
+    public function resetQualifiers(Poule|null $filterPoule = null): array
     {
         /** @var list<Place> $changedPlaces */
         $changedPlaces = [];
@@ -101,7 +101,7 @@ class Service
      * @param Poule|null $filterPoule
      * @return list<Place>
      */
-    public function setQualifiers(Poule $filterPoule = null): array
+    public function setQualifiers(Poule|null $filterPoule = null): array
     {
         /** @var array<int|string, Place> $changedPlaces */
         $changedPlaces = [];

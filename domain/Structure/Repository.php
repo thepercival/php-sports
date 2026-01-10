@@ -11,13 +11,13 @@ use Sports\Exceptions\NoStructureException;
 use Sports\Exceptions\StructureNotFoundException;
 use Sports\Poule\Horizontal\Creator as HorizontalPouleCreator;
 use Sports\Qualify\Rule\Creator as QualifyRuleCreator;
+use Sports\Repositories\RoundNumberRepository as RoundNumberRepository;
 use Sports\Round;
 use Sports\Round\Number as RoundNumber;
-use Sports\Round\Number\Repository as RoundNumberRepository;
 use Sports\Structure;
 use Sports\Structure as StructureBase;
 
-class Repository
+final class Repository
 {
     private RoundNumberRepository $roundNumberRepos;
 

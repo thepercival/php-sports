@@ -7,7 +7,7 @@ namespace Sports\Structure;
 use Sports\Qualify\Target;
 use Sports\Structure\PathNode as StructurePathNode;
 
-class PathNodeConverter
+final class PathNodeConverter
 {
     public function __construct() {
     }

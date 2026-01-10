@@ -12,7 +12,7 @@ use Sports\Game\Against as AgainstGame;
 use Sports\Planning\Config as PlanningConfig;
 use Sports\Round\Number as RoundNumber;
 
-class PlanningScheduler
+final class PlanningScheduler
 {
     /**
      * @param list<Period> $blockedPeriods
@@ -43,7 +43,7 @@ class PlanningScheduler
                 $minutesDelta = $planningConfig->getMaxNrOfMinutesPerGame() + $planningConfig->getMinutesBetweenGames();
                 $nextGameStartDateTime = $gameStartDateTime->add(new \DateInterval('PT' . $minutesDelta . 'M'));
                 $nextGamePeriod = $this->createGamePeriod($nextGameStartDateTime, $planningConfig);
-                $gameStartDateTime = $this->moveToFirstAvailableSlot($nextGamePeriod)->getStartDate();
+                $gameStartDateTime = $this->moveToFirstAvailableSlot($nextGamePeriod)->startDate;
                 $gameDates[] = $gameStartDateTime;
                 $previousBatchNr = $game->getBatchNr();
             }
@@ -66,8 +66,8 @@ class PlanningScheduler
                 new \DateInterval('PT' . $planningConfig->getMaxNrOfMinutesPerGame() . 'M')
             );
 
-            $firstGamePeriod = $this->moveToFirstAvailableSlot(new Period($startDateTime, $endDateTime));
-            return $firstGamePeriod->getStartDate();
+            $firstGamePeriod = $this->moveToFirstAvailableSlot(Period::fromDate($startDateTime, $endDateTime));
+            return $firstGamePeriod->startDate;
         }
         $previousRoundLastStartDateTime = $previousRoundNumber->getLastGameStartDateTime();
         $previousPlanningConfig = $previousRoundNumber->getValidPlanningConfig();
@@ -79,12 +79,12 @@ class PlanningScheduler
         );
         $gamePeriod = $this->createGamePeriod($roundStartDateTime, $planningConfig);
         $firstGamePeriod = $this->moveToFirstAvailableSlot($gamePeriod);
-        return $firstGamePeriod->getStartDate();
+        return $firstGamePeriod->startDate;
     }
 
     public function createGamePeriod(DateTimeImmutable $startDateTime, PlanningConfig $planningConfig): Period
     {
-        return new Period(
+        return Period::fromDate(
             $startDateTime,
             $startDateTime->add(new \DateInterval('PT' . $planningConfig->getMaxNrOfMinutesPerGame() . 'M'))
         );
@@ -106,9 +106,9 @@ class PlanningScheduler
             return $gamePeriod;
         }
         return $this->moveToFirstAvailableSlot(
-            new Period(
-                clone $blockedPeriod->getEndDate(),
-                $blockedPeriod->getEndDate()->add(new \DateInterval('PT' . $gamePeriod->timeDuration() . 'S'))
+            Period::fromDate(
+                clone $blockedPeriod->endDate,
+                $blockedPeriod->endDate->add(new \DateInterval('PT' . $gamePeriod->timeDuration() . 'S'))
             )
         );
     }
@@ -116,8 +116,8 @@ class PlanningScheduler
     protected function getOverlapsingBlockedPeriod(Period $gamePeriod): Period|null
     {
         foreach ($this->blockedPeriods as $blockedPeriod) {
-            if ($gamePeriod->getStartDate() < $blockedPeriod->getEndDate()
-                && $gamePeriod->getEndDate() > $blockedPeriod->getStartDate()) {
+            if ($gamePeriod->startDate < $blockedPeriod->endDate
+                && $gamePeriod->endDate > $blockedPeriod->startDate) {
                 return $blockedPeriod;
             }
         }

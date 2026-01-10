@@ -6,16 +6,16 @@ namespace Sports\Output;
 
 use Psr\Log\LoggerInterface;
 use Sports\Output\Grid\Cell;
-use SportsHelpers\Output as OutputBase;
 use SportsHelpers\Output\Color;
+use SportsHelpers\Output\OutputAbstract;
 
-final class Grid extends OutputBase
+final class Grid extends OutputAbstract
 {
     /**
      * @var array<int, array<int, Cell>>
      */
     private array $grid = [];
-    public function __construct(protected int $height, protected int $width, LoggerInterface $logger = null)
+    public function __construct(protected int $height, protected int $width, LoggerInterface $logger)
     {
         parent::__construct($logger);
         for ($i = 0 ; $i < $this->height ; $i++) {
@@ -32,11 +32,11 @@ final class Grid extends OutputBase
 
     public function getCell(Coordinate $coordinate): Cell {
         if( !array_key_exists($coordinate->getY(), $this->grid) ) {
-            throw new \Exception('no column found for coordinate ' . $coordinate);
+            throw new \Exception('no column found for coordinate ' . ((string)$coordinate));
         }
         $rows = $this->grid[$coordinate->getY()];
         if( !array_key_exists($coordinate->getX(), $rows) ) {
-            throw new \Exception('no row found for coordinate ' . $coordinate);
+            throw new \Exception('no row found for coordinate ' . ((string)$coordinate));
         }
         return $rows[$coordinate->getX()];
     }
@@ -75,7 +75,7 @@ final class Grid extends OutputBase
         foreach ($this->grid as $line) {
             $string = '';
             foreach ($line as $cell) {
-                $string .= $cell;
+                $string .= (string)$cell;
             }
             $this->logger->info($string);
         }

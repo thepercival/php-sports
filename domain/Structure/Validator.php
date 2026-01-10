@@ -22,7 +22,7 @@ use Sports\Competition;
 use Sports\Structure;
 use SportsHelpers\PlaceRanges;
 
-class Validator
+final class Validator
 {
     protected StructureNameService $structureNameService;
 
@@ -31,7 +31,7 @@ class Validator
         $this->structureNameService = new StructureNameService();
     }
 
-    public function checkValidity(Competition $competition, Structure $structure = null, PlaceRanges|null $placeRanges): void
+    public function checkValidity(Competition $competition, Structure|null $structure = null, PlaceRanges|null $placeRanges = null): void
     {
         $prefix = "de structuur(competition:" . $competition->getName() . ")";
 

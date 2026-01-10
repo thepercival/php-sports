@@ -2,23 +2,17 @@
 
 declare(strict_types=1);
 
-namespace Sports\Round\Number;
+namespace Sports\Repositories;
 
 use Doctrine\ORM\EntityRepository;
 use Sports\Game\Order;
 use Sports\Round\Number as RoundNumber;
-use SportsHelpers\Repository as BaseRepository;
 
 /**
  * @template-extends EntityRepository<RoundNumber>
  */
-class Repository extends EntityRepository
+final class RoundNumberRepository extends EntityRepository
 {
-    /**
-     * @use BaseRepository<RoundNumber>
-     */
-    use BaseRepository;
-
     public function removePlanning(RoundNumber $roundNumber): void
     {
         foreach ($roundNumber->getPoules() as $poule) {

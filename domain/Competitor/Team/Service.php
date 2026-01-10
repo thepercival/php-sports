@@ -8,7 +8,7 @@ use Sports\Structure;
 use Sports\Competitor\Base as CompetitorBase;
 use Sports\Competitor\Service as CompetitorService;
 
-class Service // implements CompetitorService
+final class Service // implements CompetitorService
 {
     // move to competitor\team\service with interfacee with this function
 //    /**

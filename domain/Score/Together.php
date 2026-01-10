@@ -5,7 +5,7 @@ namespace Sports\Score;
 use Sports\Game\Place\Together as TogetherGamePlace;
 use Sports\Score;
 
-class Together extends Score
+final class Together extends Score
 {
     protected TogetherGamePlace $gamePlace;
     protected int $score;

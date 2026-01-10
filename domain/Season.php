@@ -10,7 +10,7 @@ use Doctrine\Common\Collections\Collection;
 use League\Period\Period;
 use SportsHelpers\Identifiable;
 
-class Season extends Identifiable
+final class Season extends Identifiable
 {
     private string $name;
     private DateTimeImmutable $startDateTime;
@@ -70,13 +70,13 @@ class Season extends Identifiable
 
     public function getPeriod(): Period
     {
-        return new Period($this->getStartDateTime(), $this->getEndDateTime());
+        return Period::fromDate($this->getStartDateTime(), $this->getEndDateTime());
     }
 
     final public function setPeriod(Period $period): void
     {
-        $this->setStartDateTime($period->getStartDate());
-        $this->setEndDateTime($period->getEndDate());
+        $this->setStartDateTime($period->startDate);
+        $this->setEndDateTime($period->endDate);
     }
 
     /**

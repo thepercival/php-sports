@@ -22,7 +22,7 @@ use Sports\Structure\PathNodeConverter;
 /**
  * @psalm-type _Place = array{poule: Poule}
  */
-class StructureLocationPlaceHandler extends Handler implements SubscribingHandlerInterface
+final class StructureLocationPlaceHandler extends Handler implements SubscribingHandlerInterface
 {
     public function __construct(protected DummyCreator $dummyCreator)
     {
@@ -31,6 +31,7 @@ class StructureLocationPlaceHandler extends Handler implements SubscribingHandle
     /**
      * @psalm-return list<array<string, int|string>>
      */
+    #[\Override]
     public static function getSubscribingMethods(): array
     {
         return static::getDeserializationMethods(StructureLocationPlace::class);

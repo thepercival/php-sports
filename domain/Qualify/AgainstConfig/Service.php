@@ -12,7 +12,7 @@ use Sports\Sport\Custom as CustomSport;
 use Sports\Round;
 use SportsHelpers\GameMode;
 
-class Service
+final class Service
 {
     public function createDefault(CompetitionSport $competitionSport, Round $round): QualifyConfig
     {

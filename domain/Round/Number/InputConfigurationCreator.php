@@ -17,7 +17,7 @@ use SportsHelpers\Sport\VariantWithFields as SportVariantWithFields;
 use SportsPlanning\Input\Configuration as InputConfiguration;
 use SportsPlanning\Referee\Info as RefereeInfo;
 
-class InputConfigurationCreator
+final class InputConfigurationCreator
 {
     public function __construct()
     {

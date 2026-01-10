@@ -2,25 +2,18 @@
 
 declare(strict_types=1);
 
-namespace Sports\Person;
+namespace Sports\Repositories;
 
 use Doctrine\ORM\EntityRepository;
 use League\Period\Period;
-use Sports\Person;
 use Sports\Person as PersonBase;
 use Sports\Team;
-use SportsHelpers\Repository as BaseRepository;
 
 /**
  * @template-extends EntityRepository<PersonBase>
  */
-class Repository extends EntityRepository
+final class PersonRepository extends EntityRepository
 {
-    /**
-     * @use BaseRepository<PersonBase>
-     */
-    use BaseRepository;
-
     /**
      * @param Period $period
      * @param Team|null $team
@@ -37,8 +30,8 @@ class Repository extends EntityRepository
             ->andWhere('pl.endDateTime >= :seasonStart')
         ;
 
-        $qb = $qb->setParameter('seasonEnd', $period->getEndDate());
-        $qb = $qb->setParameter('seasonStart', $period->getStartDate());
+        $qb = $qb->setParameter('seasonEnd', $period->endDate);
+        $qb = $qb->setParameter('seasonStart', $period->startDate);
         if ($team !== null) {
             $qb = $qb->andWhere('pl.team = :team');
             $qb = $qb->setParameter('team', $team);

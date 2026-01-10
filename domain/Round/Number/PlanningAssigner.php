@@ -21,7 +21,7 @@ use SportsPlanning\Game\Place\Together as TogetherPlanningGamePlace;
 use SportsPlanning\Game\Together as TogetherPlanningGame;
 use SportsPlanning\Planning;
 
-class PlanningAssigner
+final class PlanningAssigner
 {
     public function __construct(protected PlanningScheduler $scheduler)
     {
@@ -50,7 +50,7 @@ class PlanningAssigner
             $nextGameStartDateTime = $gameStartDateTime->add(new \DateInterval('PT' . $minutesDelta . 'M'));
             $nextGamePeriod = $this->scheduler->createGamePeriod($nextGameStartDateTime, $planningConfig);
 
-            $nextGameStartDateTime = $this->scheduler->moveToFirstAvailableSlot($nextGamePeriod)->getStartDate();
+            $nextGameStartDateTime = $this->scheduler->moveToFirstAvailableSlot($nextGamePeriod)->startDate;
 
             $this->assignPlanningBatch($nextBatch, $planningConfig, $nextGameStartDateTime, $mapper);
         }

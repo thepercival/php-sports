@@ -20,7 +20,7 @@ use Sports\Qualify\AgainstConfig as AgainstQualifyConfig;
 /**
  * @psalm-type _Place = array{poule: Poule}
  */
-class PouleHandler extends Handler implements SubscribingHandlerInterface
+final class PouleHandler extends Handler implements SubscribingHandlerInterface
 {
     public function __construct(protected DummyCreator $dummyCreator)
     {
@@ -29,6 +29,7 @@ class PouleHandler extends Handler implements SubscribingHandlerInterface
     /**
      * @psalm-return list<array<string, int|string>>
      */
+    #[\Override]
     public static function getSubscribingMethods(): array
     {
         return static::getDeserializationMethods(Poule::class);

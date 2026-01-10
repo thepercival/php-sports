@@ -25,7 +25,7 @@ use Sports\Score\Config as ScoreConfig;
 use Sports\Score\Config\Service as ScoreConfigService;
 use Sports\Structure;
 
-class Copier
+final class Copier
 {
     public function __construct(
         private HorizontalPouleCreator $horPouleCreator,

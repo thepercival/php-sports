@@ -26,7 +26,7 @@ use Sports\Round;
  *  [ C1 B1 A1 ]
  *
  **/
-class Horizontal
+final class Horizontal
 {
     protected int $number;
     protected HorizontalMultipleQualifyRule | HorizontalSingleQualifyRule |

@@ -2,7 +2,7 @@
 
 namespace Sports\Score;
 
-class AgainstHelper
+final class AgainstHelper
 {
     use AgainstTrait;
 

@@ -9,7 +9,7 @@ use Sports\Round;
 use Sports\Poule;
 use SportsHelpers\PlaceLocationInterface;
 
-class ReservationService
+final class ReservationService
 {
     /**
      * @var list<PouleNumberReservations>

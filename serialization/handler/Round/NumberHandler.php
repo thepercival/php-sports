@@ -32,7 +32,7 @@ use Sports\Structure\Cell;
  * @psalm-type _FieldValue = array{previous: RoundNumber|null, planningConfig: _PlanningConfig|null, gameAmountConfigs: list<_GameAmountConfig>, next: _RoundNumber|null}
  *
  **/
-class NumberHandler extends Handler implements SubscribingHandlerInterface
+final class NumberHandler extends Handler implements SubscribingHandlerInterface
 {
     public function __construct(protected DummyCreator $dummyCreator)
     {
@@ -41,6 +41,7 @@ class NumberHandler extends Handler implements SubscribingHandlerInterface
     /**
      * @psalm-return list<array<string, int|string>>
      */
+    #[\Override]
     public static function getSubscribingMethods(): array
     {
         return static::getDeserializationMethods(RoundNumber::class);

@@ -4,7 +4,7 @@ namespace Sports\Exceptions;
 
 use Exception;
 
-class CellNotFoundException extends Exception
+final class CellNotFoundException extends Exception
 {
 
 }

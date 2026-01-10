@@ -13,7 +13,7 @@ use SportsHelpers\GameMode;
 use SportsHelpers\Sport\PersistVariant;
 use SportsHelpers\Sport\VariantWithFields as SportVariantWithFields;
 
-class Sport extends PersistVariant implements \Stringable
+final class Sport extends PersistVariant implements \Stringable
 {
     /**
      * @var Collection<int|string,Field>
@@ -139,8 +139,9 @@ class Sport extends PersistVariant implements \Stringable
             && $this->getNrOfGamePlaces() == $competitionSport->getNrOfGamePlaces();
     }
 
+    #[\Override]
     public function __toString(): string
     {
-        return $this->createVariant() . ' f=>' . $this->getFields()->count();
+        return ((string)$this->createVariant()) . ' f=>' . $this->getFields()->count();
     }
 }

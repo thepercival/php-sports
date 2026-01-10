@@ -10,7 +10,7 @@ use Sports\Qualify\Rule\Creator\Vertical as VerticalQualifyRuleCreator;
 use Sports\Qualify\Target as QualifyTarget;
 use Sports\Round;
 
-class Creator
+final class Creator
 {
     /**
      * @param Round|null ...$parentRounds

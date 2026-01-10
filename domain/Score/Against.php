@@ -7,14 +7,14 @@ namespace Sports\Score;
 use Sports\Game\Against as AgainstGame;
 use Sports\Score;
 
-class Against extends Score
+final class Against extends Score
 {
     use AgainstTrait;
 
     public const int SCORED = 1;
     public const int RECEIVED = 2;
 
-    public function __construct(protected AgainstGame $game, float $home, float $away, int $phase, int $number = null)
+    public function __construct(protected AgainstGame $game, float $home, float $away, int $phase, int|null $number = null)
     {
         $this->setHome($home);
         $this->setAway($away);

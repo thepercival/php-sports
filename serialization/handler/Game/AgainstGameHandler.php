@@ -20,7 +20,7 @@ use Sports\SerializationHandler\DummyCreator;
  * @psalm-type _StructureLocationPlaceArray = array{categoryNr: int, pathNode: string, placeLocation: _PlaceLocationArray}
  * @psalm-type _FieldValue = array{poule: Poule, batchNr: int, startDateTime: string, competitionSportId: int, gameRoundNumber: int, fieldId: int, refereeId: int, state: string, refereeStructureLocation: _StructureLocationPlaceArray|null, places: list<_AgainstGamePlace>, scores: list<AgainstScore>}
  */
-class AgainstGameHandler extends GameHandler implements SubscribingHandlerInterface
+final class AgainstGameHandler extends GameHandler implements SubscribingHandlerInterface
 {
     public function __construct(DummyCreator $dummyCreator)
     {
@@ -30,6 +30,7 @@ class AgainstGameHandler extends GameHandler implements SubscribingHandlerInterf
     /**
      * @psalm-return list<array<string, int|string>>
      */
+    #[\Override]
     public static function getSubscribingMethods(): array
     {
         return static::getDeserializationMethods(AgainstGame::class);

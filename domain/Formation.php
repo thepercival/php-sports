@@ -9,7 +9,7 @@ use Doctrine\Common\Collections\Collection;
 use Sports\Formation\Line;
 use SportsHelpers\Identifiable;
 
-class Formation extends Identifiable
+final class Formation extends Identifiable
 {
     /**
      * @var Collection<int|string, Line>

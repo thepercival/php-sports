@@ -8,7 +8,7 @@ use Sports\Competition\Sport as CompetitionSport;
 use Sports\Round;
 use SportsHelpers\Identifiable;
 
-class Config extends Identifiable
+final class Config extends Identifiable
 {
     protected Config|null $next = null;
 
@@ -49,7 +49,7 @@ class Config extends Identifiable
         return $this->next;
     }
 
-    public function setNext(Config $scoreConfig = null): void
+    public function setNext(Config|null $scoreConfig = null): void
     {
         $this->next = $scoreConfig;
     }

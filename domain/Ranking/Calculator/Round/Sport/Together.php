@@ -16,7 +16,7 @@ use Sports\Place\SportPerformance\Calculator as PerformanceCalculator;
 use Sports\Game\State as GameState;
 use Sports\Ranking\Calculator\Round\Sport as SportRoundRankingCalculator;
 
-class Together extends SportRoundRankingCalculator
+final class Together extends SportRoundRankingCalculator
 {
     /**
      * @param CompetitionSport $competitionSport
@@ -33,6 +33,7 @@ class Together extends SportRoundRankingCalculator
      * @param Poule $poule
      * @return list<SportRoundRankingItem>
      */
+    #[\Override]
     public function getItemsForPoule(Poule $poule): array
     {
         return $this->getItems(
@@ -42,6 +43,7 @@ class Together extends SportRoundRankingCalculator
         );
     }
 
+    #[\Override]
     protected function getCalculator(Round $round): PerformanceCalculator
     {
         return new PlaceTogetherPerformanceCalculator($round, $this->competitionSport);

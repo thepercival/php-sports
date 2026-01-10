@@ -33,7 +33,6 @@ trait CompetitionCreator
     /**
      * @param non-empty-list<SportVariantWithFields>|null $sportVariantsWithFields
      * @return Competition
-     * @throws \League\Period\Exception
      */
     protected function createCompetition(
         array|null $sportVariantsWithFields = null
@@ -45,9 +44,9 @@ trait CompetitionCreator
         $league = new League(new Association('knvb'), 'my league');
         $season = new Season(
             '2018/2019',
-            new Period(
+            Period::fromDate(
                 new DateTimeImmutable('2018-08-01'),
-                new DateTimeImmutable('2019-07-01'),
+                new DateTimeImmutable('2019-07-01')
             )
         );
         $competition = new Competition($league, $season);

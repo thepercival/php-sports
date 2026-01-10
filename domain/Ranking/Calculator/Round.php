@@ -19,7 +19,7 @@ use Sports\Ranking\Item\Round as RoundRankingItem;
 use Sports\Ranking\Item\Round\Sport as SportRoundRankingItem;
 use SportsHelpers\GameMode;
 
-class Round
+final class Round
 {
     /**
      * @var list<GameState>
@@ -30,7 +30,7 @@ class Round
      * @param list<GameState>|null $gameStates
      */
     public function __construct(
-        array $gameStates = null,
+        array|null $gameStates = null,
         protected Cumulative $cumulative = Cumulative::ByRank
     ) {
         $this->gameStates = $gameStates ?? [GameState::Finished];

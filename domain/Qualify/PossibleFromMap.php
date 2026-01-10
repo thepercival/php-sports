@@ -13,7 +13,7 @@ use Sports\Qualify\Group as QualifyGroup;
 use Sports\Qualify\Rule\Multiple as MultipleRule;
 use Sports\Round;
 
-class PossibleFromMap
+final class PossibleFromMap
 {
     /**
      * @var array<int, list<Poule>>

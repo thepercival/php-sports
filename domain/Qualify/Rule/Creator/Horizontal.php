@@ -18,7 +18,7 @@ use Sports\Qualify\Rule\Horizontal\Multiple as HorizontalMultipleQualifyRule;
 use Sports\Qualify\Rule\Horizontal\Single as HorizontalSingleQualifyRule;
 use Sports\Round;
 
-class Horizontal
+final class Horizontal
 {
     private PossibleFromMap $possibleFromMap;
 

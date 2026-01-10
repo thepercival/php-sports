@@ -8,7 +8,7 @@ use PHPUnit\Framework\TestCase;
 use Sports\Ranking\AgainstRuleSet;
 use Sports\Ranking\Rule\Getter as RankingRuleGetter;
 
-class GetterTest extends TestCase
+final class GetterTest extends TestCase
 {
     public function testAgainstRuleWithSubScore(): void
     {

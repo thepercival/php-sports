@@ -4,7 +4,7 @@ namespace Sports\Exceptions;
 
 use Exception;
 
-class RefereesPriorityNotCorrectlyAppliedInGamesException extends Exception
+final class RefereesPriorityNotCorrectlyAppliedInGamesException extends Exception
 {
     public function __construct(int $roundNumber, int $orderedGameNr, int $refereePriority) {
         parent::__construct(

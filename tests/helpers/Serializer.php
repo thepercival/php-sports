@@ -17,7 +17,7 @@ use Sports\SerializationHandler\RoundHandler as RoundSerializationHandler;
 use Sports\SerializationHandler\Round\NumberHandler as RoundNumberSerializationHandler;
 use Sports\SerializationHandler\StructureHandler as StructureSerializationHandler;
 
-class Serializer
+final class Serializer
 {
     public function getSerializer(): JMSSerializer
     {

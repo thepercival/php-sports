@@ -9,7 +9,7 @@ use Sports\Game\Participation as GameParticipation;
 use Sports\Team;
 use SportsHelpers\Identifiable;
 
-class Card extends Identifiable implements GameEvent
+final class Card extends Identifiable implements GameEvent
 {
     public function __construct(private int $minute, private GameParticipation $gameParticipation, private int $type)
     {
@@ -33,6 +33,7 @@ class Card extends Identifiable implements GameEvent
         return $this->type;
     }
 
+    #[\Override]
     public function getTeam(): Team
     {
         return $this->getGameParticipation()->getPlayer()->getTeam();

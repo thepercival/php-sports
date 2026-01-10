@@ -18,7 +18,10 @@ use Sports\TestHelper\SetScores;
 use Sports\TestHelper\StructureEditorCreator;
 use Sports\Output\GamesOutput as OutputGames;
 
-class RoundTest extends TestCase
+/**
+ * #[\ReturnTypeWillChange]
+ */
+final class RoundTest extends TestCase
 {
     use CompetitionCreator;
     use SetScores;

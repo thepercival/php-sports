@@ -2,22 +2,16 @@
 
 declare(strict_types=1);
 
-namespace Sports\Sport;
+namespace Sports\Repositories;
 
 use Doctrine\ORM\EntityRepository;
 use Sports\Sport as SportBase;
-use SportsHelpers\Repository as BaseRepository;
 
 /**
  * @template-extends EntityRepository<SportBase>
  */
-class Repository extends EntityRepository
+final class SportRepository extends EntityRepository
 {
-    /**
-     * @use BaseRepository<SportBase>
-     */
-    use BaseRepository;
-
     /**
      * @param bool|null $withCustomId
      * @return list<SportBase>

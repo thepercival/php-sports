@@ -13,7 +13,7 @@ use Sports\Ranking\FunctionMapCreator as BaseFunctionMapCreator;
 use Sports\Ranking\Item\Round\Sport as SportRoundRankingItem;
 use Sports\Ranking\Rule;
 
-class Against extends BaseFunctionMapCreator
+final class Against extends BaseFunctionMapCreator
 {
     /**
      * @param CompetitionSport $competitionSport

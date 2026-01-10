@@ -15,7 +15,7 @@ use Sports\TestHelper\CompetitionCreator;
 use Sports\TestHelper\StructureEditorCreator;
 use SportsHelpers\PouleStructure;
 
-class StructureTest extends TestCase
+final class StructureTest extends TestCase
 {
     use CompetitionCreator;
     use StructureEditorCreator;

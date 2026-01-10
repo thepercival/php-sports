@@ -11,7 +11,7 @@ use Sports\Game\Together as TogetherGame;
 use Sports\Place as PlaceBase;
 use Sports\Score\Together as TogetherScore;
 
-class Together extends GamePlaceBase
+final class Together extends GamePlaceBase
 {
     /**
      * @var Collection<int|string, TogetherScore>
@@ -27,6 +27,7 @@ class Together extends GamePlaceBase
         $this->scores = new ArrayCollection();
     }
 
+    #[\Override]
     public function getPlace(): PlaceBase
     {
         return $this->place;
@@ -37,6 +38,7 @@ class Together extends GamePlaceBase
         return $this->game;
     }
 
+    #[\Override]
     public function getPlaceNr(): int
     {
         return $this->getPlace()->getPlaceNr();

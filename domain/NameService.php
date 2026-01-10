@@ -8,7 +8,7 @@ use Sports\Ranking\AgainstRuleSet;
 use Sports\Ranking\Rule as RankingRule;
 use Sports\Ranking\Rule\Getter as RankingRuleGetter;
 
-class NameService
+final class NameService
 {
     public function __construct()
     {

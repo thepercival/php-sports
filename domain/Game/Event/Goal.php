@@ -9,7 +9,7 @@ use Sports\Game\Participation as GameParticipation;
 use Sports\Team;
 use SportsHelpers\Identifiable;
 
-class Goal extends Identifiable implements GameEvent
+final class Goal extends Identifiable implements GameEvent
 {
 //    public const FIELD = 1;
 //    public const PENALTY = 2;
@@ -83,6 +83,7 @@ class Goal extends Identifiable implements GameEvent
         $this->assistGameParticipation = $assistGameParticipation;
     }
 
+    #[\Override]
     public function getTeam(): Team
     {
         return $this->getGameParticipation()->getPlayer()->getTeam();

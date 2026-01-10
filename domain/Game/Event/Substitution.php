@@ -9,7 +9,7 @@ use Sports\Team;
 use Sports\Game\Event as GameEvent;
 use SportsHelpers\Identifiable;
 
-class Substitution extends Identifiable implements GameEvent
+final class Substitution extends Identifiable implements GameEvent
 {
     private GameParticipation $out;
     private GameParticipation $in;
@@ -37,6 +37,7 @@ class Substitution extends Identifiable implements GameEvent
         return $this->in;
     }
 
+    #[\Override]
     public function getTeam(): Team
     {
         return $this->getOut()->getPlayer()->getTeam();

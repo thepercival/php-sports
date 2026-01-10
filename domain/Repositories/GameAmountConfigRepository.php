@@ -2,31 +2,25 @@
 
 declare(strict_types=1);
 
-namespace Sports\Planning\GameAmountConfig;
+namespace Sports\Repositories;
 
-use SportsHelpers\Repository as BaseRepository;
-use Sports\Competition\Sport as CompetitionSport;
-use Sports\Round\Number as RoundNumber;
 use Doctrine\ORM\EntityRepository;
+use Sports\Competition\Sport as CompetitionSport;
 use Sports\Planning\GameAmountConfig as GameAmountConfigBase;
+use Sports\Round\Number as RoundNumber;
 
 /**
  * @template-extends EntityRepository<GameAmountConfigBase>
  */
-class Repository extends EntityRepository
+final class GameAmountConfigRepository extends EntityRepository
 {
-    /**
-     * @use BaseRepository<GameAmountConfigBase>
-     */
-    use BaseRepository;
-
     public function addObjects(CompetitionSport $competitionSport, RoundNumber $roundNumber): void
     {
         $gameAmountConfig = $roundNumber->getGameAmountConfig($competitionSport);
         if ($gameAmountConfig === null) {
             return;
         }
-        $this->save($gameAmountConfig);
+        $this->getEntityManager()->persist($gameAmountConfig);
         $nextRoundNumber = $roundNumber->getNext();
         if ($nextRoundNumber !== null) {
             $this->addObjects($competitionSport, $nextRoundNumber);
@@ -37,7 +31,7 @@ class Repository extends EntityRepository
     {
         $gameAmountConfigs = $this->findBy(["competitionSport" => $competitionSport ]);
         foreach ($gameAmountConfigs as $config) {
-            $this->remove($config);
+            $this->getEntityManager()->remove($config);
         }
     }
 }

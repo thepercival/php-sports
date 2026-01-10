@@ -19,11 +19,12 @@ use Sports\Structure\Cell;
 /**
  * @psalm-type _Round = array{parentQualifyGroup: QualifyGroup, category: Category}
  */
-class GroupHandler extends Handler implements SubscribingHandlerInterface
+final class GroupHandler extends Handler implements SubscribingHandlerInterface
 {
     /**
      * @psalm-return list<array<string, int|string>>
      */
+    #[\Override]
     public static function getSubscribingMethods(): array
     {
         return static::getDeserializationMethods(QualifyGroup::class);

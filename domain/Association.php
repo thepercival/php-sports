@@ -8,7 +8,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use SportsHelpers\Identifiable;
 
-class Association extends Identifiable
+final class Association extends Identifiable
 {
     protected string $name;
     protected string|null $description = null;
@@ -105,7 +105,7 @@ class Association extends Identifiable
      * @throws \Exception
      * @return void
      */
-    public function setParent(Association $parent = null): void
+    public function setParent(Association|null $parent = null): void
     {
         if ($parent === $this) {
             throw new \Exception("de parent-bond mag niet zichzelf zijn", E_ERROR);

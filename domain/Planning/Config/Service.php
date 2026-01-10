@@ -9,7 +9,7 @@ use Sports\Planning\EditMode;
 use Sports\Round\Number as RoundNumber;
 use SportsHelpers\SelfReferee;
 
-class Service
+final class Service
 {
     public function createDefault(RoundNumber $roundNumber): PlanningConfig
     {

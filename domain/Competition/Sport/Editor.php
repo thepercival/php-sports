@@ -16,7 +16,7 @@ use Sports\Qualify\AgainstConfig\Service as QualifyConfigService;
 use Sports\Competition\Sport as CompetitionSport;
 use Sports\Structure;
 
-class Editor
+final class Editor
 {
     protected ScoreConfigService $scoreConfigService;
     protected QualifyConfigService $qualifyConfigService;

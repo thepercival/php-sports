@@ -19,11 +19,12 @@ use SportsHelpers\Against\Side;
 /**
  * @psalm-type _FieldValue = array{game: AgainstGame, id: int, side: string, placeNr: int}
  */
-class AgainstGamePlaceHandler extends Handler implements SubscribingHandlerInterface
+final class AgainstGamePlaceHandler extends Handler implements SubscribingHandlerInterface
 {
     /**
      * @psalm-return list<array<string, int|string>>
      */
+    #[\Override]
     public static function getSubscribingMethods(): array
     {
         return static::getDeserializationMethods(AgainstGamePlace::class);

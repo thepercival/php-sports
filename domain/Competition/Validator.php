@@ -7,7 +7,7 @@ namespace Sports\Competition;
 use Exception;
 use Sports\Competition;
 
-class Validator
+final class Validator
 {
     public function __construct()
     {

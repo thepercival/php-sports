@@ -8,13 +8,15 @@ use Doctrine\DBAL\Platforms\AbstractPlatform;
 use SportsHelpers\EnumDbType;
 use Sports\Qualify\Target as QualifyTarget;
 
-class TargetType extends EnumDbType
+final class TargetType extends EnumDbType
 {
+    #[\Override]
     public static function getNameHelper(): string
     {
         return 'enum_QualifyTarget';
     }
 
+    #[\Override]
     public function convertToPHPValue($value, AbstractPlatform $platform)
     {
         if ($value === QualifyTarget::Winners->value) {
@@ -29,7 +31,8 @@ class TargetType extends EnumDbType
         return null;
     }
 
-    public function getSQLDeclaration(array $column, AbstractPlatform $platform)
+    #[\Override]
+    public function getSQLDeclaration(array $column, AbstractPlatform $platform): string
     {
         return 'varchar(1)';
     }

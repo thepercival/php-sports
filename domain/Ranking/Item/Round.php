@@ -12,7 +12,7 @@ use Sports\Ranking\Calculator\Cumulative;
 use Sports\Ranking\Item\Round as RoundRankingItem;
 use Sports\Ranking\Item\Round\Sport as SportRoundRankingItem;
 
-class Round
+final class Round
 {
     private int $uniqueRank = 1;
     private int $rank = 1;

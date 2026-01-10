@@ -11,7 +11,7 @@ use Sports\Poule\Horizontal as HorizontalPoule;
 use Sports\Qualify\Target as QualifyTarget;
 use Sports\Round;
 
-class Creator
+final class Creator
 {
     public function remove(Round|null ...$rounds): void
     {

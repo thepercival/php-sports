@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Sports\SerializationHandler;
 
+use League\Period\Period;
 use Sports\Association;
 use Sports\Category;
 use Sports\Competition;
@@ -25,7 +26,7 @@ use Sports\Structure\PathNode;
 use SportsHelpers\GameMode;
 use SportsHelpers\Sport\PersistVariant as PersistSportVariant;
 
-class DummyCreator
+final class DummyCreator
 {
     private Competition|null $competition = null;
     /**
@@ -46,7 +47,7 @@ class DummyCreator
         if ($this->competition === null) {
             $association = new Association("knvb");
             $league = new League($association, "my league");
-            $season = new Season("123", new \League\Period\Period("2018-12-17T11:33:15.710Z", "2018-12-17T11:33:15.710Z"));
+            $season = new Season("123", Period::fromDate("2018-12-17T11:33:15.710Z", "2018-12-17T11:33:15.710Z"));
             $this->competition = new Competition($league, $season);
             $this->competition->setStartDateTime(new \DateTimeImmutable("2018-12-17T12:00:00.000Z"));
         }

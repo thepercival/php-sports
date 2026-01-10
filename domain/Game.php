@@ -95,7 +95,7 @@ abstract class Game extends Identifiable
         return $this->referee?->getId();
     }
 
-    public function setReferee(Referee $referee = null): void
+    public function setReferee(Referee|null $referee = null): void
     {
         $this->referee = $referee;
     }
@@ -110,7 +110,7 @@ abstract class Game extends Identifiable
         return $this->getRefereePlace()?->getStructureLocation();
     }
 
-    public function setRefereePlace(Place $refereePlace = null): void
+    public function setRefereePlace(Place|null $refereePlace = null): void
     {
         $this->refereePlace = $refereePlace;
     }
@@ -129,7 +129,7 @@ abstract class Game extends Identifiable
      * @param Field|null $field
      * @return void
      */
-    public function setField(Field $field = null): void
+    public function setField(Field|null $field = null): void
     {
         $this->field = $field;
     }
@@ -146,6 +146,6 @@ abstract class Game extends Identifiable
 
     public function getPeriod(): Period
     {
-        return new Period($this->getStartDateTime(), $this->getEndDateTime());
+        return Period::fromDate($this->getStartDateTime(), $this->getEndDateTime());
     }
 }

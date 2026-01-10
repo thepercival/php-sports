@@ -11,7 +11,7 @@ use Sports\Sport;
 use Sports\Team\Player;
 use SportsHelpers\Identifiable;
 
-class Participation extends Identifiable
+final class Participation extends Identifiable
 {
     /**
      * @var Collection<int|string, CardEvent>

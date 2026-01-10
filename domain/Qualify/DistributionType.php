@@ -8,15 +8,17 @@ use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Sports\Planning\EditMode;
 use SportsHelpers\EnumDbType;
 
-class DistributionType extends EnumDbType
+final class DistributionType extends EnumDbType
 {
     // const NAME = 'enum_Distribution'; // modify to match your type name
 
+    #[\Override]
     public static function getNameHelper(): string
     {
         return 'enum_Distribution';
     }
 
+    #[\Override]
     public function convertToPHPValue($value, AbstractPlatform $platform)
     {
         if ($value === Distribution::HorizontalSnake->value) {
@@ -28,7 +30,8 @@ class DistributionType extends EnumDbType
         return null;
     }
 
-    public function getSQLDeclaration(array $column, AbstractPlatform $platform)
+    #[\Override]
+    public function getSQLDeclaration(array $column, AbstractPlatform $platform): string
     {
         return 'varchar(15)';
     }

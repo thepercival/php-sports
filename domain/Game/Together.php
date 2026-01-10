@@ -13,7 +13,7 @@ use Sports\Game\Place\Together as TogetherGamePlace;
 use Sports\Place;
 use Sports\Poule;
 
-class Together extends GameBase
+final class Together extends GameBase
 {
     /**
      * @var Collection<int|string, TogetherGamePlace>

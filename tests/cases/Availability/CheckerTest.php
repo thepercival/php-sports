@@ -8,7 +8,7 @@ use PHPUnit\Framework\TestCase;
 use Sports\Availability\Checker as AvailabilityChecker;
 use Sports\TestHelper\CompetitionCreator;
 
-class CheckerTest extends TestCase
+final class CheckerTest extends TestCase
 {
     use CompetitionCreator;
 

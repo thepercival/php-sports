@@ -12,7 +12,7 @@ use Sports\TestHelper\CompetitionCreator;
 use Sports\TestHelper\SetScores;
 use Sports\TestHelper\StructureEditorCreator;
 
-class DefaultCreatorTest extends TestCase
+final class DefaultCreatorTest extends TestCase
 {
     use CompetitionCreator;
     use SetScores;

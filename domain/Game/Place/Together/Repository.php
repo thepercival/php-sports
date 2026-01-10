@@ -9,20 +9,14 @@ use League\Period\Period;
 use Sports\Competition;
 use Sports\Game\State as GameState;
 use Sports\Game\Together as TogetherGame;
-use SportsHelpers\Repository as BaseRepository;
 use Doctrine\ORM\EntityRepository;
 use Sports\Game\Place\Together as TogetherGamePlace;
 
 /**
  * @template-extends EntityRepository<TogetherGamePlace>
  */
-class Repository extends EntityRepository
+final class Repository extends EntityRepository
 {
-    /**
-     * @use BaseRepository<TogetherGamePlace>
-     */
-    use BaseRepository;
-
     /**
      * @param Competition $competition
      * @param list<GameState>|null $gameStates
@@ -100,8 +94,8 @@ class Repository extends EntityRepository
             $query = $query
                 ->andWhere('g.startDateTime < :end')
                 ->andWhere('g.startDateTime >= :start')
-                ->setParameter('end', $period->getEndDate())
-                ->setParameter('start', $period->getStartDate());
+                ->setParameter('end', $period->endDate)
+                ->setParameter('start', $period->startDate);
         }
         return $query;
     }

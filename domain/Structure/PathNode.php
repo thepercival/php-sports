@@ -6,7 +6,7 @@ namespace Sports\Structure;
 
 use Sports\Qualify\Target as QualifyTarget;
 
-class PathNode implements \Stringable
+final class PathNode implements \Stringable
 {
     private PathNode|null $next = null;
 
@@ -59,6 +59,7 @@ class PathNode implements \Stringable
         return $this;
     }
 
+    #[\Override]
     public function __toString(): string
     {
         if ($this->previous === null) {

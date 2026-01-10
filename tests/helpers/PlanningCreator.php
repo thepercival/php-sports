@@ -6,6 +6,7 @@ namespace Sports\TestHelper;
 
 use Exception;
 use Monolog\Handler\StreamHandler;
+use Monolog\Level;
 use Monolog\Logger;
 use Psr\Log\LoggerInterface;
 use SportsHelpers\PouleStructure;
@@ -20,7 +21,7 @@ use SportsPlanning\Planning\State as PlanningState;
 use SportsScheduler\Schedule\Creator as ScheduleCreator;
 use SportsPlanning\Output\Schedule as ScheduleOutput;
 
-class PlanningCreator
+final class PlanningCreator
 {
     use GppMarginCalculator;
 
@@ -30,7 +31,7 @@ class PlanningCreator
 //        $processor = new UidProcessor();
 //        $logger->pushProcessor($processor);
 
-        $handler = new StreamHandler('php://stdout', Logger::INFO);
+        $handler = new StreamHandler('php://stdout', Level::Info);
         $logger->pushHandler($handler);
         return $logger;
     }
@@ -63,7 +64,7 @@ class PlanningCreator
         return $input;
     }
 
-    public function createPlanning(Input $input, SportRange $batchGamesRange = null, int|null $allowedGppMargin = null): Planning
+    public function createPlanning(Input $input, SportRange|null $batchGamesRange = null, int|null $allowedGppMargin = null): Planning
     {
         if ($batchGamesRange === null) {
             $batchGamesRange = new SportRange(1, 1);

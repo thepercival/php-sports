@@ -22,7 +22,7 @@ use Sports\Qualify\Group as QualifyGroup;
 use Sports\TestHelper\StructureEditorCreator;
 use SportsHelpers\PouleStructure;
 
-class ServiceTest extends TestCase
+final class ServiceTest extends TestCase
 {
     use CompetitionCreator;
     use SetScores;
@@ -343,6 +343,7 @@ class ServiceTest extends TestCase
         self::assertSame(-1, $bestFinalist->getExtraPoints());
 
         $qualifyService->resetQualifiers();
+        /** @psalm-suppress DocblockTypeContradiction */
         self::assertSame(0, $bestFinalist->getExtraPoints());
     }
 

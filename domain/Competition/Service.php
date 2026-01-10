@@ -13,7 +13,7 @@ use Sports\Ranking\AgainstRuleSet;
 use Sports\Season;
 use Sports\State;
 
-class Service
+final class Service
 {
     public function __construct()
     {
@@ -53,7 +53,7 @@ class Service
         }
 
         if ($newStartDateTime->getTimestamp() > $competition->getStartDateTime()->getTimestamp()) {
-            $period = new Period($competition->getStartDateTime(), $newStartDateTime);
+            $period = Period::fromDate($competition->getStartDateTime(), $newStartDateTime);
         } else {
             $period = null;
         }

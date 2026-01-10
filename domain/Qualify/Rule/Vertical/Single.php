@@ -18,7 +18,7 @@ use Sports\Qualify\Rule\Single as SingleQualifyRule;
 use Sports\Qualify\Rule\Vertical\Single as VerticalSingleQualifyRule;
 use Sports\Qualify\Rule\Vertical\Multiple as VerticalMultipleQualifyRule;
 
-class Single extends VerticalQualifyRule implements SingleQualifyRule
+final class Single extends VerticalQualifyRule implements SingleQualifyRule
 {
     protected VerticalSingleQualifyRule|null $next = null;
 
@@ -108,6 +108,7 @@ class Single extends VerticalQualifyRule implements SingleQualifyRule
 //        }
 //    }
 
+    #[\Override]
     public function getNrOfMappings(): int
     {
         return count($this->byRankMappings);

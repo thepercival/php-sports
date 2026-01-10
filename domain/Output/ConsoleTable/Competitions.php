@@ -8,7 +8,7 @@ use DateTimeInterface;
 use LucidFrame\Console\ConsoleTable;
 use Sports\Competition;
 
-class Competitions
+final class Competitions
 {
     /**
      * @param list<Competition> $competitions

@@ -11,7 +11,7 @@ use Sports\Qualify\Group as QualifyGroup;
 use Sports\Round;
 use SportsHelpers\PouleStructure;
 
-class RemovalValidator
+final class RemovalValidator
 {
 //    protected NameService $nameService;
 

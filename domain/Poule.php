@@ -14,7 +14,7 @@ use Sports\Game\Together as TogetherGame;
 use Sports\Structure\Locations\StructureLocationPoule;
 use SportsHelpers\Identifiable;
 
-class Poule extends Identifiable
+final class Poule extends Identifiable
 {
     protected int $number;
     protected string|null $name = null;
@@ -35,7 +35,7 @@ class Poule extends Identifiable
 
     public const int MAX_LENGTH_NAME = 10;
 
-    public function __construct(protected Round $round, int $number = null)
+    public function __construct(protected Round $round, int|null $number = null)
     {
         if ($number === null) {
             $number = $round->getPoules()->count() + 1;
@@ -69,7 +69,7 @@ class Poule extends Identifiable
         return $this->name;
     }
 
-    public function setName(string $name = null): void
+    public function setName(string|null $name = null): void
     {
         if ($name !== null and strlen($name) === 0) {
             $name = null;

@@ -14,7 +14,7 @@ use Sports\SerializationHandler\Qualify\GroupHandler as QualifyGroupHandler;
 use Sports\SerializationHandler\Planning\ConfigHandler as PlanningConfigHandler;
 
 
-class Subscriber
+final class Subscriber
 {
     public function __construct(protected DummyCreator $dummyCreator)
     {

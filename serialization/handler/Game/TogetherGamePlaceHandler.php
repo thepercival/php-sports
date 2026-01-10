@@ -17,11 +17,12 @@ use Sports\SerializationHandler\Handler;
 /**
  * @psalm-type _FieldValue = array{game: TogetherGame, id: int, placeNr: int, gameRoundNumber: int, scores: list<TogetherScore>}
  */
-class TogetherGamePlaceHandler extends Handler implements SubscribingHandlerInterface
+final class TogetherGamePlaceHandler extends Handler implements SubscribingHandlerInterface
 {
     /**
      * @psalm-return list<array<string, int|string>>
      */
+    #[\Override]
     public static function getSubscribingMethods(): array
     {
         return static::getDeserializationMethods(TogetherGamePlace::class);

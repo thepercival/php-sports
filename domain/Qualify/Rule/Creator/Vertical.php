@@ -20,7 +20,7 @@ use Sports\Qualify\Rule\Vertical\Multiple as VerticalMultipleQualifyRule;
 use Sports\Qualify\Rule\Vertical\Single as VerticalSingleQualifyRule;
 use Sports\Round;
 
-class Vertical
+final class Vertical
 {
     public function __construct()
     {

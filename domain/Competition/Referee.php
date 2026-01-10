@@ -9,7 +9,7 @@ use Sports\Person;
 use Sports\Priority\Prioritizable;
 use SportsHelpers\Identifiable;
 
-class Referee extends Identifiable implements Prioritizable
+final class Referee extends Identifiable implements Prioritizable
 {
     private string $initials;
     protected int $priority;
@@ -26,7 +26,7 @@ class Referee extends Identifiable implements Prioritizable
     public const int MAX_LENGTH_INFO = 200;
     public const int DEFAULT_PRIORITY = 1;
 
-    public function __construct(private Competition $competition, string $initials, int $priority = null)
+    public function __construct(private Competition $competition, string $initials, int|null $priority = null)
     {
         $this->setCompetition($competition);
         $this->setInitials($initials);
@@ -42,11 +42,13 @@ class Referee extends Identifiable implements Prioritizable
         $this->competition->getReferees()->add($this);
     }
 
+    #[\Override]
     public function getPriority(): int
     {
         return $this->priority;
     }
 
+    #[\Override]
     final public function setPriority(int $priority): void
     {
         $this->priority = $priority;
@@ -79,7 +81,7 @@ class Referee extends Identifiable implements Prioritizable
         return $this->name;
     }
 
-    public function setName(string $name = null): void
+    public function setName(string|null $name = null): void
     {
         if ($name !== null && (strlen($name) < self::MIN_LENGTH_NAME or strlen($name) > self::MAX_LENGTH_NAME)) {
             throw new \InvalidArgumentException(

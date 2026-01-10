@@ -12,7 +12,7 @@ use Sports\Qualify\Rule\Vertical\Multiple as VerticalMultipleQualifyRule;
 use Sports\Qualify\Rule\Vertical\Single as VerticalSingleQualifyRule;
 use Sports\Qualify\Target;
 
-class Multiple extends VerticalQualifyRule implements MultipleQualifyRule
+final class Multiple extends VerticalQualifyRule implements MultipleQualifyRule
 {
     /**
      * @param HorizontalPoule $fromHorizontalPoule
@@ -42,6 +42,7 @@ class Multiple extends VerticalQualifyRule implements MultipleQualifyRule
     /**
      * @return list<Place>
      */
+    #[\Override]
     public function getToPlaces(): array
     {
         return $this->toPlaces;

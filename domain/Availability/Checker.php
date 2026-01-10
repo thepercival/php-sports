@@ -16,9 +16,9 @@ use Sports\Competitor\StartLocationMap;
 use SportsHelpers\PlaceLocationInterface;
 use Sports\Priority\Prioritizable;
 
-class Checker
+final class Checker
 {
-    public function checkRefereeInitials(Competition $competition, string $initials, Referee $refereeToCheck = null): void
+    public function checkRefereeInitials(Competition $competition, string $initials, Referee|null $refereeToCheck = null): void
     {
         $nonUniqueReferees = $competition->getReferees()->filter(
             function (Referee $refereeIt) use ($initials, $refereeToCheck): bool {
@@ -33,7 +33,7 @@ class Checker
         }
     }
 
-    public function checkFieldName(Competition $competition, string $name, Field $fieldToCheck = null): void
+    public function checkFieldName(Competition $competition, string $name, Field|null $fieldToCheck = null): void
     {
         $nonUniqueFields = array_filter(
             $competition->getFields(),
@@ -54,8 +54,8 @@ class Checker
      */
     public function checkRefereeEmailaddress(
         Competition $competition,
-        string $emailaddress = null,
-        Referee $refereeToCheck = null
+        string|null $emailaddress = null,
+        Referee|null $refereeToCheck = null
     ) {
         if ($emailaddress === null) {
             return;
@@ -73,13 +73,13 @@ class Checker
         }
     }
 
-    public function checkRefereePriority(Competition $competition, int $priority, Referee $referee = null): void
+    public function checkRefereePriority(Competition $competition, int $priority, Referee|null $referee = null): void
     {
         $referees = array_values($competition->getReferees()->toArray());
         $this->checkPriority($referees, $priority, $referee);
     }
 
-    public function checkFieldPriority(CompetitionSport $competitionSport, int $priority, Field $field = null): void
+    public function checkFieldPriority(CompetitionSport $competitionSport, int $priority, Field|null $field = null): void
     {
         $fields = array_values($competitionSport->getFields()->toArray());
         $this->checkPriority($fields, $priority, $field);
@@ -92,7 +92,7 @@ class Checker
      * @throws Exception
      * @return void
      */
-    protected function checkPriority(array $prioritizables, int $priority, Prioritizable $objectToCheck = null): void
+    protected function checkPriority(array $prioritizables, int $priority, Prioritizable|null $objectToCheck = null): void
     {
         $nonUniqueObjects = array_filter(
             $prioritizables,
@@ -120,7 +120,7 @@ class Checker
         int $categoryNr,
         array $competitors,
         string $name,
-        Competitor $competitorToCheck = null
+        Competitor|null $competitorToCheck = null
     ): void {
         $nonUniqueFields = array_filter(
             $competitors,
@@ -150,13 +150,13 @@ class Checker
 
             $startLocation = $place->getStartLocation();
             if( $startLocation === null) {
-                throw new \Exception('er is geen plaats meer beschikbaar', E_ERROR);;
+                throw new \Exception('er is geen plaats meer beschikbaar', E_ERROR);
             }
             if( $startLocationMap->getCompetitor($startLocation ) === null) {
                 return $startLocation;
             }
         }
-        throw new \Exception('er is geen plaats meer beschikbaar', E_ERROR);;
+        throw new \Exception('er is geen plaats meer beschikbaar', E_ERROR);
     }
 
     /**
@@ -168,7 +168,7 @@ class Checker
      */    public function checkCompetitorStartLocation(
         array $competitors,
         StartLocation $startLocation,
-        Competitor $competitorToCheck = null
+        Competitor|null $competitorToCheck = null
     ): void {
         $nonUniqueFields = array_filter(
             $competitors,

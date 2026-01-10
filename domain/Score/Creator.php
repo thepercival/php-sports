@@ -9,7 +9,7 @@ use Sports\Game\Place\Together as TogetherGamePlace;
 use Sports\Score\Against as AgainstScore;
 use Sports\Score\Together as TogetherScore;
 
-class Creator
+final class Creator
 {
     public function __construct()
     {

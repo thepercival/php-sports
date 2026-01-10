@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Sports\Game;
+namespace Sports\Repositories;
 
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\QueryBuilder;
@@ -11,19 +11,13 @@ use Sports\Competition;
 use Sports\Game\Against as AgainstGame;
 use Sports\Game\State as GameState;
 use Sports\Game\Together as TogetherGame;
-use SportsHelpers\Repository as BaseRepository;
 
 /**
  * @template T
  * @template-extends EntityRepository<T>
  */
-abstract class Repository extends EntityRepository
+abstract class GameRepository extends EntityRepository
 {
-    /**
-     * @use BaseRepository<T>
-     */
-    use BaseRepository;
-
     /**
      * @param Competition $competition
      * @param list<GameState>|null $gameStates
@@ -41,7 +35,7 @@ abstract class Repository extends EntityRepository
             ->join("r.structureCell", "sc")
             ->join("sc.roundNumber", "rn")
             ->where('rn.competition = :competition')
-            ->setParameter('competition', $competition);;
+            ->setParameter('competition', $competition);
     }
 
 
@@ -57,13 +51,11 @@ abstract class Repository extends EntityRepository
         $this->getEntityManager()->flush();
     }
 
-    /**
-     * @param T $game
-     * @param bool $onlyFlushObject
-     * @throws \Exception
-     */
-    public function customSave(mixed $game, bool $onlyFlushObject = false): void
+    public function customSave(AgainstGame|TogetherGame $game, bool $onlyFlushObject = false): void
     {
-        $this->save($game, $onlyFlushObject);
+        $this->getEntityManager()->persist($game);
+        if( $onlyFlushObject ) {
+            $this->getEntityManager()->flush();
+        }
     }
 }

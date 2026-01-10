@@ -17,13 +17,13 @@ use Sports\Ranking\Item\Round\Sport as SportRoundRankingItem;
 use Sports\Round;
 use SportsHelpers\Against\Side as AgainstSide;
 
-class Against extends SportRoundRankingCalculator
+final class Against extends SportRoundRankingCalculator
 {
     /**
      * @param CompetitionSport $competitionSport
      * @param list<GameState>|null $gameStates
      */
-    public function __construct(CompetitionSport $competitionSport, array $gameStates = null)
+    public function __construct(CompetitionSport $competitionSport, array|null $gameStates = null)
     {
         parent::__construct($competitionSport, $gameStates ?? [GameState::Finished]);
         $functionMapCreator = new AgainstRankingFunctionMapCreator($competitionSport, $gameStates ?? [GameState::Finished]);
@@ -34,6 +34,7 @@ class Against extends SportRoundRankingCalculator
      * @param Poule $poule
      * @return list<SportRoundRankingItem>
      */
+    #[\Override]
     public function getItemsForPoule(Poule $poule): array
     {
         return $this->getItems(
@@ -54,6 +55,7 @@ class Against extends SportRoundRankingCalculator
         return $this->getItems($poule->getRound(), $places, $games);
     }
 
+    #[\Override]
     protected function getCalculator(Round $round): PerformanceCalculator
     {
         return new AgainstPerformanceCalculator($round, $this->competitionSport);

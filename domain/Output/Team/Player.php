@@ -6,11 +6,11 @@ namespace Sports\Output\Team;
 
 use Psr\Log\LoggerInterface;
 use Sports\Team\Player as TeamPlayer;
-use SportsHelpers\Output as OutputBase;
+use SportsHelpers\Output\OutputAbstract;
 
-class Player extends OutputBase
+final class Player extends OutputAbstract
 {
-    public function __construct(LoggerInterface|null $logger= null)
+    public function __construct(LoggerInterface $logger)
     {
         parent::__construct($logger);
     }

@@ -22,7 +22,7 @@ use Sports\Qualify\AgainstConfig as QualifyConfig;
 use Sports\Score\Against as AgainstScore;
 use SportsHelpers\Against\Side as AgainstSide;
 
-class Against extends GameBase
+final class Against extends GameBase
 {
     /**
      * @var Collection<int|string, AgainstGamePlace>
@@ -75,7 +75,7 @@ class Against extends GameBase
      * @param AgainstSide|null $side
      * @return list<AgainstGamePlace>
      */
-    public function getSidePlaces(AgainstSide $side = null): array
+    public function getSidePlaces(AgainstSide|null $side = null): array
     {
         if ($side === AgainstSide::Home) {
             return $this->getHomePlaces();
@@ -135,7 +135,7 @@ class Against extends GameBase
      * @param AgainstSide|null $side
      * @return bool
      */
-    public function isParticipating(Place $place, AgainstSide $side = null): bool
+    public function isParticipating(Place $place, AgainstSide|null $side = null): bool
     {
         $places = array_map(function (AgainstGamePlace $gamePlace): Place {
             return $gamePlace->getPlace();

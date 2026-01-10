@@ -9,7 +9,7 @@ use Doctrine\Common\Collections\Collection;
 use Sports\Team\Player;
 use SportsHelpers\Identifiable;
 
-class Team extends Identifiable implements \Stringable
+final class Team extends Identifiable implements \Stringable
 {
     protected Association $association;
     protected string $name;
@@ -58,7 +58,7 @@ class Team extends Identifiable implements \Stringable
         return $this->abbreviation;
     }
 
-    public function setAbbreviation(string $abbreviation = null): void
+    public function setAbbreviation(string|null $abbreviation = null): void
     {
         if ($abbreviation !== null && strlen($abbreviation) === 0) {
             $abbreviation = null;
@@ -108,6 +108,7 @@ class Team extends Identifiable implements \Stringable
         return $this->players;
     }
 
+    #[\Override]
     public function __toString(): string
     {
         return '"' . $this->getName() . ( $this->abbreviation !== null ? ' (' . $this->abbreviation . ')' : '' ) . '"';

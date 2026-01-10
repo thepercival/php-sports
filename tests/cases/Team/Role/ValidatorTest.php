@@ -31,17 +31,17 @@ use SportsHelpers\Against\Side as AgainstSide;
 use SportsHelpers\GameMode;
 use SportsHelpers\Sport\Variant\Against\H2h as AgainstH2h;
 
-class ValidatorTest extends \PHPUnit\Framework\TestCase
+final class ValidatorTest extends \PHPUnit\Framework\TestCase
 {
     use CompetitionCreator;
 
     public function testPlayerPartiallyBeforeSeasonStart(): void
     {
-        $seasonPeriod = new Period('2015-07-01', '2016-07-01');
+        $seasonPeriod = Period::fromDate('2015-07-01', '2016-07-01');
         $season = new Season('2015/2016', $seasonPeriod);
-        $seasonStart = $seasonPeriod->getStartDate()->sub(new \DateInterval('P1D'));
+        $seasonStart = $seasonPeriod->startDate->sub(new \DateInterval('P1D'));
         self::assertInstanceOf(\DateTimeImmutable::class, $seasonStart);
-        $period = new Period($seasonStart, $seasonPeriod->getStartDate()->add(new \DateInterval('P5D')));
+        $period = Period::fromDate($seasonStart, $seasonPeriod->startDate->add(new \DateInterval('P5D')));
         $this->testPlayerPartiallyHelper($season, $period);
     }
 
@@ -64,13 +64,13 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
 
     public function testPlayerPartiallyAfterSeasonEnd(): void
     {
-        $seasonPeriod = new Period('2015-07-01', '2016-07-01');
+        $seasonPeriod = Period::fromDate('2015-07-01', '2016-07-01');
         $season = new Season('2015/2016', $seasonPeriod);
-        $seasonStart = $seasonPeriod->getEndDate()->sub(new \DateInterval('P5D'));
+        $seasonStart = $seasonPeriod->endDate->sub(new \DateInterval('P5D'));
         self::assertInstanceOf(\DateTimeImmutable::class, $seasonStart);
-        $period = new Period(
+        $period = Period::fromDate(
             $seasonStart,
-            $seasonPeriod->getEndDate()->add(new \DateInterval('P5D'))
+            $seasonPeriod->endDate->add(new \DateInterval('P5D'))
 
         );
         $this->testPlayerPartiallyHelper($season, $period);
@@ -83,16 +83,16 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
         $association = new Association('testAssociation');
         $league = new League($association, 'testLeague');
 
-        $seasonPeriod = new Period('2015-07-01', '2016-07-01');
+        $seasonPeriod = Period::fromDate('2015-07-01', '2016-07-01');
         $season = new Season('2015/2016', $seasonPeriod);
 
         $competition = new Competition($league, $season);
         $team = new Team($association, 'testTeam');
         $person = new Person('FirstName', null, 'LastName');
 
-        $seasonStart = $seasonPeriod->getStartDate();
-        $periodA = new Period($seasonStart, $seasonStart->add(new \DateInterval('P8D')));
-        $periodB = new Period(
+        $seasonStart = $seasonPeriod->startDate;
+        $periodA = Period::fromDate($seasonStart, $seasonStart->add(new \DateInterval('P8D')));
+        $periodB = Period::fromDate(
             $seasonStart->add(new \DateInterval('P4D')),
             $seasonStart->add(new \DateInterval('P12D'))
         );
@@ -111,17 +111,17 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
         $association = new Association('testAssociation');
         $league = new League($association, 'testLeague');
 
-        $seasonPeriod = new Period('2015-07-01', '2016-07-01');
+        $seasonPeriod = Period::fromDate('2015-07-01', '2016-07-01');
         $season = new Season('2015/2016', $seasonPeriod);
 
         $competition = new Competition($league, $season);
         $team = new Team($association, 'testTeam');
         $person = new Person('FirstName', null, 'LastName');
 
-        $seasonStart = $seasonPeriod->getStartDate();
-        $periodA = new Period($seasonStart, $seasonStart->add(new \DateInterval('P8D')));
-        $periodB = new Period(
-            $seasonStart->add(new \DateInterval('P8D')), $seasonPeriod->getEndDate()
+        $seasonStart = $seasonPeriod->startDate;
+        $periodA = Period::fromDate($seasonStart, $seasonStart->add(new \DateInterval('P8D')));
+        $periodB = Period::fromDate(
+            $seasonStart->add(new \DateInterval('P8D')), $seasonPeriod->endDate
         );
 
         new TeamPlayer($team, $person, $periodA, FootballLine::Defense->value);
@@ -138,16 +138,16 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
         $association = new Association('testAssociation');
         $league = new League($association, 'testLeague');
 
-        $seasonPeriod = new Period('2015-07-01', '2016-07-01');
+        $seasonPeriod = Period::fromDate('2015-07-01', '2016-07-01');
         $season = new Season('2015/2016', $seasonPeriod);
 
         $competition = new Competition($league, $season);
         $team = new Team($association, 'testTeam');
         $person = new Person('FirstName', null, 'LastName');
 
-        $seasonStart = $seasonPeriod->getStartDate();
-        $periodA = new Period($seasonStart, $seasonStart->add(new \DateInterval('P8D')));
-        $periodB = new Period(
+        $seasonStart = $seasonPeriod->startDate;
+        $periodA = Period::fromDate($seasonStart, $seasonStart->add(new \DateInterval('P8D')));
+        $periodB = Period::fromDate(
             $seasonStart->add(new \DateInterval('P4D')),
             $seasonStart->add(new \DateInterval('P12D'))
         );
@@ -166,19 +166,19 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
         $association = new Association('testAssociation');
         $league = new League($association, 'testLeague');
 
-        $seasonPeriod = new Period('2015-07-01', '2016-07-01');
+        $seasonPeriod = Period::fromDate('2015-07-01', '2016-07-01');
         $season = new Season('2015/2016', $seasonPeriod);
 
         $competition = new Competition($league, $season);
         $team = new Team($association, 'testTeam');
         $person = new Person('FirstName', null, 'LastName');
 
-        $seasonStart = $seasonPeriod->getStartDate();
-        $periodA = new Period(
+        $seasonStart = $seasonPeriod->startDate;
+        $periodA = Period::fromDate(
             $seasonStart->add(new \DateInterval('P4D')),
             $seasonStart->add(new \DateInterval('P8D'))
         );
-        $periodB = new Period($seasonStart, $seasonStart->add(new \DateInterval('P12D')));
+        $periodB = Period::fromDate($seasonStart, $seasonStart->add(new \DateInterval('P12D')));
 
         new TeamPlayer($team, $person, $periodA, FootballLine::Defense->value);
         $teamPlayerB = new TeamPlayer($team, $person, $periodB, FootballLine::Defense->value);
@@ -194,16 +194,16 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
         $association = new Association('testAssociation');
         $league = new League($association, 'testLeague');
 
-        $seasonPeriod = new Period('2015-07-01', '2016-07-01');
+        $seasonPeriod = Period::fromDate('2015-07-01', '2016-07-01');
         $season = new Season('2015/2016', $seasonPeriod);
 
         $competition = new Competition($league, $season);
         $team = new Team($association, 'testTeam');
         $person = new Person('FirstName', null, 'LastName');
 
-        $seasonStart = $seasonPeriod->getStartDate();
-        $periodA = new Period($seasonStart, $seasonStart->add(new \DateInterval('P12D')));
-        $periodB = new Period(
+        $seasonStart = $seasonPeriod->startDate;
+        $periodA = Period::fromDate($seasonStart, $seasonStart->add(new \DateInterval('P12D')));
+        $periodB = Period::fromDate(
             $seasonStart->add(new \DateInterval('P4D')),
             $seasonStart->add(new \DateInterval('P8D'))
         );
@@ -222,22 +222,22 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
         $association = new Association('testAssociation');
         $league = new League($association, 'testLeague');
 
-        $seasonPeriod = new Period('2015-07-01', '2016-07-01');
+        $seasonPeriod = Period::fromDate('2015-07-01', '2016-07-01');
         $season = new Season('2015/2016', $seasonPeriod);
 
         $competition = new Competition($league, $season);
         $team = new Team($association, 'testTeam');
         $person = new Person('FirstName', null, 'LastName');
 
-        $seasonStart = $seasonPeriod->getStartDate();
-        $period = new Period(
+        $seasonStart = $seasonPeriod->startDate;
+        $period = Period::fromDate(
             $seasonStart->add(new \DateInterval('P4D')),
             $seasonStart->add(new \DateInterval('P8D'))
         );
 
         $teamPlayer = new TeamPlayer($team, $person, $period, FootballLine::Defense->value);
 
-        $dateTime = $period->getStartDate()->sub(new \DateInterval('P2D'));
+        $dateTime = $period->startDate->sub(new \DateInterval('P2D'));
         self::assertInstanceOf(\DateTimeImmutable::class, $dateTime);
         $this->createGame(
             $competition,

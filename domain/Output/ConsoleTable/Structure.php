@@ -11,7 +11,7 @@ use Sports\Structure\NameService as StructureNameService;
 use Sports\Structure as StructureBase;
 use Sports\Competitor\Team as TeamCompetitor;
 
-class Structure
+final class Structure
 {
     /**
      * @param StructureBase $structure

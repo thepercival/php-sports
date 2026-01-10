@@ -12,7 +12,7 @@ use Sports\Game\Participation as GameParticipation;
 use Sports\Person;
 use Sports\Team;
 
-class Player extends Role
+final class Player extends Role
 {
     protected int|null $shirtNumber = null;
     protected int $line;
@@ -57,7 +57,7 @@ class Player extends Role
         return $this->shirtNumber;
     }
 
-    public function setShirtNumber(int $shirtNumber = null): void
+    public function setShirtNumber(int|null $shirtNumber = null): void
     {
         $this->shirtNumber = $shirtNumber;
     }

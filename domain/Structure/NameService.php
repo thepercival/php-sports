@@ -20,7 +20,7 @@ use Sports\Qualify\RoundRank\Service as RoundRankService;
 use Sports\Round;
 use Sports\Round\Number as RoundNumber;
 
-class NameService
+final class NameService
 {
     protected PouleStructureNumberMap|null $pouleStructureNumberMap = null;
     protected RoundRankService $roundRankService;

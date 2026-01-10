@@ -13,11 +13,13 @@ class StartLocation implements StartLocationInterface
     {
     }
 
+    #[\Override]
     public function getCategoryNr(): int
     {
         return $this->categoryNr;
     }
 
+    #[\Override]
     public function getPouleNr(): int
     {
         return $this->pouleNr;
@@ -28,6 +30,7 @@ class StartLocation implements StartLocationInterface
         $this->pouleNr = $pouleNr;
     }
 
+    #[\Override]
     public function getPlaceNr(): int
     {
         return $this->placeNr;
@@ -45,6 +48,7 @@ class StartLocation implements StartLocationInterface
             && $startLocation->getPlaceNr() === $this->getPlaceNr();
     }
 
+    #[\Override]
     public function getStartId(): string
     {
         return $this->getCategoryNr() . '.' . $this->getPouleNr() . '.' . $this->getPlaceNr();

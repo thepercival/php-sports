@@ -10,7 +10,7 @@ use Doctrine\Persistence\ObjectRepository;
 use Sports\Poule\Horizontal\Creator as HorizontalPouleCreator;
 use Sports\Qualify\Rule\Creator as QualifyRuleCreator;
 
-class Service
+final class Service
 {
     public function __construct(protected EntityManager $entitymanager)
     {

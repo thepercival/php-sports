@@ -19,7 +19,7 @@ use SportsHelpers\PlaceLocationInterface;
 use Sports\Poule\Horizontal as HorizontalPoule;
 use Sports\Qualify\Target as QualifyTarget;
 
-class Place extends Identifiable implements PlaceLocationInterface
+final class Place extends Identifiable implements PlaceLocationInterface
 {
     private int $placeNr;
 
@@ -29,7 +29,7 @@ class Place extends Identifiable implements PlaceLocationInterface
 
     public const int MAX_LENGTH_NAME = 10;
 
-    public function __construct(protected Poule $poule, int $number = null)
+    public function __construct(protected Poule $poule, int|null $number = null)
     {
         if ($number === null) {
             $number = $poule->getPlaces()->count() + 1;
@@ -47,11 +47,13 @@ class Place extends Identifiable implements PlaceLocationInterface
         return $this->poule;
     }
 
+    #[\Override]
     public function getPouleNr(): int
     {
         return $this->poule->getNumber();
     }
 
+    #[\Override]
     public function getPlaceNr(): int
     {
         return $this->placeNr;
@@ -77,7 +79,7 @@ class Place extends Identifiable implements PlaceLocationInterface
         return $this->name;
     }
 
-    public function setName(string $name = null): void
+    public function setName(string|null $name = null): void
     {
         if ($name !== null and strlen($name) === 0) {
             $name = null;
@@ -232,6 +234,7 @@ class Place extends Identifiable implements PlaceLocationInterface
         return GameState::Created;
     }
 
+    #[\Override]
     public function getUniqueIndex(): string
     {
         return $this->getPouleNr() . '.' . $this->getPlaceNr();

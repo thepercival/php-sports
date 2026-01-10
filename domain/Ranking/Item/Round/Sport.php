@@ -6,7 +6,7 @@ use Sports\Competition\Sport as CompetitionSport;
 use Sports\Place\SportPerformance;
 use SportsHelpers\PlaceLocationInterface;
 
-class Sport
+final class Sport
 {
     public function __construct(
         private SportPerformance $performance,

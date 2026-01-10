@@ -7,7 +7,7 @@ namespace Sports\Qualify;
 use Sports\Place;
 use Sports\Competitor as Competitor;
 
-class Qualifier
+final class Qualifier
 {
     public function __construct(protected Place $place, protected Competitor|null $competitor = null)
     {

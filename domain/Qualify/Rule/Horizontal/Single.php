@@ -15,7 +15,7 @@ use Sports\Qualify\Rule\Horizontal\Single as HorizontalSingleQualifyRule;
 use Sports\Qualify\Rule\Single as SingleQualifyRule;
 use Sports\Qualify\Target as QualifyTarget;
 
-class Single extends HorizontalQualifyRule implements SingleQualifyRule
+final class Single extends HorizontalQualifyRule implements SingleQualifyRule
 {
     private HorizontalSingleQualifyRule | null $next = null;
 
@@ -109,6 +109,7 @@ class Single extends HorizontalQualifyRule implements SingleQualifyRule
 
 
 
+    #[\Override]
     public function getNrOfMappings(): int
     {
         return $this->byPlaceMappings->count();

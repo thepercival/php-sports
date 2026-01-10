@@ -7,15 +7,17 @@ namespace Sports\Game;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 use SportsHelpers\EnumDbType;
 
-class StateType extends EnumDbType
+final class StateType extends EnumDbType
 {
     // const NAME = 'enum_GameMode'; // modify to match your type name
 
+    #[\Override]
     public static function getNameHelper(): string
     {
         return 'enum_GameState';
     }
 
+    #[\Override]
     public function convertToPHPValue($value, AbstractPlatform $platform)
     {
         if ($value === State::Created->value) {
@@ -33,7 +35,8 @@ class StateType extends EnumDbType
         return null;
     }
 
-    public function getSQLDeclaration(array $column, AbstractPlatform $platform)
+    #[\Override]
+    public function getSQLDeclaration(array $column, AbstractPlatform $platform): string
     {
         return 'varchar(10)';
     }

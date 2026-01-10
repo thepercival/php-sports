@@ -2,9 +2,8 @@
 
 declare(strict_types=1);
 
-namespace Sports\Score\Config;
+namespace Sports\Repositories;
 
-use SportsHelpers\Repository as BaseRepository;
 use Doctrine\ORM\EntityRepository;
 use Sports\Competition\Sport as CompetitionSport;
 use Sports\Round;
@@ -13,12 +12,8 @@ use Sports\Score\Config as ScoreConfig;
 /**
  * @template-extends EntityRepository<ScoreConfig>
  */
-class Repository extends EntityRepository
+final class ScoreConfigRepository extends EntityRepository
 {
-    /**
-     * @use BaseRepository<ScoreConfig>
-     */
-    use BaseRepository;
 
     public function addObjects(CompetitionSport $competitionSport, Round $round): void
     {
@@ -26,7 +21,7 @@ class Repository extends EntityRepository
         if ($scoreConfig === null) {
             return;
         }
-        $this->save($scoreConfig);
+        $this->getEntityManager()->persist($scoreConfig);
         foreach ($round->getChildren() as $childRound) {
             $this->addObjects($competitionSport, $childRound);
         }
@@ -36,7 +31,7 @@ class Repository extends EntityRepository
     {
         $scoreConfigs = $this->findBy([ "competitionSport" => $competitionSport ]);
         foreach ($scoreConfigs as $config) {
-            $this->remove($config);
+            $this->getEntityManager()->remove($config);
         }
     }
 }

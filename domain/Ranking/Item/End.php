@@ -4,7 +4,7 @@ namespace Sports\Ranking\Item;
 
 use Sports\Competitor\StartLocationInterface;
 
-class End
+final class End
 {
     public function __construct(
         private int $uniqueRank,

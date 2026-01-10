@@ -2,37 +2,31 @@
 
 declare(strict_types=1);
 
-namespace Sports\Competition\Sport;
+namespace Sports\Repositories;
 
 use Doctrine\ORM\EntityRepository;
 use Exception;
 use Sports\Competition\Sport as CompetitionSport;
 use Sports\Planning\GameAmountConfig;
-use Sports\Planning\GameAmountConfig\Repository as GameAmountConfigRepos;
 use Sports\Qualify\AgainstConfig as AgainstQualifyConfig;
-use Sports\Qualify\AgainstConfig\Repository as AgainstQualifyConfigRepos;
+use Sports\Repositories\AgainstQualifyConfigRepository as AgainstQualifyConfigRepos;
+use Sports\Repositories\GameAmountConfigRepository as GameAmountConfigRepos;
+use Sports\Repositories\ScoreConfigRepository as ScoreConfigRepos;
 use Sports\Score\Config as ScoreConfig;
-use Sports\Score\Config\Repository as ScoreConfigRepos;
 use Sports\Structure;
-use SportsHelpers\Repository as BaseRepository;
 
 /**
  * @template-extends EntityRepository<CompetitionSport>
  */
-class Repository extends EntityRepository
+final class CompetitionSportRepository extends EntityRepository
 {
-    /**
-     * @use BaseRepository<CompetitionSport>
-     */
-    use BaseRepository;
-
     public function customAdd(CompetitionSport $competitionSport, Structure $structure): void
     {
         $em = $this->getEntityManager();
         $conn = $em->getConnection();
         $conn->beginTransaction();
         try {
-            $this->save($competitionSport);
+            $this->getEntityManager()->persist($competitionSport);
 
             $firstRoundNumber = $structure->getFirstRoundNumber();
 
@@ -88,7 +82,7 @@ class Repository extends EntityRepository
             $gameAmountRepos->removeObjects($competitionSport);
 
             $sport = $competitionSport->getSport();
-            $this->remove($competitionSport);
+            $this->getEntityManager()->remove($competitionSport);
 
             if ($this->findOneBy(["sport" => $sport]) === null) {
                 $this->getEntityManager()->remove($sport);

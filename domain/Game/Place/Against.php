@@ -18,7 +18,7 @@ use Sports\Person;
 use Sports\Place as PlaceBase;
 use SportsHelpers\Against\Side as AgainstSide;
 
-class Against extends GamePlaceBase
+final class Against extends GamePlaceBase
 {
     /**
      * @var Collection<int|string, Participation>
@@ -75,7 +75,7 @@ class Against extends GamePlaceBase
      * @param TeamCompetitor|null $teamCompetitor
      * @return list<Participation>
      */
-    public function getSubstituted(TeamCompetitor $teamCompetitor = null): array
+    public function getSubstituted(TeamCompetitor|null $teamCompetitor = null): array
     {
         $substituted = $this->getParticipations(function (Participation $participation) use ($teamCompetitor): bool {
             return ($teamCompetitor === null || $participation->getPlayer()->getTeam() === $teamCompetitor->getTeam())
@@ -91,7 +91,7 @@ class Against extends GamePlaceBase
      * @param TeamCompetitor|null $teamCompetitor
      * @return list<GoalEvent>
      */
-    public function getGoalEvents(TeamCompetitor $teamCompetitor = null): array
+    public function getGoalEvents(TeamCompetitor|null $teamCompetitor = null): array
     {
         $goalEvents = [];
         $participations = $teamCompetitor !== null ? $this->getTeamParticipations($teamCompetitor) : $this->getParticipations();
@@ -105,7 +105,7 @@ class Against extends GamePlaceBase
      * @param TeamCompetitor|null $teamCompetitor
      * @return list<CardEvent>
      */
-    public function getCardEvents(TeamCompetitor $teamCompetitor = null): array
+    public function getCardEvents(TeamCompetitor|null $teamCompetitor = null): array
     {
         $cardEvents = [];
         $participations = $teamCompetitor !== null ? $this->getTeamParticipations($teamCompetitor) : $this->getParticipations();
@@ -119,7 +119,7 @@ class Against extends GamePlaceBase
      * @param TeamCompetitor|null $teamCompetitor
      * @return list<SubstitutionEvent>
      */
-    public function getSubstituteEvents(TeamCompetitor $teamCompetitor = null): array
+    public function getSubstituteEvents(TeamCompetitor|null $teamCompetitor = null): array
     {
         $substituteEvents = [];
         $substitutes = $this->getSubstitutes($teamCompetitor);
@@ -161,7 +161,7 @@ class Against extends GamePlaceBase
      * @param TeamCompetitor|null $teamCompetitor
      * @return list<GoalEvent|CardEvent|SubstitutionEvent>
      */
-    public function getEvents(TeamCompetitor $teamCompetitor = null): array
+    public function getEvents(TeamCompetitor|null $teamCompetitor = null): array
     {
         return array_merge(
             $this->getGoalEvents($teamCompetitor),
@@ -186,7 +186,7 @@ class Against extends GamePlaceBase
      * @param TeamCompetitor|null $teamCompetitor
      * @return list<Participation>
      */
-    public function getLineup(TeamCompetitor $teamCompetitor = null): array
+    public function getLineup(TeamCompetitor|null $teamCompetitor = null): array
     {
         $lineupParticipations = $this->getParticipations(function (Participation $participation) use ($teamCompetitor): bool {
             return ($teamCompetitor === null || $participation->getPlayer()->getTeam() === $teamCompetitor->getTeam())
@@ -205,7 +205,7 @@ class Against extends GamePlaceBase
      * @param TeamCompetitor|null $teamCompetitor
      * @return list<Participation>
      */
-    public function getSubstitutes(TeamCompetitor $teamCompetitor = null): array
+    public function getSubstitutes(TeamCompetitor|null $teamCompetitor = null): array
     {
         $substitutes = $this->getParticipations(function (Participation $participation) use ($teamCompetitor): bool {
             return ($teamCompetitor === null || $participation->getPlayer()->getTeam() === $teamCompetitor->getTeam())

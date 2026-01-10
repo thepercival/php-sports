@@ -9,7 +9,7 @@ use Sports\Team;
 use SportsHelpers\Against\Side;
 use Sports\Game\Against as AgainstGame;
 
-class Calculator
+final class Calculator
 {
     protected StartLocationMap $startLocationMap;
 

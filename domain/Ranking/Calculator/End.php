@@ -18,7 +18,7 @@ use Sports\Ranking\Calculator\Round as RoundRankingCalculator;
 use Sports\Ranking\Item\End as EndRankingItem;
 use Sports\Round;
 
-class End
+final class End
 {
     private int $currentRank = 1;
 

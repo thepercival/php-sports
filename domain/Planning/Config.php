@@ -9,7 +9,7 @@ use SportsHelpers\Identifiable;
 use SportsHelpers\SelfReferee;
 use SportsHelpers\SelfRefereeInfo;
 
-class Config extends Identifiable
+final class Config extends Identifiable
 {
     public const bool DEFAULTEXTENSION = false;
     public const bool DEFAULTENABLETIME = true;

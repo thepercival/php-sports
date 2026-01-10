@@ -5,7 +5,7 @@ namespace Sports\Competition\Sport;
 use Exception;
 use Sports\Competition\Sport as CompetitionSport;
 
-class FromToMapper
+final class FromToMapper
 {
     /**
      * @var array<string, CompetitionSport>

@@ -6,6 +6,7 @@ namespace Sports\Tests\Structure;
 
 use Exception;
 use Monolog\Handler\StreamHandler;
+use Monolog\Level;
 use Monolog\Logger;
 use Monolog\Processor\UidProcessor;
 use PHPUnit\Framework\TestCase;
@@ -841,7 +842,7 @@ final class EditorTest extends TestCase
         $processor = new UidProcessor();
         $logger->pushProcessor($processor);
 
-        $handler = new StreamHandler('php://stdout', Logger::INFO);
+        $handler = new StreamHandler('php://stdout', Level::Info);
         $logger->pushHandler($handler);
         return $logger;
     }

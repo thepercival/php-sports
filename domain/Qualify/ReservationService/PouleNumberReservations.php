@@ -6,7 +6,7 @@ namespace Sports\Qualify\ReservationService;
 
 use Sports\Poule;
 
-class PouleNumberReservations
+final class PouleNumberReservations
 {
     /**
      * @param int $toPouleNr

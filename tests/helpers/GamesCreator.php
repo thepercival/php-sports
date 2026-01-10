@@ -6,6 +6,7 @@ namespace Sports\TestHelper;
 
 use League\Period\Period;
 use Monolog\Handler\StreamHandler;
+use Monolog\Level;
 use Monolog\Logger;
 use Monolog\Processor\UidProcessor;
 use Psr\Log\LoggerInterface;
@@ -22,7 +23,7 @@ use SportsPlanning\Planning;
 use SportsScheduler\Resource\RefereePlace\Service as RefereePlaceService;
 use SportsScheduler\Schedule\Creator as ScheduleCreator;
 
-class GamesCreator
+final class GamesCreator
 {
     use GppMarginCalculator;
 
@@ -32,7 +33,7 @@ class GamesCreator
         $processor = new UidProcessor();
         $logger->pushProcessor($processor);
 
-        $handler = new StreamHandler('php://stdout', Logger::INFO);
+        $handler = new StreamHandler('php://stdout', Level::Info);
         $logger->pushHandler($handler);
         return $logger;
     }
@@ -46,7 +47,7 @@ class GamesCreator
     public function createStructureGames(
         Structure $structure,
         array $blockedPeriods = [],
-        SportRange $batchGamesRange = null,
+        SportRange|null $batchGamesRange = null,
         int|null $allowedGppMargin = null
     ): void {
         $this->removeGamesHelper($structure->getFirstRoundNumber());
@@ -62,7 +63,7 @@ class GamesCreator
     public function createGames(
         RoundNumber $roundNumber,
         array $blockedPeriods = [],
-        SportRange $batchGamesRange = null,
+        SportRange|null $batchGamesRange = null,
         int|null $allowedGppMargin = null): void
     {
         $this->removeGamesHelper($roundNumber);
@@ -72,7 +73,7 @@ class GamesCreator
     public function createPlanning(
         RoundNumber $roundNumber,
         RefereeInfo|null $refereeInfo = null,
-        SportRange $batchGamesRange = null,
+        SportRange|null $batchGamesRange = null,
         int|null $allowedGppMargin = null): Planning
     {
         $planningCreator = new PlanningCreator();

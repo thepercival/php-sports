@@ -2,22 +2,17 @@
 
 declare(strict_types=1);
 
-namespace Sports\Season;
+namespace Sports\Repositories;
 
 use Doctrine\ORM\EntityRepository;
 use League\Period\Period;
 use Sports\Season;
-use SportsHelpers\Repository as BaseRepository;
 
 /**
  * @template-extends EntityRepository<Season>
  */
-class Repository extends EntityRepository
+final class SeasonRepository extends EntityRepository
 {
-    /**
-     * @use BaseRepository<Season>
-     */
-    use BaseRepository;
 
     public function findOneByPeriod(Period $period): Season|null
     {
@@ -25,8 +20,8 @@ class Repository extends EntityRepository
             ->where('s.startDateTime < :end')
             ->andWhere('s.endDateTime > :start');
 
-        $query = $query->setParameter('end', $period->getEndDate());
-        $query = $query->setParameter('start', $period->getEndDate());
+        $query = $query->setParameter('end', $period->endDate);
+        $query = $query->setParameter('start', $period->startDate);
 
         /** @var list<Season> $seasons */
         $seasons = $query->getQuery()->getResult();

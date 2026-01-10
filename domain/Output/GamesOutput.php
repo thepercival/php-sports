@@ -12,14 +12,14 @@ use Sports\Output\Game\Against as AgainstGameOutput;
 use Sports\Output\Game\Column;
 use Sports\Output\Game\Together as TogetherGameOutput;
 use Sports\Round\Number as RoundNumber;
-use SportsHelpers\Output as OutputBase;
+use SportsHelpers\Output\OutputAbstract;
 
-class GamesOutput extends OutputBase
+final class GamesOutput extends OutputAbstract
 {
     protected AgainstGameOutput $againstOutput;
     protected TogetherGameOutput $togetherOutput;
 
-    public function __construct(StartLocationMap $startLocationMap = null, LoggerInterface $logger = null)
+    public function __construct(StartLocationMap $startLocationMap = null, LoggerInterface $logger)
     {
         parent::__construct($logger);
         $this->againstOutput = new AgainstGameOutput($startLocationMap, $logger);

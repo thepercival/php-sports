@@ -10,7 +10,7 @@ use Sports\Round;
 use Sports\Sport;
 use SportsHelpers\Identifiable;
 
-class AgainstConfig extends Identifiable
+final class AgainstConfig extends Identifiable
 {
     public function __construct(
         protected CompetitionSport $competitionSport,

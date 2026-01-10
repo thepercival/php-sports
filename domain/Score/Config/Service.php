@@ -12,7 +12,7 @@ use Sports\Sport\Custom as CustomSport;
 use Sports\Round;
 use Sports\Competition\Sport as CompetitionSport;
 
-class Service
+final class Service
 {
     public function createDefault(CompetitionSport $competitionSport, Round $round): ScoreConfig
     {
@@ -115,13 +115,13 @@ class Service
         if (!$game->getScoreConfig()->useSubScore()) {
             return new AgainstScore($firstScore->getHome(), $firstScore->getAway());
         }
-        $home = 0;
-        $away = 0;
+        $home = 0.0;
+        $away = 0.0;
         foreach ($game->getScores() as $score) {
             if ($score->getHome() > $score->getAway()) {
-                $home++;
+                $home += 1.0;
             } elseif ($score->getHome() < $score->getAway()) {
-                $away++;
+                $away += 1.0;
             } else {
                 $home += 0.5;
                 $away += 0.5;
@@ -132,8 +132,8 @@ class Service
 
     public function getFinalAgainstSubScore(AgainstGame $game): AgainstScore
     {
-        $home = 0;
-        $away = 0;
+        $home = 0.0;
+        $away = 0.0;
         foreach ($game->getScores() as $score) {
             $home += $score->getHome();
             $away += $score->getAway();

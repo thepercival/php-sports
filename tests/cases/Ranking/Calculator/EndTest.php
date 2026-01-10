@@ -24,7 +24,7 @@ use Sports\TestHelper\StructureEditorCreator;
 use Sports\Output\StructureOutput;
 use Sports\Output\GamesOutput as GamesOutput;
 
-class EndTest extends TestCase
+final class EndTest extends TestCase
 {
     use CompetitionCreator;
     use SetScores;
@@ -52,7 +52,7 @@ class EndTest extends TestCase
 
         for ($rank = 1; $rank <= count($items); $rank++) {
             $endRankingItem = array_shift($items);
-            // self::assertInstanceOf(EndRankingItem::class, $endRankingItem);
+            self::assertInstanceOf(EndRankingItem::class, $endRankingItem);
             $startLocation = $endRankingItem->getStartLocation();
             self::assertInstanceOf(StartLocation::class, $startLocation);
             self::assertSame($startLocation->getPlaceNr(), $rank);
@@ -82,7 +82,7 @@ class EndTest extends TestCase
 
         for ($rank = 1; $rank <= count($items); $rank++) {
             $endRankingItem = array_shift($items);
-            // self::assertInstanceOf(EndRankingItem::class, $endRankingItem);
+            self::assertInstanceOf(EndRankingItem::class, $endRankingItem);
             self::assertNull($endRankingItem->getStartLocation());
         }
     }
@@ -127,7 +127,7 @@ class EndTest extends TestCase
 
         for ($rank = 1; $rank <= count($items); $rank++) {
             $endRankingItem = array_shift($items);
-            // self::assertNotNull($endRankingItem);
+            self::assertNotNull($endRankingItem);
             $startLocation = $endRankingItem->getStartLocation();
             self::assertInstanceOf(StartLocation::class, $startLocation);
             self::assertSame($startLocation->getPlaceNr(), $rank);

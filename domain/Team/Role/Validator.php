@@ -9,7 +9,7 @@ use Sports\Competition;
 use Sports\Round;
 use Sports\Team\Player;
 
-class Validator
+final class Validator
 {
     public function __construct()
     {

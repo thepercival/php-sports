@@ -34,8 +34,14 @@ final class Cell implements \Stringable
         $this->color = $color;
     }
 
+    #[\Override]
     public function __toString(): string
     {
-        return $this->color === null ? $this->value : Color::getColored($this->color, $this->value);
+        if( $this->color === null ) {
+            return $this->value;
+        }
+        $coloredString = "\033[" . $this->color->value . "m";
+        return $coloredString . $this->value . "\033[0m";
+
     }
 }

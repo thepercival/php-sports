@@ -16,7 +16,7 @@ use Sports\Qualify\Group as QualifyGroup;
 use Sports\Structure\Cell as StructureCell;
 use SportsHelpers\Identifiable;
 
-class Group extends Identifiable
+final class Group extends Identifiable
 {
     protected int $number;
     protected Round $childRound;

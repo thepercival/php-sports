@@ -4,8 +4,8 @@
 //
 //use Sports\Competition;
 //use Sports\Round;
-//use Sports\Round\Repository as RoundRepository;
-//use Sports\Poule\Repository as PouleRepository;
+//use Sports\Round\CompetitionRepository as RoundRepository;
+//use Sports\Poule\CompetitionRepository as PouleRepository;
 //use Sports\Poule;
 //use Sports\Place;
 //use Sports\Round\Number as RoundNumber;
@@ -28,7 +28,7 @@
 //
 //    /**
 //     * Service constructor.
-//     * @param Repository $repos
+//     * @param CompetitionRepository $repos
 //     * @param Poule\Service $pouleService
 //     * @param PouleRepository $pouleRepos
 //     */

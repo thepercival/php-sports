@@ -13,7 +13,7 @@ use SportsHelpers\Sport\Variant\Against\GamesPerPlace as AgainstGpp;
 use SportsHelpers\Sport\Variant\AllInOneGame;
 use SportsHelpers\Sport\Variant\Single;
 
-class GameAmountConfig extends Identifiable
+final class GameAmountConfig extends Identifiable
 {
     public function __construct(
         protected CompetitionSport $competitionSport,

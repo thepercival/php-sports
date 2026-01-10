@@ -12,9 +12,9 @@ use Sports\Game\Together as TogetherGame;
 use Sports\Game\Place\Together as TogetherGamePlace;
 use Sports\Game\State as GameState;
 
-class Together extends OutputGame
+final class Together extends OutputGame
 {
-    public function __construct(StartLocationMap $startLocationMap = null, LoggerInterface $logger = null)
+    public function __construct(StartLocationMap $startLocationMap = null, LoggerInterface $logger)
     {
         parent::__construct($startLocationMap, $logger);
     }

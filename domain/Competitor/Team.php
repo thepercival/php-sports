@@ -9,7 +9,7 @@ use Sports\Competition;
 use Sports\Competitor as CompetitorInterface;
 use Sports\Team as TeamBase;
 
-class Team extends StartLocation implements CompetitorInterface
+final class Team extends StartLocation implements CompetitorInterface
 {
     public const int MAX_LENGTH_INFO = 200;
 
@@ -39,6 +39,7 @@ class Team extends StartLocation implements CompetitorInterface
         $this->id = $id;
     }
 
+    #[\Override]
     public function getName(): string
     {
         return $this->team->getName();
@@ -49,11 +50,13 @@ class Team extends StartLocation implements CompetitorInterface
         return $this->team;
     }
 
+    #[\Override]
     public function getCompetition(): Competition
     {
         return $this->competition;
     }
 
+    #[\Override]
     public function getPresent(): bool
     {
         return $this->present;
@@ -64,12 +67,13 @@ class Team extends StartLocation implements CompetitorInterface
         $this->present = $present;
     }
 
+    #[\Override]
     public function getPublicInfo(): ?string
     {
         return $this->publicInfo;
     }
 
-    public function setPublicInfo(string $info = null): void
+    public function setPublicInfo(string|null $info = null): void
     {
         if ($info !== null && strlen($info) === 0) {
             $info = null;
@@ -82,12 +86,13 @@ class Team extends StartLocation implements CompetitorInterface
         $this->publicInfo = $info;
     }
 
+    #[\Override]
     public function getPrivateInfo(): ?string
     {
         return $this->privateInfo;
     }
 
-    public function setPrivateInfo(string $info = null): void
+    public function setPrivateInfo(string|null $info = null): void
     {
         if ($info !== null && strlen($info) === 0) {
             $info = null;

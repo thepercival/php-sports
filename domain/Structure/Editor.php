@@ -26,7 +26,7 @@ use SportsHelpers\PouleStructure\Balanced as BalancedPouleStructure;
 use SportsHelpers\PouleStructure\BalancedCreator as BalancedPouleStructureCreator;
 use SportsHelpers\Sport\Variant\MinNrOfPlacesCalculator;
 
-class Editor
+final class Editor
 {
     private HorizontalPouleCreator $horPouleCreator;
     private QualifyRuleCreator $rulesCreator;

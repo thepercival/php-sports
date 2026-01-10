@@ -7,7 +7,7 @@ namespace Sports\Ranking\Rule;
 use Sports\Ranking\AgainstRuleSet;
 use Sports\Ranking\Rule as RankingRule;
 
-class Getter
+final class Getter
 {
     /**
      * @param AgainstRuleSet|null $ruleSet

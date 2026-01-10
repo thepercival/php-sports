@@ -4,7 +4,7 @@ namespace Sports\Association;
 
 use Sports\Association;
 
-class Service
+final class Service
 {
     public function __construct()
     {

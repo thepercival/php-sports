@@ -27,7 +27,7 @@ use SportsHelpers\PlaceLocationInterface;
 use SportsHelpers\PouleStructure\Balanced as BalancedPouleStructure;
 use SportsHelpers\Sport\Variant\MinNrOfPlacesCalculator;
 
-class Round extends Identifiable
+final class Round extends Identifiable
 {
     protected string|null $name = null;
     /**
@@ -386,7 +386,7 @@ class Round extends Identifiable
      * @param int|null $order
      * @return array<Place>
      */
-    public function getPlaces(int $order = null): array
+    public function getPlaces(int|null $order = null): array
     {
         $places = [];
         if ($order === Round::ORDER_NUMBER_POULE) {
@@ -483,7 +483,7 @@ class Round extends Identifiable
         return $nrOfPlaces;
     }
 
-    public function getNrOfPlacesChildren(QualifyTarget $target = null): int
+    public function getNrOfPlacesChildren(QualifyTarget|null $target = null): int
     {
         $nrOfPlacesChildRounds = 0;
         if ($target === null) {

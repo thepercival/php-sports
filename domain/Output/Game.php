@@ -15,16 +15,16 @@ use Sports\Game\Together as TogetherGame;
 use Sports\Structure\NameService as StructureNameService;
 use Sports\Place;
 use Sports\Score\Config\Service as ScoreConfigService;
-use SportsHelpers\Output as OutputBase;
 use SportsHelpers\Output\Color;
+use SportsHelpers\Output\OutputAbstract;
 
-abstract class Game extends OutputBase
+abstract class Game extends OutputAbstract
 {
     protected StructureNameService $structureNameService;
     protected StartLocationMap|null $startLocationMap;
     protected ScoreConfigService $scoreConfigService;
 
-    public function __construct(StartLocationMap $startLocationMap = null, LoggerInterface $logger = null)
+    public function __construct(StartLocationMap $startLocationMap = null, LoggerInterface $logger)
     {
         parent::__construct($logger);
         $this->structureNameService = new StructureNameService($startLocationMap);
@@ -34,18 +34,18 @@ abstract class Game extends OutputBase
 
     protected function getGameRoundNrAsString(int $gameRoundNr): string
     {
-        $gameRoundNrColor = $this->useColors() ? ($gameRoundNr % 10) : -1;
+        $gameRoundNrColor = ($gameRoundNr % 10);
         $gameRoundNrColor = $this->convertNumberToColor($gameRoundNrColor);
         $retVal = ($gameRoundNr < 10 ? ' ' : '') . $gameRoundNr;
-        return Color::getColored($gameRoundNrColor, $retVal);
+        return $this->getColoredString($gameRoundNrColor, $retVal);
     }
 
     protected function getBatchNrAsString(int $batchNr): string
     {
-        $batchColor = $this->useColors() ? ($batchNr % 10) : -1;
+        $batchColor = ($batchNr % 10);
         $retVal = 'batch ' . ($batchNr < 10 ? ' ' : '') . $batchNr;
         $batchColor = $this->convertNumberToColor($batchColor);
-        return Color::getColored($batchColor, $retVal);
+        return $this->getColoredString($batchColor, $retVal);
     }
 
     /**
@@ -68,10 +68,10 @@ abstract class Game extends OutputBase
             return '';
         }
         $priority = $field->getPriority();
-        $fieldColor = $this->useColors() ? ($priority % 10) : -1;
+        $fieldColor = ($priority % 10);
         $retVal = 'field ' . ($priority < 10 ? ' ' : '') . $priority;
         $fieldColor = $this->convertNumberToColor($fieldColor);
-        return Color::getColored($fieldColor, $retVal);
+        return $this->getColoredString($fieldColor, $retVal);
     }
 
     protected function getPlaceAsString(Place $place): string
@@ -90,10 +90,9 @@ abstract class Game extends OutputBase
         if (strlen($retVal) > 10) {
             $retVal = substr($retVal, 0, 10);
         }
-        $useColors = $this->useColors() && $place->getPoule()->getNumber() === 1;
-        $placeColor = $useColors ? ($place->getPlaceNr() % 10) : -1;
+        $placeColor = ($place->getPlaceNr() % 10);
         $placeColor = $this->convertNumberToColor($placeColor);
-        return Color::getColored($placeColor, $retVal);
+        return $this->getColoredString($placeColor, $retVal);
     }
 
     protected function getRefereeAsString(AgainstGame|TogetherGame $game): string
@@ -107,9 +106,9 @@ abstract class Game extends OutputBase
         $refNr = $this->getRefereeNumber($referee, $refereePlace);
 
 
-        $refereeColor = $this->useColors() ? ($refNr % 10) : -1;
+        $refereeColor = ($refNr % 10);
         $refereeColor = $this->convertNumberToColor($refereeColor);
-        return Color::getColored($refereeColor, $refereeDescription);
+        return $this->getColoredString($refereeColor, $refereeDescription);
     }
 
     protected function getRefereeDescription(Referee|null $referee, Place|null $refPlace): string
@@ -131,9 +130,6 @@ abstract class Game extends OutputBase
     protected function getRefereeNumber(Referee|null $referee, Place|null $refPlace): int
     {
         $refNr = -1;
-        if (!$this->useColors()) {
-            return $refNr;
-        }
         if ($referee === null && $refPlace === null) {
             return $refNr;
         }

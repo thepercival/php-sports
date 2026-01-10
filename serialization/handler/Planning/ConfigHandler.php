@@ -15,7 +15,7 @@ use Sports\SerializationHandler\Handler;
 use SportsHelpers\GameMode;
 use SportsHelpers\SelfReferee;
 
-class ConfigHandler extends Handler implements SubscribingHandlerInterface
+final class ConfigHandler extends Handler implements SubscribingHandlerInterface
 {
     public function __construct(protected DummyCreator $dummyCreator)
     {
@@ -24,6 +24,7 @@ class ConfigHandler extends Handler implements SubscribingHandlerInterface
     /**
      * @psalm-return list<array<string, int|string>>
      */
+    #[\Override]
     public static function getSubscribingMethods(): array
     {
         return static::getDeserializationMethods(PlanningConfig::class);

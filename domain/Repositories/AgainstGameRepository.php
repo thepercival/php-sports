@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Sports\Game\Against;
+namespace Sports\Repositories;
 
 use Doctrine\ORM\QueryBuilder;
 use League\Period\Period;
@@ -10,18 +10,15 @@ use Sports\Competition;
 use Sports\Competitor;
 use Sports\Game\Against as AgainstGame;
 use Sports\Game\Place\Against as AgainstGamePlace;
-use Sports\Game\Repository as GameRepository;
 use Sports\Game\State;
 use Sports\Game\State as GameState;
-use Sports\Game\Together as TogetherGame;
 use Sports\Round\Number as RoundNumber;
-use SportsHelpers\Against\Side;
 use SportsHelpers\Against\Side as AgainstSide;
 
 /**
  * @template-extends GameRepository<AgainstGame>
  */
-class Repository extends GameRepository
+final class AgainstGameRepository extends GameRepository
 {
     public function findOneByExt(Competitor $homeCompetitor, Competitor $awayCompetitor, Period $period): ?AgainstGame
     {
@@ -35,7 +32,7 @@ class Repository extends GameRepository
                 $exprHome->exists(
                     $this->getEntityManager()->createQueryBuilder()
                         ->select('gpphome.id')
-                        ->from('Sports\Game\Place', 'gpphome')
+                        ->from(AgainstGamePlace::class, 'gpphome')
                         ->join("gpphome.place", "pphome")
                         ->where('gpphome.game = g')
                         ->andWhere('gpphome.side = :home')
@@ -47,7 +44,7 @@ class Repository extends GameRepository
                 $exprAway->exists(
                     $this->getEntityManager()->createQueryBuilder()
                         ->select('gppaway.id')
-                        ->from('Sports\Game\Place', 'gppaway')
+                        ->from(AgainstGamePlace::class, 'gppaway')
                         ->join("gppaway.place", "ppaway")
                         ->where('gppaway.game = g')
                         ->andWhere('gppaway.side = :away')
@@ -68,7 +65,7 @@ class Repository extends GameRepository
 
     /**
      * @param Competition $competition
-     * @param list<GameState>|null $gameStates
+     * @param list<State>|null $gameStates
      * @param int|null $gameRoundNumber
      * @param Period|null $period
      * @return list<AgainstGame>
@@ -94,7 +91,7 @@ class Repository extends GameRepository
 
     /**
      * @param Competition $competition
-     * @param list<GameState>|null $gameStates
+     * @param list<State>|null $gameStates
      * @param int|null $gameRoundNumber
      * @param Period|null $period
      * @return list<int>
@@ -119,7 +116,7 @@ class Repository extends GameRepository
 
     /**
      * @param Competition $competition
-     * @param list<GameState>|null $gameStates
+     * @param list<State>|null $gameStates
      * @param int|null $gameRoundNumber
      * @param Period|null $period
      * @return int
@@ -187,9 +184,9 @@ class Repository extends GameRepository
      * @return bool
      */
     protected function canceledGameInFinished(AgainstGame $canceledGame, array $finished): bool {
-        $canceledHomeGamePlaces = $canceledGame->getSidePlaces(Side::Home);
+        $canceledHomeGamePlaces = $canceledGame->getSidePlaces(AgainstSide::Home);
         $canceledHomeGamePlace = array_shift($canceledHomeGamePlaces);
-        $canceledAwayGamePlaces = $canceledGame->getSidePlaces(Side::Away);
+        $canceledAwayGamePlaces = $canceledGame->getSidePlaces(AgainstSide::Away);
         $canceledAwayGamePlace = array_shift($canceledAwayGamePlaces);
         if ($canceledHomeGamePlace === null || $canceledAwayGamePlace === null) {
             return false;
@@ -198,9 +195,9 @@ class Repository extends GameRepository
         $canceledAwayPlace = $canceledAwayGamePlace->getPlace();
 
         foreach( $finished as $finishedGame) {
-            $finishedHomeGamePlaces = $finishedGame->getSidePlaces(Side::Home);
+            $finishedHomeGamePlaces = $finishedGame->getSidePlaces(AgainstSide::Home);
             $finishedHomeGamePlace = array_shift($finishedHomeGamePlaces);
-            $finishedAwayGamePlaces = $finishedGame->getSidePlaces(Side::Away);
+            $finishedAwayGamePlaces = $finishedGame->getSidePlaces(AgainstSide::Away);
             $finishedAwayGamePlace = array_shift($finishedAwayGamePlaces);
             if ($finishedHomeGamePlace === null || $finishedAwayGamePlace === null) {
                 return false;
@@ -216,7 +213,7 @@ class Repository extends GameRepository
 
     /**
      * @param Competition $competition
-     * @param list<GameState>|null $gameStates
+     * @param list<State>|null $gameStates
      * @param int|null $gameRoundNumber
      * @param Period|null $period
      * @return QueryBuilder
@@ -230,7 +227,7 @@ class Repository extends GameRepository
     ): QueryBuilder {
         $query = $this->getEntityManager()->createQueryBuilder()
             ->select('gp')
-            ->from('Sports\Game\Place\Against', 'gp')
+            ->from(AgainstGamePlace::class, 'gp')
             ->join("gp.game", "g")
             ->join("g.poule", "p")
             ->join("p.round", "r")
@@ -243,7 +240,7 @@ class Repository extends GameRepository
 
     /**
      * @param Competition $competition
-     * @param list<GameState>|null $gameStates
+     * @param list<State>|null $gameStates
      * @param int|null $gameRoundNumber
      * @param Period|null $period
      * @return bool
@@ -264,7 +261,7 @@ class Repository extends GameRepository
 
     /**
      * @param RoundNumber $roundNumber
-     * @param list<GameState>|null $gameStates
+     * @param list<State>|null $gameStates
      * @param int|null $gameRoundNumber
      * @return list<AgainstGamePlace>
      */
@@ -280,7 +277,7 @@ class Repository extends GameRepository
 
     /**
      * @param RoundNumber $roundNumber
-     * @param list<GameState>|null $gameStates
+     * @param list<State>|null $gameStates
      * @param int|null $gameRoundNumber
      * @return bool
      */
@@ -297,7 +294,7 @@ class Repository extends GameRepository
 
     /**
      * @param RoundNumber $roundNumber
-     * @param list<GameState>|null $gameStates
+     * @param list<State>|null $gameStates
      * @param int|null $gameRoundNumber
      * @return QueryBuilder
      * @throws \Exception
@@ -309,13 +306,13 @@ class Repository extends GameRepository
             ->join("p.round", "r")
             ->join("r.structureCell", "sc")
             ->where('sc.roundNumber = :roundNumber')
-            ->setParameter('roundNumber', $roundNumber);;
+            ->setParameter('roundNumber', $roundNumber);
         return $this->applyExtraFilters($query, $gameStates, $gameRoundNumber);
     }
 
     /**
      * @param QueryBuilder $query
-     * @param list<GameState>|null $gameStates
+     * @param list<State>|null $gameStates
      * @param int|null $gameRoundNumber
      * @param Period|null $period
      * @return QueryBuilder
@@ -341,8 +338,8 @@ class Repository extends GameRepository
             $query = $query
                 ->andWhere('g.startDateTime < :end')
                 ->andWhere('g.startDateTime >= :start')
-                ->setParameter('end', $period->getEndDate())
-                ->setParameter('start', $period->getStartDate());
+                ->setParameter('end', $period->endDate)
+                ->setParameter('start', $period->startDate);
         }
         return $query;
     }

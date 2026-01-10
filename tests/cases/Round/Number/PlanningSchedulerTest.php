@@ -82,7 +82,7 @@ final class PlanningSchedulerTest extends TestCase
         $competitionStart = $competitionStartDateTime->sub(new \DateInterval('PT1M'));
         self::assertInstanceOf(\DateTimeImmutable::class, $competitionStart);
 
-        $blockedPeriod = new Period(
+        $blockedPeriod = Period::fromDate(
             $competitionStart,
             $competitionStartDateTime->add(new \DateInterval('PT' . (40 - 1) . 'M'))
         );
@@ -126,7 +126,7 @@ final class PlanningSchedulerTest extends TestCase
         $secondBatchGameStart = $secondBatchGame->getStartDateTime()->sub(new \DateInterval('PT1M'));
         self::assertInstanceOf(\DateTimeImmutable::class, $secondBatchGameStart);
 
-        $blockedPeriod = new Period(
+        $blockedPeriod = Period::fromDate(
             $secondBatchGameStart,
             $secondBatchGame->getStartDateTime()->add(new \DateInterval('PT40M'))
         );
@@ -163,7 +163,7 @@ final class PlanningSchedulerTest extends TestCase
 
         $secondBatchGame = $firstRoundNumber->getGames(GameOrder::ByBatch)[2];
 
-        $blockedPeriod = new Period(
+        $blockedPeriod = Period::fromDate(
             $secondBatchGame->getStartDateTime()->add(new \DateInterval('PT1M')),
             $secondBatchGame->getStartDateTime()->add(new \DateInterval('PT40M'))
         );
@@ -197,7 +197,7 @@ final class PlanningSchedulerTest extends TestCase
 
         $secondBatchGame = $firstRoundNumber->getGames(GameOrder::ByBatch)[2];
 
-        $blockedPeriod = new Period(
+        $blockedPeriod = Period::fromDate(
             clone $secondBatchGame->getStartDateTime(),
             $secondBatchGame->getStartDateTime()->add(new \DateInterval('PT40M'))
         );
@@ -234,7 +234,7 @@ final class PlanningSchedulerTest extends TestCase
         $secondRoundNumberStartTmp = $secondRoundNumberStartDateTimeTmp->sub(new \DateInterval('PT1M'));
         self::assertInstanceOf(\DateTimeImmutable::class, $secondRoundNumberStartTmp);
 
-        $blockedPeriod = new Period(
+        $blockedPeriod = Period::fromDate(
             $secondRoundNumberStartTmp,
             $secondRoundNumberStartDateTimeTmp->add(new \DateInterval('PT40M'))
         );
@@ -264,18 +264,18 @@ final class PlanningSchedulerTest extends TestCase
 
         $competitionStartDateTime = $competition->getStartDateTime();
 
-        $blockedPeriod = new Period(
+        $blockedPeriod = Period::fromDate(
             $competitionStartDateTime->add(new \DateInterval('PT15M')),
             $competitionStartDateTime->add(new \DateInterval('PT30M'))
         );
-        $blockedPeriod2 = new Period(
-            $blockedPeriod->getEndDate()->add(new \DateInterval('PT15M')),
-            $blockedPeriod->getEndDate()->add(new \DateInterval('PT30M'))
+        $blockedPeriod2 = Period::fromDate(
+            $blockedPeriod->endDate->add(new \DateInterval('PT15M')),
+            $blockedPeriod->endDate->add(new \DateInterval('PT30M'))
         );
         $planningScheduler = new PlanningScheduler([$blockedPeriod, $blockedPeriod2]);
         $planningScheduler->rescheduleGames($firstRoundNumber, $competitionStartDateTime);
 
-        self::assertEquals($firstRoundNumber->getFirstGameStartDateTime(), $blockedPeriod2->getEndDate());
+        self::assertEquals($firstRoundNumber->getFirstGameStartDateTime(), $blockedPeriod2->endDate);
     }
 
     public function testRoundNumberNoGames(): void

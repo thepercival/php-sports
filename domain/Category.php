@@ -14,7 +14,7 @@ use Sports\Structure\Cell as StructureCell;
 use SportsHelpers\Identifiable;
 use InvalidArgumentException;
 
-class Category extends Identifiable
+final class Category extends Identifiable
 {
     public const int MAX_LENGTH_NAME = 15;
     public const int MAX_LENGTH_ABBREVIATION = 2;

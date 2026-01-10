@@ -7,13 +7,15 @@ namespace Sports\Ranking;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 use SportsHelpers\EnumDbType;
 
-class AgainstRuleSetType extends EnumDbType
+final class AgainstRuleSetType extends EnumDbType
 {
+    #[\Override]
     public static function getNameHelper(): string
     {
         return 'enum_AgainstRuleSet';
     }
 
+    #[\Override]
     public function convertToPHPValue($value, AbstractPlatform $platform)
     {
         if ($value === AgainstRuleSet::DiffFirst->value) {
@@ -25,7 +27,8 @@ class AgainstRuleSetType extends EnumDbType
         return null;
     }
 
-    public function getSQLDeclaration(array $column, AbstractPlatform $platform)
+    #[\Override]
+    public function getSQLDeclaration(array $column, AbstractPlatform $platform): string
     {
         return 'varchar(10)';
     }

@@ -24,7 +24,7 @@ use SportsHelpers\Sport\Variant\Creator as VariantCreator;
 use SportsHelpers\Sport\Variant\WithPoule\Against\GamesPerPlace as AgainstGppWithPoule;
 use SportsHelpers\SelfReferee;
 
-class GamesValidator
+final class GamesValidator
 {
     public function __construct()
     {
@@ -137,13 +137,12 @@ class GamesValidator
     /**
      * @param RoundNumber $roundNumber
      * @param non-empty-list<Period> $blockedPeriods
-     * @throws \League\Period\Exception
      */
     protected function validateGameNotInBlockedPeriod(RoundNumber $roundNumber, array $blockedPeriods): void
     {
         $maxNrOfMinutesPerGame = $roundNumber->getValidPlanningConfig()->getMaxNrOfMinutesPerGame();
         foreach ($roundNumber->getGames(Order::ByPoule) as $game) {
-            $gamePeriod = new Period(
+            $gamePeriod = Period::fromDate(
                 $game->getStartDateTime(),
                 $game->getStartDateTime()->add(new \DateInterval('PT' . $maxNrOfMinutesPerGame . 'M'))
             );
@@ -427,6 +426,6 @@ class GamesValidator
             return $fieldId;
         }
         $sportVariant = $field->getCompetitionSport()->createVariant();
-        return $field->getCompetitionSport()->getSport()->getName() . '-' . $sportVariant . '-' . $field->getPriority();
+        return $field->getCompetitionSport()->getSport()->getName() . '-' . ((string)$sportVariant) . '-' . $field->getPriority();
     }
 }

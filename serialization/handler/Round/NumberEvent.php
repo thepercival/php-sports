@@ -7,11 +7,12 @@ use JMS\Serializer\EventDispatcher\PreSerializeEvent;
 use Sports\Round\Number as RoundNumber;
 use Sports\Score\Config as ScoreConfig;
 
-class NumberEvent implements EventSubscriberInterface
+final class NumberEvent implements EventSubscriberInterface
 {
     /**
      * @psalm-return list<array<string, int|string>>
      */
+    #[\Override]
     public static function getSubscribedEvents()
     {
         return array(

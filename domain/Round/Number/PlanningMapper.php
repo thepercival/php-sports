@@ -25,7 +25,7 @@ use SportsPlanning\Poule as PlanningPoule;
 use SportsPlanning\Referee as PlanningReferee;
 use SportsPlanning\Sport as PlanningSport;
 
-class PlanningMapper
+final class PlanningMapper
 {
     /**
      * @var array<int, Poule>
@@ -358,7 +358,7 @@ class PlanningMapper
         return $this->refereeMap[$planningReferee->getUniqueIndex()];
     }
 
-    public function getRefereePlace(PlanningPlace $planningPlace = null): Place|null
+    public function getRefereePlace(PlanningPlace|null $planningPlace = null): Place|null
     {
         if ($planningPlace === null) {
             return null;

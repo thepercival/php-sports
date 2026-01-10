@@ -18,7 +18,7 @@ use Sports\Score\Config\Service as ScoreConfigService;
 use Sports\Sport;
 use SportsHelpers\Against\Side as AgainstSide;
 
-class AgainstGame
+final class AgainstGame
 {
 //    $competitorMap = new CompetitorMap($teamCompetitors);
 //    $structureNameService = new StructureNameService($competitorMap);
@@ -70,7 +70,7 @@ class AgainstGame
 
         $score = " - ";
         if ($finalScore !== null) {
-            $score = $finalScore->getHome() . $score . $finalScore->getAway();
+            $score = ((string)$finalScore->getHome()) . $score . ((string)$finalScore->getAway());
         }
         $homePlaces = $game->getSidePlaces(AgainstSide::Home);
         $awayPlaces = $game->getSidePlaces(AgainstSide::Away);

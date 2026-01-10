@@ -11,7 +11,7 @@ use League\Period\Period;
 use Sports\Team\Player;
 use SportsHelpers\Identifiable;
 
-class Person extends Identifiable
+final class Person extends Identifiable
 {
     protected string $firstName;
     protected string|null $nameInsertion;
@@ -127,7 +127,7 @@ class Person extends Identifiable
      * @return Collection<int|string, Player>
      */
     public function getPlayers(
-        Team $team = null,
+        Team|null $team = null,
         Period|null $period = null,
         int|null $line = null
     ): Collection {
@@ -160,7 +160,7 @@ class Person extends Identifiable
         });
     }
 
-    public function getPlayer(Team $team, \DateTimeImmutable $dateTime = null): Player|null
+    public function getPlayer(Team $team, \DateTimeImmutable|null $dateTime = null): Player|null
     {
         if ($dateTime === null) {
             $dateTime = new \DateTimeImmutable();

@@ -8,7 +8,7 @@ use Sports\Place;
 use Sports\Poule;
 use Sports\Qualify\Mapping;
 
-class ByPlace extends Mapping
+final class ByPlace extends Mapping
 {
     public function __construct(private Place $fromPlace, Place $toPlace)
     {

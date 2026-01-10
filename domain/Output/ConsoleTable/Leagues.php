@@ -7,7 +7,7 @@ namespace Sports\Output\ConsoleTable;
 use LucidFrame\Console\ConsoleTable;
 use Sports\League;
 
-class Leagues
+final class Leagues
 {
     /**
      * @param list<League> $leagues

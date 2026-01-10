@@ -22,8 +22,8 @@ abstract class Role extends Identifiable
 
     public function __construct(protected Team $team, protected Person $person, Period $period)
     {
-        $this->setStartDateTime($period->getStartDate());
-        $this->setEndDateTime($period->getEndDate());
+        $this->setStartDateTime($period->startDate);
+        $this->setEndDateTime($period->endDate);
     }
 
     public function getTeam(): Team
@@ -58,12 +58,12 @@ abstract class Role extends Identifiable
 
     public function getPeriod(): Period
     {
-        return new Period($this->getStartDateTime(), $this->getEndDateTime());
+        return Period::fromDate($this->getStartDateTime(), $this->getEndDateTime());
     }
 
     public function setPeriod(Period $period): void
     {
-        $this->setStartDateTime($period->getStartDate());
-        $this->setEndDateTime($period->getEndDate());
+        $this->setStartDateTime($period->startDate);
+        $this->setEndDateTime($period->endDate);
     }
 }

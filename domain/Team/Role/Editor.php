@@ -11,7 +11,7 @@ use Sports\Sport\FootballLine;
 use Sports\Team;
 use Sports\Team\Player;
 
-class Editor
+final class Editor
 {
     private const string DELTAINTERVAL = 'P1D';
 
@@ -55,7 +55,7 @@ class Editor
             $startDateTime = $dateTime->sub(new \DateInterval(self::DELTAINTERVAL));
             $endDateTime = $dateTime->sub(new \DateInterval(self::DELTAINTERVAL));
             $overlappingPlayer->setEndDateTime($endDateTime);
-            $newPeriod = new Period($startDateTime, $seasonPeriod->getEndDate());
+            $newPeriod = Period::fromDate($startDateTime, $seasonPeriod->endDate);
             $newPlayer = new Player($newTeam, $person, $newPeriod, $newLine->value);
             $newPlayer->setMarketValue($newMarketValue);
             return $newPlayer;
@@ -101,7 +101,7 @@ class Editor
 
         $startDateTime = $dateTime->sub(new \DateInterval(self::DELTAINTERVAL));
         // $newPeriod = new Period($gameDateTime->modify('-' . self::DELTA), $gameDateTime->modify('+' . self::DELTA));
-        $newPeriod = new Period($startDateTime, $seasonPeriod->getEndDate());
+        $newPeriod = Period::fromDate($startDateTime, $seasonPeriod->endDate);
 
 //        if (!$this->isPeriodFree($players, $newPeriod)) {
 //            throw new \Exception('period already taken', E_ERROR);
@@ -138,7 +138,7 @@ class Editor
         $firstBefore = null;
         $firstBeforeDateTime = null;
         foreach ($players as $player) {
-            $playerStart = $player->getPeriod()->getStartDate();
+            $playerStart = $player->getPeriod()->startDate;
             if ($playerStart < $dateTime) {
                 if ($firstBeforeDateTime === null || $playerStart > $firstBeforeDateTime) {
                     $firstBefore = $player;
@@ -159,7 +159,7 @@ class Editor
         $firstAfter = null;
         $firstAfterDateTime = null;
         foreach ($players as $player) {
-            $playerStart = $player->getPeriod()->getStartDate();
+            $playerStart = $player->getPeriod()->startDate;
             if ($playerStart > $dateTime) {
                 if ($firstAfterDateTime === null || $playerStart < $firstAfterDateTime) {
                     $firstAfter = $player;
@@ -186,8 +186,8 @@ class Editor
 
     public function getPeriodWithDelta(Period $period): Period
     {
-        $endDate = $period->getEndDate()->sub(new \DateInterval(self::DELTAINTERVAL));
-        return new Period($period->getStartDate()->add(new \DateInterval(self::DELTAINTERVAL)),$endDate);
+        $endDate = $period->endDate->sub(new \DateInterval(self::DELTAINTERVAL));
+        return Period::fromDate($period->startDate->add(new \DateInterval(self::DELTAINTERVAL)),$endDate);
     }
 
     public function withInPeriod(Period $period, DateTimeImmutable $dateTime): bool

@@ -9,7 +9,7 @@ use Sports\Competition\Referee;
 use Sports\TestHelper\CompetitionCreator;
 use Sports\Priority\Service as PriorityService;
 
-class ServiceTest extends TestCase
+final class ServiceTest extends TestCase
 {
     use CompetitionCreator;
 

@@ -19,7 +19,7 @@ use Sports\Score\AgainstHelper as AgainstScoreHelper;
 use SportsHelpers\Against\Result as AgainstResult;
 use SportsHelpers\Against\Side as AgainstSide;
 
-class Against extends Calculator
+final class Against extends Calculator
 {
     public function __construct(Round $round, CompetitionSport $competitionSport)
     {
@@ -31,6 +31,7 @@ class Against extends Calculator
      * @param list<AgainstGame|TogetherGame> $games
      * @return list<SportPerformance>
      */
+    #[\Override]
     public function getPerformances(array $places, array $games): array
     {
         $performances = $this->createPerformances($places);
@@ -71,9 +72,9 @@ class Against extends Calculator
     public function getNrOfPoints(?AgainstScoreHelper $finalScore, AgainstSide $side, AgainstGame $game): float
     {
         if ($finalScore === null) {
-            return 0;
+            return 0.0;
         }
-        $points = 0;
+        $points = 0.0;
         $againstQualifyConfig = $game->getAgainstQualifyConfig();
         if ($againstQualifyConfig->getPointsCalculation() === PointsCalculation::AgainstGamePoints
             || $againstQualifyConfig->getPointsCalculation() === PointsCalculation::Both) {
@@ -92,7 +93,8 @@ class Against extends Calculator
             } elseif ($game->getFinalPhase() === GamePhase::ExtraTime) {
                 $points = $againstQualifyConfig->getLosePointsExt();
             }
-            $points += $side === AgainstSide::Home ? $game->getHomeExtraPoints() : $game->getAwayExtraPoints();
+            $extraPoints = $side === AgainstSide::Home ? $game->getHomeExtraPoints() : $game->getAwayExtraPoints();
+            $points += (float)$extraPoints;
         }
 
         $againstQualifyConfig = $game->getAgainstQualifyConfig();

@@ -10,7 +10,7 @@ use Sports\Round;
 use Sports\Round\Number as RoundNumber;
 use Sports\Poule;
 
-class PouleStructureNumberMap
+final class PouleStructureNumberMap
 {
     /**
      * @var array<string, int>

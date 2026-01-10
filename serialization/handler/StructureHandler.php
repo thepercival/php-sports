@@ -13,7 +13,7 @@ use Sports\Round\Number as RoundNumber;
 use Sports\Structure;
 use Sports\Structure\Cell;
 
-class StructureHandler extends Handler implements SubscribingHandlerInterface
+final class StructureHandler extends Handler implements SubscribingHandlerInterface
 {
     public function __construct()
     {
@@ -22,6 +22,7 @@ class StructureHandler extends Handler implements SubscribingHandlerInterface
     /**
      * @psalm-return list<array<string, int|string>>
      */
+    #[\Override]
     public static function getSubscribingMethods(): array
     {
         return static::getDeserializationMethods(Structure::class);
