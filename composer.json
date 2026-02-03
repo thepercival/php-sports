@@ -13,20 +13,6 @@
   "support": {
 	"email": "cdkdev@pm.me"
   },
-  "repositories": [
-    {
-      "type": "vcs",
-      "url": "https://github.com/thepercival/php-sports-helpers.git"
-    },
-    {
-      "type": "vcs",
-      "url": "https://github.com/thepercival/php-sports-planning.git"
-    },
-    {
-      "type": "vcs",
-      "url": "https://github.com/thepercival/php-sports-scheduler.git"
-    }
-  ],
   "require": {
     "php": ">=8.4",
     "ext-intl": "*",
@@ -103,7 +89,6 @@
   },
   "config": {
     "allow-plugins": {
-      "composer/package-versions-deprecated": true,
       "phpstan/extension-installer": true
     }
   }

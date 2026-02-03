@@ -61,7 +61,7 @@ final class StructureHandler extends Handler implements SubscribingHandlerInterf
         foreach ($fieldValue["categories"] as $arrCategory) {
             // Start RootRound
             $category = new Category($firstRoundNumber->getCompetition(), $arrCategory['name'], $arrCategory['number']);
-            $category->id = (int)$arrCategory['id'];
+            $category->setId($arrCategory['id']);
             $category->setAbbreviation($arrCategory['abbreviation']);
 
 

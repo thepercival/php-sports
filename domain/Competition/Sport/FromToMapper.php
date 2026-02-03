@@ -29,7 +29,7 @@ final class FromToMapper
             $toCompetitionSport = null;
             foreach ($toCompetitionSports as $toCompetitionSportIt) {
                 if ($fromToMapStrategy === FromToMapStrategy::ById) {
-                    if ($fromCompetitionSport->id == $toCompetitionSportIt->id) {
+                    if ($fromCompetitionSport->getId() == $toCompetitionSportIt->getId()) {
                         $toCompetitionSport = $toCompetitionSportIt;
                         break;
                     }

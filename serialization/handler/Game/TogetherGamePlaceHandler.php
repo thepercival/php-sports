@@ -45,7 +45,7 @@ final class TogetherGamePlaceHandler extends Handler implements SubscribingHandl
         $place = $game->getPoule()->getPlace( $fieldValue['placeNr'] );
 
         $gamePlace = new TogetherGamePlace( $game, $place, $fieldValue['gameRoundNumber']);
-        $gamePlace->id = $fieldValue['id'];
+        $gamePlace->setId($fieldValue['id']);
 
         foreach ($fieldValue['scores'] as $arrScore) {
             $fieldValue['score'] = $arrScore;

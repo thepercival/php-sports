@@ -25,7 +25,7 @@ final class Competitions
         });
         foreach ($competitions as $competition) {
             $row = array(
-                $competition->id,
+                $competition->getId(),
                 $competition->getLeague()->getName(),
                 $competition->getSeason()->getName(),
                 $competition->getStartDateTime()->format(DateTimeInterface::ATOM),

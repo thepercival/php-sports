@@ -24,7 +24,7 @@ final class Leagues
         });
         foreach ($leagues as $league) {
             $row = array(
-                $league->id,
+                $league->getId(),
                 $league->getName(),
                 $league->getAssociation()->getName()
             );

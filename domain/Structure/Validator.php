@@ -73,7 +73,7 @@ final class Validator
         RoundNumber $roundNumber,
         Competition $competition
     ): void {
-        $prefix = "rondenummer " . $roundNumber->getNumber() . $this->getIdOutput($roundNumber->id);
+        $prefix = "rondenummer " . $roundNumber->getNumber() . $this->getIdOutput($roundNumber->getId());
         if (count($roundNumber->getRounds()) === 0) {
             throw new Exception($prefix . " bevat geen ronden", E_ERROR);
         }
@@ -98,7 +98,7 @@ final class Validator
 
     public function checkRoundValidity(Round $round, PlaceRanges|null $placeRanges): void
     {
-        $prefix = "ronde " . $this->getIdOutput($round->id);
+        $prefix = "ronde " . $this->getIdOutput($round->getId());
         if ($round->getPoules()->count() === 0) {
             throw new Exception($prefix . " bevat geen poules", E_ERROR);
         }
@@ -243,7 +243,7 @@ final class Validator
         }
         if ($minNrOfPlaces !== null && $maxNrOfPlaces !== null && $maxNrOfPlaces - $minNrOfPlaces > 1) {
             throw new Exception(
-                "bij ronde " . $this->getIdOutput($round->id) . " zijn er poules met meer dan 1 plaats verschil",
+                "bij ronde " . $this->getIdOutput($round->getId()) . " zijn er poules met meer dan 1 plaats verschil",
                 E_ERROR
             );
         }
@@ -253,7 +253,7 @@ final class Validator
     {
         $this->checkPlacesNumberGap(array_values($poule->getPlaces()->toArray()));
         if ($poule->getPlaces()->count() === 0) {
-            $prefix = "poule " . $this->getIdOutput($poule->id) . "(" . $this->structureNameService->getPouleName(
+            $prefix = "poule " . $this->getIdOutput($poule->getId()) . "(" . $this->structureNameService->getPouleName(
                     $poule,
                     false
                 ) . ", rondenummer: " . $poule->getRound()->getNumberAsValue() . " )";

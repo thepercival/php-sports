@@ -34,7 +34,7 @@ final class AgainstGames
                 $competition->getSeason()->getName(),
                 $game->getGameRoundNumber(),
                 $game->getBatchNr(),
-                $game->id,
+                $game->getId(),
                 $game->getStartDateTime()->format(DateTimeInterface::ATOM),
                 $game->getState()->name,
                 $structureNameService->getPlacesFromName($game->getSidePlaces(AgainstSide::Home), true, true),
