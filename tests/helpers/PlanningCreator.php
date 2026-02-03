@@ -9,17 +9,17 @@ use Monolog\Handler\StreamHandler;
 use Monolog\Level;
 use Monolog\Logger;
 use Psr\Log\LoggerInterface;
-use SportsHelpers\PouleStructure;
+use SportsHelpers\PouleStructures\PouleStructure;
 use SportsHelpers\Sport\VariantWithFields as SportVariantWithFields;
 use SportsHelpers\SportRange;
-use SportsPlanning\Referee\Info as RefereeInfo;
+use SportsPlanning\PlanningRefereeInfo;
 use SportsScheduler\Game\Assigner as GameAssigner;
 use SportsScheduler\Game\Creator as GameCreator;
 use SportsPlanning\Input;
 use SportsPlanning\Planning;
 use SportsPlanning\Planning\State as PlanningState;
 use SportsScheduler\Schedule\Creator as ScheduleCreator;
-use SportsPlanning\Output\Schedule as ScheduleOutput;
+use SportsPlanning\Output\ScheduleOutput;
 
 final class PlanningCreator
 {
@@ -39,13 +39,13 @@ final class PlanningCreator
     /**
      * @param PouleStructure $pouleStructure
      * @param list<SportVariantWithFields> $sportVariantsWithFields
-     * @param RefereeInfo $refereeInfo
+     * @param PlanningRefereeInfo $refereeInfo
      * @return Input
      */
     public function createInput(
         PouleStructure $pouleStructure,
         array $sportVariantsWithFields,
-        RefereeInfo $refereeInfo,
+        PlanningRefereeInfo $refereeInfo,
         bool $perPoule = false
     ) {
 //        if ($sportVariantsWithFields === null) {

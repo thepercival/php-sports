@@ -6,16 +6,16 @@ namespace Sports\Round\Number;
 
 use Sports\Planning\GameAmountConfig;
 use Sports\Round\Number as RoundNumber;
-use SportsHelpers\PouleStructure;
+use SportsHelpers\PouleStructures\PouleStructure;
 use SportsPlanning\Input\ConfigurationValidator;
-use SportsPlanning\PouleStructure as PlanningPouleStructure;
+use SportsPlanning\PlanningPouleStructure;
 use SportsHelpers\Sport\Variant\Against\H2h as AgainstH2h;
 use SportsHelpers\Sport\Variant\Against\GamesPerPlace as AgainstGpp;
 use SportsHelpers\Sport\Variant\AllInOneGame;
 use SportsHelpers\Sport\Variant\Single;
 use SportsHelpers\Sport\VariantWithFields as SportVariantWithFields;
 use SportsPlanning\Input\Configuration as InputConfiguration;
-use SportsPlanning\Referee\Info as RefereeInfo;
+use SportsPlanning\PlanningRefereeInfo;
 
 final class InputConfigurationCreator
 {
@@ -23,7 +23,7 @@ final class InputConfigurationCreator
     {
     }
 
-    public function create(RoundNumber $roundNumber, RefereeInfo $refereeInfo): InputConfiguration
+    public function create(RoundNumber $roundNumber, PlanningRefereeInfo $refereeInfo): InputConfiguration
     {
         $config = $roundNumber->getValidPlanningConfig();
 
@@ -66,13 +66,13 @@ final class InputConfigurationCreator
     /**
      * @param PouleStructure $pouleStructure
      * @param list<SportVariantWithFields> $sportVariantsWithFields
-     * @param RefereeInfo $refereeInfo
+     * @param PlanningRefereeInfo $refereeInfo
      * @return list<SportVariantWithFields>
      */
     protected function reduceFields(
         PouleStructure $pouleStructure,
         array $sportVariantsWithFields,
-        RefereeInfo $refereeInfo
+        PlanningRefereeInfo $refereeInfo
     ): array {
         $planningPouleStructure = new PlanningPouleStructure(
             $pouleStructure,

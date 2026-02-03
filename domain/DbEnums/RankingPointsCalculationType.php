@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Sports\Ranking;
+namespace Sports\DbEnums;
 
-use Doctrine\DBAL\Types\Type;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
-use SportsHelpers\EnumDbType;
+use Sports\Ranking\PointsCalculation;
+use SportsHelpers\DbEnums\EnumDbType;
 
-final class PointsCalculationType extends EnumDbType
+final class RankingPointsCalculationType extends EnumDbType
 {
     #[\Override]
     public static function getNameHelper(): string
@@ -17,7 +17,7 @@ final class PointsCalculationType extends EnumDbType
     }
 
     #[\Override]
-    public function convertToPHPValue($value, AbstractPlatform $platform)
+    public function convertToPHPValue($value, AbstractPlatform $platform): PointsCalculation|null
     {
         if ($value === PointsCalculation::AgainstGamePoints->value) {
             return PointsCalculation::AgainstGamePoints;
@@ -32,7 +32,7 @@ final class PointsCalculationType extends EnumDbType
     }
 
     #[\Override]
-    public function getSQLDeclaration(array $column, AbstractPlatform $platform): string
+    public function getSQLDeclaration($column, AbstractPlatform $platform): string
     {
         return 'varchar(17)';
     }

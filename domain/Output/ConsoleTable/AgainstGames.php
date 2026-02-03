@@ -12,7 +12,7 @@ use Sports\Competitor\Team as TeamCompetitor;
 use Sports\Game\Against as AgainstGame;
 use Sports\Structure\NameService as StructureNameService;
 use Sports\Score\Against as AgainstScore;
-use SportsHelpers\Against\Side as AgainstSide;
+use SportsHelpers\Against\AgainstSide;
 
 final class AgainstGames
 {
@@ -34,7 +34,7 @@ final class AgainstGames
                 $competition->getSeason()->getName(),
                 $game->getGameRoundNumber(),
                 $game->getBatchNr(),
-                $game->getId(),
+                $game->id,
                 $game->getStartDateTime()->format(DateTimeInterface::ATOM),
                 $game->getState()->name,
                 $structureNameService->getPlacesFromName($game->getSidePlaces(AgainstSide::Home), true, true),

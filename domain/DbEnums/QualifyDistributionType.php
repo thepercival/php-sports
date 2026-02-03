@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Sports\Qualify;
+namespace Sports\DbEnums;
 
 use Doctrine\DBAL\Platforms\AbstractPlatform;
-use Sports\Planning\EditMode;
-use SportsHelpers\EnumDbType;
+use Sports\Qualify\Distribution;
+use SportsHelpers\DbEnums\EnumDbType;
 
-final class DistributionType extends EnumDbType
+final class QualifyDistributionType extends EnumDbType
 {
     // const NAME = 'enum_Distribution'; // modify to match your type name
 
@@ -19,7 +19,7 @@ final class DistributionType extends EnumDbType
     }
 
     #[\Override]
-    public function convertToPHPValue($value, AbstractPlatform $platform)
+    public function convertToPHPValue($value, AbstractPlatform $platform): Distribution|null
     {
         if ($value === Distribution::HorizontalSnake->value) {
             return Distribution::HorizontalSnake;
@@ -31,7 +31,7 @@ final class DistributionType extends EnumDbType
     }
 
     #[\Override]
-    public function getSQLDeclaration(array $column, AbstractPlatform $platform): string
+    public function getSQLDeclaration($column, AbstractPlatform $platform): string
     {
         return 'varchar(15)';
     }

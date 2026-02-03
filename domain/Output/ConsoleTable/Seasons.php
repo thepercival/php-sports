@@ -19,7 +19,7 @@ final class Seasons
         $table->setHeaders(array('id', 'name', 'start', 'end'));
         foreach ($seasons as $season) {
             $row = array(
-                $season->getId(),
+                $season->id,
                 $season->getName(),
                 $season->getStartDateTime()->format(DateTimeInterface::ATOM),
                 $season->getEndDateTime()->format(DateTimeInterface::ATOM)

@@ -15,13 +15,12 @@ use Sports\Round\Number\PlanningAssigner;
 use Sports\Round\Number\PlanningScheduler;
 use Sports\Structure;
 use SportsHelpers\SelfReferee;
-use SportsPlanning\Referee\Info as RefereeInfo;
+use SportsPlanning\PlanningRefereeInfo;
 use SportsHelpers\SportRange;
 use SportsPlanning\Batch\SelfReferee\OtherPoule as SelfRefereeBatchOtherPoule;
 use SportsPlanning\Batch\SelfReferee\SamePoule as SelfRefereeBatchSamePoule;
 use SportsPlanning\Planning;
 use SportsScheduler\Resource\RefereePlace\Service as RefereePlaceService;
-use SportsScheduler\Schedule\Creator as ScheduleCreator;
 
 final class GamesCreator
 {
@@ -72,13 +71,13 @@ final class GamesCreator
 
     public function createPlanning(
         RoundNumber $roundNumber,
-        RefereeInfo|null $refereeInfo = null,
+        PlanningRefereeInfo|null $refereeInfo = null,
         SportRange|null $batchGamesRange = null,
         int|null $allowedGppMargin = null): Planning
     {
         $planningCreator = new PlanningCreator();
         if( $refereeInfo === null ) {
-            $refereeInfo = new RefereeInfo($roundNumber->getCompetition()->getReferees()->count());
+            $refereeInfo = new PlanningRefereeInfo($roundNumber->getCompetition()->getReferees()->count());
         }
         $input = $planningCreator->createInput(
             $roundNumber->createPouleStructure(),
@@ -111,15 +110,14 @@ final class GamesCreator
 
         $selfRefereeInfo = $roundNumber->getValidPlanningConfig()->getSelfRefereeInfo();
         if( $selfRefereeInfo->selfReferee === SelfReferee::Disabled ) {
-            $refereeInfo = new RefereeInfo(count($roundNumber->getCompetition()->getReferees()));
+            $refereeInfo = new PlanningRefereeInfo(count($roundNumber->getCompetition()->getReferees()));
         } else {
-            $refereeInfo = new RefereeInfo($selfRefereeInfo);
+            $refereeInfo = new PlanningRefereeInfo($selfRefereeInfo);
         }
 
         $minIsMaxPlanning = $this->createPlanning($roundNumber, $refereeInfo, $batchGamesRange, $allowedGppMargin);
         $firstBatch = $minIsMaxPlanning->createFirstBatch();
-        if ($firstBatch instanceof SelfRefereeBatchOtherPoule ||
-            $firstBatch instanceof SelfRefereeBatchSamePoule) {
+        if ($firstBatch instanceof SelfRefereeBatchOtherPoule || $firstBatch instanceof SelfRefereeBatchSamePoule) {
             $refereePlaceService = new RefereePlaceService($minIsMaxPlanning);
             $refereePlaceService->assign($firstBatch);
         }

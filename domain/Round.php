@@ -24,7 +24,7 @@ use Sports\Score\Config as ScoreConfig;
 use Sports\Structure\PathNode as StructurePathNode;
 use SportsHelpers\Identifiable;
 use SportsHelpers\PlaceLocationInterface;
-use SportsHelpers\PouleStructure\Balanced as BalancedPouleStructure;
+use SportsHelpers\PouleStructures\BalancedPouleStructure;
 use SportsHelpers\Sport\Variant\MinNrOfPlacesCalculator;
 
 final class Round extends Identifiable

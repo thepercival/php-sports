@@ -25,7 +25,7 @@ use Sports\Poule;
 use Sports\Round;
 use Sports\Round\Number as RoundNumber;
 use SportsHelpers\Identifiable;
-use SportsHelpers\PouleStructure;
+use SportsHelpers\PouleStructures\PouleStructure;
 use SportsHelpers\SelfRefereeInfo;
 use SportsHelpers\Sport\Variant\Against\H2h as AgainstH2h;
 use SportsHelpers\Sport\Variant\Against\GamesPerPlace as AgainstGpp;
@@ -428,9 +428,9 @@ final class Number extends Identifiable
     {
         $planningConfig = $this->getValidPlanningConfig();
         if ($planningConfig->selfRefereeEnabled()) {
-            return new RefereeInfo($planningConfig->getSelfRefereeInfo());
+            return RefereeInfo::fromSelfRefereeInfo($planningConfig->getSelfRefereeInfo());
         }
-        return new RefereeInfo($this->getCompetition()->getReferees()->count());
+        return RefereeInfo::fromNrOfReferees($this->getCompetition()->getReferees()->count());
     }
 
     public function createPouleStructure(): PouleStructure

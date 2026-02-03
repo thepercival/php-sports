@@ -16,8 +16,8 @@ use Sports\Round;
 use Sports\Score\Against as AgainstGameScore;
 use Sports\Score\Against as AgainstScore;
 use Sports\Score\AgainstHelper as AgainstScoreHelper;
-use SportsHelpers\Against\Result as AgainstResult;
-use SportsHelpers\Against\Side as AgainstSide;
+use SportsHelpers\Against\AgainstResult;
+use SportsHelpers\Against\AgainstSide;
 
 final class Against extends Calculator
 {

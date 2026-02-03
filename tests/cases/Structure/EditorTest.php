@@ -23,7 +23,7 @@ use Sports\TestHelper\StructureEditorCreator;
 use Sports\Qualify\Rule\Vertical\Single as VerticalSingleQualifyRule;
 use Sports\Qualify\Rule\Vertical\Multiple as VerticalMultipleQualifyRule;
 use SportsHelpers\PlaceRanges;
-use SportsHelpers\PouleStructure\Balanced as BalancedPouleStructure;
+use SportsHelpers\PouleStructures\BalancedPouleStructure;
 use SportsHelpers\Sport\Variant\MinNrOfPlacesCalculator;
 
 final class EditorTest extends TestCase

@@ -12,7 +12,7 @@ use Sports\Structure;
 use Sports\TestHelper\CompetitionCreator;
 use Sports\TestHelper\StructureEditorCreator;
 use SportsHelpers\PlaceRanges;
-use SportsHelpers\PouleStructure\Balanced as BalancedPouleStructure;
+use SportsHelpers\PouleStructures\BalancedPouleStructure;
 use SportsHelpers\Sport\Variant\MinNrOfPlacesCalculator;
 
 final class OutputTest extends TestCase

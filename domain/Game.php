@@ -68,7 +68,7 @@ abstract class Game extends Identifiable
 
     public function getCompetitionSportId(): string|int
     {
-        $competitionSportId = $this->getCompetitionSport()->getId();
+        $competitionSportId = $this->getCompetitionSport()->id;
         if ($competitionSportId === null) {
             throw new \Exception('competitionsport can not be null', E_ERROR);
         }
@@ -92,7 +92,7 @@ abstract class Game extends Identifiable
 
     public function getRefereeId(): int|string|null
     {
-        return $this->referee?->getId();
+        return $this->referee?->id;
     }
 
     public function setReferee(Referee|null $referee = null): void
@@ -122,7 +122,7 @@ abstract class Game extends Identifiable
 
     public function getFieldId(): int|string|null
     {
-        return $this->getField()?->getId();
+        return $this->getField()?->id;
     }
 
     /**

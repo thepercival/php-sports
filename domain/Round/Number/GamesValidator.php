@@ -18,8 +18,8 @@ use Sports\Place;
 use Sports\Poule;
 use Sports\Round\Number as RoundNumber;
 use Sports\Structure;
-use SportsPlanning\PouleStructure as PlanningPouleStructure;
-use SportsPlanning\Referee\Info as PlanningRefereeInfo;
+use SportsPlanning\PlanningPouleStructure;
+use SportsPlanning\PlanningRefereeInfo;
 use SportsHelpers\Sport\Variant\Creator as VariantCreator;
 use SportsHelpers\Sport\Variant\WithPoule\Against\GamesPerPlace as AgainstGppWithPoule;
 use SportsHelpers\SelfReferee;
@@ -116,7 +116,8 @@ final class GamesValidator
 
     protected function validateSelfReferee(RoundNumber $roundNumber): void
     {
-        if ($roundNumber->getRefereeInfo()->selfRefereeInfo->selfReferee === SelfReferee::Disabled ) {
+        $selfRefereeInfo = $roundNumber->getRefereeInfo()->selfRefereeInfo;
+        if ($selfRefereeInfo === null || $selfRefereeInfo->selfReferee === SelfReferee::Disabled ) {
             return;
         }
 
@@ -421,7 +422,7 @@ final class GamesValidator
 
     protected function getFieldIndex(Field $field): string|int
     {
-        $fieldId = $field->getId();
+        $fieldId = $field->id;
         if ($fieldId !== null) {
             return $fieldId;
         }

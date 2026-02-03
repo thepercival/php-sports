@@ -11,7 +11,7 @@ use Sports\Structure\Cell as StructureCell;
 use Sports\Round;
 use Sports\Round\Number as RoundNumber;
 use SportsHelpers\Identifiable;
-use SportsHelpers\PouleStructure;
+use SportsHelpers\PouleStructures\PouleStructure;
 
 final class Cell extends Identifiable
 {

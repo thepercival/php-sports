@@ -21,9 +21,8 @@ use Sports\Structure;
 use Sports\Structure as StructureBase;
 use Sports\Qualify\Distribution as QualifyDistribution;
 use SportsHelpers\PlaceRanges;
-use SportsHelpers\PouleStructure;
-use SportsHelpers\PouleStructure\Balanced as BalancedPouleStructure;
-use SportsHelpers\PouleStructure\BalancedCreator as BalancedPouleStructureCreator;
+use SportsHelpers\PouleStructures\BalancedPouleStructure;
+use SportsHelpers\PouleStructures\BalancedPouleStructureCreator;
 use SportsHelpers\Sport\Variant\MinNrOfPlacesCalculator;
 
 final class Editor
