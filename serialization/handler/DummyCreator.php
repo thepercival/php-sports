@@ -61,7 +61,7 @@ final class DummyCreator
         }
         $getCompetitionSport = function (int $competitionSportId) use ($competition): ?CompetitionSport {
             foreach ($competition->getSports() as $competitionSport) {
-                if ($competitionSport->id == $competitionSportId) {
+                if ($competitionSport->getId() == $competitionSportId) {
                     return $competitionSport;
                 }
             }
@@ -76,7 +76,7 @@ final class DummyCreator
                 GameMode::Against,
                 $defaultNrOfSidePlaces * 2
             );
-            $sport->id = $competitionSportId;
+            $sport->setId($competitionSportId);
             /** @psalm-suppress RedundantCondition, TypeDoesNotContainType */
             $competitionSport = new CompetitionSport(
                 $sport,
@@ -92,7 +92,7 @@ final class DummyCreator
                     $defaultNrOfSidePlaces > 2 ? 1 : 0
                 )
             );
-            $competitionSport->id = $competitionSportId;
+            $competitionSport->setId($competitionSportId);
             $this->competitionSports[$competitionSportId] = $competitionSport;
         }
         return $competitionSport;
@@ -142,7 +142,7 @@ final class DummyCreator
         }
         $getReferee = function (int $refereeId) use ($competition): ?Referee {
             foreach ($competition->getReferees() as $referee) {
-                if ($referee->id == $refereeId) {
+                if ($referee->getId() == $refereeId) {
                     return $referee;
                 }
             }
@@ -154,7 +154,7 @@ final class DummyCreator
                 $competition,
                 'DUM'
             );
-            $referee->id = $refereeId;
+            $referee->setId($refereeId);
             $this->referees[$refereeId] = $referee;
         }
         return $referee;
@@ -193,7 +193,7 @@ final class DummyCreator
         }
         $getField = function (int|string $fieldId) use ($competitionSport): ?Field {
             foreach ($competitionSport->getFields() as $field) {
-                if ($field->id == $fieldId) {
+                if ($field->getId() == $fieldId) {
                     return $field;
                 }
             }
@@ -202,7 +202,7 @@ final class DummyCreator
         $field = $getField($fieldId);
         if ($field === null) {
             $field = new Field($competitionSport);
-            $field->id = (int)$fieldId;
+            $field->setId($fieldId);
             $this->fields[$fieldId] = $field;
         }
         return $field;

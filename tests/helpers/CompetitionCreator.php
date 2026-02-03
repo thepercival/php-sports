@@ -50,7 +50,7 @@ trait CompetitionCreator
             )
         );
         $competition = new Competition($league, $season);
-        $competition->id = 0;
+        $competition->setId(0);
         $competition->setStartDateTime(new DateTimeImmutable('2030-01-01T12:00:00.000Z'));
         new Referee($competition, '111');
         new Referee($competition, '222');

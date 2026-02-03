@@ -422,7 +422,7 @@ final class GamesValidator
 
     protected function getFieldIndex(Field $field): string|int
     {
-        $fieldId = $field->id;
+        $fieldId = $field->getId();
         if ($fieldId !== null) {
             return $fieldId;
         }

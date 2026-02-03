@@ -44,7 +44,7 @@ final class AgainstGamePlaceHandler extends Handler implements SubscribingHandle
         $place = $game->getPoule()->getPlace( $fieldValue['placeNr'] );
 
         $gamePlace = new AgainstGamePlace( $game, $place, AgainstSide::from($fieldValue['side']));
-        $gamePlace->id = $fieldValue['id'];
+        $gamePlace->setId($fieldValue['id']);
         return $gamePlace;
     }
 }

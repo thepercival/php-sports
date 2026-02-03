@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "095d5c77d9a1c527e67638313056c2b2",
+    "content-hash": "e7c52b5223cc350c3b2a8ced700c0293",
     "packages": [
         {
             "name": "ahamed/jsphp",
@@ -2832,16 +2832,16 @@
         },
         {
             "name": "thepercival/php-sports-helpers",
-            "version": "v1.2.84",
+            "version": "v1.2.85",
             "source": {
                 "type": "git",
                 "url": "https://github.com/thepercival/php-sports-helpers.git",
-                "reference": "0b015811f80876576caf851992ebc9cae2ae2236"
+                "reference": "29905b01dd7f7ec32b4326dcaa8b76d44b96fe29"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/thepercival/php-sports-helpers/zipball/0b015811f80876576caf851992ebc9cae2ae2236",
-                "reference": "0b015811f80876576caf851992ebc9cae2ae2236",
+                "url": "https://api.github.com/repos/thepercival/php-sports-helpers/zipball/29905b01dd7f7ec32b4326dcaa8b76d44b96fe29",
+                "reference": "29905b01dd7f7ec32b4326dcaa8b76d44b96fe29",
                 "shasum": ""
             },
             "require": {
@@ -2874,66 +2874,7 @@
                     "SportsHelpers\\": "domain/"
                 }
             },
-            "autoload-dev": {
-                "psr-4": {
-                    "SportsHelpers\\Tests\\": "tests/cases"
-                },
-                "psr-0": {
-                    "": "tests/"
-                }
-            },
-            "scripts": {
-                "start": [
-                    "php -S localhost:2990 -t public/"
-                ],
-                "test": [
-                    "XDEBUG_MODE=coverage vendor/bin/phpunit --configuration tests/phpunit.xml tests/cases/"
-                ],
-                "stan": [
-                    "XDEBUG_MODE=coverage vendor/bin/phpstan analyse --level=5 domain tests/cases/"
-                ],
-                "psalm": [
-                    "XDEBUG_MODE=off vendor/bin/psalm --output-format=phpstorm --show-info=true --no-diff"
-                ],
-                "cs-fix": [
-                    "php-cs-fixer fix ."
-                ],
-                "copy-fct": [
-                    "rm -rf ../fctoernooi-api/vendor/thepercival/php-sports-helpers",
-                    "mkdir ../fctoernooi-api/vendor/thepercival/php-sports-helpers",
-                    "cp . ../fctoernooi-api/vendor/thepercival/php-sports-helpers -R"
-                ],
-                "copy-sup": [
-                    "rm -rf ../superelf-api/vendor/thepercival/php-sports-helpers",
-                    "mkdir ../superelf-api/vendor/thepercival/php-sports-helpers",
-                    "cp . ../superelf-api/vendor/thepercival/php-sports-helpers -R"
-                ],
-                "copy-sch": [
-                    "rm -rf ../sports-scheduler-api/vendor/thepercival/php-sports-helpers",
-                    "mkdir ../sports-scheduler-api/vendor/thepercival/php-sports-helpers",
-                    "cp . ../sports-scheduler-api/vendor/thepercival/php-sports-helpers -R"
-                ],
-                "copy-sports": [
-                    "rm -rf ../php-sports/vendor/thepercival/php-sports-helpers",
-                    "mkdir ../php-sports/vendor/thepercival/php-sports-helpers",
-                    "cp . ../php-sports/vendor/thepercival/php-sports-helpers -R"
-                ],
-                "copy-sports-planning": [
-                    "rm -rf ../php-sports-planning/vendor/thepercival/php-sports-helpers",
-                    "mkdir ../php-sports-planning/vendor/thepercival/php-sports-helpers",
-                    "cp . ../php-sports-planning/vendor/thepercival/php-sports-helpers -R"
-                ],
-                "copy-sports-scheduler": [
-                    "rm -rf ../php-sports/vendor/thepercival/php-sports-scheduler",
-                    "mkdir ../php-sports/vendor/thepercival/php-sports-scheduler",
-                    "cp . ../php-sports/vendor/thepercival/php-sports-scheduler -R"
-                ],
-                "copy-sports-import": [
-                    "rm -rf ../php-sports-import/vendor/thepercival/php-sports-helpers",
-                    "mkdir ../php-sports-import/vendor/thepercival/php-sports-helpers",
-                    "cp . ../php-sports-import/vendor/thepercival/php-sports-helpers -R"
-                ]
-            },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "GPL-2.0-or-later"
             ],
@@ -2951,23 +2892,23 @@
             ],
             "support": {
                 "email": "cdkdev@pm.me",
-                "source": "https://github.com/thepercival/php-sports-helpers/tree/v1.2.84",
-                "issues": "https://github.com/thepercival/php-sports-helpers/issues"
+                "issues": "https://github.com/thepercival/php-sports-helpers/issues",
+                "source": "https://github.com/thepercival/php-sports-helpers/tree/v1.2.85"
             },
-            "time": "2026-02-03T14:03:18+00:00"
+            "time": "2026-02-03T18:59:15+00:00"
         },
         {
             "name": "thepercival/php-sports-planning",
-            "version": "v1.0.259",
+            "version": "v1.0.260",
             "source": {
                 "type": "git",
                 "url": "https://github.com/thepercival/php-sports-planning.git",
-                "reference": "6099717dbf80bb183ac828795deab92586b1c5f5"
+                "reference": "822baee6856c1300234e416c4ccda16ebb5a9c22"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/thepercival/php-sports-planning/zipball/6099717dbf80bb183ac828795deab92586b1c5f5",
-                "reference": "6099717dbf80bb183ac828795deab92586b1c5f5",
+                "url": "https://api.github.com/repos/thepercival/php-sports-planning/zipball/822baee6856c1300234e416c4ccda16ebb5a9c22",
+                "reference": "822baee6856c1300234e416c4ccda16ebb5a9c22",
                 "shasum": ""
             },
             "require": {
@@ -3005,57 +2946,7 @@
                     "SportsPlanning\\SerializationHandler\\": "serialization/handlers"
                 }
             },
-            "autoload-dev": {
-                "psr-4": {
-                    "SportsPlanning\\Tests\\": "tests/cases",
-                    "SportsPlanning\\TestHelper\\": "tests/helpers"
-                },
-                "psr-0": {
-                    "": "tests/"
-                }
-            },
-            "scripts": {
-                "test": [
-                    "XDEBUG_MODE=coverage vendor/bin/phpunit --configuration tests/phpunit.xml tests/cases/"
-                ],
-                "profile": [
-                    "XDEBUG_MODE=profile vendor/bin/phpunit --configuration tests/phpunit.xml tests/cases/ProfileTest.php"
-                ],
-                "stan": [
-                    "XDEBUG_MODE=off vendor/bin/phpstan analyse"
-                ],
-                "psalm": [
-                    "XDEBUG_MODE=off vendor/bin/psalm --output-format=phpstorm --show-info=true --no-diff"
-                ],
-                "cs-fix": [
-                    "php-cs-fixer fix ."
-                ],
-                "copy-fct": [
-                    "rm -rf ../fctoernooi-api/vendor/thepercival/php-sports-planning",
-                    "mkdir ../fctoernooi-api/vendor/thepercival/php-sports-planning",
-                    "cp . ../fctoernooi-api/vendor/thepercival/php-sports-planning -R"
-                ],
-                "copy-sup": [
-                    "rm -rf ../superelf-api/vendor/thepercival/php-sports-planning",
-                    "mkdir ../superelf-api/vendor/thepercival/php-sports-planning",
-                    "cp . ../superelf-api/vendor/thepercival/php-sports-planning -R"
-                ],
-                "copy-sch": [
-                    "rm -rf ../sports-scheduler-api/vendor/thepercival/php-sports-planning",
-                    "mkdir ../sports-scheduler-api/vendor/thepercival/php-sports-planning",
-                    "cp . ../sports-scheduler-api/vendor/thepercival/php-sports-planning -R"
-                ],
-                "copy-sports": [
-                    "rm -rf ../php-sports/vendor/thepercival/php-sports-planning",
-                    "mkdir ../php-sports/vendor/thepercival/php-sports-planning",
-                    "cp . ../php-sports/vendor/thepercival/php-sports-planning -R"
-                ],
-                "copy-sports-scheduler": [
-                    "rm -rf ../php-sports-scheduler/vendor/thepercival/php-sports-planning",
-                    "mkdir ../php-sports-scheduler/vendor/thepercival/php-sports-planning",
-                    "cp . ../php-sports-scheduler/vendor/thepercival/php-sports-planning -R"
-                ]
-            },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "GPL-2.0-or-later"
             ],
@@ -3073,10 +2964,10 @@
             ],
             "support": {
                 "email": "coendunnink@gmail.com",
-                "source": "https://github.com/thepercival/php-sports-planning/tree/v1.0.259",
-                "issues": "https://github.com/thepercival/php-sports-planning/issues"
+                "issues": "https://github.com/thepercival/php-sports-planning/issues",
+                "source": "https://github.com/thepercival/php-sports-planning/tree/v1.0.260"
             },
-            "time": "2026-02-03T15:04:56+00:00"
+            "time": "2026-02-03T19:05:39+00:00"
         }
     ],
     "packages-dev": [
@@ -8423,52 +8314,7 @@
                     "SportsScheduler\\": "domain/"
                 }
             },
-            "autoload-dev": {
-                "psr-4": {
-                    "SportsScheduler\\Tests\\": "tests/cases",
-                    "SportsScheduler\\TestHelper\\": "tests/helpers"
-                },
-                "psr-0": {
-                    "": "tests/"
-                }
-            },
-            "scripts": {
-                "test": [
-                    "XDEBUG_MODE=coverage vendor/bin/phpunit --configuration tests/phpunit.xml --testsuite all"
-                ],
-                "profile": [
-                    "XDEBUG_MODE=profile vendor/bin/phpunit --configuration tests/phpunit.xml tests/cases/ProfileTest.php"
-                ],
-                "stan": [
-                    "XDEBUG_MODE=off vendor/bin/phpstan analyse"
-                ],
-                "psalm": [
-                    "XDEBUG_MODE=off vendor/bin/psalm --output-format=phpstorm --show-info=true --no-diff"
-                ],
-                "cs-fix": [
-                    "php-cs-fixer fix ."
-                ],
-                "copy-fct": [
-                    "rm -rf ../fctoernooi-api/vendor/thepercival/php-sports-scheduler",
-                    "mkdir ../fctoernooi-api/vendor/thepercival/php-sports-scheduler",
-                    "cp . ../fctoernooi-api/vendor/thepercival/php-sports-scheduler -R"
-                ],
-                "copy-sch": [
-                    "rm -rf ../sports-scheduler-api/vendor/thepercival/php-sports-scheduler",
-                    "mkdir ../sports-scheduler-api/vendor/thepercival/php-sports-scheduler",
-                    "cp . ../sports-scheduler-api/vendor/thepercival/php-sports-scheduler -R"
-                ],
-                "copy-sup": [
-                    "rm -rf ../superelf-api/vendor/thepercival/php-sports-scheduler",
-                    "mkdir ../superelf-api/vendor/thepercival/php-sports-scheduler",
-                    "cp . ../superelf-api/vendor/thepercival/php-sports-scheduler -R"
-                ],
-                "copy-sports": [
-                    "rm -rf ../php-sports/vendor/thepercival/php-sports-scheduler",
-                    "mkdir ../php-sports/vendor/thepercival/php-sports-scheduler",
-                    "cp . ../php-sports/vendor/thepercival/php-sports-scheduler -R"
-                ]
-            },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "GPL-3.0-or-later"
             ],
@@ -8486,8 +8332,8 @@
             ],
             "support": {
                 "email": "cdkdev@pm.me",
-                "source": "https://github.com/thepercival/php-sports-scheduler/tree/v1.0.58",
-                "issues": "https://github.com/thepercival/php-sports-scheduler/issues"
+                "issues": "https://github.com/thepercival/php-sports-scheduler/issues",
+                "source": "https://github.com/thepercival/php-sports-scheduler/tree/v1.0.58"
             },
             "time": "2026-02-03T16:36:58+00:00"
         },
