@@ -26,7 +26,7 @@ jobs:
         uses: php-actions/phpunit@v3
         with:
           php_version: 8.4
-          php_extensions: xdebug
+          php_extensions: xdebug intl
           configuration: tests/phpunit.xml
         env:
           XDEBUG_MODE: coverage
