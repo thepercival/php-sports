@@ -2,10 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Sports\Sport;
+namespace Sports\DbEnums;
 
 use Doctrine\DBAL\Platforms\AbstractPlatform;
-use SportsHelpers\EnumDbType;
+use Sports\Sport\FootballLine;
+use SportsHelpers\DbEnums\EnumDbType;
 
 final class FootballLineType extends EnumDbType
 {
@@ -16,7 +17,7 @@ final class FootballLineType extends EnumDbType
     }
 
     #[\Override]
-    public function convertToPHPValue($value, AbstractPlatform $platform)
+    public function convertToPHPValue($value, AbstractPlatform $platform): FootballLine|null
     {
         if ($value === FootballLine::GoalKeeper->value) {
             return FootballLine::GoalKeeper;
@@ -34,7 +35,7 @@ final class FootballLineType extends EnumDbType
     }
 
     #[\Override]
-    public function getSQLDeclaration(array $column, AbstractPlatform $platform): string
+    public function getSQLDeclaration($column, AbstractPlatform $platform): string
     {
         return 'int';
     }

@@ -13,7 +13,7 @@ use Sports\Game\Place\Against as AgainstGamePlace;
 use Sports\Game\State;
 use Sports\Game\State as GameState;
 use Sports\Round\Number as RoundNumber;
-use SportsHelpers\Against\Side as AgainstSide;
+use SportsHelpers\Against\AgainstSide;
 
 /**
  * @template-extends GameRepository<AgainstGame>

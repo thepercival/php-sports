@@ -4,16 +4,14 @@ declare(strict_types=1);
 
 namespace Sports\Output\StructureOutput;
 
-use Doctrine\Common\Collections\ArrayCollection;
 use Sports\Category;
 use Sports\Poule;
 use Sports\Round\Number as RoundNumber;
 use Sports\NameService;
 use Sports\Qualify\Target as QualifyTarget;
 use Sports\Structure;
-use Sports\Structure\Cell as StructureCell;
 use Sports\Round;
-use SportsHelpers\PouleStructure;
+use SportsHelpers\PouleStructures\PouleStructure;
 
 final class RangeCalculator
 {

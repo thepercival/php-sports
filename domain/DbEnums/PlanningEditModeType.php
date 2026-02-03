@@ -2,12 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Sports\Planning;
+namespace Sports\DbEnums;
 
 use Doctrine\DBAL\Platforms\AbstractPlatform;
-use SportsHelpers\EnumDbType;
+use Sports\Planning\EditMode;
+use SportsHelpers\DbEnums\EnumDbType;
 
-final class EditModeType extends EnumDbType
+final class PlanningEditModeType extends EnumDbType
 {
     // const NAME = 'enum_GameMode'; // modify to match your type name
 
@@ -18,7 +19,7 @@ final class EditModeType extends EnumDbType
     }
 
     #[\Override]
-    public function convertToPHPValue($value, AbstractPlatform $platform)
+    public function convertToPHPValue($value, AbstractPlatform $platform): EditMode|null
     {
         if ($value === EditMode::Auto->value) {
             return EditMode::Auto;
@@ -30,7 +31,7 @@ final class EditModeType extends EnumDbType
     }
 
     #[\Override]
-    public function getSQLDeclaration(array $column, AbstractPlatform $platform): string
+    public function getSQLDeclaration($column, AbstractPlatform $platform): string
     {
         return 'varchar(6)';
     }

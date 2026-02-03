@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Sports\Qualify;
 
 use Doctrine\DBAL\Platforms\AbstractPlatform;
-use SportsHelpers\EnumDbType;
+use SportsHelpers\DbEnums\EnumDbType;
 use Sports\Qualify\Target as QualifyTarget;
 
 final class TargetType extends EnumDbType
@@ -17,7 +17,7 @@ final class TargetType extends EnumDbType
     }
 
     #[\Override]
-    public function convertToPHPValue($value, AbstractPlatform $platform)
+    public function convertToPHPValue($value, AbstractPlatform $platform): QualifyTarget|null
     {
         if ($value === QualifyTarget::Winners->value) {
             return QualifyTarget::Winners;
@@ -32,7 +32,7 @@ final class TargetType extends EnumDbType
     }
 
     #[\Override]
-    public function getSQLDeclaration(array $column, AbstractPlatform $platform): string
+    public function getSQLDeclaration($column, AbstractPlatform $platform): string
     {
         return 'varchar(1)';
     }

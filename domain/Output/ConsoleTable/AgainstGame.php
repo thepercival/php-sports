@@ -16,7 +16,7 @@ use Sports\Game\Participation as GameParticipation;
 use Sports\Structure\NameService as StructureNameService;
 use Sports\Score\Config\Service as ScoreConfigService;
 use Sports\Sport;
-use SportsHelpers\Against\Side as AgainstSide;
+use SportsHelpers\Against\AgainstSide;
 
 final class AgainstGame
 {

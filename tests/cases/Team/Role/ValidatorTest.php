@@ -27,7 +27,7 @@ use Sports\Team;
 use Sports\Team\Player as TeamPlayer;
 use Sports\Team\Role\Validator as Validator;
 use Sports\TestHelper\CompetitionCreator;
-use SportsHelpers\Against\Side as AgainstSide;
+use SportsHelpers\Against\AgainstSide;
 use SportsHelpers\GameMode;
 use SportsHelpers\Sport\Variant\Against\H2h as AgainstH2h;
 

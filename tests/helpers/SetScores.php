@@ -11,7 +11,7 @@ use Sports\Game\State as GameState;
 use Sports\Place;
 use Sports\Poule;
 use Sports\Score\Against as AgainstGameScore;
-use SportsHelpers\Against\Side as AgainstSide;
+use SportsHelpers\Against\AgainstSide;
 
 trait SetScores
 {

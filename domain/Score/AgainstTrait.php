@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Sports\Score;
 
-use SportsHelpers\Against\Result as AgainstResult;
-use SportsHelpers\Against\Side as AgainstSide;
+use SportsHelpers\Against\AgainstResult;
+use SportsHelpers\Against\AgainstSide;
 
 trait AgainstTrait
 {

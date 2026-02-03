@@ -24,7 +24,7 @@ final class Service
             $this->getDefaultMinutesAfter(),
             false,
             SelfReferee::Disabled,
-            0,
+            1,
             false
         );
     }

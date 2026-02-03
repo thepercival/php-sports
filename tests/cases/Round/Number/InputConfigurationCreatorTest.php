@@ -8,10 +8,7 @@ use PHPUnit\Framework\TestCase;
 use Sports\Round\Number\InputConfigurationCreator;
 use Sports\TestHelper\CompetitionCreator;
 use Sports\TestHelper\StructureEditorCreator;
-use SportsPlanning\Referee\Info as RefereeInfo;
-use SportsHelpers\Sport\Variant\Against\GamesPerPlace as AgainstGpp;
-use SportsHelpers\Sport\VariantWithFields as SportVariantWithFields;
-use SportsPlanning\Input;
+use SportsPlanning\PlanningRefereeInfo;
 
 final class InputConfigurationCreatorTest extends TestCase
 {
@@ -32,7 +29,7 @@ final class InputConfigurationCreatorTest extends TestCase
 
         $firstRoundNumber = $structure->getFirstRoundNumber();
         $inputConfiguration = (new InputConfigurationCreator())->create(
-            $firstRoundNumber, new RefereeInfo(count($competition->getReferees()))
+            $firstRoundNumber, new PlanningRefereeInfo(count($competition->getReferees()))
         );
 
         $sportWithReducedFields = reset($inputConfiguration->sportVariantsWithFields);

@@ -15,7 +15,7 @@ use Sports\Ranking\Calculator\Round\Sport as SportRoundRankingCalculator;
 use Sports\Ranking\FunctionMapCreator\Against as AgainstRankingFunctionMapCreator;
 use Sports\Ranking\Item\Round\Sport as SportRoundRankingItem;
 use Sports\Round;
-use SportsHelpers\Against\Side as AgainstSide;
+use SportsHelpers\Against\AgainstSide;
 
 final class Against extends SportRoundRankingCalculator
 {

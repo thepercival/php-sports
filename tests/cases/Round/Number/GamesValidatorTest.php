@@ -18,10 +18,8 @@ use Sports\Round\Number\GamesValidator;
 use Sports\TestHelper\CompetitionCreator;
 use Sports\TestHelper\GamesCreator;
 use Sports\TestHelper\StructureEditorCreator;
-use SportsHelpers\Against\Side as AgainstSide;
+use SportsHelpers\Against\AgainstSide;
 use SportsHelpers\SelfReferee;
-use SportsHelpers\Sport\Variant\Against\GamesPerPlace as AgainstGpp;
-use SportsHelpers\Sport\Variant\Against\H2h as AgainstH2h;
 use SportsHelpers\Sport\Variant\Single;
 use SportsHelpers\Sport\VariantWithFields as SportVariantWithFields;
 

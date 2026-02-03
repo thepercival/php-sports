@@ -17,7 +17,7 @@ final class Sports
         $table = new ConsoleTable();
         $table->setHeaders(array('id', 'name'));
         foreach ($sports as $sport) {
-            $row = array( $sport->getId(), $sport->getName() );
+            $row = array( $sport->id, $sport->getName() );
             $table->addRow($row);
         }
         $table->display();

@@ -20,7 +20,7 @@ final class Associations
             return $a->getName() < $b->getName() ? -1 : 1;
         });
         foreach ($associations as $association) {
-            $row = array( $association->getId(), $association->getName() );
+            $row = array( $association->id, $association->getName() );
             $parent = $association->getParent();
             $parentName = ($parent !== null) ? $parent->getName() : null;
             $row[] = $parentName;

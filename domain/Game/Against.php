@@ -8,8 +8,6 @@ use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Sports\Competition\Sport as CompetitionSport;
-use Sports\Competitor;
-use Sports\Competitor\Map as CompetitorMap;
 use Sports\Game as GameBase;
 use Sports\Game\Event\Card as CardEvent;
 use Sports\Game\Event\Goal as GoalEvent;
@@ -20,7 +18,7 @@ use Sports\Place;
 use Sports\Poule;
 use Sports\Qualify\AgainstConfig as QualifyConfig;
 use Sports\Score\Against as AgainstScore;
-use SportsHelpers\Against\Side as AgainstSide;
+use SportsHelpers\Against\AgainstSide;
 
 final class Against extends GameBase
 {

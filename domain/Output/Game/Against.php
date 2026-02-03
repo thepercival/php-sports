@@ -12,8 +12,7 @@ use Sports\Game\Place\Against as AgainstGamePlace;
 use Sports\Game\State as GameState;
 use Sports\Output\Game as OutputGame;
 use Sports\Place\SportPerformance\Calculator\Against as AgainstSportPerformanceCalculator;
-use SportsHelpers\Against\Side;
-use SportsHelpers\Against\Side as AgainstSide;
+use SportsHelpers\Against\AgainstSide;
 
 final class Against extends OutputGame
 {
@@ -117,9 +116,9 @@ final class Against extends OutputGame
 
     protected function getScoresLineupsAndEventsAsString(AgainstGame $game): string
     {
-        $homePlaces = $game->getSidePlaces(Side::Home);
+        $homePlaces = $game->getSidePlaces(AgainstSide::Home);
         $homeContent = 'H('.$this->getSideScoresLineupsAndEventsAsString($homePlaces).')';
-        $awayPlaces = $game->getSidePlaces(Side::Away);
+        $awayPlaces = $game->getSidePlaces(AgainstSide::Away);
         $awayContent = 'A('.$this->getSideScoresLineupsAndEventsAsString($awayPlaces).')';
         return $homeContent . ' ' . $awayContent;
     }
