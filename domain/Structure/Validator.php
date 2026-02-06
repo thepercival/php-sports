@@ -10,7 +10,7 @@ use Sports\Qualify\Rule\Horizontal\Single as HorizontalSingle;
 use Sports\Qualify\Rule\Horizontal\Multiple as HorizontalMultiple;
 use Sports\Qualify\Rule\Vertical\Single as VerticalSingle;
 use Sports\Qualify\Rule\Vertical\Multiple as VerticalMultiple;
-use Sports\Qualify\Target as QualifyTarget;
+use Sports\Qualify\QualifyTarget as QualifyTarget;
 use Exception;
 use Sports\Structure\NameService as StructureNameService;
 use Sports\Place;

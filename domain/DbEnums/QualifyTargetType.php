@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Sports\Qualify;
+namespace Sports\DbEnums;
 
 use Doctrine\DBAL\Platforms\AbstractPlatform;
+use Sports\Qualify\QualifyTarget as QualifyTarget;
 use SportsHelpers\DbEnums\EnumDbType;
-use Sports\Qualify\Target as QualifyTarget;
 
-final class TargetType extends EnumDbType
+final class QualifyTargetType extends EnumDbType
 {
     #[\Override]
     public static function getNameHelper(): string

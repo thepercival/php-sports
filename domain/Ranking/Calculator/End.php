@@ -12,8 +12,8 @@ use Sports\Poule\Horizontal as HorizontalPoule;
 use Sports\Qualify\Distribution;
 use Sports\Qualify\Rule\Horizontal\Single as HorizontalSingleQualifyRule;
 use Sports\Qualify\Rule\Vertical\Single as VerticalSingleQualifyRule;
-use Sports\Qualify\Target;
-use Sports\Qualify\Target as QualifyTarget;
+use Sports\Qualify\QualifyTarget;
+use Sports\Qualify\QualifyTarget as QualifyTarget;
 use Sports\Ranking\Calculator\Round as RoundRankingCalculator;
 use Sports\Ranking\Item\End as EndRankingItem;
 use Sports\Round;
@@ -134,7 +134,7 @@ final class End
     {
         $dropOutPlaces = [];
         $nrOfDropoutPlaces = $round->getNrOfDropoutPlaces();
-        $nrOfWinners = $round->getNrOfPlacesChildren(Target::Winners);
+        $nrOfWinners = $round->getNrOfPlacesChildren(QualifyTarget::Winners);
         $roundRankingCalculator = new RoundRankingCalculator();
 
         $rankedPlaces = [];

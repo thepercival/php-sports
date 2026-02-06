@@ -6,7 +6,7 @@ namespace Sports\Tests;
 
 use Sports\Category;
 use Sports\Competitor\StartLocation;
-use Sports\Qualify\Target as QualifyTarget;
+use Sports\Qualify\QualifyTarget as QualifyTarget;
 use PHPUnit\Framework\TestCase;
 use Sports\Structure;
 use Sports\Structure\Editor as StructureService;
