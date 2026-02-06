@@ -17,7 +17,7 @@ use Sports\Game\Together as TogetherGame;
 use Sports\Poule\Horizontal as HorizontalPoule;
 use Sports\Qualify\AgainstConfig as AgainstQualifyConfig;
 use Sports\Qualify\Group as QualifyGroup;
-use Sports\Qualify\Target as QualifyTarget;
+use Sports\Qualify\QualifyTarget as QualifyTarget;
 use Sports\Round\Number as RoundNumber;
 use Sports\Structure\Cell as StructureCell;
 use Sports\Score\Config as ScoreConfig;

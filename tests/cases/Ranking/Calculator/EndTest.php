@@ -13,7 +13,7 @@ use Sports\Competitor\Team as TeamCompetitor;
 use Sports\Place\Location as PlaceLocation;
 use Sports\Qualify\Distribution;
 use Sports\Qualify\Service as QualifyService;
-use Sports\Qualify\Target as QualifyTarget;
+use Sports\Qualify\QualifyTarget as QualifyTarget;
 use Sports\Ranking\Calculator\End as EndRankingCalculator;
 use Sports\Ranking\Item\End as EndRankingItem;
 use Sports\Team;

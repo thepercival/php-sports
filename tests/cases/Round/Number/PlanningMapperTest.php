@@ -7,7 +7,7 @@ namespace Sports\Tests\Round\Number;
 use PHPUnit\Framework\TestCase;
 use Sports\Output\GamesOutput;
 use Sports\Output\StructureOutput;
-use Sports\Qualify\Target as QualifyTarget;
+use Sports\Qualify\QualifyTarget as QualifyTarget;
 use Sports\Round\Number\PlanningAssigner;
 use Sports\Round\Number\PlanningMapper;
 use Sports\Round\Number\PlanningScheduler;

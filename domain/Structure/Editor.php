@@ -14,7 +14,7 @@ use Sports\Qualify\Group as QualifyGroup;
 use Sports\Qualify\Rule\Creator as QualifyRuleCreator;
 use Sports\Qualify\Rule\Horizontal\Single as HorizontalSingleQualifyRule;
 use Sports\Qualify\Rule\Vertical\Single as VerticalSingleQualifyRule;
-use Sports\Qualify\Target as QualifyTarget;
+use Sports\Qualify\QualifyTarget as QualifyTarget;
 use Sports\Round;
 use Sports\Round\Number as RoundNumber;
 use Sports\Structure;

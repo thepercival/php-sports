@@ -8,7 +8,7 @@ use Sports\Category;
 use Sports\Poule;
 use Sports\Round\Number as RoundNumber;
 use Sports\NameService;
-use Sports\Qualify\Target as QualifyTarget;
+use Sports\Qualify\QualifyTarget as QualifyTarget;
 use Sports\Structure;
 use Sports\Round;
 use SportsHelpers\PouleStructures\PouleStructure;

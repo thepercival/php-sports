@@ -17,7 +17,7 @@ use Sports\Structure\Locations\StructureLocationPlace;
 use SportsHelpers\Identifiable;
 use SportsHelpers\PlaceLocationInterface;
 use Sports\Poule\Horizontal as HorizontalPoule;
-use Sports\Qualify\Target as QualifyTarget;
+use Sports\Qualify\QualifyTarget as QualifyTarget;
 
 final class Place extends Identifiable implements PlaceLocationInterface
 {

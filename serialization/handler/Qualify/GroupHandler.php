@@ -9,7 +9,7 @@ use JMS\Serializer\Handler\SubscribingHandlerInterface;
 use JMS\Serializer\JsonDeserializationVisitor;
 use Sports\Qualify\Distribution;
 use Sports\Qualify\Group as QualifyGroup;
-use Sports\Qualify\Target;
+use Sports\Qualify\QualifyTarget;
 use Sports\Round;
 use Sports\Category;
 use Sports\Round\Number as RoundNumber;
@@ -48,7 +48,7 @@ final class GroupHandler extends Handler implements SubscribingHandlerInterface
         }
         $qualifyGroup = new QualifyGroup(
             $fieldValue['parentRound'],
-            Target::from($fieldValue['target']),
+            QualifyTarget::from($fieldValue['target']),
             $fieldValue['nextStructureCell'],
             $fieldValue['number']
         );

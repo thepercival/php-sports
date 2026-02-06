@@ -7,7 +7,7 @@ namespace Sports\Tests\Qualify\RoundRank;
 use PHPUnit\Framework\TestCase;
 use Sports\Qualify\RoundRank\Service as RoundRankService;
 use Sports\TestHelper\CompetitionCreator;
-use Sports\Qualify\Target as QualifyTarget;
+use Sports\Qualify\QualifyTarget as QualifyTarget;
 use Sports\TestHelper\StructureEditorCreator;
 
 final class ServiceTest extends TestCase
