@@ -3,7 +3,7 @@
                   xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
                   xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
     <entity name="Sports\Competition\Sport" table="competitionSports"
-            repository-class="Sports\Competition\Sport\Repository">
+            repository-class="Sports\Repositories\CompetitionSportRepository">
         <field name="defaultPointsCalculation" column="defaultPointsCalculation" type="enum_PointsCalculation" nullable="false" unique="false"/>
         <field name="defaultWinPoints" column="defaultWinPoints" type="decimal" precision="3" scale="1" nullable="false"
                unique="false"/>

@@ -2,12 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Sports\Structure;
+namespace Sports\Repositories;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Sports\Category;
 use Sports\Competition;
-use Sports\Exceptions\NoStructureException;
 use Sports\Exceptions\StructureNotFoundException;
 use Sports\Poule\Horizontal\Creator as HorizontalPouleCreator;
 use Sports\Qualify\Rule\Creator as QualifyRuleCreator;
@@ -15,9 +14,8 @@ use Sports\Repositories\RoundNumberRepository as RoundNumberRepository;
 use Sports\Round;
 use Sports\Round\Number as RoundNumber;
 use Sports\Structure;
-use Sports\Structure as StructureBase;
 
-final class Repository
+final class StructureRepository
 {
     private RoundNumberRepository $roundNumberRepos;
 
@@ -53,7 +51,7 @@ final class Repository
 //        }
 //    }
 
-    public function add(StructureBase $structure/*, int $roundNumberValue = null*/): RoundNumber
+    public function add(Structure $structure/*, int $roundNumberValue = null*/): RoundNumber
     {
         $roundNumber = $structure->getFirstRoundNumber();
         foreach ($structure->getCategories() as $category) {
@@ -105,7 +103,7 @@ final class Repository
         return count($roundNumbers) > 0;
     }
 
-    public function getStructure(Competition $competition): StructureBase
+    public function getStructure(Competition $competition): Structure
     {
         $roundNumbers = $this->roundNumberRepos->findBy(array("competition" => $competition), array("number" => "asc"));
         $firstRoundNumber = reset($roundNumbers);
@@ -113,7 +111,7 @@ final class Repository
             throw new StructureNotFoundException('mallformed structure, no roundnumbers', E_ERROR);
         }
 
-        $structure = new StructureBase(array_values($competition->getCategories()->toArray()), $firstRoundNumber);
+        $structure = new Structure(array_values($competition->getCategories()->toArray()), $firstRoundNumber);
         foreach ($structure->getCategories() as $category) {
             $rootRound = $category->getRootRound();
             $this->addHorizontalPoules($rootRound);
