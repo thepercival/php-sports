@@ -5,8 +5,6 @@ declare(strict_types=1);
 namespace Sports;
 
 use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\EntityRepository;
-use Doctrine\Persistence\ObjectRepository;
 use Sports\Poule\Horizontal\Creator as HorizontalPouleCreator;
 use Sports\Qualify\Rule\Creator as QualifyRuleCreator;
 
@@ -16,9 +14,9 @@ final class Service
     {
     }
 
-    public function getStructureRepository(): Structure\Repository
+    public function getStructureRepository(): Repositories\StructureRepository
     {
-        return new Structure\Repository(
+        return new Repositories\StructureRepository(
             $this->getEntityManager(),
             new HorizontalPouleCreator(),
             new QualifyRuleCreator()
