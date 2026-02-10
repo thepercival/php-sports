@@ -20,7 +20,10 @@ use SportsHelpers\Sport\Variant\Against\H2h as AgainstH2h;
 use SportsHelpers\Sport\Variant\AllInOneGame;
 use SportsHelpers\Sport\Variant\Single;
 
-final class Competition extends Identifiable
+/**
+ * @api
+ */
+class Competition extends Identifiable
 {
     private League $league;
     private DateTimeImmutable $startDateTime;

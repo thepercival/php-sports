@@ -11,7 +11,10 @@ use SportsHelpers\GameMode;
 use SportsHelpers\Identifiable;
 use SportsHelpers\Sport\PersistVariant as SportPersistVariant;
 
-final class Sport extends Identifiable
+/**
+ * @api
+ */
+class Sport extends Identifiable
 {
     public const int MIN_LENGTH_NAME = 3;
     public const int MAX_LENGTH_NAME = 30;

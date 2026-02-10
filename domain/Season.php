@@ -10,7 +10,10 @@ use Doctrine\Common\Collections\Collection;
 use League\Period\Period;
 use SportsHelpers\Identifiable;
 
-final class Season extends Identifiable
+/**
+ * @api
+ */
+class Season extends Identifiable
 {
     private string $name;
     private DateTimeImmutable $startDateTime;
