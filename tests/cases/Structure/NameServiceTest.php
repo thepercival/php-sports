@@ -8,7 +8,6 @@ use Sports\Competitor\StartLocation;
 use Sports\Competitor\StartLocationMap;
 use Sports\Qualify\Distribution;
 use Sports\Qualify\QualifyTarget;
-use Sports\Qualify\QualifyTarget as QualifyTarget;
 use PHPUnit\Framework\TestCase;
 use Sports\Output\StructureOutput;
 use Sports\Team;

@@ -10,7 +10,6 @@ use Exception;
 use Sports\Place;
 use Sports\Poule;
 use Sports\Qualify\QualifyTarget;
-use Sports\Qualify\QualifyTarget as QualifyTarget;
 use Sports\Poule\Horizontal as HorizontalPoule;
 use Sports\Qualify\FromPoulePicker;
 use Sports\Qualify\Group as QualifyGroup;

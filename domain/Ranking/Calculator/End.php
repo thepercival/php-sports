@@ -13,7 +13,6 @@ use Sports\Qualify\Distribution;
 use Sports\Qualify\Rule\Horizontal\Single as HorizontalSingleQualifyRule;
 use Sports\Qualify\Rule\Vertical\Single as VerticalSingleQualifyRule;
 use Sports\Qualify\QualifyTarget;
-use Sports\Qualify\QualifyTarget as QualifyTarget;
 use Sports\Ranking\Calculator\Round as RoundRankingCalculator;
 use Sports\Ranking\Item\End as EndRankingItem;
 use Sports\Round;

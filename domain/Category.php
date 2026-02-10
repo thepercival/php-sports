@@ -14,6 +14,9 @@ use Sports\Structure\Cell as StructureCell;
 use SportsHelpers\Identifiable;
 use InvalidArgumentException;
 
+/**
+ * @api
+ */
 final class Category extends Identifiable
 {
     public const int MAX_LENGTH_NAME = 15;

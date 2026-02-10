@@ -9,7 +9,10 @@ use Doctrine\Common\Collections\Collection;
 use Sports\Team\Player;
 use SportsHelpers\Identifiable;
 
-final class Team extends Identifiable implements \Stringable
+/**
+ * @api
+ */
+class Team extends Identifiable implements \Stringable
 {
     protected Association $association;
     protected string $name;
