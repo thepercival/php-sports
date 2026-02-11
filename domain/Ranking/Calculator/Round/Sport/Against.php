@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Sports\Ranking\Calculator\Round\Sport;
 
-use Sports\Competition\CompetitionSport as CompetitionSport;
+use Sports\Competition\CompetitionSport;
 use Sports\Game\Against as AgainstGame;
 use Sports\Game\State as GameState;
 use Sports\Place;

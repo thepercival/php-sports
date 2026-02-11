@@ -6,7 +6,7 @@ namespace Sports;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-use Sports\Competition\CompetitionSport as CompetitionSport;
+use Sports\Competition\CompetitionSport;
 use Sports\Exceptions\StructureNotFoundException;
 use Sports\Game\State as GameState;
 use Sports\Round\Number as RoundNumber;

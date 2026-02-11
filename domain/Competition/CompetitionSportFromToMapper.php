@@ -3,7 +3,7 @@
 namespace Sports\Competition;
 
 use Exception;
-use Sports\Competition\CompetitionSport as CompetitionSport;
+use Sports\Competition\CompetitionSport;
 
 final class CompetitionSportFromToMapper
 {

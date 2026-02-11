@@ -6,7 +6,7 @@ namespace Sports\Competition;
 
 use Closure;
 use Sports\Category;
-use Sports\Competition\CompetitionSport as CompetitionSport;
+use Sports\Competition\CompetitionSport;
 use Sports\Planning\Config as PlanningConfig;
 use Sports\Planning\GameAmountConfig as GameAmountConfig;
 use Sports\Qualify\AgainstConfig as QualifyConfig;

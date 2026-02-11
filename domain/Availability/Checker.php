@@ -9,7 +9,7 @@ use Sports\Category;
 use Sports\Competition;
 use Sports\Competition\CompetitionField;
 use Sports\Competition\CompetitionReferee;
-use Sports\Competition\CompetitionSport as CompetitionSport;
+use Sports\Competition\CompetitionSport;
 use Sports\Competitor;
 use Sports\Competitor\StartLocation;
 use Sports\Competitor\StartLocationMap;

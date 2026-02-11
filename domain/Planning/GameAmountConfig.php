@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Sports\Planning;
 
-use Sports\Competition\CompetitionSport as CompetitionSport;
+use Sports\Competition\CompetitionSport;
 use Sports\Round\Number as RoundNumber;
 use SportsHelpers\GameMode;
 use SportsHelpers\Identifiable;
