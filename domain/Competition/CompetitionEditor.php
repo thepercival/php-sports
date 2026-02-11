@@ -13,7 +13,7 @@ use Sports\Ranking\AgainstRuleSet;
 use Sports\Season;
 use Sports\State;
 
-final class Service
+final class CompetitionEditor
 {
     public function __construct()
     {

@@ -6,7 +6,7 @@ namespace Sports\Qualify\RoundRank;
 
 use Sports\Category;
 use Sports\Round;
-use Sports\Qualify\QualifyTarget as QualifyTarget;
+use Sports\Qualify\QualifyTarget;
 
 final class Calculator
 {

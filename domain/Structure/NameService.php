@@ -15,7 +15,6 @@ use Sports\Qualify\Rule\Horizontal\Single as HorizontalSingleQualifyRule;
 use Sports\Qualify\Rule\Vertical\Multiple as VerticalMultipleQualifyRule;
 use Sports\Qualify\Rule\Vertical\Single as VerticalSingleQualifyRule;
 use Sports\Qualify\QualifyTarget;
-use Sports\Qualify\QualifyTarget as QualifyTarget;
 use Sports\Qualify\RoundRank\Service as RoundRankService;
 use Sports\Round;
 use Sports\Round\Number as RoundNumber;

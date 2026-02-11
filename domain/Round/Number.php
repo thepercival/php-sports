@@ -10,7 +10,7 @@ use Doctrine\Common\Collections\Collection;
 use Exception;
 use Sports\Category;
 use Sports\Competition;
-use Sports\Competition\Sport as CompetitionSport;
+use Sports\Competition\CompetitionSport as CompetitionSport;
 use Sports\Exceptions\CellNotFoundException;
 use Sports\Game\Against as AgainstGame;
 use Sports\Game\Order;

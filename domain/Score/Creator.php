@@ -15,7 +15,7 @@ final class Creator
     {
     }
 
-//    public function editResource(Game $game, Field $field = null, Referee $referee = null, Place $refereePlace = null)
+//    public function editResource(Game $game, CompetitionField $field = null, CompetitionReferee $referee = null, Place $refereePlace = null)
 //    {
 //        $game->setField($field);
 //        $game->setReferee($referee);

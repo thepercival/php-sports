@@ -4,14 +4,12 @@ declare(strict_types=1);
 
 namespace Sports\Structure;
 
-use Exception;
 use Sports\Category;
 use Sports\Competition;
-use Sports\Competition\Sport as CompetitionSport;
-use Sports\Competition\Sport\FromToMapper as CompetitionSportFromToMapper;
+use Sports\Competition\CompetitionSportFromToMapper as CompetitionSportFromToMapper;
+use Sports\Competition\CompetitionSport as CompetitionSport;
 use Sports\Place;
 use Sports\Planning\Config\Service as PlanningConfigService;
-use Sports\Planning\Config as PlanningConfig;
 use Sports\Planning\GameAmountConfig;
 use Sports\Poule;
 use Sports\Poule\Horizontal\Creator as HorizontalPouleCreator;

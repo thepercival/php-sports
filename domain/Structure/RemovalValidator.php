@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Sports\Structure;
 
 use Sports\Place;
-use Sports\Qualify\QualifyTarget as QualifyTarget;
+use Sports\Qualify\QualifyTarget;
 use Exception;
 use Sports\Qualify\Group as QualifyGroup;
 use Sports\Round;

@@ -6,7 +6,7 @@
         <field name="batchNr" column="resourcebatch" type="smallint" nullable="false" unique="false"/>
         <field name="state" column="state" type="enum_GameState" nullable="false" unique="false"/>
         <field name="startDateTime" column="startDateTime" type="datetime_immutable" nullable="false" unique="false"/>
-        <many-to-one field="referee" target-entity="Sports\Competition\Referee">
+        <many-to-one field="referee" target-entity="Sports\Competition\CompetitionReferee">
             <join-columns>
                 <join-column name="refereeId" referenced-column-name="id" nullable="true" on-delete="SET NULL"/>
             </join-columns>
@@ -16,12 +16,12 @@
                 <join-column name="placerefereeId" referenced-column-name="id" nullable="true" on-delete="SET NULL"/>
             </join-columns>
         </many-to-one>
-        <many-to-one field="field" target-entity="Sports\Competition\Field">
+        <many-to-one field="field" target-entity="Sports\Competition\CompetitionField">
             <join-columns>
                 <join-column name="fieldId" referenced-column-name="id" nullable="true" on-delete="SET NULL"/>
             </join-columns>
         </many-to-one>
-        <many-to-one field="competitionSport" target-entity="Sports\Competition\Sport">
+        <many-to-one field="competitionSport" target-entity="Sports\Competition\CompetitionSport">
             <join-columns>
                 <join-column name="competitionSportId" referenced-column-name="id" nullable="false"
                              on-delete="CASCADE"/>

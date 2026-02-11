@@ -13,10 +13,10 @@ use SportsHelpers\GameMode;
 use SportsHelpers\Sport\PersistVariant;
 use SportsHelpers\Sport\VariantWithFields as SportVariantWithFields;
 
-final class Sport extends PersistVariant implements \Stringable
+final class CompetitionSport extends PersistVariant implements \Stringable
 {
     /**
-     * @var Collection<int|string,Field>
+     * @var Collection<int|string,CompetitionField>
      */
     protected $fields;
     private PointsCalculation $defaultPointsCalculation;
@@ -93,18 +93,18 @@ final class Sport extends PersistVariant implements \Stringable
     }
 
     /**
-     * @return Collection<int|string,Field>
+     * @return Collection<int|string,CompetitionField>
      */
     public function getFields()
     {
         return $this->fields;
     }
 
-    public function getField(int $priority): Field
+    public function getField(int $priority): CompetitionField
     {
         $fields = array_filter(
             $this->getFields()->toArray(),
-            function (Field $field) use ($priority): bool {
+            function (CompetitionField $field) use ($priority): bool {
                 return $field->getPriority() === $priority;
             }
         );

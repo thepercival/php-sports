@@ -1,4 +1,4 @@
-Sports\Competition\Referee:
+Sports\Competition\CompetitionReferee:
   exclusion_policy: ALL
   exclude: false
   properties:

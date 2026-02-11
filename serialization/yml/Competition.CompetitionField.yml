@@ -1,4 +1,4 @@
-Sports\Competition\Field:
+Sports\Competition\CompetitionField:
   exclusion_policy: ALL
   exclude: false
   properties:

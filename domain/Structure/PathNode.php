@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Sports\Structure;
 
-use Sports\Qualify\QualifyTarget as QualifyTarget;
+use Sports\Qualify\QualifyTarget;
 
 final class PathNode implements \Stringable
 {

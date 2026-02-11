@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Sports\Round\Number;
 
 use DateTimeImmutable;
-use Sports\Competition\Sport as CompetitionSport;
+use Sports\Competition\CompetitionSport as CompetitionSport;
 use Sports\Game\Against as AgainstGame;
 use Sports\Game\Place\Against as AgainstGamePlace;
 use Sports\Game\Place\Together as TogetherGamePlace;
