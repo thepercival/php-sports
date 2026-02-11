@@ -11,14 +11,14 @@
 //use Sports\Round\Number as RoundNumber;
 //use Sports\Qualify\Group as QualifyGroup;
 //
-//class CompetitionEditor
+//class Service
 //{
 //    /**
 //     * @var RoundRepository
 //     */
 //    protected $repos;
 //    /**
-//     * @var Poule\CompetitionEditor
+//     * @var Poule\Service
 //     */
 //    protected $pouleService;
 //    /**
@@ -27,14 +27,14 @@
 //    protected $pouleRepos;
 //
 //    /**
-//     * CompetitionEditor constructor.
+//     * Service constructor.
 //     * @param CompetitionRepository $repos
-//     * @param Poule\CompetitionEditor $pouleService
+//     * @param Poule\Service $pouleService
 //     * @param PouleRepository $pouleRepos
 //     */
 //    public function __construct(
 //        RoundRepository $repos,
-//        Poule\CompetitionEditor $pouleService,
+//        Poule\Service $pouleService,
 //        PouleRepository $pouleRepos
 //    )
 //    {

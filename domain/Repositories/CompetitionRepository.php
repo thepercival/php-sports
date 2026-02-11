@@ -91,7 +91,7 @@ final class CompetitionRepository extends EntityRepository
     {
         $qb = $this->createQueryBuilder('c')
             ->distinct()
-            ->join('Sports\Competition\CompetitionSport', 'cs', 'WITH', 'c = cs.competition')
+            ->join('Sports\Competition\Sport', 'cs', 'WITH', 'c = cs.competition')
             ->join('cs.sport', 's')
             ->join('c.season', 'season')
         ;

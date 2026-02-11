@@ -7,9 +7,9 @@ namespace Sports\Availability;
 use Exception;
 use Sports\Category;
 use Sports\Competition;
-use Sports\Competition\CompetitionField;
-use Sports\Competition\CompetitionReferee;
-use Sports\Competition\CompetitionSport as CompetitionSport;
+use Sports\Competition\Field;
+use Sports\Competition\Referee;
+use Sports\Competition\Sport as CompetitionSport;
 use Sports\Competitor;
 use Sports\Competitor\StartLocation;
 use Sports\Competitor\StartLocationMap;
@@ -18,10 +18,10 @@ use Sports\Priority\Prioritizable;
 
 final class Checker
 {
-    public function checkRefereeInitials(Competition $competition, string $initials, CompetitionReferee|null $refereeToCheck = null): void
+    public function checkRefereeInitials(Competition $competition, string $initials, Referee|null $refereeToCheck = null): void
     {
         $nonUniqueReferees = $competition->getReferees()->filter(
-            function (CompetitionReferee $refereeIt) use ($initials, $refereeToCheck): bool {
+            function (Referee $refereeIt) use ($initials, $refereeToCheck): bool {
                 return $refereeIt->getInitials() === $initials && $refereeToCheck !== $refereeIt;
             }
         );
@@ -33,11 +33,11 @@ final class Checker
         }
     }
 
-    public function checkFieldName(Competition $competition, string $name, CompetitionField|null $fieldToCheck = null): void
+    public function checkFieldName(Competition $competition, string $name, Field|null $fieldToCheck = null): void
     {
         $nonUniqueFields = array_filter(
             $competition->getFields(),
-            function (CompetitionField $fieldIt) use ($name, $fieldToCheck): bool {
+            function (Field $fieldIt) use ($name, $fieldToCheck): bool {
                 return $fieldIt->getName() === $name && $fieldToCheck !== $fieldIt;
             }
         );
@@ -55,13 +55,13 @@ final class Checker
     public function checkRefereeEmailaddress(
         Competition $competition,
         string|null $emailaddress = null,
-        CompetitionReferee|null $refereeToCheck = null
+        Referee|null $refereeToCheck = null
     ) {
         if ($emailaddress === null) {
             return;
         }
         $nonUniqueReferees = $competition->getReferees()->filter(
-            function (CompetitionReferee $refereeIt) use ($emailaddress, $refereeToCheck): bool {
+            function (Referee $refereeIt) use ($emailaddress, $refereeToCheck): bool {
                 return $refereeIt->getEmailaddress() === $emailaddress && $refereeToCheck !== $refereeIt;
             }
         );
@@ -73,13 +73,13 @@ final class Checker
         }
     }
 
-    public function checkRefereePriority(Competition $competition, int $priority, CompetitionReferee|null $referee = null): void
+    public function checkRefereePriority(Competition $competition, int $priority, Referee|null $referee = null): void
     {
         $referees = array_values($competition->getReferees()->toArray());
         $this->checkPriority($referees, $priority, $referee);
     }
 
-    public function checkFieldPriority(CompetitionSport $competitionSport, int $priority, CompetitionField|null $field = null): void
+    public function checkFieldPriority(CompetitionSport $competitionSport, int $priority, Field|null $field = null): void
     {
         $fields = array_values($competitionSport->getFields()->toArray());
         $this->checkPriority($fields, $priority, $field);

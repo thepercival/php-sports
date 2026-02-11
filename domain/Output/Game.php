@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Sports\Output;
 
 use Psr\Log\LoggerInterface;
-use Sports\Competition\CompetitionField;
-use Sports\Competition\CompetitionReferee;
+use Sports\Competition\Field;
+use Sports\Competition\Referee;
 use Sports\Competitor\StartLocationMap;
 use Sports\Game\Against as AgainstGame;
 use Sports\Game\Place\Against as AgainstGamePlace;
@@ -62,7 +62,7 @@ abstract class Game extends OutputAbstract
         ));
     }
 
-    protected function getFieldAsString(CompetitionField $field = null): string
+    protected function getFieldAsString(Field $field = null): string
     {
         if ($field === null) {
             return '';
@@ -111,7 +111,7 @@ abstract class Game extends OutputAbstract
         return $this->getColoredString($refereeColor, $refereeDescription);
     }
 
-    protected function getRefereeDescription(CompetitionReferee|null $referee, Place|null $refPlace): string
+    protected function getRefereeDescription(Referee|null $referee, Place|null $refPlace): string
     {
         if ($referee === null && $refPlace === null) {
             return '';
@@ -127,7 +127,7 @@ abstract class Game extends OutputAbstract
         return $description;
     }
 
-    protected function getRefereeNumber(CompetitionReferee|null $referee, Place|null $refPlace): int
+    protected function getRefereeNumber(Referee|null $referee, Place|null $refPlace): int
     {
         $refNr = -1;
         if ($referee === null && $refPlace === null) {

@@ -7,7 +7,7 @@ namespace Sports\Tests\Round\Number;
 use PHPUnit\Framework\TestCase;
 use Sports\Game\Order;
 use Sports\Output\StructureOutput;
-use Sports\Qualify\QualifyTarget;
+use Sports\Qualify\QualifyTarget as QualifyTarget;
 use Sports\Round\Number\GamesValidator;
 use Sports\TestHelper\CompetitionCreator;
 use Sports\TestHelper\GamesCreator;

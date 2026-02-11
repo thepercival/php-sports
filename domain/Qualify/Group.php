@@ -11,7 +11,7 @@ use Sports\Qualify\Rule\Horizontal\Single as HorizontalSingleQualifyRule;
 use Sports\Qualify\Rule\Vertical\Multiple as VerticalMultipleQualifyRule;
 use Sports\Qualify\Rule\Vertical\Single as VerticalSingleQualifyRule;
 use Sports\Round;
-use Sports\Qualify\QualifyTarget;
+use Sports\Qualify\QualifyTarget as QualifyTarget;
 use Sports\Qualify\Group as QualifyGroup;
 use Sports\Structure\Cell as StructureCell;
 use SportsHelpers\Identifiable;

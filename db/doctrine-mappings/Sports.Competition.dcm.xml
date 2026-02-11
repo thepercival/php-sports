@@ -43,7 +43,7 @@
                 <cascade-remove/>
             </cascade>
         </one-to-many>
-        <one-to-many field="referees" target-entity="Sports\Competition\CompetitionReferee" mapped-by="competition"
+        <one-to-many field="referees" target-entity="Sports\Competition\Referee" mapped-by="competition"
                      fetch="EXTRA_LAZY">
             <cascade>
                 <cascade-remove/>
@@ -52,7 +52,7 @@
                 <order-by-field name="priority" direction="ASC"/>
             </order-by>
         </one-to-many>
-        <one-to-many field="sports" target-entity="Sports\Competition\CompetitionSport" mapped-by="competition" fetch="EXTRA_LAZY">
+        <one-to-many field="sports" target-entity="Sports\Competition\Sport" mapped-by="competition" fetch="EXTRA_LAZY">
             <cascade>
                 <cascade-persist/>
                 <cascade-remove/>

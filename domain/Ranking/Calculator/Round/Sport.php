@@ -17,7 +17,7 @@ use Sports\Place;
 use Sports\Ranking\Item\Round\Sport as SportRoundRankingItem;
 use Sports\Ranking\Rule\Getter as RankingRuleGetter;
 use Sports\Place\SportPerformance;
-use Sports\Competition\CompetitionSport as CompetitionSport;
+use Sports\Competition\Sport as CompetitionSport;
 use Sports\Round;
 use Sports\Ranking\Rule as RankingRule;
 

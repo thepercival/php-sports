@@ -7,7 +7,7 @@ namespace Sports\Tests\Qualify\Rule;
 use PHPUnit\Framework\TestCase;
 use Sports\Place;
 use Sports\Qualify\Group as QualifyGroup;
-use Sports\Qualify\QualifyTarget;
+use Sports\Qualify\QualifyTarget as QualifyTarget;
 use Sports\TestHelper\CompetitionCreator;
 use Sports\TestHelper\SetScores;
 use Sports\TestHelper\StructureEditorCreator;

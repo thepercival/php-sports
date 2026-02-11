@@ -12,7 +12,7 @@ use Sports\Qualify\Group as QualifyGroup;
 use Sports\Qualify\Mapping as QualifyPlaceMapping;
 use Sports\Qualify\Mapping\ByPlace as ByPlaceMapping;
 use Sports\Qualify\Rule\Vertical as VerticalQualifyRule;
-use Sports\Qualify\QualifyTarget;
+use Sports\Qualify\QualifyTarget as QualifyTarget;
 use Sports\Qualify\Mapping\ByRank as ByRankMapping;
 use Sports\Qualify\Rule\Single as SingleQualifyRule;
 use Sports\Qualify\Rule\Vertical\Single as VerticalSingleQualifyRule;

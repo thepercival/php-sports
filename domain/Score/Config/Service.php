@@ -10,7 +10,7 @@ use Sports\Game\Place\Together as TogetherGamePlace;
 use Sports\Game\Against as AgainstGame;
 use Sports\Sport\Custom as CustomSport;
 use Sports\Round;
-use Sports\Competition\CompetitionSport as CompetitionSport;
+use Sports\Competition\Sport as CompetitionSport;
 
 final class Service
 {

@@ -1,11 +1,11 @@
 <?php
 
-namespace Sports\Competition;
+namespace Sports\Competition\Sport;
 
 use Exception;
-use Sports\Competition\CompetitionSport as CompetitionSport;
+use Sports\Competition\Sport as CompetitionSport;
 
-final class CompetitionSportFromToMapper
+final class FromToMapper
 {
     /**
      * @var array<string, CompetitionSport>
@@ -15,12 +15,12 @@ final class CompetitionSportFromToMapper
     /**
      * @param list<CompetitionSport> $fromCompetitionSports
      * @param list<CompetitionSport> $toCompetitionSports
-     * @param CompetitionSportFromToMapStrategy $fromToMapStrategy
+     * @param FromToMapStrategy $fromToMapStrategy
      */
     public function __construct(
         array             $fromCompetitionSports,
         array             $toCompetitionSports,
-        CompetitionSportFromToMapStrategy $fromToMapStrategy
+        FromToMapStrategy $fromToMapStrategy
     )
     {
         $this->map = [];
@@ -28,12 +28,12 @@ final class CompetitionSportFromToMapper
 
             $toCompetitionSport = null;
             foreach ($toCompetitionSports as $toCompetitionSportIt) {
-                if ($fromToMapStrategy === CompetitionSportFromToMapStrategy::ById) {
+                if ($fromToMapStrategy === FromToMapStrategy::ById) {
                     if ($fromCompetitionSport->getId() == $toCompetitionSportIt->getId()) {
                         $toCompetitionSport = $toCompetitionSportIt;
                         break;
                     }
-                } else /*if ($fromToMapStrategy === CompetitionSportFromToMapStrategy::ByProperties)*/ {
+                } else /*if ($fromToMapStrategy === FromToMapStrategy::ByProperties)*/ {
                     if ($fromCompetitionSport->equals($toCompetitionSportIt)) {
                         $toCompetitionSport = $toCompetitionSportIt;
                         break;

@@ -7,7 +7,7 @@ namespace Sports\Game;
 use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-use Sports\Competition\CompetitionSport as CompetitionSport;
+use Sports\Competition\Sport as CompetitionSport;
 use Sports\Game as GameBase;
 use Sports\Game\Place\Together as TogetherGamePlace;
 use Sports\Place;

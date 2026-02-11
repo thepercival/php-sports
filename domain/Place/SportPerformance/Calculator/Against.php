@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Sports\Place\SportPerformance\Calculator;
 
-use Sports\Competition\CompetitionSport as CompetitionSport;
+use Sports\Competition\Sport as CompetitionSport;
 use Sports\Game\Against as AgainstGame;
 use Sports\Game\Phase as GamePhase;
 use Sports\Game\Together as TogetherGame;

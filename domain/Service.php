@@ -34,7 +34,7 @@ final class Service
         if ($className === Association::class) {
             return new Association\Service();
         } elseif ($className === Competition::class) {
-            return new Competition\CompetitionEditor();
+            return new Competition\Service();
         }
         throw new \Exception("class " . $className . " not supported to create service", E_ERROR);
     }

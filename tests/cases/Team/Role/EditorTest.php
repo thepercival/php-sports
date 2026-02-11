@@ -407,7 +407,7 @@ final class EditorTest extends \PHPUnit\Framework\TestCase
     // psv particfey - psv 08-13 samenvoegen als er niets tussen zit
 //    public function testCreateWithoutOther(): void
 //    {
-//        $editor = new Team\Role\CompetitionSportEditor();
+//        $editor = new Team\Role\Editor();
 //
 //        $association = new Association('testAssociation');
 //        $team = new Team($association, 'testTeam');
@@ -429,7 +429,7 @@ final class EditorTest extends \PHPUnit\Framework\TestCase
 //    // psv particfey - psv 08-13 samenvoegen als er niets tussen zit
 //    public function testGameBeforePlayerPeriodSameTeam(): void
 //    {
-//        $validator = new CompetitionValidator();
+//        $validator = new Validator();
 //
 //        $association = new Association('testAssociation');
 //        $league = new League($association, 'testLeague');

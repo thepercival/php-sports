@@ -2,7 +2,7 @@
 
 namespace Sports\Ranking\Item\Round;
 
-use Sports\Competition\CompetitionSport as CompetitionSport;
+use Sports\Competition\Sport as CompetitionSport;
 use Sports\Place\SportPerformance;
 use SportsHelpers\PlaceLocationInterface;
 

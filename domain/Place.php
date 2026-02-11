@@ -6,7 +6,7 @@ namespace Sports;
 
 use Exception;
 use InvalidArgumentException;
-use Sports\Competition\CompetitionSport as CompetitionSport;
+use Sports\Competition\Sport as CompetitionSport;
 use Sports\Competitor\StartLocation;
 use Sports\Game\Against as AgainstGame;
 use Sports\Game\Place\Together as TogetherGamePlace;
@@ -17,7 +17,7 @@ use Sports\Structure\Locations\StructureLocationPlace;
 use SportsHelpers\Identifiable;
 use SportsHelpers\PlaceLocationInterface;
 use Sports\Poule\Horizontal as HorizontalPoule;
-use Sports\Qualify\QualifyTarget;
+use Sports\Qualify\QualifyTarget as QualifyTarget;
 
 /**
  * @api

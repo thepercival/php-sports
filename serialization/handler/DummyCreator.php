@@ -8,9 +8,9 @@ use League\Period\Period;
 use Sports\Association;
 use Sports\Category;
 use Sports\Competition;
-use Sports\Competition\CompetitionField;
-use Sports\Competition\CompetitionReferee;
-use Sports\Competition\CompetitionSport as CompetitionSport;
+use Sports\Competition\Field;
+use Sports\Competition\Referee;
+use Sports\Competition\Sport as CompetitionSport;
 use Sports\League;
 use Sports\Place;
 use Sports\Poule;
@@ -34,11 +34,11 @@ final class DummyCreator
      */
     private array $competitionSports  = [];
     /**
-     * @var array<string|int, CompetitionReferee>
+     * @var array<string|int, Referee>
      */
     private array $referees  = [];
     /**
-     * @var array<string|int, CompetitionField>
+     * @var array<string|int, Field>
      */
     private array $fields  = [];
 
@@ -135,12 +135,12 @@ final class DummyCreator
         return $rootRound;
     }
 
-    public function createReferee(int $refereeId, Competition $competition): CompetitionReferee
+    public function createReferee(int $refereeId, Competition $competition): Referee
     {
         if (array_key_exists($refereeId, $this->referees)) {
             return $this->referees[$refereeId];
         }
-        $getReferee = function (int $refereeId) use ($competition): ?CompetitionReferee {
+        $getReferee = function (int $refereeId) use ($competition): ?Referee {
             foreach ($competition->getReferees() as $referee) {
                 if ($referee->getId() == $refereeId) {
                     return $referee;
@@ -150,7 +150,7 @@ final class DummyCreator
         };
         $referee = $getReferee($refereeId);
         if ($referee === null) {
-            $referee = new CompetitionReferee(
+            $referee = new Referee(
                 $competition,
                 'DUM'
             );
@@ -187,11 +187,11 @@ final class DummyCreator
 //        return $poule;
 //    }
 
-    public function createField(string|int $fieldId, CompetitionSport $competitionSport): CompetitionField {
+    public function createField(string|int $fieldId, CompetitionSport $competitionSport): Field {
         if (array_key_exists($fieldId, $this->fields)) {
             return $this->fields[$fieldId];
         }
-        $getField = function (int|string $fieldId) use ($competitionSport): ?CompetitionField {
+        $getField = function (int|string $fieldId) use ($competitionSport): ?Field {
             foreach ($competitionSport->getFields() as $field) {
                 if ($field->getId() == $fieldId) {
                     return $field;
@@ -201,7 +201,7 @@ final class DummyCreator
         };
         $field = $getField($fieldId);
         if ($field === null) {
-            $field = new CompetitionField($competitionSport);
+            $field = new Field($competitionSport);
             $field->setId($fieldId);
             $this->fields[$fieldId] = $field;
         }

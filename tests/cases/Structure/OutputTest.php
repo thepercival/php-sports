@@ -7,7 +7,7 @@ namespace Sports\Tests\Structure;
 use Exception;
 use PHPUnit\Framework\TestCase;
 use Sports\Output\StructureOutput;
-use Sports\Qualify\QualifyTarget;
+use Sports\Qualify\QualifyTarget as QualifyTarget;
 use Sports\Structure;
 use Sports\TestHelper\CompetitionCreator;
 use Sports\TestHelper\StructureEditorCreator;

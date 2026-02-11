@@ -1,11 +1,11 @@
-Sports\Competition\CompetitionSport:
+Sports\Competition\Sport:
   exclusion_policy: ALL
   exclude: false
   properties:
     sport:
       type: Sports\Sport
     fields:
-      type: ArrayCollection<Sports\Competition\CompetitionField>
+      type: ArrayCollection<Sports\Competition\Field>
     defaultPointsCalculation:
     defaultWinPoints:
       type: float

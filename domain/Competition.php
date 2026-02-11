@@ -8,9 +8,9 @@ use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Exception;
-use Sports\Competition\CompetitionField as CompetitionField;
-use Sports\Competition\CompetitionReferee;
-use Sports\Competition\CompetitionSport as CompetitionSport;
+use Sports\Competition\Field as CompetitionField;
+use Sports\Competition\Referee;
+use Sports\Competition\Sport as CompetitionSport;
 use Sports\Competitor\Team as TeamCompetitor;
 use Sports\Ranking\AgainstRuleSet;
 use SportsHelpers\Identifiable;
@@ -37,7 +37,7 @@ class Competition extends Identifiable
      */
     private Collection $roundNumbers;
     /**
-     * @var Collection<int|string, CompetitionReferee>
+     * @var Collection<int|string, Referee>
      */
     private Collection $referees;
     /**
@@ -138,14 +138,14 @@ class Competition extends Identifiable
     }
 
     /**
-     * @return Collection<int|string, CompetitionReferee>
+     * @return Collection<int|string, Referee>
      */
     public function getReferees(): Collection
     {
         return $this->referees;
     }
 
-    public function getReferee(int $priority): CompetitionReferee
+    public function getReferee(int $priority): Referee
     {
         foreach ($this->getReferees() as $referee) {
             if ($referee->getPriority() === $priority) {

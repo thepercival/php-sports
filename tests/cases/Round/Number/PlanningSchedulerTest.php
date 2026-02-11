@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Sports\Tests\Round\Number;
 
-use Sports\Qualify\QualifyTarget;
+use Sports\Qualify\QualifyTarget as QualifyTarget;
 use DateTimeImmutable;
 use League\Period\Period;
 use PHPUnit\Framework\TestCase;

@@ -7,8 +7,8 @@ namespace Sports\Tests\Round\Number;
 use Exception;
 use League\Period\Period;
 use PHPUnit\Framework\TestCase;
-use Sports\Competition\CompetitionField;
-use Sports\Competition\CompetitionReferee;
+use Sports\Competition\Field;
+use Sports\Competition\Referee;
 use Sports\Game\Against as AgainstGame;
 use Sports\Game\Order as GameOrder;
 use Sports\Game\Place\Against as AgainstGamePlace;
@@ -112,7 +112,7 @@ final class GamesValidatorTest extends TestCase
         $game = $firstPoule->getAgainstGames()->first();
         self::assertInstanceOf(AgainstGame::class, $game);
         $field = $game->getField();
-        self::assertInstanceOf(CompetitionField::class, $field);
+        self::assertInstanceOf(Field::class, $field);
         $newFieldPriority = $field->getPriority() === 1 ? 2 : 1;
         $game->setField($competition->getSingleSport()->getField($newFieldPriority));
 
@@ -137,7 +137,7 @@ final class GamesValidatorTest extends TestCase
         $game = $firstPoule->getAgainstGames()->first();
         self::assertInstanceOf(AgainstGame::class, $game);
         $referee = $game->getReferee();
-        self::assertInstanceOf(CompetitionReferee::class, $referee);
+        self::assertInstanceOf(Referee::class, $referee);
         $newRefereePriority = $referee->getPriority() === 1 ? 2 : 1;
         $game->setReferee($competition->getReferee($newRefereePriority));
 
@@ -197,7 +197,7 @@ final class GamesValidatorTest extends TestCase
 
         foreach ($firstPoule->getAgainstGames() as $game) {
             $referee = $game->getReferee();
-            self::assertInstanceOf(CompetitionReferee::class, $referee);
+            self::assertInstanceOf(Referee::class, $referee);
             if ($referee->getPriority() === 1 && $game->getBatchNr() <= 3) {
                 $game->setReferee(null);
             }

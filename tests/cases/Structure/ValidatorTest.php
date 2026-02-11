@@ -10,7 +10,7 @@ use Sports\Category;
 use Sports\Output\StructureOutput;
 use Sports\Place;
 use Sports\Qualify\Group as QualifyGroup;
-use Sports\Qualify\QualifyTarget;
+use Sports\Qualify\QualifyTarget as QualifyTarget;
 use Sports\Round;
 use Sports\Round\Number as RoundNumber;
 use Sports\Structure;

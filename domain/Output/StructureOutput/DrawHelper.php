@@ -6,8 +6,10 @@ namespace Sports\Output\StructureOutput;
 
 use Sports\Category;
 use Sports\Game\State;
+use Sports\Game\State as GameState;
 use Sports\Place;
-use Sports\Qualify\QualifyTarget;
+use Sports\Qualify\QualifyTarget as QualifyTarget;
+use Sports\Ranking\Calculator\Cumulative;
 use Sports\Structure\NameService as StructureNameService;
 use Sports\Output\Coordinate;
 use Sports\Output\Grid\Align;

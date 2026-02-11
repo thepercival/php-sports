@@ -6,8 +6,8 @@ namespace Sports\Round\Number;
 
 use Exception;
 use League\Period\Period;
-use Sports\Competition\CompetitionField;
-use Sports\Competition\CompetitionSport as CompetitionSport;
+use Sports\Competition\Field;
+use Sports\Competition\Sport as CompetitionSport;
 use Sports\Exceptions\RefereesPriorityNotCorrectlyAppliedInGamesException;
 use Sports\Game\Against as AgainstGame;
 use Sports\Game\Order;
@@ -420,7 +420,7 @@ final class GamesValidator
         return $gamesBatch;
     }
 
-    protected function getFieldIndex(CompetitionField $field): string|int
+    protected function getFieldIndex(Field $field): string|int
     {
         $fieldId = $field->getId();
         if ($fieldId !== null) {

@@ -16,7 +16,7 @@ use Sports\Qualify\Distribution;
 use Sports\Qualify\Group as QualifyGroup;
 use Sports\Qualify\Rule\Creator\Vertical;
 use Sports\Qualify\Rule\Horizontal\Single as HorizontalSingleQualifyRule;
-use Sports\Qualify\QualifyTarget;
+use Sports\Qualify\QualifyTarget as QualifyTarget;
 use Sports\Structure;
 use Sports\TestHelper\CompetitionCreator;
 use Sports\TestHelper\StructureEditorCreator;

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Sports\Qualify;
 
-use Sports\Competition\CompetitionSport as CompetitionSport;
+use Sports\Competition\Sport as CompetitionSport;
 use Sports\Ranking\PointsCalculation;
 use Sports\Round;
 use Sports\Sport;
