@@ -7,7 +7,7 @@ namespace Sports\Qualify\AgainstConfig;
 use Sports\Qualify\AgainstConfig as QualifyConfig;
 use Sports\Ranking\PointsCalculation;
 use Sports\Sport;
-use Sports\Competition\CompetitionSport as CompetitionSport;
+use Sports\Competition\CompetitionSport;
 use Sports\Sport\Custom as CustomSport;
 use Sports\Round;
 use SportsHelpers\GameMode;

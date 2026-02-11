@@ -7,7 +7,7 @@ namespace Sports\Game;
 use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-use Sports\Competition\CompetitionSport as CompetitionSport;
+use Sports\Competition\CompetitionSport;
 use Sports\Game as GameBase;
 use Sports\Game\Event\Card as CardEvent;
 use Sports\Game\Event\Goal as GoalEvent;

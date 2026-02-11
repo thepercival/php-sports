@@ -8,7 +8,7 @@ use Exception;
 use Sports\Competition;
 use Sports\Competition\CompetitionField;
 use Sports\Competition\CompetitionReferee;
-use Sports\Competition\CompetitionSport as CompetitionSport;
+use Sports\Competition\CompetitionSport;
 use Sports\Place;
 use Sports\Poule;
 use Sports\Qualify\RoundRank\Service as RoundRankService;

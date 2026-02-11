@@ -10,7 +10,7 @@ use Doctrine\Common\Collections\Collection;
 use Exception;
 use Sports\Competition\CompetitionField as CompetitionField;
 use Sports\Competition\CompetitionReferee;
-use Sports\Competition\CompetitionSport as CompetitionSport;
+use Sports\Competition\CompetitionSport;
 use Sports\Competitor\Team as TeamCompetitor;
 use Sports\Ranking\AgainstRuleSet;
 use SportsHelpers\Identifiable;

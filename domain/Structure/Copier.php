@@ -7,7 +7,7 @@ namespace Sports\Structure;
 use Sports\Category;
 use Sports\Competition;
 use Sports\Competition\CompetitionSportFromToMapper as CompetitionSportFromToMapper;
-use Sports\Competition\CompetitionSport as CompetitionSport;
+use Sports\Competition\CompetitionSport;
 use Sports\Place;
 use Sports\Planning\Config\Service as PlanningConfigService;
 use Sports\Planning\GameAmountConfig;

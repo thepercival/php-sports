@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Sports\Score;
 
-use Sports\Competition\CompetitionSport as CompetitionSport;
+use Sports\Competition\CompetitionSport;
 use Sports\Round;
 use SportsHelpers\Identifiable;
 

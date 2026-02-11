@@ -7,7 +7,7 @@ namespace Sports;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use InvalidArgumentException;
-use Sports\Competition\CompetitionSport as CompetitionSport;
+use Sports\Competition\CompetitionSport;
 use Sports\Game\Against as AgainstGame;
 use Sports\Game\State as GameState;
 use Sports\Game\Together as TogetherGame;

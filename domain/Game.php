@@ -8,7 +8,7 @@ use DateTimeImmutable;
 use League\Period\Period;
 use Sports\Competition\CompetitionField;
 use Sports\Competition\CompetitionReferee;
-use Sports\Competition\CompetitionSport as CompetitionSport;
+use Sports\Competition\CompetitionSport;
 use Sports\Planning\Config as PlanningConfig;
 use Sports\Score\Config as ScoreConfig;
 use Sports\Structure\Locations\StructureLocationPlace;
