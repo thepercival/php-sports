@@ -6,7 +6,7 @@ namespace Sports\Repositories;
 
 use Doctrine\ORM\EntityRepository;
 use Exception;
-use Sports\Competition\Sport as CompetitionSport;
+use Sports\Competition\CompetitionSport as CompetitionSport;
 use Sports\Planning\GameAmountConfig;
 use Sports\Qualify\AgainstConfig as AgainstQualifyConfig;
 use Sports\Repositories\AgainstQualifyConfigRepository as AgainstQualifyConfigRepos;

@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Sports\Place;
 
 use Sports\Place;
-use Sports\Competition\Sport as CompetitionSport;
+use Sports\Competition\CompetitionSport as CompetitionSport;
 
 final class SportPerformance extends Performance
 {

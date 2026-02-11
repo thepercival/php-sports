@@ -15,7 +15,7 @@
                unique="false"/>
         <field name="pointsCalculation" column="pointsCalculation" type="enum_PointsCalculation" nullable="false"
                unique="false"/>
-        <many-to-one field="competitionSport" target-entity="Sports\Competition\Sport">
+        <many-to-one field="competitionSport" target-entity="Sports\Competition\CompetitionSport">
             <join-columns>
                 <join-column name="competitionSportId" referenced-column-name="id" nullable="true" on-delete="CASCADE"/>
             </join-columns>

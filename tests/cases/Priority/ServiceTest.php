@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Sports\Tests\Priority;
 
 use PHPUnit\Framework\TestCase;
-use Sports\Competition\Referee;
+use Sports\Competition\CompetitionReferee;
 use Sports\TestHelper\CompetitionCreator;
 use Sports\Priority\Service as PriorityService;
 
@@ -19,7 +19,7 @@ final class ServiceTest extends TestCase
 
         $referee2 = $competition->getReferee(2);
 
-        $referee4 = new Referee($competition, 'RF4', 4);
+        $referee4 = new CompetitionReferee($competition, 'RF4', 4);
 
         $priorityService = new PriorityService(array_values($competition->getReferees()->toArray()));
         $changed = $priorityService->upgrade($referee4);

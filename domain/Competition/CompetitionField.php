@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace Sports\Competition;
 
 use Sports\Competition;
-use Sports\Competition\Sport as CompetitionSport;
+use Sports\Competition\CompetitionSport as CompetitionSport;
 use Sports\Priority\Prioritizable;
 use SportsHelpers\Identifiable;
 
-final class Field extends Identifiable implements Prioritizable
+final class CompetitionField extends Identifiable implements Prioritizable
 {
     protected int $priority;
     private string|null $name = null;

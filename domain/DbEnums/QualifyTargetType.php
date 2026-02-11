@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Sports\DbEnums;
 
 use Doctrine\DBAL\Platforms\AbstractPlatform;
-use Sports\Qualify\QualifyTarget as QualifyTarget;
+use Sports\Qualify\QualifyTarget;
 use SportsHelpers\DbEnums\EnumDbType;
 
 final class QualifyTargetType extends EnumDbType

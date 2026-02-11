@@ -3,10 +3,10 @@ Sports\Game:
   exclude: false
   properties:
 #    field:
-#      type: Sports\Competition\Field
+#      type: Sports\Competition\CompetitionField
 #      groups: [deserialize]
 #    referee:
-#      type: Sports\Competition\Referee
+#      type: Sports\Competition\CompetitionReferee
 #      groups: [deserialize]
     batchNr:
       type: integer

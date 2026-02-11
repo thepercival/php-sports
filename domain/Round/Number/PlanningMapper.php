@@ -6,9 +6,9 @@ namespace Sports\Round\Number;
 
 use Exception;
 use Sports\Competition;
-use Sports\Competition\Field;
-use Sports\Competition\Referee;
-use Sports\Competition\Sport as CompetitionSport;
+use Sports\Competition\CompetitionField;
+use Sports\Competition\CompetitionReferee;
+use Sports\Competition\CompetitionSport as CompetitionSport;
 use Sports\Place;
 use Sports\Poule;
 use Sports\Qualify\RoundRank\Service as RoundRankService;
@@ -32,7 +32,7 @@ final class PlanningMapper
      */
     protected array $pouleMap;
     /**
-     * @var array<string, Referee>
+     * @var array<string, CompetitionReferee>
      */
     protected array $refereeMap;
     /**
@@ -40,7 +40,7 @@ final class PlanningMapper
      */
     protected array $competitionSportMap;
     /**
-     * @var array<string, Field>
+     * @var array<string, CompetitionField>
      */
     protected array $fieldMap;
 
@@ -280,7 +280,7 @@ final class PlanningMapper
 
     /**
      * @param Competition $competition
-     * @return array<int, list<Field>>
+     * @return array<int, list<CompetitionField>>
      * @throws Exception
      */
     protected function getCompetitionSportsFieldMap(Competition $competition): array
@@ -313,7 +313,7 @@ final class PlanningMapper
 
     /**
      * @param Competition $competition
-     * @return list<Referee>
+     * @return list<CompetitionReferee>
      */
     protected function getSortedReferees(Competition $competition): array
     {
@@ -336,7 +336,7 @@ final class PlanningMapper
         return $this->competitionSportMap[$planningSport->getNumber()];
     }
 
-    public function getField(PlanningField|null $planningField): Field|null
+    public function getField(PlanningField|null $planningField): CompetitionField|null
     {
         if ($planningField === null) {
             return null;
@@ -347,7 +347,7 @@ final class PlanningMapper
         return $this->fieldMap[$planningField->getUniqueIndex()];
     }
 
-    public function getReferee(PlanningReferee|null $planningReferee): Referee|null
+    public function getReferee(PlanningReferee|null $planningReferee): CompetitionReferee|null
     {
         if ($planningReferee === null) {
             return null;

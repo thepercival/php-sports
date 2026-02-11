@@ -9,7 +9,7 @@
 //use Sports\Place\CompetitionRepository as PoulePlaceRepository;
 //use Sports\Competitor\CompetitionRepository as CompetitorRepository;
 //
-//class Service
+//class CompetitionEditor
 //{
 //    /**
 //     * @var PouleRepository
@@ -25,7 +25,7 @@
 //    protected $competitorRepos;
 //
 //    /**
-//     * Service constructor.
+//     * CompetitionEditor constructor.
 //     * @param CompetitionRepository $repos
 //     * @param PoulePlaceRepository $poulePlaceRepos
 //     * @param CompetitorRepository $competitorRepos

@@ -10,9 +10,9 @@ Sports\Competition:
     startDateTime:
       type: DateTimeImmutable<'Y-m-d\TH:i:s.u\Z'>
     sports:
-      type: ArrayCollection<Sports\Competition\Sport>
+      type: ArrayCollection<Sports\Competition\CompetitionSport>
     referees:
-      type: ArrayCollection<Sports\Competition\Referee>
+      type: ArrayCollection<Sports\Competition\CompetitionReferee>
     teamCompetitors:
       type: ArrayCollection<Sports\Competitor\Team>
       groups: [ teamCompetitors ]

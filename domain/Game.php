@@ -6,9 +6,9 @@ namespace Sports;
 
 use DateTimeImmutable;
 use League\Period\Period;
-use Sports\Competition\Field;
-use Sports\Competition\Referee;
-use Sports\Competition\Sport as CompetitionSport;
+use Sports\Competition\CompetitionField;
+use Sports\Competition\CompetitionReferee;
+use Sports\Competition\CompetitionSport as CompetitionSport;
 use Sports\Planning\Config as PlanningConfig;
 use Sports\Score\Config as ScoreConfig;
 use Sports\Structure\Locations\StructureLocationPlace;
@@ -16,9 +16,9 @@ use SportsHelpers\Identifiable;
 
 abstract class Game extends Identifiable
 {
-    protected Referee|null $referee = null;
+    protected CompetitionReferee|null $referee = null;
     protected Place|null $refereePlace = null;
-    protected Field|null $field = null;
+    protected CompetitionField|null $field = null;
     protected Game\State $state;
 
     public function __construct(
@@ -85,7 +85,7 @@ abstract class Game extends Identifiable
         $this->state = $state;
     }
 
-    public function getReferee(): ?Referee
+    public function getReferee(): ?CompetitionReferee
     {
         return $this->referee;
     }
@@ -95,7 +95,7 @@ abstract class Game extends Identifiable
         return $this->referee?->id;
     }
 
-    public function setReferee(Referee|null $referee = null): void
+    public function setReferee(CompetitionReferee|null $referee = null): void
     {
         $this->referee = $referee;
     }
@@ -115,7 +115,7 @@ abstract class Game extends Identifiable
         $this->refereePlace = $refereePlace;
     }
 
-    public function getField(): ?Field
+    public function getField(): ?CompetitionField
     {
         return $this->field;
     }
@@ -126,10 +126,10 @@ abstract class Game extends Identifiable
     }
 
     /**
-     * @param Field|null $field
+     * @param CompetitionField|null $field
      * @return void
      */
-    public function setField(Field|null $field = null): void
+    public function setField(CompetitionField|null $field = null): void
     {
         $this->field = $field;
     }
