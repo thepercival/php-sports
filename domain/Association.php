@@ -8,7 +8,10 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use SportsHelpers\Identifiable;
 
-final class Association extends Identifiable
+/**
+ * @api
+ */
+class Association extends Identifiable
 {
     protected string $name;
     protected string|null $description = null;

@@ -19,7 +19,10 @@ use SportsHelpers\PlaceLocationInterface;
 use Sports\Poule\Horizontal as HorizontalPoule;
 use Sports\Qualify\QualifyTarget;
 
-final class Place extends Identifiable implements PlaceLocationInterface
+/**
+ * @api
+ */
+class Place extends Identifiable implements PlaceLocationInterface
 {
     private int $placeNr;
 

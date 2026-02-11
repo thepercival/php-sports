@@ -27,7 +27,10 @@ use SportsHelpers\PlaceLocationInterface;
 use SportsHelpers\PouleStructures\BalancedPouleStructure;
 use SportsHelpers\Sport\Variant\MinNrOfPlacesCalculator;
 
-final class Round extends Identifiable
+/**
+ * @api
+ */
+class Round extends Identifiable
 {
     protected string|null $name = null;
     /**

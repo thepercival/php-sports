@@ -12,7 +12,10 @@ use Sports\Game\Participation as GameParticipation;
 use Sports\Person;
 use Sports\Team;
 
-final class Player extends Role
+/**
+ * @api
+ */
+class Player extends Role
 {
     protected int|null $shirtNumber = null;
     protected int $line;
