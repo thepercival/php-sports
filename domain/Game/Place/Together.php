@@ -11,7 +11,10 @@ use Sports\Game\Together as TogetherGame;
 use Sports\Place as PlaceBase;
 use Sports\Score\Together as TogetherScore;
 
-final class Together extends GamePlaceBase
+/**
+ * @api
+ */
+class Together extends GamePlaceBase
 {
     /**
      * @var Collection<int|string, TogetherScore>

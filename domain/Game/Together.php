@@ -13,7 +13,10 @@ use Sports\Game\Place\Together as TogetherGamePlace;
 use Sports\Place;
 use Sports\Poule;
 
-final class Together extends GameBase
+/**
+ * @api
+ */
+class Together extends GameBase
 {
     /**
      * @var Collection<int|string, TogetherGamePlace>

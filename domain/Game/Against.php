@@ -20,7 +20,10 @@ use Sports\Qualify\AgainstConfig as QualifyConfig;
 use Sports\Score\Against as AgainstScore;
 use SportsHelpers\Against\AgainstSide;
 
-final class Against extends GameBase
+/**
+ * @api
+ */
+class Against extends GameBase
 {
     /**
      * @var Collection<int|string, AgainstGamePlace>

@@ -18,7 +18,10 @@ use Sports\Person;
 use Sports\Place as PlaceBase;
 use SportsHelpers\Against\AgainstSide;
 
-final class Against extends GamePlaceBase
+/**
+ * @api
+ */
+class Against extends GamePlaceBase
 {
     /**
      * @var Collection<int|string, Participation>
