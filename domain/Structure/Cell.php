@@ -13,7 +13,10 @@ use Sports\Round\Number as RoundNumber;
 use SportsHelpers\Identifiable;
 use SportsHelpers\PouleStructures\PouleStructure;
 
-final class Cell extends Identifiable
+/**
+ * @api
+ */
+class Cell extends Identifiable
 {
     /**
      * @var Collection<int|string, Round>

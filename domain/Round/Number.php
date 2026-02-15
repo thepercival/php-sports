@@ -33,7 +33,10 @@ use SportsHelpers\Sport\Variant\AllInOneGame;
 use SportsHelpers\Sport\Variant\Single;
 use SportsHelpers\RefereeInfo;
 
-final class Number extends Identifiable
+/**
+ * @api
+ */
+class Number extends Identifiable
 {
     protected int $number;
     protected RoundNumber|null $next = null;
