@@ -2,20 +2,20 @@
 
 declare(strict_types=1);
 
-namespace Sports\Game\Place\Together;
+namespace Sports\Repositories;
 
+use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\QueryBuilder;
 use League\Period\Period;
 use Sports\Competition;
+use Sports\Game\Place\Together as TogetherGamePlace;
 use Sports\Game\State as GameState;
 use Sports\Game\Together as TogetherGame;
-use Doctrine\ORM\EntityRepository;
-use Sports\Game\Place\Together as TogetherGamePlace;
 
 /**
  * @template-extends EntityRepository<TogetherGamePlace>
  */
-final class Repository extends EntityRepository
+final class TogetherGamePlaceRepository extends EntityRepository
 {
     /**
      * @param Competition $competition
