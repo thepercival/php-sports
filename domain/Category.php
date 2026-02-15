@@ -17,7 +17,7 @@ use InvalidArgumentException;
 /**
  * @api
  */
-final class Category extends Identifiable
+class Category extends Identifiable
 {
     public const int MAX_LENGTH_NAME = 15;
     public const int MAX_LENGTH_ABBREVIATION = 2;
