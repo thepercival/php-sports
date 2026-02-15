@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Sports\Repositories;
+namespace old\Repositories;
 
 use DateTimeImmutable;
 use Doctrine\ORM\EntityRepository;

@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace Sports\Repositories;
+namespace old\Repositories;
 
 use Doctrine\ORM\EntityRepository;
 use Exception;
+use old\Repositories\AgainstQualifyConfigRepository as AgainstQualifyConfigRepos;
+use old\Repositories\GameAmountConfigRepository as GameAmountConfigRepos;
+use old\Repositories\ScoreConfigRepository as ScoreConfigRepos;
 use Sports\Competition\CompetitionSport;
 use Sports\Planning\GameAmountConfig;
 use Sports\Qualify\AgainstConfig as AgainstQualifyConfig;
-use Sports\Repositories\AgainstQualifyConfigRepository as AgainstQualifyConfigRepos;
-use Sports\Repositories\GameAmountConfigRepository as GameAmountConfigRepos;
-use Sports\Repositories\ScoreConfigRepository as ScoreConfigRepos;
 use Sports\Score\Config as ScoreConfig;
 use Sports\Structure;
 
