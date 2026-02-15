@@ -19,5 +19,6 @@ final class AgainstScoreRepository extends EntityRepository
             $game->getScores()->removeElement($gameScore);
             $this->getEntityManager()->remove($gameScore);
         }
+        $this->getEntityManager()->flush();
     }
 }
