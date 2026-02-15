@@ -19,5 +19,6 @@ final class TogetherScoreRepository extends EntityRepository
             $gamePlace->getScores()->removeElement($score);
             $this->getEntityManager()->remove($score);
         }
+        $this->getEntityManager()->flush();
     }
 }
