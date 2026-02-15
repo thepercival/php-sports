@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Sports\Repositories;
+namespace old\Repositories;
 
 use Doctrine\ORM\EntityRepository;
 use Sports\Game\Order;

@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace Sports\Repositories;
+namespace old\Repositories;
 
 use Doctrine\ORM\EntityManagerInterface;
+use old\Repositories\RoundNumberRepository as RoundNumberRepository;
 use Sports\Category;
 use Sports\Competition;
 use Sports\Exceptions\StructureNotFoundException;
 use Sports\Poule\Horizontal\Creator as HorizontalPouleCreator;
 use Sports\Qualify\Rule\Creator as QualifyRuleCreator;
-use Sports\Repositories\RoundNumberRepository as RoundNumberRepository;
 use Sports\Round;
 use Sports\Round\Number as RoundNumber;
 use Sports\Structure;
