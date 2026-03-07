@@ -9,7 +9,10 @@ use Sports\Person;
 use Sports\Priority\Prioritizable;
 use SportsHelpers\Identifiable;
 
-final class CompetitionReferee extends Identifiable implements Prioritizable
+/**
+ * @api
+ */
+class CompetitionReferee extends Identifiable implements Prioritizable
 {
     private string $initials;
     protected int $priority;
