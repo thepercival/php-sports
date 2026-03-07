@@ -9,7 +9,10 @@ use Sports\Competition\CompetitionSport;
 use Sports\Priority\Prioritizable;
 use SportsHelpers\Identifiable;
 
-final class CompetitionField extends Identifiable implements Prioritizable
+/**
+ * @api
+ */
+class CompetitionField extends Identifiable implements Prioritizable
 {
     protected int $priority;
     private string|null $name = null;

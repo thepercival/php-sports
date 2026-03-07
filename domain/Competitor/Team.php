@@ -9,7 +9,10 @@ use Sports\Competition;
 use Sports\Competitor as CompetitorInterface;
 use Sports\Team as TeamBase;
 
-final class Team extends StartLocation implements CompetitorInterface
+/**
+ * @api
+ */
+class Team extends StartLocation implements CompetitorInterface
 {
     public const int MAX_LENGTH_INFO = 200;
 
