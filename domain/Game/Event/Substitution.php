@@ -9,7 +9,10 @@ use Sports\Team;
 use Sports\Game\Event as GameEvent;
 use SportsHelpers\Identifiable;
 
-final class Substitution extends Identifiable implements GameEvent
+/**
+ * @api
+ */
+class Substitution extends Identifiable implements GameEvent
 {
     private GameParticipation $out;
     private GameParticipation $in;

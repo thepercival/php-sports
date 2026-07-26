@@ -7,7 +7,10 @@ namespace Sports\Score;
 use Sports\Game\Against as AgainstGame;
 use Sports\Score;
 
-final class Against extends Score
+/**
+ * @api
+ */
+class Against extends Score
 {
     use AgainstTrait;
 
