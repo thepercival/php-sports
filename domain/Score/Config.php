@@ -8,7 +8,10 @@ use Sports\Competition\CompetitionSport;
 use Sports\Round;
 use SportsHelpers\Identifiable;
 
-final class Config extends Identifiable
+/**
+ * @api
+ */
+class Config extends Identifiable
 {
     protected Config|null $next = null;
 
