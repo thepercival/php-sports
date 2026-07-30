@@ -33,6 +33,6 @@ final class PlanningEditModeType extends EnumDbType
     #[\Override]
     public function getSQLDeclaration($column, AbstractPlatform $platform): string
     {
-        return 'varchar(6)';
+        return 'VARCHAR(6)';
     }
 }

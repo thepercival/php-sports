@@ -34,6 +34,6 @@ final class RankingPointsCalculationType extends EnumDbType
     #[\Override]
     public function getSQLDeclaration($column, AbstractPlatform $platform): string
     {
-        return 'varchar(17)';
+        return 'VARCHAR(17)';
     }
 }
