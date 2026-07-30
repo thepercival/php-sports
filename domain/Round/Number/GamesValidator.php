@@ -26,9 +26,7 @@ use SportsHelpers\SelfReferee;
 
 final class GamesValidator
 {
-    public function __construct()
-    {
-    }
+    public function __construct() {}
 
     /**
      * @param Structure $structure
@@ -65,7 +63,7 @@ final class GamesValidator
         $this->validateEnoughTotalNrOfGames($roundNumber);
         $this->validateFields($roundNumber);
         $this->validateReferee($roundNumber, $nrOfReferees);
-        if( $roundNumber->getValidPlanningConfig()->selfRefereeEnabled() ) {
+        if ($roundNumber->getValidPlanningConfig()->selfRefereeEnabled()) {
             $this->validateSelfReferee($roundNumber);
         }
         if (count($blockedPeriods) > 0) {
@@ -117,7 +115,7 @@ final class GamesValidator
     protected function validateSelfReferee(RoundNumber $roundNumber): void
     {
         $selfRefereeInfo = $roundNumber->getRefereeInfo()->selfRefereeInfo;
-        if ($selfRefereeInfo === null || $selfRefereeInfo->selfReferee === SelfReferee::Disabled ) {
+        if ($selfRefereeInfo->selfReferee === SelfReferee::Disabled) {
             return;
         }
 
@@ -204,10 +202,13 @@ final class GamesValidator
     protected function getPlaces(TogetherGame|AgainstGame $game): array
     {
         return array_values(
-            array_map(function (AgainstGamePlace|TogetherGamePlace $gamePlace): Place {
-                return $gamePlace->getPlace();
-                }, $game->getPlaces()->toArray()
-        ));
+            array_map(
+                function (AgainstGamePlace|TogetherGamePlace $gamePlace): Place {
+                    return $gamePlace->getPlace();
+                },
+                $game->getPlaces()->toArray()
+            )
+        );
     }
 
     protected function validateResourcesPerBatch(RoundNumber $roundNumber): void
@@ -387,14 +388,16 @@ final class GamesValidator
         $gamesFirstBatch = $this->getGamesForBatch($roundNumber, $orderedGames);
         $orderedGameNr = 1;
         foreach ($gamesFirstBatch as $game) {
-//            $field = $game->getField();
-//            if ($field !== null && $field->getPriority() !== $priority) {
-//                throw new Exception("fields are not prioritized", E_ERROR);
-//            }
+            //            $field = $game->getField();
+            //            if ($field !== null && $field->getPriority() !== $priority) {
+            //                throw new Exception("fields are not prioritized", E_ERROR);
+            //            }
             $referee = $game->getReferee();
             if ($referee !== null && $referee->getPriority() !== $orderedGameNr) {
                 throw new RefereesPriorityNotCorrectlyAppliedInGamesException(
-                    $roundNumber->getNumber(), $orderedGameNr, $referee->getPriority()
+                    $roundNumber->getNumber(),
+                    $orderedGameNr,
+                    $referee->getPriority()
                 );
             }
             $orderedGameNr++;

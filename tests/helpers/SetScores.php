@@ -21,7 +21,7 @@ trait SetScores
         int $awayPlaceNr,
         int $homeGoals,
         int $awayGoals,
-        GameState $state = null,
+        GameState|null $state = null,
         int $homeExtraPoints = 0,
         int $awayExtraPoints = 0
     ): void {

@@ -14,11 +14,11 @@ use SportsHelpers\Sport\VariantWithFields as SportVariantWithFields;
 use SportsHelpers\SportRange;
 use SportsPlanning\PlanningRefereeInfo;
 use SportsScheduler\Game\Assigner as GameAssigner;
-use SportsScheduler\Game\Creator as GameCreator;
+use SportsScheduler\Game\GameCreatorFromSchedule;
 use SportsPlanning\Input;
 use SportsPlanning\Planning;
 use SportsPlanning\Planning\State as PlanningState;
-use SportsScheduler\Schedule\Creator as ScheduleCreator;
+use SportsScheduler\Schedule\ScheduleCreator;
 use SportsPlanning\Output\ScheduleOutput;
 
 final class PlanningCreator
@@ -28,8 +28,8 @@ final class PlanningCreator
     protected function getLogger(): LoggerInterface
     {
         $logger = new Logger("test-logger");
-//        $processor = new UidProcessor();
-//        $logger->pushProcessor($processor);
+        //        $processor = new UidProcessor();
+        //        $logger->pushProcessor($processor);
 
         $handler = new StreamHandler('php://stdout', Level::Info);
         $logger->pushHandler($handler);
@@ -48,17 +48,19 @@ final class PlanningCreator
         PlanningRefereeInfo $refereeInfo,
         bool $perPoule = false
     ) {
-//        if ($sportVariantsWithFields === null) {
-//            $sportVariantsWithFields = [$this->getAgainstH2hSportVariantWithFields(2)];
-//        }
-//        if ($refereeInfo === null) {
-//            $refereeInfo = new RefereeInfo($this->getDefaultNrOfReferees());
-//        }
-        $input = new Input( new Input\Configuration(
-            $pouleStructure,
-            $sportVariantsWithFields,
-            $refereeInfo,
-            $perPoule )
+        //        if ($sportVariantsWithFields === null) {
+        //            $sportVariantsWithFields = [$this->getAgainstH2hSportVariantWithFields(2)];
+        //        }
+        //        if ($refereeInfo === null) {
+        //            $refereeInfo = new RefereeInfo($this->getDefaultNrOfReferees());
+        //        }
+        $input = new Input(
+            new Input\Configuration(
+                $pouleStructure,
+                $sportVariantsWithFields,
+                $refereeInfo,
+                $perPoule
+            )
         );
 
         return $input;
@@ -72,12 +74,20 @@ final class PlanningCreator
         $planning = new Planning($input, $batchGamesRange, 0);
 
         $scheduleCreator = new ScheduleCreator($this->getLogger());
-        if( $allowedGppMargin === null) {
+        if ($allowedGppMargin === null) {
             $allowedGppMargin = $this->getMaxGppMargin($input->getPoule(1), $this->getLogger());
         }
-        $schedules = $scheduleCreator->createFromInput($input, $allowedGppMargin);
+
+        $sports = $input->configuration->createSportVariants();
+        $sportVariantsWithNr = $scheduleCreator->createSportVariantsWithNr($sports);
+
+        $schedules = $scheduleCreator->createFromPouleStructureAndSports(
+            $input->createPouleStructure(),
+            $sportVariantsWithNr,
+            $allowedGppMargin
+        );
         // (new ScheduleOutput($this->getLogger()))->output($schedules);
-        $gameCreator = new GameCreator($this->getLogger());
+        $gameCreator = new GameCreatorFromSchedule($this->getLogger());
         // $gameCreator->disableThrowOnTimeout();
         $gameCreator->createGames($planning, $schedules);
 
