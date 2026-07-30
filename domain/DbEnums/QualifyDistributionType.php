@@ -33,6 +33,6 @@ final class QualifyDistributionType extends EnumDbType
     #[\Override]
     public function getSQLDeclaration($column, AbstractPlatform $platform): string
     {
-        return 'varchar(15)';
+        return 'VARCHAR(15)';
     }
 }

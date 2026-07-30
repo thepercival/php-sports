@@ -37,6 +37,6 @@ final class FootballLineType extends EnumDbType
     #[\Override]
     public function getSQLDeclaration($column, AbstractPlatform $platform): string
     {
-        return 'int';
+        return 'INT';
     }
 }

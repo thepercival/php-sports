@@ -34,6 +34,6 @@ final class QualifyTargetType extends EnumDbType
     #[\Override]
     public function getSQLDeclaration($column, AbstractPlatform $platform): string
     {
-        return 'varchar(1)';
+        return 'VARCHAR(1)';
     }
 }
