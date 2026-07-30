@@ -1,18 +1,18 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Sports\TestHelper;
 
 use Psr\Log\LoggerInterface;
 use SportsPlanning\Poule as PlanningPoule;
-use SportsScheduler\Schedule\Creator as ScheduleCreator;
+use SportsScheduler\Schedule\ScheduleCreator;
 
 trait GppMarginCalculator
 {
     protected function getMaxGppMargin(PlanningPoule $planningPoule, LoggerInterface $logger): int
     {
-        $sports = array_values($planningPoule->getInput()->getSports()->toArray());
+        $sports = $planningPoule->getInput()->configuration->createSportVariants();
 
         $scheduleCreator = new ScheduleCreator($logger);
         $sportVariantsWithNr = $scheduleCreator->createSportVariantsWithNr($sports);

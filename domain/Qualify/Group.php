@@ -16,6 +16,9 @@ use Sports\Qualify\Group as QualifyGroup;
 use Sports\Structure\Cell as StructureCell;
 use SportsHelpers\Identifiable;
 
+/**
+ * @api
+ */
 class Group extends Identifiable
 {
     protected int $number;
@@ -60,11 +63,13 @@ class Group extends Identifiable
         $this->number = $number;
     }
 
-    public function getDistribution(): Distribution {
+    public function getDistribution(): Distribution
+    {
         return $this->distribution;
     }
 
-    public function setDistribution(Distribution $distribution): void {
+    public function setDistribution(Distribution $distribution): void
+    {
         $this->distribution = $distribution;
     }
 
@@ -116,20 +121,21 @@ class Group extends Identifiable
     }
 
 
-//    public function getNrOfSingleRules(): int
-//    {
-//        $nrOfSingleRules = 0;
-//
-//        $singleRule = $this->firstSingleRule;
-//        while  ($singleRule !== null) {
-//            $nrOfSingleRules++;
-//            $singleRule = $singleRule->getNext();
-//        }
-//        return $nrOfSingleRules;
-//    }
+    //    public function getNrOfSingleRules(): int
+    //    {
+    //        $nrOfSingleRules = 0;
+    //
+    //        $singleRule = $this->firstSingleRule;
+    //        while  ($singleRule !== null) {
+    //            $nrOfSingleRules++;
+    //            $singleRule = $singleRule->getNext();
+    //        }
+    //        return $nrOfSingleRules;
+    //    }
 
 
-    public function getRulesNrOfToPlaces(): int {
+    public function getRulesNrOfToPlaces(): int
+    {
         $nrOfToPlaces = 0;
 
         $singleRule = $this->getFirstSingleRule();
@@ -145,24 +151,26 @@ class Group extends Identifiable
         return $nrOfToPlaces;
     }
 
-    public function getNext(): QualifyGroup | null {
+    public function getNext(): QualifyGroup | null
+    {
         return $this->getParentRound()->getQualifyGroup($this->getTarget(), $this->getNumber() + 1);
     }
 
-    public function getRuleByToPlace(Place $toPlace): HorizontalSingleQualifyRule | HorizontalMultipleQualifyRule | VerticalSingleQualifyRule | VerticalMultipleQualifyRule {
-//        if( $this->distribution === Distribution::Vertical) {
-//            $verticalRule = $this->firstVertRule;
-//            while ($verticalRule !== null) {
-//                if($verticalRule->hasToPlace($toPlace)) {
-//                    return $verticalRule;
-//                }
-//                $verticalRule = $verticalRule->getNext();
-//            }
-//            throw new \Exception('de verticale kwalificatieregel kan niet gevonden worden', E_ERROR);
-//        }
+    public function getRuleByToPlace(Place $toPlace): HorizontalSingleQualifyRule | HorizontalMultipleQualifyRule | VerticalSingleQualifyRule | VerticalMultipleQualifyRule
+    {
+        //        if( $this->distribution === Distribution::Vertical) {
+        //            $verticalRule = $this->firstVertRule;
+        //            while ($verticalRule !== null) {
+        //                if($verticalRule->hasToPlace($toPlace)) {
+        //                    return $verticalRule;
+        //                }
+        //                $verticalRule = $verticalRule->getNext();
+        //            }
+        //            throw new \Exception('de verticale kwalificatieregel kan niet gevonden worden', E_ERROR);
+        //        }
         $singleRule = $this->firstSingleRule;
         while ($singleRule !== null) {
-            if ($singleRule->getMappingByToPlace($toPlace) !== null ) {
+            if ($singleRule->getMappingByToPlace($toPlace) !== null) {
                 return $singleRule;
             }
             $singleRule = $singleRule->getNext();

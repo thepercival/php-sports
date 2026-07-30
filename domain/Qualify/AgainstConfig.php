@@ -10,6 +10,9 @@ use Sports\Round;
 use Sports\Sport;
 use SportsHelpers\Identifiable;
 
+/**
+ * @api
+ */
 class AgainstConfig extends Identifiable
 {
     public function __construct(
@@ -30,7 +33,8 @@ class AgainstConfig extends Identifiable
         return $this->competitionSport;
     }
 
-    public function getCompetitionSportId(): string|int|null {
+    public function getCompetitionSportId(): string|int|null
+    {
         return $this->competitionSport->id;
     }
 
